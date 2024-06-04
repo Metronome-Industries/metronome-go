@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome_test
 
@@ -26,13 +26,32 @@ func TestAlertNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Alerts.New(context.TODO(), metronome.AlertNewParams{
-		AlertType:        metronome.F(metronome.AlertNewParamsAlertTypeLowCreditBalanceReached),
-		Name:             metronome.F("$100 credit balance alert for single customer"),
+		AlertType:        metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
+		Name:             metronome.F("$100 spend threshold reached"),
 		Threshold:        metronome.F(10000.000000),
 		BillableMetricID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		CreditTypeID:     metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+		CustomFieldFilters: metronome.F([]metronome.AlertNewParamsCustomFieldFilter{{
+			Entity: metronome.F(metronome.AlertNewParamsCustomFieldFiltersEntityContract),
+			Key:    metronome.F("string"),
+			Value:  metronome.F("string"),
+		}, {
+			Entity: metronome.F(metronome.AlertNewParamsCustomFieldFiltersEntityContract),
+			Key:    metronome.F("string"),
+			Value:  metronome.F("string"),
+		}, {
+			Entity: metronome.F(metronome.AlertNewParamsCustomFieldFiltersEntityContract),
+			Key:    metronome.F("string"),
+			Value:  metronome.F("string"),
+		}}),
 		CustomerID:       metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
-		PlanID:           metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		EvaluateOnCreate: metronome.F(true),
+		GroupKeyFilter: metronome.F(metronome.AlertNewParamsGroupKeyFilter{
+			Key:   metronome.F("string"),
+			Value: metronome.F("string"),
+		}),
+		PlanID:        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		UniquenessKey: metronome.F("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error

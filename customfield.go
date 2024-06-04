@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome
 
@@ -11,15 +11,15 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/internal/shared"
 	"github.com/Metronome-Industries/metronome-go/option"
 )
 
 // CustomFieldService contains methods and other services that help with
-// interacting with the metronome API. Note, unlike clients, this service does not
-// read variables from the environment automatically. You should not instantiate
-// this service directly, and instead use the [NewCustomFieldService] method
-// instead.
+// interacting with the metronome API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewCustomFieldService] method instead.
 type CustomFieldService struct {
 	Options []option.RequestOption
 }
@@ -53,26 +53,11 @@ func (r *CustomFieldService) DeleteValues(ctx context.Context, body CustomFieldD
 }
 
 // List all active custom field keys, optionally filtered by entity type.
-func (r *CustomFieldService) ListKeys(ctx context.Context, params CustomFieldListKeysParams, opts ...option.RequestOption) (res *shared.Page[CustomFieldListKeysResponse], err error) {
-	var raw *http.Response
-	opts = append(r.Options, opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+func (r *CustomFieldService) ListKeys(ctx context.Context, params CustomFieldListKeysParams, opts ...option.RequestOption) (res *CustomFieldListKeysResponse, err error) {
+	opts = append(r.Options[:], opts...)
 	path := "customFields/listKeys"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all active custom field keys, optionally filtered by entity type.
-func (r *CustomFieldService) ListKeysAutoPaging(ctx context.Context, params CustomFieldListKeysParams, opts ...option.RequestOption) *shared.PageAutoPager[CustomFieldListKeysResponse] {
-	return shared.NewPageAutoPager(r.ListKeys(ctx, params, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
 }
 
 // Remove a key from the allow list for a given entity.
@@ -100,15 +85,38 @@ func (r *CustomFieldService) SetValues(ctx context.Context, body CustomFieldSetV
 }
 
 type CustomFieldListKeysResponse struct {
-	EnforceUniqueness bool                              `json:"enforce_uniqueness,required"`
-	Entity            CustomFieldListKeysResponseEntity `json:"entity,required"`
-	Key               string                            `json:"key,required"`
-	JSON              customFieldListKeysResponseJSON   `json:"-"`
+	Data     []CustomFieldListKeysResponseData `json:"data,required"`
+	NextPage string                            `json:"next_page,required,nullable"`
+	JSON     customFieldListKeysResponseJSON   `json:"-"`
 }
 
 // customFieldListKeysResponseJSON contains the JSON metadata for the struct
 // [CustomFieldListKeysResponse]
 type customFieldListKeysResponseJSON struct {
+	Data        apijson.Field
+	NextPage    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomFieldListKeysResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customFieldListKeysResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomFieldListKeysResponseData struct {
+	EnforceUniqueness bool                                  `json:"enforce_uniqueness,required"`
+	Entity            CustomFieldListKeysResponseDataEntity `json:"entity,required"`
+	Key               string                                `json:"key,required"`
+	JSON              customFieldListKeysResponseDataJSON   `json:"-"`
+}
+
+// customFieldListKeysResponseDataJSON contains the JSON metadata for the struct
+// [CustomFieldListKeysResponseData]
+type customFieldListKeysResponseDataJSON struct {
 	EnforceUniqueness apijson.Field
 	Entity            apijson.Field
 	Key               apijson.Field
@@ -116,25 +124,42 @@ type customFieldListKeysResponseJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *CustomFieldListKeysResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomFieldListKeysResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CustomFieldListKeysResponseEntity string
+func (r customFieldListKeysResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomFieldListKeysResponseDataEntity string
 
 const (
-	CustomFieldListKeysResponseEntityCharge          CustomFieldListKeysResponseEntity = "charge"
-	CustomFieldListKeysResponseEntityCreditGrant     CustomFieldListKeysResponseEntity = "credit_grant"
-	CustomFieldListKeysResponseEntityCustomer        CustomFieldListKeysResponseEntity = "customer"
-	CustomFieldListKeysResponseEntityCustomerPlan    CustomFieldListKeysResponseEntity = "customer_plan"
-	CustomFieldListKeysResponseEntityPlan            CustomFieldListKeysResponseEntity = "plan"
-	CustomFieldListKeysResponseEntityProduct         CustomFieldListKeysResponseEntity = "product"
-	CustomFieldListKeysResponseEntityBillableMetric  CustomFieldListKeysResponseEntity = "billable_metric"
-	CustomFieldListKeysResponseEntityCommit          CustomFieldListKeysResponseEntity = "commit"
-	CustomFieldListKeysResponseEntityContract        CustomFieldListKeysResponseEntity = "contract"
-	CustomFieldListKeysResponseEntityContractProduct CustomFieldListKeysResponseEntity = "contract_product"
-	CustomFieldListKeysResponseEntityRateCard        CustomFieldListKeysResponseEntity = "rate_card"
+	CustomFieldListKeysResponseDataEntityAlert               CustomFieldListKeysResponseDataEntity = "alert"
+	CustomFieldListKeysResponseDataEntityBillableMetric      CustomFieldListKeysResponseDataEntity = "billable_metric"
+	CustomFieldListKeysResponseDataEntityCharge              CustomFieldListKeysResponseDataEntity = "charge"
+	CustomFieldListKeysResponseDataEntityCommit              CustomFieldListKeysResponseDataEntity = "commit"
+	CustomFieldListKeysResponseDataEntityContractCredit      CustomFieldListKeysResponseDataEntity = "contract_credit"
+	CustomFieldListKeysResponseDataEntityContractProduct     CustomFieldListKeysResponseDataEntity = "contract_product"
+	CustomFieldListKeysResponseDataEntityContract            CustomFieldListKeysResponseDataEntity = "contract"
+	CustomFieldListKeysResponseDataEntityCreditGrant         CustomFieldListKeysResponseDataEntity = "credit_grant"
+	CustomFieldListKeysResponseDataEntityCustomerPlan        CustomFieldListKeysResponseDataEntity = "customer_plan"
+	CustomFieldListKeysResponseDataEntityCustomer            CustomFieldListKeysResponseDataEntity = "customer"
+	CustomFieldListKeysResponseDataEntityInvoice             CustomFieldListKeysResponseDataEntity = "invoice"
+	CustomFieldListKeysResponseDataEntityPlan                CustomFieldListKeysResponseDataEntity = "plan"
+	CustomFieldListKeysResponseDataEntityProfessionalService CustomFieldListKeysResponseDataEntity = "professional_service"
+	CustomFieldListKeysResponseDataEntityProduct             CustomFieldListKeysResponseDataEntity = "product"
+	CustomFieldListKeysResponseDataEntityRateCard            CustomFieldListKeysResponseDataEntity = "rate_card"
+	CustomFieldListKeysResponseDataEntityScheduledCharge     CustomFieldListKeysResponseDataEntity = "scheduled_charge"
 )
+
+func (r CustomFieldListKeysResponseDataEntity) IsKnown() bool {
+	switch r {
+	case CustomFieldListKeysResponseDataEntityAlert, CustomFieldListKeysResponseDataEntityBillableMetric, CustomFieldListKeysResponseDataEntityCharge, CustomFieldListKeysResponseDataEntityCommit, CustomFieldListKeysResponseDataEntityContractCredit, CustomFieldListKeysResponseDataEntityContractProduct, CustomFieldListKeysResponseDataEntityContract, CustomFieldListKeysResponseDataEntityCreditGrant, CustomFieldListKeysResponseDataEntityCustomerPlan, CustomFieldListKeysResponseDataEntityCustomer, CustomFieldListKeysResponseDataEntityInvoice, CustomFieldListKeysResponseDataEntityPlan, CustomFieldListKeysResponseDataEntityProfessionalService, CustomFieldListKeysResponseDataEntityProduct, CustomFieldListKeysResponseDataEntityRateCard, CustomFieldListKeysResponseDataEntityScheduledCharge:
+		return true
+	}
+	return false
+}
 
 type CustomFieldAddKeyParams struct {
 	EnforceUniqueness param.Field[bool]                          `json:"enforce_uniqueness,required"`
@@ -149,18 +174,31 @@ func (r CustomFieldAddKeyParams) MarshalJSON() (data []byte, err error) {
 type CustomFieldAddKeyParamsEntity string
 
 const (
-	CustomFieldAddKeyParamsEntityCharge          CustomFieldAddKeyParamsEntity = "charge"
-	CustomFieldAddKeyParamsEntityCreditGrant     CustomFieldAddKeyParamsEntity = "credit_grant"
-	CustomFieldAddKeyParamsEntityCustomer        CustomFieldAddKeyParamsEntity = "customer"
-	CustomFieldAddKeyParamsEntityCustomerPlan    CustomFieldAddKeyParamsEntity = "customer_plan"
-	CustomFieldAddKeyParamsEntityPlan            CustomFieldAddKeyParamsEntity = "plan"
-	CustomFieldAddKeyParamsEntityProduct         CustomFieldAddKeyParamsEntity = "product"
-	CustomFieldAddKeyParamsEntityBillableMetric  CustomFieldAddKeyParamsEntity = "billable_metric"
-	CustomFieldAddKeyParamsEntityCommit          CustomFieldAddKeyParamsEntity = "commit"
-	CustomFieldAddKeyParamsEntityContract        CustomFieldAddKeyParamsEntity = "contract"
-	CustomFieldAddKeyParamsEntityContractProduct CustomFieldAddKeyParamsEntity = "contract_product"
-	CustomFieldAddKeyParamsEntityRateCard        CustomFieldAddKeyParamsEntity = "rate_card"
+	CustomFieldAddKeyParamsEntityAlert               CustomFieldAddKeyParamsEntity = "alert"
+	CustomFieldAddKeyParamsEntityBillableMetric      CustomFieldAddKeyParamsEntity = "billable_metric"
+	CustomFieldAddKeyParamsEntityCharge              CustomFieldAddKeyParamsEntity = "charge"
+	CustomFieldAddKeyParamsEntityCommit              CustomFieldAddKeyParamsEntity = "commit"
+	CustomFieldAddKeyParamsEntityContractCredit      CustomFieldAddKeyParamsEntity = "contract_credit"
+	CustomFieldAddKeyParamsEntityContractProduct     CustomFieldAddKeyParamsEntity = "contract_product"
+	CustomFieldAddKeyParamsEntityContract            CustomFieldAddKeyParamsEntity = "contract"
+	CustomFieldAddKeyParamsEntityCreditGrant         CustomFieldAddKeyParamsEntity = "credit_grant"
+	CustomFieldAddKeyParamsEntityCustomerPlan        CustomFieldAddKeyParamsEntity = "customer_plan"
+	CustomFieldAddKeyParamsEntityCustomer            CustomFieldAddKeyParamsEntity = "customer"
+	CustomFieldAddKeyParamsEntityInvoice             CustomFieldAddKeyParamsEntity = "invoice"
+	CustomFieldAddKeyParamsEntityPlan                CustomFieldAddKeyParamsEntity = "plan"
+	CustomFieldAddKeyParamsEntityProfessionalService CustomFieldAddKeyParamsEntity = "professional_service"
+	CustomFieldAddKeyParamsEntityProduct             CustomFieldAddKeyParamsEntity = "product"
+	CustomFieldAddKeyParamsEntityRateCard            CustomFieldAddKeyParamsEntity = "rate_card"
+	CustomFieldAddKeyParamsEntityScheduledCharge     CustomFieldAddKeyParamsEntity = "scheduled_charge"
 )
+
+func (r CustomFieldAddKeyParamsEntity) IsKnown() bool {
+	switch r {
+	case CustomFieldAddKeyParamsEntityAlert, CustomFieldAddKeyParamsEntityBillableMetric, CustomFieldAddKeyParamsEntityCharge, CustomFieldAddKeyParamsEntityCommit, CustomFieldAddKeyParamsEntityContractCredit, CustomFieldAddKeyParamsEntityContractProduct, CustomFieldAddKeyParamsEntityContract, CustomFieldAddKeyParamsEntityCreditGrant, CustomFieldAddKeyParamsEntityCustomerPlan, CustomFieldAddKeyParamsEntityCustomer, CustomFieldAddKeyParamsEntityInvoice, CustomFieldAddKeyParamsEntityPlan, CustomFieldAddKeyParamsEntityProfessionalService, CustomFieldAddKeyParamsEntityProduct, CustomFieldAddKeyParamsEntityRateCard, CustomFieldAddKeyParamsEntityScheduledCharge:
+		return true
+	}
+	return false
+}
 
 type CustomFieldDeleteValuesParams struct {
 	Entity   param.Field[CustomFieldDeleteValuesParamsEntity] `json:"entity,required"`
@@ -175,18 +213,31 @@ func (r CustomFieldDeleteValuesParams) MarshalJSON() (data []byte, err error) {
 type CustomFieldDeleteValuesParamsEntity string
 
 const (
-	CustomFieldDeleteValuesParamsEntityCharge          CustomFieldDeleteValuesParamsEntity = "charge"
-	CustomFieldDeleteValuesParamsEntityCreditGrant     CustomFieldDeleteValuesParamsEntity = "credit_grant"
-	CustomFieldDeleteValuesParamsEntityCustomer        CustomFieldDeleteValuesParamsEntity = "customer"
-	CustomFieldDeleteValuesParamsEntityCustomerPlan    CustomFieldDeleteValuesParamsEntity = "customer_plan"
-	CustomFieldDeleteValuesParamsEntityPlan            CustomFieldDeleteValuesParamsEntity = "plan"
-	CustomFieldDeleteValuesParamsEntityProduct         CustomFieldDeleteValuesParamsEntity = "product"
-	CustomFieldDeleteValuesParamsEntityBillableMetric  CustomFieldDeleteValuesParamsEntity = "billable_metric"
-	CustomFieldDeleteValuesParamsEntityCommit          CustomFieldDeleteValuesParamsEntity = "commit"
-	CustomFieldDeleteValuesParamsEntityContract        CustomFieldDeleteValuesParamsEntity = "contract"
-	CustomFieldDeleteValuesParamsEntityContractProduct CustomFieldDeleteValuesParamsEntity = "contract_product"
-	CustomFieldDeleteValuesParamsEntityRateCard        CustomFieldDeleteValuesParamsEntity = "rate_card"
+	CustomFieldDeleteValuesParamsEntityAlert               CustomFieldDeleteValuesParamsEntity = "alert"
+	CustomFieldDeleteValuesParamsEntityBillableMetric      CustomFieldDeleteValuesParamsEntity = "billable_metric"
+	CustomFieldDeleteValuesParamsEntityCharge              CustomFieldDeleteValuesParamsEntity = "charge"
+	CustomFieldDeleteValuesParamsEntityCommit              CustomFieldDeleteValuesParamsEntity = "commit"
+	CustomFieldDeleteValuesParamsEntityContractCredit      CustomFieldDeleteValuesParamsEntity = "contract_credit"
+	CustomFieldDeleteValuesParamsEntityContractProduct     CustomFieldDeleteValuesParamsEntity = "contract_product"
+	CustomFieldDeleteValuesParamsEntityContract            CustomFieldDeleteValuesParamsEntity = "contract"
+	CustomFieldDeleteValuesParamsEntityCreditGrant         CustomFieldDeleteValuesParamsEntity = "credit_grant"
+	CustomFieldDeleteValuesParamsEntityCustomerPlan        CustomFieldDeleteValuesParamsEntity = "customer_plan"
+	CustomFieldDeleteValuesParamsEntityCustomer            CustomFieldDeleteValuesParamsEntity = "customer"
+	CustomFieldDeleteValuesParamsEntityInvoice             CustomFieldDeleteValuesParamsEntity = "invoice"
+	CustomFieldDeleteValuesParamsEntityPlan                CustomFieldDeleteValuesParamsEntity = "plan"
+	CustomFieldDeleteValuesParamsEntityProfessionalService CustomFieldDeleteValuesParamsEntity = "professional_service"
+	CustomFieldDeleteValuesParamsEntityProduct             CustomFieldDeleteValuesParamsEntity = "product"
+	CustomFieldDeleteValuesParamsEntityRateCard            CustomFieldDeleteValuesParamsEntity = "rate_card"
+	CustomFieldDeleteValuesParamsEntityScheduledCharge     CustomFieldDeleteValuesParamsEntity = "scheduled_charge"
 )
+
+func (r CustomFieldDeleteValuesParamsEntity) IsKnown() bool {
+	switch r {
+	case CustomFieldDeleteValuesParamsEntityAlert, CustomFieldDeleteValuesParamsEntityBillableMetric, CustomFieldDeleteValuesParamsEntityCharge, CustomFieldDeleteValuesParamsEntityCommit, CustomFieldDeleteValuesParamsEntityContractCredit, CustomFieldDeleteValuesParamsEntityContractProduct, CustomFieldDeleteValuesParamsEntityContract, CustomFieldDeleteValuesParamsEntityCreditGrant, CustomFieldDeleteValuesParamsEntityCustomerPlan, CustomFieldDeleteValuesParamsEntityCustomer, CustomFieldDeleteValuesParamsEntityInvoice, CustomFieldDeleteValuesParamsEntityPlan, CustomFieldDeleteValuesParamsEntityProfessionalService, CustomFieldDeleteValuesParamsEntityProduct, CustomFieldDeleteValuesParamsEntityRateCard, CustomFieldDeleteValuesParamsEntityScheduledCharge:
+		return true
+	}
+	return false
+}
 
 type CustomFieldListKeysParams struct {
 	// Cursor that indicates where the next page of results should start.
@@ -211,18 +262,31 @@ func (r CustomFieldListKeysParams) URLQuery() (v url.Values) {
 type CustomFieldListKeysParamsEntity string
 
 const (
-	CustomFieldListKeysParamsEntityCharge          CustomFieldListKeysParamsEntity = "charge"
-	CustomFieldListKeysParamsEntityCreditGrant     CustomFieldListKeysParamsEntity = "credit_grant"
-	CustomFieldListKeysParamsEntityCustomer        CustomFieldListKeysParamsEntity = "customer"
-	CustomFieldListKeysParamsEntityCustomerPlan    CustomFieldListKeysParamsEntity = "customer_plan"
-	CustomFieldListKeysParamsEntityPlan            CustomFieldListKeysParamsEntity = "plan"
-	CustomFieldListKeysParamsEntityProduct         CustomFieldListKeysParamsEntity = "product"
-	CustomFieldListKeysParamsEntityBillableMetric  CustomFieldListKeysParamsEntity = "billable_metric"
-	CustomFieldListKeysParamsEntityCommit          CustomFieldListKeysParamsEntity = "commit"
-	CustomFieldListKeysParamsEntityContract        CustomFieldListKeysParamsEntity = "contract"
-	CustomFieldListKeysParamsEntityContractProduct CustomFieldListKeysParamsEntity = "contract_product"
-	CustomFieldListKeysParamsEntityRateCard        CustomFieldListKeysParamsEntity = "rate_card"
+	CustomFieldListKeysParamsEntityAlert               CustomFieldListKeysParamsEntity = "alert"
+	CustomFieldListKeysParamsEntityBillableMetric      CustomFieldListKeysParamsEntity = "billable_metric"
+	CustomFieldListKeysParamsEntityCharge              CustomFieldListKeysParamsEntity = "charge"
+	CustomFieldListKeysParamsEntityCommit              CustomFieldListKeysParamsEntity = "commit"
+	CustomFieldListKeysParamsEntityContractCredit      CustomFieldListKeysParamsEntity = "contract_credit"
+	CustomFieldListKeysParamsEntityContractProduct     CustomFieldListKeysParamsEntity = "contract_product"
+	CustomFieldListKeysParamsEntityContract            CustomFieldListKeysParamsEntity = "contract"
+	CustomFieldListKeysParamsEntityCreditGrant         CustomFieldListKeysParamsEntity = "credit_grant"
+	CustomFieldListKeysParamsEntityCustomerPlan        CustomFieldListKeysParamsEntity = "customer_plan"
+	CustomFieldListKeysParamsEntityCustomer            CustomFieldListKeysParamsEntity = "customer"
+	CustomFieldListKeysParamsEntityInvoice             CustomFieldListKeysParamsEntity = "invoice"
+	CustomFieldListKeysParamsEntityPlan                CustomFieldListKeysParamsEntity = "plan"
+	CustomFieldListKeysParamsEntityProfessionalService CustomFieldListKeysParamsEntity = "professional_service"
+	CustomFieldListKeysParamsEntityProduct             CustomFieldListKeysParamsEntity = "product"
+	CustomFieldListKeysParamsEntityRateCard            CustomFieldListKeysParamsEntity = "rate_card"
+	CustomFieldListKeysParamsEntityScheduledCharge     CustomFieldListKeysParamsEntity = "scheduled_charge"
 )
+
+func (r CustomFieldListKeysParamsEntity) IsKnown() bool {
+	switch r {
+	case CustomFieldListKeysParamsEntityAlert, CustomFieldListKeysParamsEntityBillableMetric, CustomFieldListKeysParamsEntityCharge, CustomFieldListKeysParamsEntityCommit, CustomFieldListKeysParamsEntityContractCredit, CustomFieldListKeysParamsEntityContractProduct, CustomFieldListKeysParamsEntityContract, CustomFieldListKeysParamsEntityCreditGrant, CustomFieldListKeysParamsEntityCustomerPlan, CustomFieldListKeysParamsEntityCustomer, CustomFieldListKeysParamsEntityInvoice, CustomFieldListKeysParamsEntityPlan, CustomFieldListKeysParamsEntityProfessionalService, CustomFieldListKeysParamsEntityProduct, CustomFieldListKeysParamsEntityRateCard, CustomFieldListKeysParamsEntityScheduledCharge:
+		return true
+	}
+	return false
+}
 
 type CustomFieldRemoveKeyParams struct {
 	Entity param.Field[CustomFieldRemoveKeyParamsEntity] `json:"entity,required"`
@@ -236,18 +300,31 @@ func (r CustomFieldRemoveKeyParams) MarshalJSON() (data []byte, err error) {
 type CustomFieldRemoveKeyParamsEntity string
 
 const (
-	CustomFieldRemoveKeyParamsEntityCharge          CustomFieldRemoveKeyParamsEntity = "charge"
-	CustomFieldRemoveKeyParamsEntityCreditGrant     CustomFieldRemoveKeyParamsEntity = "credit_grant"
-	CustomFieldRemoveKeyParamsEntityCustomer        CustomFieldRemoveKeyParamsEntity = "customer"
-	CustomFieldRemoveKeyParamsEntityCustomerPlan    CustomFieldRemoveKeyParamsEntity = "customer_plan"
-	CustomFieldRemoveKeyParamsEntityPlan            CustomFieldRemoveKeyParamsEntity = "plan"
-	CustomFieldRemoveKeyParamsEntityProduct         CustomFieldRemoveKeyParamsEntity = "product"
-	CustomFieldRemoveKeyParamsEntityBillableMetric  CustomFieldRemoveKeyParamsEntity = "billable_metric"
-	CustomFieldRemoveKeyParamsEntityCommit          CustomFieldRemoveKeyParamsEntity = "commit"
-	CustomFieldRemoveKeyParamsEntityContract        CustomFieldRemoveKeyParamsEntity = "contract"
-	CustomFieldRemoveKeyParamsEntityContractProduct CustomFieldRemoveKeyParamsEntity = "contract_product"
-	CustomFieldRemoveKeyParamsEntityRateCard        CustomFieldRemoveKeyParamsEntity = "rate_card"
+	CustomFieldRemoveKeyParamsEntityAlert               CustomFieldRemoveKeyParamsEntity = "alert"
+	CustomFieldRemoveKeyParamsEntityBillableMetric      CustomFieldRemoveKeyParamsEntity = "billable_metric"
+	CustomFieldRemoveKeyParamsEntityCharge              CustomFieldRemoveKeyParamsEntity = "charge"
+	CustomFieldRemoveKeyParamsEntityCommit              CustomFieldRemoveKeyParamsEntity = "commit"
+	CustomFieldRemoveKeyParamsEntityContractCredit      CustomFieldRemoveKeyParamsEntity = "contract_credit"
+	CustomFieldRemoveKeyParamsEntityContractProduct     CustomFieldRemoveKeyParamsEntity = "contract_product"
+	CustomFieldRemoveKeyParamsEntityContract            CustomFieldRemoveKeyParamsEntity = "contract"
+	CustomFieldRemoveKeyParamsEntityCreditGrant         CustomFieldRemoveKeyParamsEntity = "credit_grant"
+	CustomFieldRemoveKeyParamsEntityCustomerPlan        CustomFieldRemoveKeyParamsEntity = "customer_plan"
+	CustomFieldRemoveKeyParamsEntityCustomer            CustomFieldRemoveKeyParamsEntity = "customer"
+	CustomFieldRemoveKeyParamsEntityInvoice             CustomFieldRemoveKeyParamsEntity = "invoice"
+	CustomFieldRemoveKeyParamsEntityPlan                CustomFieldRemoveKeyParamsEntity = "plan"
+	CustomFieldRemoveKeyParamsEntityProfessionalService CustomFieldRemoveKeyParamsEntity = "professional_service"
+	CustomFieldRemoveKeyParamsEntityProduct             CustomFieldRemoveKeyParamsEntity = "product"
+	CustomFieldRemoveKeyParamsEntityRateCard            CustomFieldRemoveKeyParamsEntity = "rate_card"
+	CustomFieldRemoveKeyParamsEntityScheduledCharge     CustomFieldRemoveKeyParamsEntity = "scheduled_charge"
 )
+
+func (r CustomFieldRemoveKeyParamsEntity) IsKnown() bool {
+	switch r {
+	case CustomFieldRemoveKeyParamsEntityAlert, CustomFieldRemoveKeyParamsEntityBillableMetric, CustomFieldRemoveKeyParamsEntityCharge, CustomFieldRemoveKeyParamsEntityCommit, CustomFieldRemoveKeyParamsEntityContractCredit, CustomFieldRemoveKeyParamsEntityContractProduct, CustomFieldRemoveKeyParamsEntityContract, CustomFieldRemoveKeyParamsEntityCreditGrant, CustomFieldRemoveKeyParamsEntityCustomerPlan, CustomFieldRemoveKeyParamsEntityCustomer, CustomFieldRemoveKeyParamsEntityInvoice, CustomFieldRemoveKeyParamsEntityPlan, CustomFieldRemoveKeyParamsEntityProfessionalService, CustomFieldRemoveKeyParamsEntityProduct, CustomFieldRemoveKeyParamsEntityRateCard, CustomFieldRemoveKeyParamsEntityScheduledCharge:
+		return true
+	}
+	return false
+}
 
 type CustomFieldSetValuesParams struct {
 	CustomFields param.Field[map[string]string]                `json:"custom_fields,required"`
@@ -262,15 +339,28 @@ func (r CustomFieldSetValuesParams) MarshalJSON() (data []byte, err error) {
 type CustomFieldSetValuesParamsEntity string
 
 const (
-	CustomFieldSetValuesParamsEntityCharge          CustomFieldSetValuesParamsEntity = "charge"
-	CustomFieldSetValuesParamsEntityCreditGrant     CustomFieldSetValuesParamsEntity = "credit_grant"
-	CustomFieldSetValuesParamsEntityCustomer        CustomFieldSetValuesParamsEntity = "customer"
-	CustomFieldSetValuesParamsEntityCustomerPlan    CustomFieldSetValuesParamsEntity = "customer_plan"
-	CustomFieldSetValuesParamsEntityPlan            CustomFieldSetValuesParamsEntity = "plan"
-	CustomFieldSetValuesParamsEntityProduct         CustomFieldSetValuesParamsEntity = "product"
-	CustomFieldSetValuesParamsEntityBillableMetric  CustomFieldSetValuesParamsEntity = "billable_metric"
-	CustomFieldSetValuesParamsEntityCommit          CustomFieldSetValuesParamsEntity = "commit"
-	CustomFieldSetValuesParamsEntityContract        CustomFieldSetValuesParamsEntity = "contract"
-	CustomFieldSetValuesParamsEntityContractProduct CustomFieldSetValuesParamsEntity = "contract_product"
-	CustomFieldSetValuesParamsEntityRateCard        CustomFieldSetValuesParamsEntity = "rate_card"
+	CustomFieldSetValuesParamsEntityAlert               CustomFieldSetValuesParamsEntity = "alert"
+	CustomFieldSetValuesParamsEntityBillableMetric      CustomFieldSetValuesParamsEntity = "billable_metric"
+	CustomFieldSetValuesParamsEntityCharge              CustomFieldSetValuesParamsEntity = "charge"
+	CustomFieldSetValuesParamsEntityCommit              CustomFieldSetValuesParamsEntity = "commit"
+	CustomFieldSetValuesParamsEntityContractCredit      CustomFieldSetValuesParamsEntity = "contract_credit"
+	CustomFieldSetValuesParamsEntityContractProduct     CustomFieldSetValuesParamsEntity = "contract_product"
+	CustomFieldSetValuesParamsEntityContract            CustomFieldSetValuesParamsEntity = "contract"
+	CustomFieldSetValuesParamsEntityCreditGrant         CustomFieldSetValuesParamsEntity = "credit_grant"
+	CustomFieldSetValuesParamsEntityCustomerPlan        CustomFieldSetValuesParamsEntity = "customer_plan"
+	CustomFieldSetValuesParamsEntityCustomer            CustomFieldSetValuesParamsEntity = "customer"
+	CustomFieldSetValuesParamsEntityInvoice             CustomFieldSetValuesParamsEntity = "invoice"
+	CustomFieldSetValuesParamsEntityPlan                CustomFieldSetValuesParamsEntity = "plan"
+	CustomFieldSetValuesParamsEntityProfessionalService CustomFieldSetValuesParamsEntity = "professional_service"
+	CustomFieldSetValuesParamsEntityProduct             CustomFieldSetValuesParamsEntity = "product"
+	CustomFieldSetValuesParamsEntityRateCard            CustomFieldSetValuesParamsEntity = "rate_card"
+	CustomFieldSetValuesParamsEntityScheduledCharge     CustomFieldSetValuesParamsEntity = "scheduled_charge"
 )
+
+func (r CustomFieldSetValuesParamsEntity) IsKnown() bool {
+	switch r {
+	case CustomFieldSetValuesParamsEntityAlert, CustomFieldSetValuesParamsEntityBillableMetric, CustomFieldSetValuesParamsEntityCharge, CustomFieldSetValuesParamsEntityCommit, CustomFieldSetValuesParamsEntityContractCredit, CustomFieldSetValuesParamsEntityContractProduct, CustomFieldSetValuesParamsEntityContract, CustomFieldSetValuesParamsEntityCreditGrant, CustomFieldSetValuesParamsEntityCustomerPlan, CustomFieldSetValuesParamsEntityCustomer, CustomFieldSetValuesParamsEntityInvoice, CustomFieldSetValuesParamsEntityPlan, CustomFieldSetValuesParamsEntityProfessionalService, CustomFieldSetValuesParamsEntityProduct, CustomFieldSetValuesParamsEntityRateCard, CustomFieldSetValuesParamsEntityScheduledCharge:
+		return true
+	}
+	return false
+}

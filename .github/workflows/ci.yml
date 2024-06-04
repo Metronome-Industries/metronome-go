@@ -11,13 +11,29 @@ jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
-    if: github.repository == 'Metronome-Industries/metronome-go'
+    
 
     steps:
-      - uses: actions/checkout@v3
-  
-      - name: Setup go
-        uses: actions/setup-go@v4
+      - uses: actions/checkout@v4
 
-      - run: |
-          go build ./...
+      - name: Setup go
+        uses: actions/setup-go@v5
+
+      - name: Run lints
+        run: ./scripts/lint
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup go
+        uses: actions/setup-go@v5
+
+      - name: Bootstrap
+        run: ./scripts/bootstrap
+
+      - name: Run tests
+        run: ./scripts/test
+

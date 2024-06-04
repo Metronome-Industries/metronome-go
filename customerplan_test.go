@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome_test
 
@@ -63,6 +63,19 @@ func TestCustomerPlanAddWithOptionalParams(t *testing.T) {
 			StartingOn:          metronome.F(time.Now()),
 			EndingBefore:        metronome.F(time.Now()),
 			NetPaymentTermsDays: metronome.F(0.000000),
+			OverageRateAdjustments: metronome.F([]metronome.CustomerPlanAddParamsOverageRateAdjustment{{
+				CustomCreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				FiatCurrencyCreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ToFiatConversionFactor:   metronome.F(0.000000),
+			}, {
+				CustomCreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				FiatCurrencyCreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ToFiatConversionFactor:   metronome.F(0.000000),
+			}, {
+				CustomCreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				FiatCurrencyCreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ToFiatConversionFactor:   metronome.F(0.000000),
+			}}),
 			PriceAdjustments: metronome.F([]metronome.CustomerPlanAddParamsPriceAdjustment{{
 				ChargeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				AdjustmentType: metronome.F(metronome.CustomerPlanAddParamsPriceAdjustmentsAdjustmentTypePercentage),
@@ -85,6 +98,13 @@ func TestCustomerPlanAddWithOptionalParams(t *testing.T) {
 				Tier:           metronome.F(0.000000),
 				StartPeriod:    metronome.F(0.000000),
 			}}),
+			TrialSpec: metronome.F(metronome.CustomerPlanAddParamsTrialSpec{
+				LengthInDays: metronome.F(0.000000),
+				SpendingCap: metronome.F(metronome.CustomerPlanAddParamsTrialSpecSpendingCap{
+					CreditTypeID: metronome.F("string"),
+					Amount:       metronome.F(0.000000),
+				}),
+			}),
 		},
 	)
 	if err != nil {

@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome_test
 
@@ -40,10 +40,22 @@ func TestCreditNewGrantWithOptionalParams(t *testing.T) {
 		}),
 		Priority:        metronome.F(0.500000),
 		CreditGrantType: metronome.F("trial"),
-		EffectiveAt:     metronome.F(time.Now()),
-		InvoiceDate:     metronome.F(time.Now()),
-		ProductIDs:      metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		Reason:          metronome.F("Incentivize new customer"),
+		CustomFields: metronome.F(map[string]string{
+			"foo": "string",
+		}),
+		EffectiveAt: metronome.F(time.Now()),
+		InvoiceDate: metronome.F(time.Now()),
+		ProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+		Reason:      metronome.F("Incentivize new customer"),
+		RolloverSettings: metronome.F(metronome.CreditNewGrantParamsRolloverSettings{
+			ExpiresAt: metronome.F(time.Now()),
+			Priority:  metronome.F(0.000000),
+			RolloverAmount: metronome.F[metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountUnion](metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountObject{
+				Type:  metronome.F(metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountObjectTypeMaxPercentage),
+				Value: metronome.F(0.000000),
+			}),
+		}),
+		UniquenessKey: metronome.F("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -137,7 +149,7 @@ func TestCreditListGrantsWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCreditVoidGrant(t *testing.T) {
+func TestCreditVoidGrantWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -150,7 +162,8 @@ func TestCreditVoidGrant(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Credits.VoidGrant(context.TODO(), metronome.CreditVoidGrantParams{
-		ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		ID:                        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		VoidCreditPurchaseInvoice: metronome.F(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error

@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome
 
@@ -13,9 +13,11 @@ import (
 )
 
 // DashboardService contains methods and other services that help with interacting
-// with the metronome API. Note, unlike clients, this service does not read
-// variables from the environment automatically. You should not instantiate this
-// service directly, and instead use the [NewDashboardService] method instead.
+// with the metronome API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewDashboardService] method instead.
 type DashboardService struct {
 	Options []option.RequestOption
 }
@@ -56,6 +58,10 @@ func (r *DashboardGetEmbeddableURLResponse) UnmarshalJSON(data []byte) (err erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r dashboardGetEmbeddableURLResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 type DashboardGetEmbeddableURLResponseData struct {
 	URL  string                                    `json:"url"`
 	JSON dashboardGetEmbeddableURLResponseDataJSON `json:"-"`
@@ -71,6 +77,10 @@ type dashboardGetEmbeddableURLResponseDataJSON struct {
 
 func (r *DashboardGetEmbeddableURLResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dashboardGetEmbeddableURLResponseDataJSON) RawJSON() string {
+	return r.raw
 }
 
 type DashboardGetEmbeddableURLParams struct {
@@ -95,6 +105,14 @@ const (
 	DashboardGetEmbeddableURLParamsDashboardUsage    DashboardGetEmbeddableURLParamsDashboard = "usage"
 	DashboardGetEmbeddableURLParamsDashboardCredits  DashboardGetEmbeddableURLParamsDashboard = "credits"
 )
+
+func (r DashboardGetEmbeddableURLParamsDashboard) IsKnown() bool {
+	switch r {
+	case DashboardGetEmbeddableURLParamsDashboardInvoices, DashboardGetEmbeddableURLParamsDashboardUsage, DashboardGetEmbeddableURLParamsDashboardCredits:
+		return true
+	}
+	return false
+}
 
 type DashboardGetEmbeddableURLParamsColorOverride struct {
 	// The color to override
@@ -131,6 +149,14 @@ const (
 	DashboardGetEmbeddableURLParamsColorOverridesNamePrimaryGreen   DashboardGetEmbeddableURLParamsColorOverridesName = "Primary_green"
 	DashboardGetEmbeddableURLParamsColorOverridesNamePrimaryRed     DashboardGetEmbeddableURLParamsColorOverridesName = "Primary_red"
 )
+
+func (r DashboardGetEmbeddableURLParamsColorOverridesName) IsKnown() bool {
+	switch r {
+	case DashboardGetEmbeddableURLParamsColorOverridesNameGrayDark, DashboardGetEmbeddableURLParamsColorOverridesNameGrayMedium, DashboardGetEmbeddableURLParamsColorOverridesNameGrayLight, DashboardGetEmbeddableURLParamsColorOverridesNameGrayExtralight, DashboardGetEmbeddableURLParamsColorOverridesNameWhite, DashboardGetEmbeddableURLParamsColorOverridesNamePrimaryMedium, DashboardGetEmbeddableURLParamsColorOverridesNamePrimaryLight, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine0, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine1, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine2, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine3, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine4, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine5, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine6, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine7, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine8, DashboardGetEmbeddableURLParamsColorOverridesNameUsageLine9, DashboardGetEmbeddableURLParamsColorOverridesNamePrimaryGreen, DashboardGetEmbeddableURLParamsColorOverridesNamePrimaryRed:
+		return true
+	}
+	return false
+}
 
 type DashboardGetEmbeddableURLParamsDashboardOption struct {
 	// The option key name

@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome_test
 
@@ -27,9 +27,13 @@ func TestAuditLogListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.AuditLogs.List(context.TODO(), metronome.AuditLogListParams{
-		Limit:      metronome.F(int64(1)),
-		NextPage:   metronome.F("string"),
-		StartingOn: metronome.F(time.Now()),
+		EndingBefore: metronome.F(time.Now()),
+		Limit:        metronome.F(int64(1)),
+		NextPage:     metronome.F("string"),
+		ResourceID:   metronome.F("string"),
+		ResourceType: metronome.F("string"),
+		Sort:         metronome.F(metronome.AuditLogListParamsSortDateAsc),
+		StartingOn:   metronome.F(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error

@@ -1,9 +1,10 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -13,14 +14,15 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/internal/shared"
 	"github.com/Metronome-Industries/metronome-go/option"
 )
 
 // CustomerService contains methods and other services that help with interacting
-// with the metronome API. Note, unlike clients, this service does not read
-// variables from the environment automatically. You should not instantiate this
-// service directly, and instead use the [NewCustomerService] method instead.
+// with the metronome API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewCustomerService] method instead.
 type CustomerService struct {
 	Options       []option.RequestOption
 	Plans         *CustomerPlanService
@@ -51,32 +53,21 @@ func (r *CustomerService) New(ctx context.Context, body CustomerNewParams, opts 
 // Get a customer by Metronome ID.
 func (r *CustomerService) Get(ctx context.Context, customerID string, opts ...option.RequestOption) (res *CustomerGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // List all customers.
-func (r *CustomerService) List(ctx context.Context, query CustomerListParams, opts ...option.RequestOption) (res *shared.Page[CustomerListResponse], err error) {
-	var raw *http.Response
-	opts = append(r.Options, opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+func (r *CustomerService) List(ctx context.Context, query CustomerListParams, opts ...option.RequestOption) (res *CustomerListResponse, err error) {
+	opts = append(r.Options[:], opts...)
 	path := "customers"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all customers.
-func (r *CustomerService) ListAutoPaging(ctx context.Context, query CustomerListParams, opts ...option.RequestOption) *shared.PageAutoPager[CustomerListResponse] {
-	return shared.NewPageAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Archive a customer
@@ -88,53 +79,29 @@ func (r *CustomerService) Archive(ctx context.Context, body CustomerArchiveParam
 }
 
 // List all billable metrics.
-func (r *CustomerService) ListBillableMetrics(ctx context.Context, customerID string, query CustomerListBillableMetricsParams, opts ...option.RequestOption) (res *shared.Page[CustomerListBillableMetricsResponse], err error) {
-	var raw *http.Response
-	opts = append(r.Options, opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+func (r *CustomerService) ListBillableMetrics(ctx context.Context, customerID string, query CustomerListBillableMetricsParams, opts ...option.RequestOption) (res *CustomerListBillableMetricsResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s/billable-metrics", customerID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all billable metrics.
-func (r *CustomerService) ListBillableMetricsAutoPaging(ctx context.Context, customerID string, query CustomerListBillableMetricsParams, opts ...option.RequestOption) *shared.PageAutoPager[CustomerListBillableMetricsResponse] {
-	return shared.NewPageAutoPager(r.ListBillableMetrics(ctx, customerID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Fetch daily pending costs for the specified customer, broken down by credit type
 // and line items. Note: this is not supported for customers whose plan includes a
 // UNIQUE-type billable metric.
-func (r *CustomerService) ListCosts(ctx context.Context, customerID string, query CustomerListCostsParams, opts ...option.RequestOption) (res *shared.Page[CustomerListCostsResponse], err error) {
-	var raw *http.Response
-	opts = append(r.Options, opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+func (r *CustomerService) ListCosts(ctx context.Context, customerID string, query CustomerListCostsParams, opts ...option.RequestOption) (res *CustomerListCostsResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s/costs", customerID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Fetch daily pending costs for the specified customer, broken down by credit type
-// and line items. Note: this is not supported for customers whose plan includes a
-// UNIQUE-type billable metric.
-func (r *CustomerService) ListCostsAutoPaging(ctx context.Context, customerID string, query CustomerListCostsParams, opts ...option.RequestOption) *shared.PageAutoPager[CustomerListCostsResponse] {
-	return shared.NewPageAutoPager(r.ListCosts(ctx, customerID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Sets the ingest aliases for a customer. Ingest aliases can be used in the
@@ -143,6 +110,10 @@ func (r *CustomerService) ListCostsAutoPaging(ctx context.Context, customerID st
 func (r *CustomerService) SetIngestAliases(ctx context.Context, customerID string, body CustomerSetIngestAliasesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s/setIngestAliases", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -151,6 +122,10 @@ func (r *CustomerService) SetIngestAliases(ctx context.Context, customerID strin
 // Updates the specified customer's name.
 func (r *CustomerService) SetName(ctx context.Context, customerID string, body CustomerSetNameParams, opts ...option.RequestOption) (res *CustomerSetNameResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s/setName", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -160,6 +135,10 @@ func (r *CustomerService) SetName(ctx context.Context, customerID string, body C
 func (r *CustomerService) UpdateConfig(ctx context.Context, customerID string, body CustomerUpdateConfigParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s/updateConfig", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -180,6 +159,10 @@ type customerNewResponseJSON struct {
 
 func (r *CustomerNewResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerNewResponseJSON) RawJSON() string {
+	return r.raw
 }
 
 type CustomerNewResponseData struct {
@@ -212,6 +195,10 @@ func (r *CustomerNewResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r customerNewResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerGetResponse struct {
 	Data CustomerGetResponseData `json:"data,required"`
 	JSON customerGetResponseJSON `json:"-"`
@@ -227,6 +214,10 @@ type customerGetResponseJSON struct {
 
 func (r *CustomerGetResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerGetResponseJSON) RawJSON() string {
+	return r.raw
 }
 
 type CustomerGetResponseData struct {
@@ -263,6 +254,10 @@ func (r *CustomerGetResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r customerGetResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerGetResponseDataCurrentBillableStatus struct {
 	Value       CustomerGetResponseDataCurrentBillableStatusValue `json:"value,required"`
 	EffectiveAt time.Time                                         `json:"effective_at,nullable" format:"date-time"`
@@ -282,12 +277,24 @@ func (r *CustomerGetResponseDataCurrentBillableStatus) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r customerGetResponseDataCurrentBillableStatusJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerGetResponseDataCurrentBillableStatusValue string
 
 const (
 	CustomerGetResponseDataCurrentBillableStatusValueBillable   CustomerGetResponseDataCurrentBillableStatusValue = "billable"
 	CustomerGetResponseDataCurrentBillableStatusValueUnbillable CustomerGetResponseDataCurrentBillableStatusValue = "unbillable"
 )
+
+func (r CustomerGetResponseDataCurrentBillableStatusValue) IsKnown() bool {
+	switch r {
+	case CustomerGetResponseDataCurrentBillableStatusValueBillable, CustomerGetResponseDataCurrentBillableStatusValueUnbillable:
+		return true
+	}
+	return false
+}
 
 type CustomerGetResponseDataCustomerConfig struct {
 	// The Salesforce account ID for the customer
@@ -307,25 +314,52 @@ func (r *CustomerGetResponseDataCustomerConfig) UnmarshalJSON(data []byte) (err 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r customerGetResponseDataCustomerConfigJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerListResponse struct {
-	// the Metronome ID of the customer
-	ID                    string                                    `json:"id,required" format:"uuid"`
-	CurrentBillableStatus CustomerListResponseCurrentBillableStatus `json:"current_billable_status,required"`
-	CustomFields          map[string]string                         `json:"custom_fields,required"`
-	CustomerConfig        CustomerListResponseCustomerConfig        `json:"customer_config,required"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string                 `json:"ingest_aliases,required"`
-	Name          string                   `json:"name,required"`
-	JSON          customerListResponseJSON `json:"-"`
+	Data     []CustomerListResponseData `json:"data,required"`
+	NextPage string                     `json:"next_page,required,nullable"`
+	JSON     customerListResponseJSON   `json:"-"`
 }
 
 // customerListResponseJSON contains the JSON metadata for the struct
 // [CustomerListResponse]
 type customerListResponseJSON struct {
+	Data        apijson.Field
+	NextPage    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerListResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerListResponseData struct {
+	// the Metronome ID of the customer
+	ID                    string                                        `json:"id,required" format:"uuid"`
+	CurrentBillableStatus CustomerListResponseDataCurrentBillableStatus `json:"current_billable_status,required"`
+	CustomFields          map[string]string                             `json:"custom_fields,required"`
+	CustomerConfig        CustomerListResponseDataCustomerConfig        `json:"customer_config,required"`
+	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
+	// alias) that can be used in usage events
+	ExternalID string `json:"external_id,required"`
+	// aliases for this customer that can be used instead of the Metronome customer ID
+	// in usage events
+	IngestAliases []string                     `json:"ingest_aliases,required"`
+	Name          string                       `json:"name,required"`
+	JSON          customerListResponseDataJSON `json:"-"`
+}
+
+// customerListResponseDataJSON contains the JSON metadata for the struct
+// [CustomerListResponseData]
+type customerListResponseDataJSON struct {
 	ID                    apijson.Field
 	CurrentBillableStatus apijson.Field
 	CustomFields          apijson.Field
@@ -337,52 +371,72 @@ type customerListResponseJSON struct {
 	ExtraFields           map[string]apijson.Field
 }
 
-func (r *CustomerListResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomerListResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CustomerListResponseCurrentBillableStatus struct {
-	Value       CustomerListResponseCurrentBillableStatusValue `json:"value,required"`
-	EffectiveAt time.Time                                      `json:"effective_at,nullable" format:"date-time"`
-	JSON        customerListResponseCurrentBillableStatusJSON  `json:"-"`
+func (r customerListResponseDataJSON) RawJSON() string {
+	return r.raw
 }
 
-// customerListResponseCurrentBillableStatusJSON contains the JSON metadata for the
-// struct [CustomerListResponseCurrentBillableStatus]
-type customerListResponseCurrentBillableStatusJSON struct {
+type CustomerListResponseDataCurrentBillableStatus struct {
+	Value       CustomerListResponseDataCurrentBillableStatusValue `json:"value,required"`
+	EffectiveAt time.Time                                          `json:"effective_at,nullable" format:"date-time"`
+	JSON        customerListResponseDataCurrentBillableStatusJSON  `json:"-"`
+}
+
+// customerListResponseDataCurrentBillableStatusJSON contains the JSON metadata for
+// the struct [CustomerListResponseDataCurrentBillableStatus]
+type customerListResponseDataCurrentBillableStatusJSON struct {
 	Value       apijson.Field
 	EffectiveAt apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *CustomerListResponseCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomerListResponseDataCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CustomerListResponseCurrentBillableStatusValue string
-
-const (
-	CustomerListResponseCurrentBillableStatusValueBillable   CustomerListResponseCurrentBillableStatusValue = "billable"
-	CustomerListResponseCurrentBillableStatusValueUnbillable CustomerListResponseCurrentBillableStatusValue = "unbillable"
-)
-
-type CustomerListResponseCustomerConfig struct {
-	// The Salesforce account ID for the customer
-	SalesforceAccountID string                                 `json:"salesforce_account_id,required,nullable"`
-	JSON                customerListResponseCustomerConfigJSON `json:"-"`
+func (r customerListResponseDataCurrentBillableStatusJSON) RawJSON() string {
+	return r.raw
 }
 
-// customerListResponseCustomerConfigJSON contains the JSON metadata for the struct
-// [CustomerListResponseCustomerConfig]
-type customerListResponseCustomerConfigJSON struct {
+type CustomerListResponseDataCurrentBillableStatusValue string
+
+const (
+	CustomerListResponseDataCurrentBillableStatusValueBillable   CustomerListResponseDataCurrentBillableStatusValue = "billable"
+	CustomerListResponseDataCurrentBillableStatusValueUnbillable CustomerListResponseDataCurrentBillableStatusValue = "unbillable"
+)
+
+func (r CustomerListResponseDataCurrentBillableStatusValue) IsKnown() bool {
+	switch r {
+	case CustomerListResponseDataCurrentBillableStatusValueBillable, CustomerListResponseDataCurrentBillableStatusValueUnbillable:
+		return true
+	}
+	return false
+}
+
+type CustomerListResponseDataCustomerConfig struct {
+	// The Salesforce account ID for the customer
+	SalesforceAccountID string                                     `json:"salesforce_account_id,required,nullable"`
+	JSON                customerListResponseDataCustomerConfigJSON `json:"-"`
+}
+
+// customerListResponseDataCustomerConfigJSON contains the JSON metadata for the
+// struct [CustomerListResponseDataCustomerConfig]
+type customerListResponseDataCustomerConfigJSON struct {
 	SalesforceAccountID apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
 
-func (r *CustomerListResponseCustomerConfig) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomerListResponseDataCustomerConfig) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerListResponseDataCustomerConfigJSON) RawJSON() string {
+	return r.raw
 }
 
 type CustomerArchiveResponse struct {
@@ -402,6 +456,10 @@ func (r *CustomerArchiveResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r customerArchiveResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerArchiveResponseData struct {
 	ID   string                          `json:"id,required" format:"uuid"`
 	JSON customerArchiveResponseDataJSON `json:"-"`
@@ -419,19 +477,21 @@ func (r *CustomerArchiveResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r customerArchiveResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerListBillableMetricsResponse struct {
-	ID      string                                  `json:"id,required" format:"uuid"`
-	Name    string                                  `json:"name,required"`
-	GroupBy []string                                `json:"group_by"`
-	JSON    customerListBillableMetricsResponseJSON `json:"-"`
+	Data     []CustomerListBillableMetricsResponseData `json:"data,required"`
+	NextPage string                                    `json:"next_page,required,nullable"`
+	JSON     customerListBillableMetricsResponseJSON   `json:"-"`
 }
 
 // customerListBillableMetricsResponseJSON contains the JSON metadata for the
 // struct [CustomerListBillableMetricsResponse]
 type customerListBillableMetricsResponseJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	GroupBy     apijson.Field
+	Data        apijson.Field
+	NextPage    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -440,16 +500,68 @@ func (r *CustomerListBillableMetricsResponse) UnmarshalJSON(data []byte) (err er
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r customerListBillableMetricsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerListBillableMetricsResponseData struct {
+	ID      string                                      `json:"id,required" format:"uuid"`
+	Name    string                                      `json:"name,required"`
+	GroupBy []string                                    `json:"group_by"`
+	JSON    customerListBillableMetricsResponseDataJSON `json:"-"`
+}
+
+// customerListBillableMetricsResponseDataJSON contains the JSON metadata for the
+// struct [CustomerListBillableMetricsResponseData]
+type customerListBillableMetricsResponseDataJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	GroupBy     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerListBillableMetricsResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerListBillableMetricsResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerListCostsResponse struct {
-	CreditTypes    map[string]CustomerListCostsResponseCreditType `json:"credit_types,required"`
-	EndTimestamp   time.Time                                      `json:"end_timestamp,required" format:"date-time"`
-	StartTimestamp time.Time                                      `json:"start_timestamp,required" format:"date-time"`
-	JSON           customerListCostsResponseJSON                  `json:"-"`
+	Data     []CustomerListCostsResponseData `json:"data,required"`
+	NextPage string                          `json:"next_page,required,nullable"`
+	JSON     customerListCostsResponseJSON   `json:"-"`
 }
 
 // customerListCostsResponseJSON contains the JSON metadata for the struct
 // [CustomerListCostsResponse]
 type customerListCostsResponseJSON struct {
+	Data        apijson.Field
+	NextPage    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerListCostsResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerListCostsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerListCostsResponseData struct {
+	CreditTypes    map[string]CustomerListCostsResponseDataCreditType `json:"credit_types,required"`
+	EndTimestamp   time.Time                                          `json:"end_timestamp,required" format:"date-time"`
+	StartTimestamp time.Time                                          `json:"start_timestamp,required" format:"date-time"`
+	JSON           customerListCostsResponseDataJSON                  `json:"-"`
+}
+
+// customerListCostsResponseDataJSON contains the JSON metadata for the struct
+// [CustomerListCostsResponseData]
+type customerListCostsResponseDataJSON struct {
 	CreditTypes    apijson.Field
 	EndTimestamp   apijson.Field
 	StartTimestamp apijson.Field
@@ -457,20 +569,24 @@ type customerListCostsResponseJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *CustomerListCostsResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomerListCostsResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CustomerListCostsResponseCreditType struct {
-	Cost              float64                                                 `json:"cost"`
-	LineItemBreakdown []CustomerListCostsResponseCreditTypesLineItemBreakdown `json:"line_item_breakdown"`
-	Name              string                                                  `json:"name"`
-	JSON              customerListCostsResponseCreditTypeJSON                 `json:"-"`
+func (r customerListCostsResponseDataJSON) RawJSON() string {
+	return r.raw
 }
 
-// customerListCostsResponseCreditTypeJSON contains the JSON metadata for the
-// struct [CustomerListCostsResponseCreditType]
-type customerListCostsResponseCreditTypeJSON struct {
+type CustomerListCostsResponseDataCreditType struct {
+	Cost              float64                                                     `json:"cost"`
+	LineItemBreakdown []CustomerListCostsResponseDataCreditTypesLineItemBreakdown `json:"line_item_breakdown"`
+	Name              string                                                      `json:"name"`
+	JSON              customerListCostsResponseDataCreditTypeJSON                 `json:"-"`
+}
+
+// customerListCostsResponseDataCreditTypeJSON contains the JSON metadata for the
+// struct [CustomerListCostsResponseDataCreditType]
+type customerListCostsResponseDataCreditTypeJSON struct {
 	Cost              apijson.Field
 	LineItemBreakdown apijson.Field
 	Name              apijson.Field
@@ -478,21 +594,26 @@ type customerListCostsResponseCreditTypeJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *CustomerListCostsResponseCreditType) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomerListCostsResponseDataCreditType) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CustomerListCostsResponseCreditTypesLineItemBreakdown struct {
-	Cost       float64                                                   `json:"cost,required"`
-	Name       string                                                    `json:"name,required"`
-	GroupKey   string                                                    `json:"group_key"`
-	GroupValue string                                                    `json:"group_value,nullable"`
-	JSON       customerListCostsResponseCreditTypesLineItemBreakdownJSON `json:"-"`
+func (r customerListCostsResponseDataCreditTypeJSON) RawJSON() string {
+	return r.raw
 }
 
-// customerListCostsResponseCreditTypesLineItemBreakdownJSON contains the JSON
-// metadata for the struct [CustomerListCostsResponseCreditTypesLineItemBreakdown]
-type customerListCostsResponseCreditTypesLineItemBreakdownJSON struct {
+type CustomerListCostsResponseDataCreditTypesLineItemBreakdown struct {
+	Cost       float64                                                       `json:"cost,required"`
+	Name       string                                                        `json:"name,required"`
+	GroupKey   string                                                        `json:"group_key"`
+	GroupValue string                                                        `json:"group_value,nullable"`
+	JSON       customerListCostsResponseDataCreditTypesLineItemBreakdownJSON `json:"-"`
+}
+
+// customerListCostsResponseDataCreditTypesLineItemBreakdownJSON contains the JSON
+// metadata for the struct
+// [CustomerListCostsResponseDataCreditTypesLineItemBreakdown]
+type customerListCostsResponseDataCreditTypesLineItemBreakdownJSON struct {
 	Cost        apijson.Field
 	Name        apijson.Field
 	GroupKey    apijson.Field
@@ -501,8 +622,12 @@ type customerListCostsResponseCreditTypesLineItemBreakdownJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *CustomerListCostsResponseCreditTypesLineItemBreakdown) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomerListCostsResponseDataCreditTypesLineItemBreakdown) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerListCostsResponseDataCreditTypesLineItemBreakdownJSON) RawJSON() string {
+	return r.raw
 }
 
 type CustomerSetNameResponse struct {
@@ -520,6 +645,10 @@ type customerSetNameResponseJSON struct {
 
 func (r *CustomerSetNameResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerSetNameResponseJSON) RawJSON() string {
+	return r.raw
 }
 
 type CustomerSetNameResponseData struct {
@@ -550,6 +679,10 @@ type customerSetNameResponseDataJSON struct {
 
 func (r *CustomerSetNameResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerSetNameResponseDataJSON) RawJSON() string {
+	return r.raw
 }
 
 type CustomerNewParams struct {
@@ -589,7 +722,16 @@ const (
 	CustomerNewParamsBillingConfigBillingProviderTypeAzureMarketplace CustomerNewParamsBillingConfigBillingProviderType = "azure_marketplace"
 	CustomerNewParamsBillingConfigBillingProviderTypeQuickbooksOnline CustomerNewParamsBillingConfigBillingProviderType = "quickbooks_online"
 	CustomerNewParamsBillingConfigBillingProviderTypeWorkday          CustomerNewParamsBillingConfigBillingProviderType = "workday"
+	CustomerNewParamsBillingConfigBillingProviderTypeGcpMarketplace   CustomerNewParamsBillingConfigBillingProviderType = "gcp_marketplace"
 )
+
+func (r CustomerNewParamsBillingConfigBillingProviderType) IsKnown() bool {
+	switch r {
+	case CustomerNewParamsBillingConfigBillingProviderTypeAwsMarketplace, CustomerNewParamsBillingConfigBillingProviderTypeStripe, CustomerNewParamsBillingConfigBillingProviderTypeNetsuite, CustomerNewParamsBillingConfigBillingProviderTypeCustom, CustomerNewParamsBillingConfigBillingProviderTypeAzureMarketplace, CustomerNewParamsBillingConfigBillingProviderTypeQuickbooksOnline, CustomerNewParamsBillingConfigBillingProviderTypeWorkday, CustomerNewParamsBillingConfigBillingProviderTypeGcpMarketplace:
+		return true
+	}
+	return false
+}
 
 type CustomerNewParamsBillingConfigAwsRegion string
 
@@ -621,12 +763,28 @@ const (
 	CustomerNewParamsBillingConfigAwsRegionUsWest2      CustomerNewParamsBillingConfigAwsRegion = "us-west-2"
 )
 
+func (r CustomerNewParamsBillingConfigAwsRegion) IsKnown() bool {
+	switch r {
+	case CustomerNewParamsBillingConfigAwsRegionAfSouth1, CustomerNewParamsBillingConfigAwsRegionApEast1, CustomerNewParamsBillingConfigAwsRegionApNortheast1, CustomerNewParamsBillingConfigAwsRegionApNortheast2, CustomerNewParamsBillingConfigAwsRegionApNortheast3, CustomerNewParamsBillingConfigAwsRegionApSouth1, CustomerNewParamsBillingConfigAwsRegionApSoutheast1, CustomerNewParamsBillingConfigAwsRegionApSoutheast2, CustomerNewParamsBillingConfigAwsRegionCaCentral1, CustomerNewParamsBillingConfigAwsRegionCnNorth1, CustomerNewParamsBillingConfigAwsRegionCnNorthwest1, CustomerNewParamsBillingConfigAwsRegionEuCentral1, CustomerNewParamsBillingConfigAwsRegionEuNorth1, CustomerNewParamsBillingConfigAwsRegionEuSouth1, CustomerNewParamsBillingConfigAwsRegionEuWest1, CustomerNewParamsBillingConfigAwsRegionEuWest2, CustomerNewParamsBillingConfigAwsRegionEuWest3, CustomerNewParamsBillingConfigAwsRegionMeSouth1, CustomerNewParamsBillingConfigAwsRegionSaEast1, CustomerNewParamsBillingConfigAwsRegionUsEast1, CustomerNewParamsBillingConfigAwsRegionUsEast2, CustomerNewParamsBillingConfigAwsRegionUsGovEast1, CustomerNewParamsBillingConfigAwsRegionUsGovWest1, CustomerNewParamsBillingConfigAwsRegionUsWest1, CustomerNewParamsBillingConfigAwsRegionUsWest2:
+		return true
+	}
+	return false
+}
+
 type CustomerNewParamsBillingConfigStripeCollectionMethod string
 
 const (
 	CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically CustomerNewParamsBillingConfigStripeCollectionMethod = "charge_automatically"
 	CustomerNewParamsBillingConfigStripeCollectionMethodSendInvoice         CustomerNewParamsBillingConfigStripeCollectionMethod = "send_invoice"
 )
+
+func (r CustomerNewParamsBillingConfigStripeCollectionMethod) IsKnown() bool {
+	switch r {
+	case CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically, CustomerNewParamsBillingConfigStripeCollectionMethodSendInvoice:
+		return true
+	}
+	return false
+}
 
 type CustomerListParams struct {
 	// Filter the customer list by customer_id. Up to 100 ids can be provided.

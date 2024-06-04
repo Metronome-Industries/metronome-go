@@ -1,9 +1,10 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -15,10 +16,11 @@ import (
 )
 
 // CustomerBillingConfigService contains methods and other services that help with
-// interacting with the metronome API. Note, unlike clients, this service does not
-// read variables from the environment automatically. You should not instantiate
-// this service directly, and instead use the [NewCustomerBillingConfigService]
-// method instead.
+// interacting with the metronome API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewCustomerBillingConfigService] method instead.
 type CustomerBillingConfigService struct {
 	Options []option.RequestOption
 }
@@ -36,6 +38,10 @@ func NewCustomerBillingConfigService(opts ...option.RequestOption) (r *CustomerB
 func (r *CustomerBillingConfigService) New(ctx context.Context, customerID string, billingProviderType CustomerBillingConfigNewParamsBillingProviderType, body CustomerBillingConfigNewParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s/billing-config/%v", customerID, billingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -44,6 +50,10 @@ func (r *CustomerBillingConfigService) New(ctx context.Context, customerID strin
 // Fetch the billing configuration for the given customer.
 func (r *CustomerBillingConfigService) Get(ctx context.Context, customerID string, billingProviderType CustomerBillingConfigGetParamsBillingProviderType, opts ...option.RequestOption) (res *CustomerBillingConfigGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s/billing-config/%v", customerID, billingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -54,6 +64,10 @@ func (r *CustomerBillingConfigService) Get(ctx context.Context, customerID strin
 func (r *CustomerBillingConfigService) Delete(ctx context.Context, customerID string, billingProviderType CustomerBillingConfigDeleteParamsBillingProviderType, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
 	path := fmt.Sprintf("customers/%s/billing-config/%v", customerID, billingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -74,6 +88,10 @@ type customerBillingConfigGetResponseJSON struct {
 
 func (r *CustomerBillingConfigGetResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerBillingConfigGetResponseJSON) RawJSON() string {
+	return r.raw
 }
 
 type CustomerBillingConfigGetResponseData struct {
@@ -118,6 +136,10 @@ func (r *CustomerBillingConfigGetResponseData) UnmarshalJSON(data []byte) (err e
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r customerBillingConfigGetResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerBillingConfigGetResponseDataAwsRegion string
 
 const (
@@ -148,6 +170,14 @@ const (
 	CustomerBillingConfigGetResponseDataAwsRegionUsWest2      CustomerBillingConfigGetResponseDataAwsRegion = "us-west-2"
 )
 
+func (r CustomerBillingConfigGetResponseDataAwsRegion) IsKnown() bool {
+	switch r {
+	case CustomerBillingConfigGetResponseDataAwsRegionAfSouth1, CustomerBillingConfigGetResponseDataAwsRegionApEast1, CustomerBillingConfigGetResponseDataAwsRegionApNortheast1, CustomerBillingConfigGetResponseDataAwsRegionApNortheast2, CustomerBillingConfigGetResponseDataAwsRegionApNortheast3, CustomerBillingConfigGetResponseDataAwsRegionApSouth1, CustomerBillingConfigGetResponseDataAwsRegionApSoutheast1, CustomerBillingConfigGetResponseDataAwsRegionApSoutheast2, CustomerBillingConfigGetResponseDataAwsRegionCaCentral1, CustomerBillingConfigGetResponseDataAwsRegionCnNorth1, CustomerBillingConfigGetResponseDataAwsRegionCnNorthwest1, CustomerBillingConfigGetResponseDataAwsRegionEuCentral1, CustomerBillingConfigGetResponseDataAwsRegionEuNorth1, CustomerBillingConfigGetResponseDataAwsRegionEuSouth1, CustomerBillingConfigGetResponseDataAwsRegionEuWest1, CustomerBillingConfigGetResponseDataAwsRegionEuWest2, CustomerBillingConfigGetResponseDataAwsRegionEuWest3, CustomerBillingConfigGetResponseDataAwsRegionMeSouth1, CustomerBillingConfigGetResponseDataAwsRegionSaEast1, CustomerBillingConfigGetResponseDataAwsRegionUsEast1, CustomerBillingConfigGetResponseDataAwsRegionUsEast2, CustomerBillingConfigGetResponseDataAwsRegionUsGovEast1, CustomerBillingConfigGetResponseDataAwsRegionUsGovWest1, CustomerBillingConfigGetResponseDataAwsRegionUsWest1, CustomerBillingConfigGetResponseDataAwsRegionUsWest2:
+		return true
+	}
+	return false
+}
+
 type CustomerBillingConfigGetResponseDataAzureSubscriptionStatus string
 
 const (
@@ -157,12 +187,28 @@ const (
 	CustomerBillingConfigGetResponseDataAzureSubscriptionStatusPendingFulfillmentStart CustomerBillingConfigGetResponseDataAzureSubscriptionStatus = "PendingFulfillmentStart"
 )
 
+func (r CustomerBillingConfigGetResponseDataAzureSubscriptionStatus) IsKnown() bool {
+	switch r {
+	case CustomerBillingConfigGetResponseDataAzureSubscriptionStatusSubscribed, CustomerBillingConfigGetResponseDataAzureSubscriptionStatusUnsubscribed, CustomerBillingConfigGetResponseDataAzureSubscriptionStatusSuspended, CustomerBillingConfigGetResponseDataAzureSubscriptionStatusPendingFulfillmentStart:
+		return true
+	}
+	return false
+}
+
 type CustomerBillingConfigGetResponseDataStripeCollectionMethod string
 
 const (
 	CustomerBillingConfigGetResponseDataStripeCollectionMethodChargeAutomatically CustomerBillingConfigGetResponseDataStripeCollectionMethod = "charge_automatically"
 	CustomerBillingConfigGetResponseDataStripeCollectionMethodSendInvoice         CustomerBillingConfigGetResponseDataStripeCollectionMethod = "send_invoice"
 )
+
+func (r CustomerBillingConfigGetResponseDataStripeCollectionMethod) IsKnown() bool {
+	switch r {
+	case CustomerBillingConfigGetResponseDataStripeCollectionMethodChargeAutomatically, CustomerBillingConfigGetResponseDataStripeCollectionMethodSendInvoice:
+		return true
+	}
+	return false
+}
 
 type CustomerBillingConfigNewParams struct {
 	// The customer ID in the billing provider's system. For Azure, this is the
@@ -187,7 +233,16 @@ const (
 	CustomerBillingConfigNewParamsBillingProviderTypeAzureMarketplace CustomerBillingConfigNewParamsBillingProviderType = "azure_marketplace"
 	CustomerBillingConfigNewParamsBillingProviderTypeQuickbooksOnline CustomerBillingConfigNewParamsBillingProviderType = "quickbooks_online"
 	CustomerBillingConfigNewParamsBillingProviderTypeWorkday          CustomerBillingConfigNewParamsBillingProviderType = "workday"
+	CustomerBillingConfigNewParamsBillingProviderTypeGcpMarketplace   CustomerBillingConfigNewParamsBillingProviderType = "gcp_marketplace"
 )
+
+func (r CustomerBillingConfigNewParamsBillingProviderType) IsKnown() bool {
+	switch r {
+	case CustomerBillingConfigNewParamsBillingProviderTypeAwsMarketplace, CustomerBillingConfigNewParamsBillingProviderTypeStripe, CustomerBillingConfigNewParamsBillingProviderTypeNetsuite, CustomerBillingConfigNewParamsBillingProviderTypeCustom, CustomerBillingConfigNewParamsBillingProviderTypeAzureMarketplace, CustomerBillingConfigNewParamsBillingProviderTypeQuickbooksOnline, CustomerBillingConfigNewParamsBillingProviderTypeWorkday, CustomerBillingConfigNewParamsBillingProviderTypeGcpMarketplace:
+		return true
+	}
+	return false
+}
 
 type CustomerBillingConfigNewParamsAwsRegion string
 
@@ -219,12 +274,28 @@ const (
 	CustomerBillingConfigNewParamsAwsRegionUsWest2      CustomerBillingConfigNewParamsAwsRegion = "us-west-2"
 )
 
+func (r CustomerBillingConfigNewParamsAwsRegion) IsKnown() bool {
+	switch r {
+	case CustomerBillingConfigNewParamsAwsRegionAfSouth1, CustomerBillingConfigNewParamsAwsRegionApEast1, CustomerBillingConfigNewParamsAwsRegionApNortheast1, CustomerBillingConfigNewParamsAwsRegionApNortheast2, CustomerBillingConfigNewParamsAwsRegionApNortheast3, CustomerBillingConfigNewParamsAwsRegionApSouth1, CustomerBillingConfigNewParamsAwsRegionApSoutheast1, CustomerBillingConfigNewParamsAwsRegionApSoutheast2, CustomerBillingConfigNewParamsAwsRegionCaCentral1, CustomerBillingConfigNewParamsAwsRegionCnNorth1, CustomerBillingConfigNewParamsAwsRegionCnNorthwest1, CustomerBillingConfigNewParamsAwsRegionEuCentral1, CustomerBillingConfigNewParamsAwsRegionEuNorth1, CustomerBillingConfigNewParamsAwsRegionEuSouth1, CustomerBillingConfigNewParamsAwsRegionEuWest1, CustomerBillingConfigNewParamsAwsRegionEuWest2, CustomerBillingConfigNewParamsAwsRegionEuWest3, CustomerBillingConfigNewParamsAwsRegionMeSouth1, CustomerBillingConfigNewParamsAwsRegionSaEast1, CustomerBillingConfigNewParamsAwsRegionUsEast1, CustomerBillingConfigNewParamsAwsRegionUsEast2, CustomerBillingConfigNewParamsAwsRegionUsGovEast1, CustomerBillingConfigNewParamsAwsRegionUsGovWest1, CustomerBillingConfigNewParamsAwsRegionUsWest1, CustomerBillingConfigNewParamsAwsRegionUsWest2:
+		return true
+	}
+	return false
+}
+
 type CustomerBillingConfigNewParamsStripeCollectionMethod string
 
 const (
 	CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically CustomerBillingConfigNewParamsStripeCollectionMethod = "charge_automatically"
 	CustomerBillingConfigNewParamsStripeCollectionMethodSendInvoice         CustomerBillingConfigNewParamsStripeCollectionMethod = "send_invoice"
 )
+
+func (r CustomerBillingConfigNewParamsStripeCollectionMethod) IsKnown() bool {
+	switch r {
+	case CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically, CustomerBillingConfigNewParamsStripeCollectionMethodSendInvoice:
+		return true
+	}
+	return false
+}
 
 type CustomerBillingConfigGetParamsBillingProviderType string
 
@@ -236,7 +307,16 @@ const (
 	CustomerBillingConfigGetParamsBillingProviderTypeAzureMarketplace CustomerBillingConfigGetParamsBillingProviderType = "azure_marketplace"
 	CustomerBillingConfigGetParamsBillingProviderTypeQuickbooksOnline CustomerBillingConfigGetParamsBillingProviderType = "quickbooks_online"
 	CustomerBillingConfigGetParamsBillingProviderTypeWorkday          CustomerBillingConfigGetParamsBillingProviderType = "workday"
+	CustomerBillingConfigGetParamsBillingProviderTypeGcpMarketplace   CustomerBillingConfigGetParamsBillingProviderType = "gcp_marketplace"
 )
+
+func (r CustomerBillingConfigGetParamsBillingProviderType) IsKnown() bool {
+	switch r {
+	case CustomerBillingConfigGetParamsBillingProviderTypeAwsMarketplace, CustomerBillingConfigGetParamsBillingProviderTypeStripe, CustomerBillingConfigGetParamsBillingProviderTypeNetsuite, CustomerBillingConfigGetParamsBillingProviderTypeCustom, CustomerBillingConfigGetParamsBillingProviderTypeAzureMarketplace, CustomerBillingConfigGetParamsBillingProviderTypeQuickbooksOnline, CustomerBillingConfigGetParamsBillingProviderTypeWorkday, CustomerBillingConfigGetParamsBillingProviderTypeGcpMarketplace:
+		return true
+	}
+	return false
+}
 
 type CustomerBillingConfigDeleteParamsBillingProviderType string
 
@@ -248,4 +328,13 @@ const (
 	CustomerBillingConfigDeleteParamsBillingProviderTypeAzureMarketplace CustomerBillingConfigDeleteParamsBillingProviderType = "azure_marketplace"
 	CustomerBillingConfigDeleteParamsBillingProviderTypeQuickbooksOnline CustomerBillingConfigDeleteParamsBillingProviderType = "quickbooks_online"
 	CustomerBillingConfigDeleteParamsBillingProviderTypeWorkday          CustomerBillingConfigDeleteParamsBillingProviderType = "workday"
+	CustomerBillingConfigDeleteParamsBillingProviderTypeGcpMarketplace   CustomerBillingConfigDeleteParamsBillingProviderType = "gcp_marketplace"
 )
+
+func (r CustomerBillingConfigDeleteParamsBillingProviderType) IsKnown() bool {
+	switch r {
+	case CustomerBillingConfigDeleteParamsBillingProviderTypeAwsMarketplace, CustomerBillingConfigDeleteParamsBillingProviderTypeStripe, CustomerBillingConfigDeleteParamsBillingProviderTypeNetsuite, CustomerBillingConfigDeleteParamsBillingProviderTypeCustom, CustomerBillingConfigDeleteParamsBillingProviderTypeAzureMarketplace, CustomerBillingConfigDeleteParamsBillingProviderTypeQuickbooksOnline, CustomerBillingConfigDeleteParamsBillingProviderTypeWorkday, CustomerBillingConfigDeleteParamsBillingProviderTypeGcpMarketplace:
+		return true
+	}
+	return false
+}

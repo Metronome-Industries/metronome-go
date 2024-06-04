@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome
 
@@ -8,7 +8,7 @@ import (
 )
 
 type IngestParams struct {
-	Body param.Field[[]IngestParamsBody] `json:"body,required"`
+	Body []IngestParamsBody `json:"body,required"`
 }
 
 func (r IngestParams) MarshalJSON() (data []byte, err error) {

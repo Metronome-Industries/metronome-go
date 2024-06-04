@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome_test
 
@@ -26,17 +26,17 @@ func TestMetronomeIngest(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.Ingest(context.TODO(), metronome.IngestParams{
-		Body: metronome.F([]metronome.IngestParamsBody{{
-			TransactionID: metronome.F("2021-01-01T00:00:00+00:00_cluster42"),
+		Body: []metronome.IngestParamsBody{{
+			TransactionID: metronome.F("2021-01-01T00:00:00Z_cluster42"),
 			CustomerID:    metronome.F("team@example.com"),
 			EventType:     metronome.F("heartbeat"),
-			Timestamp:     metronome.F("2021-01-01T00:00:00+00:00"),
+			Timestamp:     metronome.F("2021-01-01T00:00:00Z"),
 			Properties: metronome.F(map[string]interface{}{
 				"cluster_id":  "bar",
 				"cpu_seconds": "bar",
 				"region":      "bar",
 			}),
-		}}),
+		}},
 	})
 	if err != nil {
 		var apierr *metronome.Error

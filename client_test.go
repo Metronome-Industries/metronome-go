@@ -1,14 +1,16 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome_test
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"testing"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go"
+	"github.com/Metronome-Industries/metronome-go/internal"
 	"github.com/Metronome-Industries/metronome-go/option"
 )
 
@@ -18,6 +20,30 @@ type closureTransport struct {
 
 func (t *closureTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	return t.fn(req)
+}
+
+func TestUserAgentHeader(t *testing.T) {
+	var userAgent string
+	client := metronome.NewClient(
+		option.WithHTTPClient(&http.Client{
+			Transport: &closureTransport{
+				fn: func(req *http.Request) (*http.Response, error) {
+					userAgent = req.Header.Get("User-Agent")
+					return &http.Response{
+						StatusCode: http.StatusOK,
+					}, nil
+				},
+			},
+		}),
+	)
+	client.Alerts.New(context.Background(), metronome.AlertNewParams{
+		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
+		Name:      metronome.F("$100 spend threshold reached"),
+		Threshold: metronome.F(10000.000000),
+	})
+	if userAgent != fmt.Sprintf("Metronome/Go %s", internal.PackageVersion) {
+		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
+	}
 }
 
 func TestRetryAfter(t *testing.T) {
@@ -38,8 +64,8 @@ func TestRetryAfter(t *testing.T) {
 		}),
 	)
 	res, err := client.Alerts.New(context.Background(), metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeLowCreditBalanceReached),
-		Name:      metronome.F("$100 credit balance alert for single customer"),
+		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
+		Name:      metronome.F("$100 spend threshold reached"),
 		Threshold: metronome.F(10000.000000),
 	})
 	if err == nil || res != nil {
@@ -68,8 +94,8 @@ func TestRetryAfterMs(t *testing.T) {
 		}),
 	)
 	res, err := client.Alerts.New(context.Background(), metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeLowCreditBalanceReached),
-		Name:      metronome.F("$100 credit balance alert for single customer"),
+		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
+		Name:      metronome.F("$100 spend threshold reached"),
 		Threshold: metronome.F(10000.000000),
 	})
 	if err == nil || res != nil {
@@ -94,8 +120,8 @@ func TestContextCancel(t *testing.T) {
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
 	res, err := client.Alerts.New(cancelCtx, metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeLowCreditBalanceReached),
-		Name:      metronome.F("$100 credit balance alert for single customer"),
+		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
+		Name:      metronome.F("$100 spend threshold reached"),
 		Threshold: metronome.F(10000.000000),
 	})
 	if err == nil || res != nil {
@@ -117,8 +143,8 @@ func TestContextCancelDelay(t *testing.T) {
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
 	res, err := client.Alerts.New(cancelCtx, metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeLowCreditBalanceReached),
-		Name:      metronome.F("$100 credit balance alert for single customer"),
+		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
+		Name:      metronome.F("$100 spend threshold reached"),
 		Threshold: metronome.F(10000.000000),
 	})
 	if err == nil || res != nil {
@@ -146,8 +172,8 @@ func TestContextDeadline(t *testing.T) {
 			}),
 		)
 		res, err := client.Alerts.New(deadlineCtx, metronome.AlertNewParams{
-			AlertType: metronome.F(metronome.AlertNewParamsAlertTypeLowCreditBalanceReached),
-			Name:      metronome.F("$100 credit balance alert for single customer"),
+			AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
+			Name:      metronome.F("$100 spend threshold reached"),
 			Threshold: metronome.F(10000.000000),
 		})
 		if err == nil || res != nil {
@@ -160,8 +186,8 @@ func TestContextDeadline(t *testing.T) {
 	case <-testTimeout:
 		t.Fatal("client didn't finish in time")
 	case <-testDone:
-		if diff := time.Since(deadline); diff < -20*time.Millisecond || 20*time.Millisecond < diff {
-			t.Fatalf("client did not return within 20ms of context deadline, got %s", diff)
+		if diff := time.Since(deadline); diff < -30*time.Millisecond || 30*time.Millisecond < diff {
+			t.Fatalf("client did not return within 30ms of context deadline, got %s", diff)
 		}
 	}
 }

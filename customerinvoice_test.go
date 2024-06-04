@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package metronome_test
 
@@ -14,7 +14,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/option"
 )
 
-func TestCustomerInvoiceGet(t *testing.T) {
+func TestCustomerInvoiceGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,6 +30,9 @@ func TestCustomerInvoiceGet(t *testing.T) {
 		context.TODO(),
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		"6a37bb88-8538-48c5-b37b-a41c836328bd",
+		metronome.CustomerInvoiceGetParams{
+			SkipZeroQtyLineItems: metronome.F(true),
+		},
 	)
 	if err != nil {
 		var apierr *metronome.Error
@@ -56,13 +59,14 @@ func TestCustomerInvoiceListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		metronome.CustomerInvoiceListParams{
-			CreditTypeID: metronome.F("string"),
-			EndingBefore: metronome.F(time.Now()),
-			Limit:        metronome.F(int64(1)),
-			NextPage:     metronome.F("string"),
-			Sort:         metronome.F(metronome.CustomerInvoiceListParamsSortDateAsc),
-			StartingOn:   metronome.F(time.Now()),
-			Status:       metronome.F("string"),
+			CreditTypeID:         metronome.F("string"),
+			EndingBefore:         metronome.F(time.Now()),
+			Limit:                metronome.F(int64(1)),
+			NextPage:             metronome.F("string"),
+			SkipZeroQtyLineItems: metronome.F(true),
+			Sort:                 metronome.F(metronome.CustomerInvoiceListParamsSortDateAsc),
+			StartingOn:           metronome.F(time.Now()),
+			Status:               metronome.F("string"),
 		},
 	)
 	if err != nil {
