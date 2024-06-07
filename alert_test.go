@@ -11,6 +11,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestAlertNewWithOptionalParams(t *testing.T) {
@@ -75,7 +76,9 @@ func TestAlertArchive(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Alerts.Archive(context.TODO(), metronome.AlertArchiveParams{
-		ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
+		ID: shared.IDParam{
+			ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
+		},
 	})
 	if err != nil {
 		var apierr *metronome.Error

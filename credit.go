@@ -13,6 +13,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // CreditService contains methods and other services that help with interacting
@@ -77,7 +78,7 @@ func (r *CreditService) VoidGrant(ctx context.Context, body CreditVoidGrantParam
 }
 
 type CreditNewGrantResponse struct {
-	Data CreditNewGrantResponseData `json:"data,required"`
+	Data shared.ID                  `json:"data,required"`
 	JSON creditNewGrantResponseJSON `json:"-"`
 }
 
@@ -97,29 +98,8 @@ func (r creditNewGrantResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type CreditNewGrantResponseData struct {
-	ID   string                         `json:"id,required" format:"uuid"`
-	JSON creditNewGrantResponseDataJSON `json:"-"`
-}
-
-// creditNewGrantResponseDataJSON contains the JSON metadata for the struct
-// [CreditNewGrantResponseData]
-type creditNewGrantResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditNewGrantResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditNewGrantResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
 type CreditEditGrantResponse struct {
-	Data CreditEditGrantResponseData `json:"data,required"`
+	Data shared.ID                   `json:"data,required"`
 	JSON creditEditGrantResponseJSON `json:"-"`
 }
 
@@ -136,27 +116,6 @@ func (r *CreditEditGrantResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r creditEditGrantResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type CreditEditGrantResponseData struct {
-	ID   string                          `json:"id,required" format:"uuid"`
-	JSON creditEditGrantResponseDataJSON `json:"-"`
-}
-
-// creditEditGrantResponseDataJSON contains the JSON metadata for the struct
-// [CreditEditGrantResponseData]
-type creditEditGrantResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditEditGrantResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditEditGrantResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -729,7 +688,7 @@ func (r creditListGrantsResponseDataProductJSON) RawJSON() string {
 }
 
 type CreditVoidGrantResponse struct {
-	Data CreditVoidGrantResponseData `json:"data,required"`
+	Data shared.ID                   `json:"data,required"`
 	JSON creditVoidGrantResponseJSON `json:"-"`
 }
 
@@ -746,27 +705,6 @@ func (r *CreditVoidGrantResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r creditVoidGrantResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type CreditVoidGrantResponseData struct {
-	ID   string                          `json:"id,required" format:"uuid"`
-	JSON creditVoidGrantResponseDataJSON `json:"-"`
-}
-
-// creditVoidGrantResponseDataJSON contains the JSON metadata for the struct
-// [CreditVoidGrantResponseData]
-type creditVoidGrantResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditVoidGrantResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditVoidGrantResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -865,37 +803,67 @@ func (r CreditNewGrantParamsRolloverSettingsRolloverAmount) implementsCreditNewG
 
 // Specify how much to rollover to the rollover credit grant
 //
-// Satisfied by [CreditNewGrantParamsRolloverSettingsRolloverAmountObject],
-// [CreditNewGrantParamsRolloverSettingsRolloverAmountObject],
+// Satisfied by
+// [CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentage],
+// [CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmount],
 // [CreditNewGrantParamsRolloverSettingsRolloverAmount].
 type CreditNewGrantParamsRolloverSettingsRolloverAmountUnion interface {
 	implementsCreditNewGrantParamsRolloverSettingsRolloverAmountUnion()
 }
 
-type CreditNewGrantParamsRolloverSettingsRolloverAmountObject struct {
+type CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentage struct {
 	// Rollover up to a percentage of the original credit grant amount.
-	Type param.Field[CreditNewGrantParamsRolloverSettingsRolloverAmountObjectType] `json:"type,required"`
+	Type param.Field[CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentageType] `json:"type,required"`
 	// The maximum percentage (0-1) of the original credit grant to rollover.
 	Value param.Field[float64] `json:"value,required"`
 }
 
-func (r CreditNewGrantParamsRolloverSettingsRolloverAmountObject) MarshalJSON() (data []byte, err error) {
+func (r CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentage) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r CreditNewGrantParamsRolloverSettingsRolloverAmountObject) implementsCreditNewGrantParamsRolloverSettingsRolloverAmountUnion() {
+func (r CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentage) implementsCreditNewGrantParamsRolloverSettingsRolloverAmountUnion() {
 }
 
 // Rollover up to a percentage of the original credit grant amount.
-type CreditNewGrantParamsRolloverSettingsRolloverAmountObjectType string
+type CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentageType string
 
 const (
-	CreditNewGrantParamsRolloverSettingsRolloverAmountObjectTypeMaxPercentage CreditNewGrantParamsRolloverSettingsRolloverAmountObjectType = "MAX_PERCENTAGE"
+	CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentageTypeMaxPercentage CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentageType = "MAX_PERCENTAGE"
 )
 
-func (r CreditNewGrantParamsRolloverSettingsRolloverAmountObjectType) IsKnown() bool {
+func (r CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentageType) IsKnown() bool {
 	switch r {
-	case CreditNewGrantParamsRolloverSettingsRolloverAmountObjectTypeMaxPercentage:
+	case CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentageTypeMaxPercentage:
+		return true
+	}
+	return false
+}
+
+type CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmount struct {
+	// Rollover up to a fixed amount of the original credit grant amount.
+	Type param.Field[CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmountType] `json:"type,required"`
+	// The maximum amount to rollover.
+	Value param.Field[float64] `json:"value,required"`
+}
+
+func (r CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmount) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmount) implementsCreditNewGrantParamsRolloverSettingsRolloverAmountUnion() {
+}
+
+// Rollover up to a fixed amount of the original credit grant amount.
+type CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmountType string
+
+const (
+	CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmountTypeMaxAmount CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmountType = "MAX_AMOUNT"
+)
+
+func (r CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmountType) IsKnown() bool {
+	switch r {
+	case CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxAmountTypeMaxAmount:
 		return true
 	}
 	return false

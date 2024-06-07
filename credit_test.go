@@ -50,8 +50,8 @@ func TestCreditNewGrantWithOptionalParams(t *testing.T) {
 		RolloverSettings: metronome.F(metronome.CreditNewGrantParamsRolloverSettings{
 			ExpiresAt: metronome.F(time.Now()),
 			Priority:  metronome.F(0.000000),
-			RolloverAmount: metronome.F[metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountUnion](metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountObject{
-				Type:  metronome.F(metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountObjectTypeMaxPercentage),
+			RolloverAmount: metronome.F[metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountUnion](metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentage{
+				Type:  metronome.F(metronome.CreditNewGrantParamsRolloverSettingsRolloverAmountRolloverAmountMaxPercentageTypeMaxPercentage),
 				Value: metronome.F(0.000000),
 			}),
 		}),

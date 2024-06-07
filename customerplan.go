@@ -15,6 +15,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // CustomerPlanService contains methods and other services that help with
@@ -231,7 +232,7 @@ func (r customerPlanListResponseDataTrialInfoSpendingCapsCreditTypeJSON) RawJSON
 }
 
 type CustomerPlanAddResponse struct {
-	Data CustomerPlanAddResponseData `json:"data,required"`
+	Data shared.ID                   `json:"data,required"`
 	JSON customerPlanAddResponseJSON `json:"-"`
 }
 
@@ -248,27 +249,6 @@ func (r *CustomerPlanAddResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r customerPlanAddResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type CustomerPlanAddResponseData struct {
-	ID   string                          `json:"id,required" format:"uuid"`
-	JSON customerPlanAddResponseDataJSON `json:"-"`
-}
-
-// customerPlanAddResponseDataJSON contains the JSON metadata for the struct
-// [CustomerPlanAddResponseData]
-type customerPlanAddResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerPlanAddResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerPlanAddResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 

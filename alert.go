@@ -10,6 +10,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // AlertService contains methods and other services that help with interacting with
@@ -48,7 +49,7 @@ func (r *AlertService) Archive(ctx context.Context, body AlertArchiveParams, opt
 }
 
 type AlertNewResponse struct {
-	Data AlertNewResponseData `json:"data,required"`
+	Data shared.ID            `json:"data,required"`
 	JSON alertNewResponseJSON `json:"-"`
 }
 
@@ -68,29 +69,8 @@ func (r alertNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type AlertNewResponseData struct {
-	ID   string                   `json:"id,required" format:"uuid"`
-	JSON alertNewResponseDataJSON `json:"-"`
-}
-
-// alertNewResponseDataJSON contains the JSON metadata for the struct
-// [AlertNewResponseData]
-type alertNewResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AlertNewResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r alertNewResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
 type AlertArchiveResponse struct {
-	Data AlertArchiveResponseData `json:"data,required"`
+	Data shared.ID                `json:"data,required"`
 	JSON alertArchiveResponseJSON `json:"-"`
 }
 
@@ -107,27 +87,6 @@ func (r *AlertArchiveResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r alertArchiveResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AlertArchiveResponseData struct {
-	ID   string                       `json:"id,required" format:"uuid"`
-	JSON alertArchiveResponseDataJSON `json:"-"`
-}
-
-// alertArchiveResponseDataJSON contains the JSON metadata for the struct
-// [AlertArchiveResponseData]
-type alertArchiveResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AlertArchiveResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r alertArchiveResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -233,9 +192,9 @@ func (r AlertNewParamsGroupKeyFilter) MarshalJSON() (data []byte, err error) {
 }
 
 type AlertArchiveParams struct {
-	ID param.Field[string] `json:"id,required" format:"uuid"`
+	ID shared.IDParam `json:"id,required"`
 }
 
 func (r AlertArchiveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.ID)
 }

@@ -1,3 +1,11 @@
+# Shared Params Types
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#IDParam">IDParam</a>
+
+# Shared Response Types
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ID">ID</a>
+
 # metronome
 
 Methods:
@@ -20,6 +28,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerAlert">CustomerAlert</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerAlertGetResponse">CustomerAlertGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerAlertListResponse">CustomerAlertListResponse</a>
 
@@ -33,6 +42,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PlanDetail">PlanDetail</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PlanListResponse">PlanListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PlanGetDetailsResponse">PlanGetDetailsResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PlanListChargesResponse">PlanListChargesResponse</a>
@@ -77,6 +87,8 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#Customer">Customer</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerDetail">CustomerDetail</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerNewResponse">CustomerNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerGetResponse">CustomerGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerListResponse">CustomerListResponse</a>
@@ -117,6 +129,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#Invoice">Invoice</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerInvoiceGetResponse">CustomerInvoiceGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerInvoiceListResponse">CustomerInvoiceListResponse</a>
 
