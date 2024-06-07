@@ -963,6 +963,8 @@ func (r CreditListEntriesParams) URLQuery() (v url.Values) {
 }
 
 type CreditListGrantsParams struct {
+	// Max number of results that should be returned
+	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.
 	NextPage param.Field[string] `query:"next_page"`
 	// An array of credit grant IDs. If this is specified, neither credit_type_ids nor

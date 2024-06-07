@@ -133,6 +133,7 @@ func TestCreditListGrantsWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Credits.ListGrants(context.TODO(), metronome.CreditListGrantsParams{
+		Limit:             metronome.F(int64(1)),
 		NextPage:          metronome.F("string"),
 		CreditGrantIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 		CreditTypeIDs:     metronome.F([]string{"2714e483-4ff1-48e4-9e25-ac732e8f24f2"}),
