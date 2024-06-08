@@ -183,10 +183,10 @@ func (r customerPlanListResponseDataTrialInfoJSON) RawJSON() string {
 }
 
 type CustomerPlanListResponseDataTrialInfoSpendingCap struct {
-	Amount          float64                                                     `json:"amount,required"`
-	AmountRemaining float64                                                     `json:"amount_remaining,required"`
-	CreditType      CustomerPlanListResponseDataTrialInfoSpendingCapsCreditType `json:"credit_type,required"`
-	JSON            customerPlanListResponseDataTrialInfoSpendingCapJSON        `json:"-"`
+	Amount          float64                                              `json:"amount,required"`
+	AmountRemaining float64                                              `json:"amount_remaining,required"`
+	CreditType      shared.CreditType                                    `json:"credit_type,required"`
+	JSON            customerPlanListResponseDataTrialInfoSpendingCapJSON `json:"-"`
 }
 
 // customerPlanListResponseDataTrialInfoSpendingCapJSON contains the JSON metadata
@@ -204,30 +204,6 @@ func (r *CustomerPlanListResponseDataTrialInfoSpendingCap) UnmarshalJSON(data []
 }
 
 func (r customerPlanListResponseDataTrialInfoSpendingCapJSON) RawJSON() string {
-	return r.raw
-}
-
-type CustomerPlanListResponseDataTrialInfoSpendingCapsCreditType struct {
-	ID   string                                                          `json:"id,required" format:"uuid"`
-	Name string                                                          `json:"name,required"`
-	JSON customerPlanListResponseDataTrialInfoSpendingCapsCreditTypeJSON `json:"-"`
-}
-
-// customerPlanListResponseDataTrialInfoSpendingCapsCreditTypeJSON contains the
-// JSON metadata for the struct
-// [CustomerPlanListResponseDataTrialInfoSpendingCapsCreditType]
-type customerPlanListResponseDataTrialInfoSpendingCapsCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerPlanListResponseDataTrialInfoSpendingCapsCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerPlanListResponseDataTrialInfoSpendingCapsCreditTypeJSON) RawJSON() string {
 	return r.raw
 }
 

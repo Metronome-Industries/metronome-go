@@ -115,6 +115,9 @@ type AlertNewParams struct {
 	// Scopes alert evaluation to a specific presentation group key on individual line
 	// items. Only present for spend alerts.
 	GroupKeyFilter param.Field[AlertNewParamsGroupKeyFilter] `json:"group_key_filter"`
+	// Only supported for invoice_total_reached alerts. A list of invoice types to
+	// evaluate.
+	InvoiceTypesFilter param.Field[[]string] `json:"invoice_types_filter"`
 	// If provided, will create this alert for this specific plan. To create an alert
 	// for all customers, do not specify `customer_id` or `plan_id`.
 	PlanID param.Field[string] `json:"plan_id" format:"uuid"`
@@ -144,11 +147,12 @@ const (
 	AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached AlertNewParamsAlertType = "low_remaining_days_for_contract_credit_segment_reached"
 	AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached        AlertNewParamsAlertType = "low_remaining_contract_credit_balance_reached"
 	AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached     AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
+	AlertNewParamsAlertTypeInvoiceTotalReached                             AlertNewParamsAlertType = "invoice_total_reached"
 )
 
 func (r AlertNewParamsAlertType) IsKnown() bool {
 	switch r {
-	case AlertNewParamsAlertTypeLowCreditBalanceReached, AlertNewParamsAlertTypeSpendThresholdReached, AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached, AlertNewParamsAlertTypeLowRemainingDaysInPlanReached, AlertNewParamsAlertTypeLowRemainingCreditPercentageReached, AlertNewParamsAlertTypeUsageThresholdReached, AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached, AlertNewParamsAlertTypeLowRemainingCommitBalanceReached, AlertNewParamsAlertTypeLowRemainingCommitPercentageReached, AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached, AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached, AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached:
+	case AlertNewParamsAlertTypeLowCreditBalanceReached, AlertNewParamsAlertTypeSpendThresholdReached, AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached, AlertNewParamsAlertTypeLowRemainingDaysInPlanReached, AlertNewParamsAlertTypeLowRemainingCreditPercentageReached, AlertNewParamsAlertTypeUsageThresholdReached, AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached, AlertNewParamsAlertTypeLowRemainingCommitBalanceReached, AlertNewParamsAlertTypeLowRemainingCommitPercentageReached, AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached, AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached, AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached, AlertNewParamsAlertTypeInvoiceTotalReached:
 		return true
 	}
 	return false

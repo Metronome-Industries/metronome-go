@@ -13,6 +13,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // CustomerAlertService contains methods and other services that help with
@@ -99,13 +100,16 @@ type CustomerAlertAlert struct {
 	// Type of the alert
 	Type CustomerAlertAlertType `json:"type,required"`
 	// Timestamp for when the alert was last updated
-	UpdatedAt  time.Time                    `json:"updated_at,required" format:"date-time"`
-	CreditType CustomerAlertAlertCreditType `json:"credit_type,nullable"`
+	UpdatedAt  time.Time         `json:"updated_at,required" format:"date-time"`
+	CreditType shared.CreditType `json:"credit_type,nullable"`
 	// A list of custom field filters for alert types that support advanced filtering
 	CustomFieldFilters []CustomerAlertAlertCustomFieldFilter `json:"custom_field_filters"`
 	// Scopes alert evaluation to a specific presentation group key on individual line
 	// items. Only present for spend alerts.
 	GroupKeyFilter CustomerAlertAlertGroupKeyFilter `json:"group_key_filter"`
+	// Only supported for invoice_total_reached alerts. A list of invoice types to
+	// evaluate.
+	InvoiceTypesFilter []string `json:"invoice_types_filter"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -125,6 +129,7 @@ type customerAlertAlertJSON struct {
 	CreditType         apijson.Field
 	CustomFieldFilters apijson.Field
 	GroupKeyFilter     apijson.Field
+	InvoiceTypesFilter apijson.Field
 	UniquenessKey      apijson.Field
 	raw                string
 	ExtraFields        map[string]apijson.Field
@@ -171,37 +176,15 @@ const (
 	CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached CustomerAlertAlertType = "low_remaining_days_for_contract_credit_segment_reached"
 	CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached        CustomerAlertAlertType = "low_remaining_contract_credit_balance_reached"
 	CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached     CustomerAlertAlertType = "low_remaining_contract_credit_percentage_reached"
+	CustomerAlertAlertTypeInvoiceTotalReached                             CustomerAlertAlertType = "invoice_total_reached"
 )
 
 func (r CustomerAlertAlertType) IsKnown() bool {
 	switch r {
-	case CustomerAlertAlertTypeLowCreditBalanceReached, CustomerAlertAlertTypeSpendThresholdReached, CustomerAlertAlertTypeMonthlyInvoiceTotalSpendThresholdReached, CustomerAlertAlertTypeLowRemainingDaysInPlanReached, CustomerAlertAlertTypeLowRemainingCreditPercentageReached, CustomerAlertAlertTypeUsageThresholdReached, CustomerAlertAlertTypeLowRemainingDaysForCommitSegmentReached, CustomerAlertAlertTypeLowRemainingCommitBalanceReached, CustomerAlertAlertTypeLowRemainingCommitPercentageReached, CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached, CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached, CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached:
+	case CustomerAlertAlertTypeLowCreditBalanceReached, CustomerAlertAlertTypeSpendThresholdReached, CustomerAlertAlertTypeMonthlyInvoiceTotalSpendThresholdReached, CustomerAlertAlertTypeLowRemainingDaysInPlanReached, CustomerAlertAlertTypeLowRemainingCreditPercentageReached, CustomerAlertAlertTypeUsageThresholdReached, CustomerAlertAlertTypeLowRemainingDaysForCommitSegmentReached, CustomerAlertAlertTypeLowRemainingCommitBalanceReached, CustomerAlertAlertTypeLowRemainingCommitPercentageReached, CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached, CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached, CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached, CustomerAlertAlertTypeInvoiceTotalReached:
 		return true
 	}
 	return false
-}
-
-type CustomerAlertAlertCreditType struct {
-	ID   string                           `json:"id,required" format:"uuid"`
-	Name string                           `json:"name,required"`
-	JSON customerAlertAlertCreditTypeJSON `json:"-"`
-}
-
-// customerAlertAlertCreditTypeJSON contains the JSON metadata for the struct
-// [CustomerAlertAlertCreditType]
-type customerAlertAlertCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerAlertAlertCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerAlertAlertCreditTypeJSON) RawJSON() string {
-	return r.raw
 }
 
 type CustomerAlertAlertCustomFieldFilter struct {

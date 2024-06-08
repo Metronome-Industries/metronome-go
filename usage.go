@@ -43,6 +43,19 @@ func (r *UsageService) List(ctx context.Context, params UsageListParams, opts ..
 	return
 }
 
+// Send usage events to Metronome. The body of this request is expected to be a
+// JSON array of between 1 and 100 usage events. Compressed request bodies are
+// supported with a `Content-Encoding: gzip` header. See
+// [Getting usage into Metronome](https://docs.metronome.com/getting-usage-data-into-metronome/overview)
+// to learn more about usage events.
+func (r *UsageService) Ingest(ctx context.Context, body UsageIngestParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	path := "ingest"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return
+}
+
 // Fetch aggregated usage data for the specified customer, billable-metric, and
 // optional group, broken into intervals of the specified length.
 func (r *UsageService) ListWithGroups(ctx context.Context, params UsageListWithGroupsParams, opts ...option.RequestOption) (res *UsageListWithGroupsResponse, err error) {
@@ -234,6 +247,27 @@ type UsageListParamsBillableMetricsGroupBy struct {
 }
 
 func (r UsageListParamsBillableMetricsGroupBy) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type UsageIngestParams struct {
+	Usage []UsageIngestParamsUsage `json:"usage,required"`
+}
+
+func (r UsageIngestParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.Usage)
+}
+
+type UsageIngestParamsUsage struct {
+	CustomerID param.Field[string] `json:"customer_id,required"`
+	EventType  param.Field[string] `json:"event_type,required"`
+	// RFC 3339 formatted
+	Timestamp     param.Field[string]                 `json:"timestamp,required"`
+	TransactionID param.Field[string]                 `json:"transaction_id,required"`
+	Properties    param.Field[map[string]interface{}] `json:"properties"`
+}
+
+func (r UsageIngestParamsUsage) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 

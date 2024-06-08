@@ -51,8 +51,9 @@ func TestAlertNewWithOptionalParams(t *testing.T) {
 			Key:   metronome.F("string"),
 			Value: metronome.F("string"),
 		}),
-		PlanID:        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		UniquenessKey: metronome.F("x"),
+		InvoiceTypesFilter: metronome.F([]string{"PLAN_ARREARS, SCHEDULED, USAGE, CORRECTION, CREDIT_PURCHASE, or SEAT_PURCHASE", "PLAN_ARREARS, SCHEDULED, USAGE, CORRECTION, CREDIT_PURCHASE, or SEAT_PURCHASE", "PLAN_ARREARS, SCHEDULED, USAGE, CORRECTION, CREDIT_PURCHASE, or SEAT_PURCHASE"}),
+		PlanID:             metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		UniquenessKey:      metronome.F("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error

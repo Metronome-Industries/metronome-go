@@ -42,7 +42,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/option"
@@ -52,15 +51,17 @@ func main() {
 	client := metronome.NewClient(
 		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("METRONOME_BEARER_TOKEN")
 	)
-	alertNewResponse, err := client.Alerts.New(context.TODO(), metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-		Name:      metronome.F("$100 spend threshold reached"),
-		Threshold: metronome.F(10000.000000),
+	response, err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
+		Usage: []metronome.UsageIngestParamsUsage{{
+			TransactionID: metronome.F("2021-01-01T00:00:00Z_cluster42"),
+			CustomerID:    metronome.F("team@example.com"),
+			EventType:     metronome.F("heartbeat"),
+			Timestamp:     metronome.F("2021-01-01T00:00:00Z"),
+		}},
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", alertNewResponse.Data)
 }
 
 ```

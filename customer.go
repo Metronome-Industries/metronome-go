@@ -26,6 +26,7 @@ import (
 // the [NewCustomerService] method instead.
 type CustomerService struct {
 	Options       []option.RequestOption
+	Alerts        *CustomerAlertService
 	Plans         *CustomerPlanService
 	Invoices      *CustomerInvoiceService
 	BillingConfig *CustomerBillingConfigService
@@ -37,6 +38,7 @@ type CustomerService struct {
 func NewCustomerService(opts ...option.RequestOption) (r *CustomerService) {
 	r = &CustomerService{}
 	r.Options = opts
+	r.Alerts = NewCustomerAlertService(opts...)
 	r.Plans = NewCustomerPlanService(opts...)
 	r.Invoices = NewCustomerInvoiceService(opts...)
 	r.BillingConfig = NewCustomerBillingConfigService(opts...)

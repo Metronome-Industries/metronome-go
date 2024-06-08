@@ -10,6 +10,9 @@ import (
 type Error = apierror.Error
 
 // This is an alias to an internal type.
+type CreditType = shared.CreditType
+
+// This is an alias to an internal type.
 type ID = shared.ID
 
 // This is an alias to an internal type.

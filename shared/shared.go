@@ -7,6 +7,28 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 )
 
+type CreditType struct {
+	ID   string         `json:"id,required" format:"uuid"`
+	Name string         `json:"name,required"`
+	JSON creditTypeJSON `json:"-"`
+}
+
+// creditTypeJSON contains the JSON metadata for the struct [CreditType]
+type creditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
 type ID struct {
 	ID   string `json:"id,required" format:"uuid"`
 	JSON idJSON `json:"-"`

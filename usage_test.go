@@ -61,6 +61,40 @@ func TestUsageListWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestUsageIngest(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
+		Usage: []metronome.UsageIngestParamsUsage{{
+			TransactionID: metronome.F("2021-01-01T00:00:00Z_cluster42"),
+			CustomerID:    metronome.F("team@example.com"),
+			EventType:     metronome.F("heartbeat"),
+			Timestamp:     metronome.F("2021-01-01T00:00:00Z"),
+			Properties: metronome.F(map[string]interface{}{
+				"cluster_id":  "bar",
+				"cpu_seconds": "bar",
+				"region":      "bar",
+			}),
+		}},
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestUsageListWithGroupsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {

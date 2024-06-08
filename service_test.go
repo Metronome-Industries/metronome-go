@@ -13,7 +13,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/option"
 )
 
-func TestCreditTypeListWithOptionalParams(t *testing.T) {
+func TestServiceList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,10 +25,7 @@ func TestCreditTypeListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.CreditTypes.List(context.TODO(), metronome.CreditTypeListParams{
-		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("string"),
-	})
+	_, err := client.Services.List(context.TODO())
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {

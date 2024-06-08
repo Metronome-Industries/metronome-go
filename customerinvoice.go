@@ -15,6 +15,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // CustomerInvoiceService contains methods and other services that help with
@@ -65,10 +66,22 @@ func (r *CustomerInvoiceService) List(ctx context.Context, customerID string, qu
 	return
 }
 
+// Add a one time charge to the specified invoice
+func (r *CustomerInvoiceService) AddCharge(ctx context.Context, customerID string, body CustomerInvoiceAddChargeParams, opts ...option.RequestOption) (res *CustomerInvoiceAddChargeResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
+	path := fmt.Sprintf("customers/%s/addCharge", customerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 type Invoice struct {
 	ID                   string                  `json:"id,required" format:"uuid"`
 	BillableStatus       InvoiceBillableStatus   `json:"billable_status,required"`
-	CreditType           InvoiceCreditType       `json:"credit_type,required"`
+	CreditType           shared.CreditType       `json:"credit_type,required"`
 	CustomerID           string                  `json:"customer_id,required" format:"uuid"`
 	LineItems            []InvoiceLineItem       `json:"line_items,required"`
 	Status               string                  `json:"status,required"`
@@ -162,34 +175,11 @@ func (r InvoiceBillableStatus) IsKnown() bool {
 	return false
 }
 
-type InvoiceCreditType struct {
-	ID   string                `json:"id,required" format:"uuid"`
-	Name string                `json:"name,required"`
-	JSON invoiceCreditTypeJSON `json:"-"`
-}
-
-// invoiceCreditTypeJSON contains the JSON metadata for the struct
-// [InvoiceCreditType]
-type invoiceCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *InvoiceCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r invoiceCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
 type InvoiceLineItem struct {
-	CreditType         InvoiceLineItemsCreditType `json:"credit_type,required"`
-	Name               string                     `json:"name,required"`
-	Total              float64                    `json:"total,required"`
-	CommitCustomFields map[string]string          `json:"commit_custom_fields"`
+	CreditType         shared.CreditType `json:"credit_type,required"`
+	Name               string            `json:"name,required"`
+	Total              float64           `json:"total,required"`
+	CommitCustomFields map[string]string `json:"commit_custom_fields"`
 	// only present for beta contract invoices
 	CommitID string `json:"commit_id" format:"uuid"`
 	// only present for beta contract invoices. This field's availability is dependent
@@ -288,29 +278,6 @@ func (r *InvoiceLineItem) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r invoiceLineItemJSON) RawJSON() string {
-	return r.raw
-}
-
-type InvoiceLineItemsCreditType struct {
-	ID   string                         `json:"id,required" format:"uuid"`
-	Name string                         `json:"name,required"`
-	JSON invoiceLineItemsCreditTypeJSON `json:"-"`
-}
-
-// invoiceLineItemsCreditTypeJSON contains the JSON metadata for the struct
-// [InvoiceLineItemsCreditType]
-type invoiceLineItemsCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *InvoiceLineItemsCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r invoiceLineItemsCreditTypeJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -590,11 +557,11 @@ func (r InvoiceExternalInvoiceExternalStatus) IsKnown() bool {
 }
 
 type InvoiceInvoiceAdjustment struct {
-	CreditType    InvoiceInvoiceAdjustmentsCreditType `json:"credit_type,required"`
-	Name          string                              `json:"name,required"`
-	Total         float64                             `json:"total,required"`
-	CreditGrantID string                              `json:"credit_grant_id"`
-	JSON          invoiceInvoiceAdjustmentJSON        `json:"-"`
+	CreditType    shared.CreditType            `json:"credit_type,required"`
+	Name          string                       `json:"name,required"`
+	Total         float64                      `json:"total,required"`
+	CreditGrantID string                       `json:"credit_grant_id"`
+	JSON          invoiceInvoiceAdjustmentJSON `json:"-"`
 }
 
 // invoiceInvoiceAdjustmentJSON contains the JSON metadata for the struct
@@ -613,29 +580,6 @@ func (r *InvoiceInvoiceAdjustment) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r invoiceInvoiceAdjustmentJSON) RawJSON() string {
-	return r.raw
-}
-
-type InvoiceInvoiceAdjustmentsCreditType struct {
-	ID   string                                  `json:"id,required" format:"uuid"`
-	Name string                                  `json:"name,required"`
-	JSON invoiceInvoiceAdjustmentsCreditTypeJSON `json:"-"`
-}
-
-// invoiceInvoiceAdjustmentsCreditTypeJSON contains the JSON metadata for the
-// struct [InvoiceInvoiceAdjustmentsCreditType]
-type invoiceInvoiceAdjustmentsCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *InvoiceInvoiceAdjustmentsCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r invoiceInvoiceAdjustmentsCreditTypeJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -778,6 +722,25 @@ func (r customerInvoiceListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type CustomerInvoiceAddChargeResponse struct {
+	JSON customerInvoiceAddChargeResponseJSON `json:"-"`
+}
+
+// customerInvoiceAddChargeResponseJSON contains the JSON metadata for the struct
+// [CustomerInvoiceAddChargeResponse]
+type customerInvoiceAddChargeResponseJSON struct {
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerInvoiceAddChargeResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerInvoiceAddChargeResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerInvoiceGetParams struct {
 	// If set, all zero quantity line items will be filtered out of the response
 	SkipZeroQtyLineItems param.Field[bool] `query:"skip_zero_qty_line_items"`
@@ -838,4 +801,24 @@ func (r CustomerInvoiceListParamsSort) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type CustomerInvoiceAddChargeParams struct {
+	// The Metronome ID of the charge to add to the invoice. Note that the charge must
+	// be on a product that is not on the current plan, and the product must have only
+	// fixed charges.
+	ChargeID param.Field[string] `json:"charge_id,required" format:"uuid"`
+	// The Metronome ID of the customer plan to add the charge to.
+	CustomerPlanID param.Field[string] `json:"customer_plan_id,required" format:"uuid"`
+	Description    param.Field[string] `json:"description,required"`
+	// The start_timestamp of the invoice to add the charge to.
+	InvoiceStartTimestamp param.Field[time.Time] `json:"invoice_start_timestamp,required" format:"date-time"`
+	// The price of the charge. This price will match the currency on the invoice, e.g.
+	// USD cents.
+	Price    param.Field[float64] `json:"price,required"`
+	Quantity param.Field[float64] `json:"quantity,required"`
+}
+
+func (r CustomerInvoiceAddChargeParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
