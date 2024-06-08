@@ -126,16 +126,3 @@ func (r *Client) Patch(ctx context.Context, path string, params interface{}, res
 func (r *Client) Delete(ctx context.Context, path string, params interface{}, res interface{}, opts ...option.RequestOption) error {
 	return r.Execute(ctx, http.MethodDelete, path, params, res, opts...)
 }
-
-// Send usage events to Metronome. The body of this request is expected to be a
-// JSON array of between 1 and 100 usage events. Compressed request bodies are
-// supported with a `Content-Encoding: gzip` header. See
-// [Getting usage into Metronome](https://docs.metronome.com/getting-usage-data-into-metronome/overview)
-// to learn more about usage events.
-func (r *Client) Ingest(ctx context.Context, body IngestParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "ingest"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
-}

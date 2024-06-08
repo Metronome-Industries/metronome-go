@@ -6,12 +6,6 @@
 
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ID">ID</a>
 
-# metronome
-
-Methods:
-
-- <code title="post /ingest">client.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#MetronomeService.Ingest">Ingest</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#IngestParams">IngestParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-
 # Alerts
 
 Response Types:
