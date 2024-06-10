@@ -12,6 +12,7 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/internal/pagination"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
@@ -55,15 +56,27 @@ func (r *CustomerInvoiceService) Get(ctx context.Context, customerID string, inv
 
 // List all invoices for a given customer, optionally filtered by status, date
 // range, and/or credit type.
-func (r *CustomerInvoiceService) List(ctx context.Context, customerID string, query CustomerInvoiceListParams, opts ...option.RequestOption) (res *CustomerInvoiceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if customerID == "" {
-		err = errors.New("missing required customer_id parameter")
-		return
-	}
+func (r *CustomerInvoiceService) List(ctx context.Context, customerID string, query CustomerInvoiceListParams, opts ...option.RequestOption) (res *pagination.CursorPage[Invoice], err error) {
+	var raw *http.Response
+	opts = append(r.Options, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("customers/%s/invoices", customerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all invoices for a given customer, optionally filtered by status, date
+// range, and/or credit type.
+func (r *CustomerInvoiceService) ListAutoPaging(ctx context.Context, customerID string, query CustomerInvoiceListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[Invoice] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, customerID, query, opts...))
 }
 
 // Add a one time charge to the specified invoice
@@ -696,29 +709,6 @@ func (r *CustomerInvoiceGetResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r customerInvoiceGetResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type CustomerInvoiceListResponse struct {
-	Data     []Invoice                       `json:"data,required"`
-	NextPage string                          `json:"next_page,required,nullable"`
-	JSON     customerInvoiceListResponseJSON `json:"-"`
-}
-
-// customerInvoiceListResponseJSON contains the JSON metadata for the struct
-// [CustomerInvoiceListResponse]
-type customerInvoiceListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerInvoiceListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerInvoiceListResponseJSON) RawJSON() string {
 	return r.raw
 }
 

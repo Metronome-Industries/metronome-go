@@ -10,6 +10,7 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/internal/pagination"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
@@ -44,11 +45,26 @@ func (r *CreditGrantService) New(ctx context.Context, body CreditGrantNewParams,
 }
 
 // List credit grants. This list does not included voided grants.
-func (r *CreditGrantService) List(ctx context.Context, params CreditGrantListParams, opts ...option.RequestOption) (res *CreditGrantListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *CreditGrantService) List(ctx context.Context, params CreditGrantListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CreditGrantListResponse], err error) {
+	var raw *http.Response
+	opts = append(r.Options, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "credits/listGrants"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List credit grants. This list does not included voided grants.
+func (r *CreditGrantService) ListAutoPaging(ctx context.Context, params CreditGrantListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CreditGrantListResponse] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Edit an existing credit grant
@@ -60,11 +76,26 @@ func (r *CreditGrantService) Edit(ctx context.Context, body CreditGrantEditParam
 }
 
 // List all pricing units (known in the API by the legacy term "credit types").
-func (r *CreditGrantService) ListCreditTypes(ctx context.Context, query CreditGrantListCreditTypesParams, opts ...option.RequestOption) (res *CreditGrantListCreditTypesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *CreditGrantService) ListCreditTypes(ctx context.Context, query CreditGrantListCreditTypesParams, opts ...option.RequestOption) (res *pagination.CursorPage[CreditGrantListCreditTypesResponse], err error) {
+	var raw *http.Response
+	opts = append(r.Options, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "credit-types/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all pricing units (known in the API by the legacy term "credit types").
+func (r *CreditGrantService) ListCreditTypesAutoPaging(ctx context.Context, query CreditGrantListCreditTypesParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CreditGrantListCreditTypesResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListCreditTypes(ctx, query, opts...))
 }
 
 // Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
@@ -205,66 +236,43 @@ func (r creditGrantNewResponseJSON) RawJSON() string {
 }
 
 type CreditGrantListResponse struct {
-	Data     []CreditGrantListResponseData `json:"data,required"`
-	NextPage string                        `json:"next_page,required,nullable"`
-	JSON     creditGrantListResponseJSON   `json:"-"`
-}
-
-// creditGrantListResponseJSON contains the JSON metadata for the struct
-// [CreditGrantListResponse]
-type creditGrantListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditGrantListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditGrantListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type CreditGrantListResponseData struct {
 	// the Metronome ID of the credit grant
 	ID string `json:"id,required" format:"uuid"`
 	// The effective balance of the grant as of the end of the customer's current
 	// billing period. Expiration deductions will be included only if the grant expires
 	// before the end of the current billing period.
-	Balance      CreditGrantListResponseDataBalance `json:"balance,required"`
-	CustomFields map[string]string                  `json:"custom_fields,required"`
+	Balance      CreditGrantListResponseBalance `json:"balance,required"`
+	CustomFields map[string]string              `json:"custom_fields,required"`
 	// the Metronome ID of the customer
 	CustomerID  string              `json:"customer_id,required" format:"uuid"`
 	Deductions  []CreditLedgerEntry `json:"deductions,required"`
 	EffectiveAt time.Time           `json:"effective_at,required" format:"date-time"`
 	ExpiresAt   time.Time           `json:"expires_at,required" format:"date-time"`
 	// the amount of credits initially granted
-	GrantAmount CreditGrantListResponseDataGrantAmount `json:"grant_amount,required"`
-	Name        string                                 `json:"name,required"`
+	GrantAmount CreditGrantListResponseGrantAmount `json:"grant_amount,required"`
+	Name        string                             `json:"name,required"`
 	// the amount paid for this credit grant
-	PaidAmount        CreditGrantListResponseDataPaidAmount `json:"paid_amount,required"`
-	PendingDeductions []CreditLedgerEntry                   `json:"pending_deductions,required"`
-	Priority          float64                               `json:"priority,required"`
-	CreditGrantType   string                                `json:"credit_grant_type,nullable"`
+	PaidAmount        CreditGrantListResponsePaidAmount `json:"paid_amount,required"`
+	PendingDeductions []CreditLedgerEntry               `json:"pending_deductions,required"`
+	Priority          float64                           `json:"priority,required"`
+	CreditGrantType   string                            `json:"credit_grant_type,nullable"`
 	// the Metronome ID of the invoice with the purchase charge for this credit grant,
 	// if applicable
 	InvoiceID string `json:"invoice_id,nullable" format:"uuid"`
 	// The products which these credits will be applied to. (If unspecified, the
 	// credits will be applied to charges for all products.)
-	Products []CreditGrantListResponseDataProduct `json:"products"`
-	Reason   string                               `json:"reason,nullable"`
+	Products []CreditGrantListResponseProduct `json:"products"`
+	Reason   string                           `json:"reason,nullable"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
-	UniquenessKey string                          `json:"uniqueness_key,nullable"`
-	JSON          creditGrantListResponseDataJSON `json:"-"`
+	UniquenessKey string                      `json:"uniqueness_key,nullable"`
+	JSON          creditGrantListResponseJSON `json:"-"`
 }
 
-// creditGrantListResponseDataJSON contains the JSON metadata for the struct
-// [CreditGrantListResponseData]
-type creditGrantListResponseDataJSON struct {
+// creditGrantListResponseJSON contains the JSON metadata for the struct
+// [CreditGrantListResponse]
+type creditGrantListResponseJSON struct {
 	ID                apijson.Field
 	Balance           apijson.Field
 	CustomFields      apijson.Field
@@ -286,18 +294,18 @@ type creditGrantListResponseDataJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *CreditGrantListResponseData) UnmarshalJSON(data []byte) (err error) {
+func (r *CreditGrantListResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditGrantListResponseDataJSON) RawJSON() string {
+func (r creditGrantListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // The effective balance of the grant as of the end of the customer's current
 // billing period. Expiration deductions will be included only if the grant expires
 // before the end of the current billing period.
-type CreditGrantListResponseDataBalance struct {
+type CreditGrantListResponseBalance struct {
 	// The end_date of the customer's current billing period.
 	EffectiveAt time.Time `json:"effective_at,required" format:"date-time"`
 	// The grant's current balance including all posted deductions. If the grant has
@@ -306,13 +314,13 @@ type CreditGrantListResponseDataBalance struct {
 	// The grant's current balance including all posted and pending deductions. If the
 	// grant expires before the end of the customer's current billing period, this
 	// amount will be 0.
-	IncludingPending float64                                `json:"including_pending,required"`
-	JSON             creditGrantListResponseDataBalanceJSON `json:"-"`
+	IncludingPending float64                            `json:"including_pending,required"`
+	JSON             creditGrantListResponseBalanceJSON `json:"-"`
 }
 
-// creditGrantListResponseDataBalanceJSON contains the JSON metadata for the struct
-// [CreditGrantListResponseDataBalance]
-type creditGrantListResponseDataBalanceJSON struct {
+// creditGrantListResponseBalanceJSON contains the JSON metadata for the struct
+// [CreditGrantListResponseBalance]
+type creditGrantListResponseBalanceJSON struct {
 	EffectiveAt      apijson.Field
 	ExcludingPending apijson.Field
 	IncludingPending apijson.Field
@@ -320,84 +328,84 @@ type creditGrantListResponseDataBalanceJSON struct {
 	ExtraFields      map[string]apijson.Field
 }
 
-func (r *CreditGrantListResponseDataBalance) UnmarshalJSON(data []byte) (err error) {
+func (r *CreditGrantListResponseBalance) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditGrantListResponseDataBalanceJSON) RawJSON() string {
+func (r creditGrantListResponseBalanceJSON) RawJSON() string {
 	return r.raw
 }
 
 // the amount of credits initially granted
-type CreditGrantListResponseDataGrantAmount struct {
+type CreditGrantListResponseGrantAmount struct {
 	Amount float64 `json:"amount,required"`
 	// the credit type for the amount granted
-	CreditType shared.CreditType                          `json:"credit_type,required"`
-	JSON       creditGrantListResponseDataGrantAmountJSON `json:"-"`
+	CreditType shared.CreditType                      `json:"credit_type,required"`
+	JSON       creditGrantListResponseGrantAmountJSON `json:"-"`
 }
 
-// creditGrantListResponseDataGrantAmountJSON contains the JSON metadata for the
-// struct [CreditGrantListResponseDataGrantAmount]
-type creditGrantListResponseDataGrantAmountJSON struct {
+// creditGrantListResponseGrantAmountJSON contains the JSON metadata for the struct
+// [CreditGrantListResponseGrantAmount]
+type creditGrantListResponseGrantAmountJSON struct {
 	Amount      apijson.Field
 	CreditType  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *CreditGrantListResponseDataGrantAmount) UnmarshalJSON(data []byte) (err error) {
+func (r *CreditGrantListResponseGrantAmount) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditGrantListResponseDataGrantAmountJSON) RawJSON() string {
+func (r creditGrantListResponseGrantAmountJSON) RawJSON() string {
 	return r.raw
 }
 
 // the amount paid for this credit grant
-type CreditGrantListResponseDataPaidAmount struct {
+type CreditGrantListResponsePaidAmount struct {
 	Amount float64 `json:"amount,required"`
 	// the credit type for the amount paid
-	CreditType shared.CreditType                         `json:"credit_type,required"`
-	JSON       creditGrantListResponseDataPaidAmountJSON `json:"-"`
+	CreditType shared.CreditType                     `json:"credit_type,required"`
+	JSON       creditGrantListResponsePaidAmountJSON `json:"-"`
 }
 
-// creditGrantListResponseDataPaidAmountJSON contains the JSON metadata for the
-// struct [CreditGrantListResponseDataPaidAmount]
-type creditGrantListResponseDataPaidAmountJSON struct {
+// creditGrantListResponsePaidAmountJSON contains the JSON metadata for the struct
+// [CreditGrantListResponsePaidAmount]
+type creditGrantListResponsePaidAmountJSON struct {
 	Amount      apijson.Field
 	CreditType  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *CreditGrantListResponseDataPaidAmount) UnmarshalJSON(data []byte) (err error) {
+func (r *CreditGrantListResponsePaidAmount) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditGrantListResponseDataPaidAmountJSON) RawJSON() string {
+func (r creditGrantListResponsePaidAmountJSON) RawJSON() string {
 	return r.raw
 }
 
-type CreditGrantListResponseDataProduct struct {
-	ID   string                                 `json:"id,required"`
-	Name string                                 `json:"name,required"`
-	JSON creditGrantListResponseDataProductJSON `json:"-"`
+type CreditGrantListResponseProduct struct {
+	ID   string                             `json:"id,required"`
+	Name string                             `json:"name,required"`
+	JSON creditGrantListResponseProductJSON `json:"-"`
 }
 
-// creditGrantListResponseDataProductJSON contains the JSON metadata for the struct
-// [CreditGrantListResponseDataProduct]
-type creditGrantListResponseDataProductJSON struct {
+// creditGrantListResponseProductJSON contains the JSON metadata for the struct
+// [CreditGrantListResponseProduct]
+type creditGrantListResponseProductJSON struct {
 	ID          apijson.Field
 	Name        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *CreditGrantListResponseDataProduct) UnmarshalJSON(data []byte) (err error) {
+func (r *CreditGrantListResponseProduct) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditGrantListResponseDataProductJSON) RawJSON() string {
+func (r creditGrantListResponseProductJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -423,16 +431,18 @@ func (r creditGrantEditResponseJSON) RawJSON() string {
 }
 
 type CreditGrantListCreditTypesResponse struct {
-	Data     []CreditGrantListCreditTypesResponseData `json:"data,required"`
-	NextPage string                                   `json:"next_page,required,nullable"`
-	JSON     creditGrantListCreditTypesResponseJSON   `json:"-"`
+	ID         string                                 `json:"id" format:"uuid"`
+	IsCurrency bool                                   `json:"is_currency"`
+	Name       string                                 `json:"name"`
+	JSON       creditGrantListCreditTypesResponseJSON `json:"-"`
 }
 
 // creditGrantListCreditTypesResponseJSON contains the JSON metadata for the struct
 // [CreditGrantListCreditTypesResponse]
 type creditGrantListCreditTypesResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
+	ID          apijson.Field
+	IsCurrency  apijson.Field
+	Name        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -442,31 +452,6 @@ func (r *CreditGrantListCreditTypesResponse) UnmarshalJSON(data []byte) (err err
 }
 
 func (r creditGrantListCreditTypesResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type CreditGrantListCreditTypesResponseData struct {
-	ID         string                                     `json:"id" format:"uuid"`
-	IsCurrency bool                                       `json:"is_currency"`
-	Name       string                                     `json:"name"`
-	JSON       creditGrantListCreditTypesResponseDataJSON `json:"-"`
-}
-
-// creditGrantListCreditTypesResponseDataJSON contains the JSON metadata for the
-// struct [CreditGrantListCreditTypesResponseData]
-type creditGrantListCreditTypesResponseDataJSON struct {
-	ID          apijson.Field
-	IsCurrency  apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditGrantListCreditTypesResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditGrantListCreditTypesResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 

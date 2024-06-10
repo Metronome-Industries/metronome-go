@@ -12,6 +12,7 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/internal/pagination"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
@@ -66,11 +67,26 @@ func (r *CustomerService) Get(ctx context.Context, customerID string, opts ...op
 }
 
 // List all customers.
-func (r *CustomerService) List(ctx context.Context, query CustomerListParams, opts ...option.RequestOption) (res *CustomerListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *CustomerService) List(ctx context.Context, query CustomerListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerDetail], err error) {
+	var raw *http.Response
+	opts = append(r.Options, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "customers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all customers.
+func (r *CustomerService) ListAutoPaging(ctx context.Context, query CustomerListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerDetail] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Archive a customer
@@ -82,29 +98,53 @@ func (r *CustomerService) Archive(ctx context.Context, body CustomerArchiveParam
 }
 
 // List all billable metrics.
-func (r *CustomerService) ListBillableMetrics(ctx context.Context, customerID string, query CustomerListBillableMetricsParams, opts ...option.RequestOption) (res *CustomerListBillableMetricsResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if customerID == "" {
-		err = errors.New("missing required customer_id parameter")
-		return
-	}
+func (r *CustomerService) ListBillableMetrics(ctx context.Context, customerID string, query CustomerListBillableMetricsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerListBillableMetricsResponse], err error) {
+	var raw *http.Response
+	opts = append(r.Options, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("customers/%s/billable-metrics", customerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all billable metrics.
+func (r *CustomerService) ListBillableMetricsAutoPaging(ctx context.Context, customerID string, query CustomerListBillableMetricsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerListBillableMetricsResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListBillableMetrics(ctx, customerID, query, opts...))
 }
 
 // Fetch daily pending costs for the specified customer, broken down by credit type
 // and line items. Note: this is not supported for customers whose plan includes a
 // UNIQUE-type billable metric.
-func (r *CustomerService) ListCosts(ctx context.Context, customerID string, query CustomerListCostsParams, opts ...option.RequestOption) (res *CustomerListCostsResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if customerID == "" {
-		err = errors.New("missing required customer_id parameter")
-		return
-	}
+func (r *CustomerService) ListCosts(ctx context.Context, customerID string, query CustomerListCostsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerListCostsResponse], err error) {
+	var raw *http.Response
+	opts = append(r.Options, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("customers/%s/costs", customerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Fetch daily pending costs for the specified customer, broken down by credit type
+// and line items. Note: this is not supported for customers whose plan includes a
+// UNIQUE-type billable metric.
+func (r *CustomerService) ListCostsAutoPaging(ctx context.Context, customerID string, query CustomerListCostsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerListCostsResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListCosts(ctx, customerID, query, opts...))
 }
 
 // Sets the ingest aliases for a customer. Ingest aliases can be used in the
@@ -319,29 +359,6 @@ func (r customerGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type CustomerListResponse struct {
-	Data     []CustomerDetail         `json:"data,required"`
-	NextPage string                   `json:"next_page,required,nullable"`
-	JSON     customerListResponseJSON `json:"-"`
-}
-
-// customerListResponseJSON contains the JSON metadata for the struct
-// [CustomerListResponse]
-type customerListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type CustomerArchiveResponse struct {
 	Data shared.ID                   `json:"data,required"`
 	JSON customerArchiveResponseJSON `json:"-"`
@@ -364,16 +381,18 @@ func (r customerArchiveResponseJSON) RawJSON() string {
 }
 
 type CustomerListBillableMetricsResponse struct {
-	Data     []CustomerListBillableMetricsResponseData `json:"data,required"`
-	NextPage string                                    `json:"next_page,required,nullable"`
-	JSON     customerListBillableMetricsResponseJSON   `json:"-"`
+	ID      string                                  `json:"id,required" format:"uuid"`
+	Name    string                                  `json:"name,required"`
+	GroupBy []string                                `json:"group_by"`
+	JSON    customerListBillableMetricsResponseJSON `json:"-"`
 }
 
 // customerListBillableMetricsResponseJSON contains the JSON metadata for the
 // struct [CustomerListBillableMetricsResponse]
 type customerListBillableMetricsResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
+	ID          apijson.Field
+	Name        apijson.Field
+	GroupBy     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -386,44 +405,21 @@ func (r customerListBillableMetricsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type CustomerListBillableMetricsResponseData struct {
-	ID      string                                      `json:"id,required" format:"uuid"`
-	Name    string                                      `json:"name,required"`
-	GroupBy []string                                    `json:"group_by"`
-	JSON    customerListBillableMetricsResponseDataJSON `json:"-"`
-}
-
-// customerListBillableMetricsResponseDataJSON contains the JSON metadata for the
-// struct [CustomerListBillableMetricsResponseData]
-type customerListBillableMetricsResponseDataJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	GroupBy     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerListBillableMetricsResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerListBillableMetricsResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
 type CustomerListCostsResponse struct {
-	Data     []CustomerListCostsResponseData `json:"data,required"`
-	NextPage string                          `json:"next_page,required,nullable"`
-	JSON     customerListCostsResponseJSON   `json:"-"`
+	CreditTypes    map[string]CustomerListCostsResponseCreditType `json:"credit_types,required"`
+	EndTimestamp   time.Time                                      `json:"end_timestamp,required" format:"date-time"`
+	StartTimestamp time.Time                                      `json:"start_timestamp,required" format:"date-time"`
+	JSON           customerListCostsResponseJSON                  `json:"-"`
 }
 
 // customerListCostsResponseJSON contains the JSON metadata for the struct
 // [CustomerListCostsResponse]
 type customerListCostsResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	CreditTypes    apijson.Field
+	EndTimestamp   apijson.Field
+	StartTimestamp apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
 func (r *CustomerListCostsResponse) UnmarshalJSON(data []byte) (err error) {
@@ -434,41 +430,16 @@ func (r customerListCostsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type CustomerListCostsResponseData struct {
-	CreditTypes    map[string]CustomerListCostsResponseDataCreditType `json:"credit_types,required"`
-	EndTimestamp   time.Time                                          `json:"end_timestamp,required" format:"date-time"`
-	StartTimestamp time.Time                                          `json:"start_timestamp,required" format:"date-time"`
-	JSON           customerListCostsResponseDataJSON                  `json:"-"`
+type CustomerListCostsResponseCreditType struct {
+	Cost              float64                                                 `json:"cost"`
+	LineItemBreakdown []CustomerListCostsResponseCreditTypesLineItemBreakdown `json:"line_item_breakdown"`
+	Name              string                                                  `json:"name"`
+	JSON              customerListCostsResponseCreditTypeJSON                 `json:"-"`
 }
 
-// customerListCostsResponseDataJSON contains the JSON metadata for the struct
-// [CustomerListCostsResponseData]
-type customerListCostsResponseDataJSON struct {
-	CreditTypes    apijson.Field
-	EndTimestamp   apijson.Field
-	StartTimestamp apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *CustomerListCostsResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerListCostsResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type CustomerListCostsResponseDataCreditType struct {
-	Cost              float64                                                     `json:"cost"`
-	LineItemBreakdown []CustomerListCostsResponseDataCreditTypesLineItemBreakdown `json:"line_item_breakdown"`
-	Name              string                                                      `json:"name"`
-	JSON              customerListCostsResponseDataCreditTypeJSON                 `json:"-"`
-}
-
-// customerListCostsResponseDataCreditTypeJSON contains the JSON metadata for the
-// struct [CustomerListCostsResponseDataCreditType]
-type customerListCostsResponseDataCreditTypeJSON struct {
+// customerListCostsResponseCreditTypeJSON contains the JSON metadata for the
+// struct [CustomerListCostsResponseCreditType]
+type customerListCostsResponseCreditTypeJSON struct {
 	Cost              apijson.Field
 	LineItemBreakdown apijson.Field
 	Name              apijson.Field
@@ -476,26 +447,25 @@ type customerListCostsResponseDataCreditTypeJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *CustomerListCostsResponseDataCreditType) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomerListCostsResponseCreditType) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r customerListCostsResponseDataCreditTypeJSON) RawJSON() string {
+func (r customerListCostsResponseCreditTypeJSON) RawJSON() string {
 	return r.raw
 }
 
-type CustomerListCostsResponseDataCreditTypesLineItemBreakdown struct {
-	Cost       float64                                                       `json:"cost,required"`
-	Name       string                                                        `json:"name,required"`
-	GroupKey   string                                                        `json:"group_key"`
-	GroupValue string                                                        `json:"group_value,nullable"`
-	JSON       customerListCostsResponseDataCreditTypesLineItemBreakdownJSON `json:"-"`
+type CustomerListCostsResponseCreditTypesLineItemBreakdown struct {
+	Cost       float64                                                   `json:"cost,required"`
+	Name       string                                                    `json:"name,required"`
+	GroupKey   string                                                    `json:"group_key"`
+	GroupValue string                                                    `json:"group_value,nullable"`
+	JSON       customerListCostsResponseCreditTypesLineItemBreakdownJSON `json:"-"`
 }
 
-// customerListCostsResponseDataCreditTypesLineItemBreakdownJSON contains the JSON
-// metadata for the struct
-// [CustomerListCostsResponseDataCreditTypesLineItemBreakdown]
-type customerListCostsResponseDataCreditTypesLineItemBreakdownJSON struct {
+// customerListCostsResponseCreditTypesLineItemBreakdownJSON contains the JSON
+// metadata for the struct [CustomerListCostsResponseCreditTypesLineItemBreakdown]
+type customerListCostsResponseCreditTypesLineItemBreakdownJSON struct {
 	Cost        apijson.Field
 	Name        apijson.Field
 	GroupKey    apijson.Field
@@ -504,11 +474,11 @@ type customerListCostsResponseDataCreditTypesLineItemBreakdownJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *CustomerListCostsResponseDataCreditTypesLineItemBreakdown) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomerListCostsResponseCreditTypesLineItemBreakdown) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r customerListCostsResponseDataCreditTypesLineItemBreakdownJSON) RawJSON() string {
+func (r customerListCostsResponseCreditTypesLineItemBreakdownJSON) RawJSON() string {
 	return r.raw
 }
 

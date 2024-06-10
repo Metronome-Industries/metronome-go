@@ -10,6 +10,7 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/internal/pagination"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
@@ -58,11 +59,27 @@ func (r *UsageService) Ingest(ctx context.Context, body UsageIngestParams, opts 
 
 // Fetch aggregated usage data for the specified customer, billable-metric, and
 // optional group, broken into intervals of the specified length.
-func (r *UsageService) ListWithGroups(ctx context.Context, params UsageListWithGroupsParams, opts ...option.RequestOption) (res *UsageListWithGroupsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *UsageService) ListWithGroups(ctx context.Context, params UsageListWithGroupsParams, opts ...option.RequestOption) (res *pagination.CursorPage[UsageListWithGroupsResponse], err error) {
+	var raw *http.Response
+	opts = append(r.Options, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "usage/groups"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Fetch aggregated usage data for the specified customer, billable-metric, and
+// optional group, broken into intervals of the specified length.
+func (r *UsageService) ListWithGroupsAutoPaging(ctx context.Context, params UsageListWithGroupsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[UsageListWithGroupsResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListWithGroups(ctx, params, opts...))
 }
 
 type UsageListResponse struct {
@@ -124,40 +141,17 @@ func (r usageListResponseDataJSON) RawJSON() string {
 }
 
 type UsageListWithGroupsResponse struct {
-	Data     []UsageListWithGroupsResponseData `json:"data,required"`
-	NextPage string                            `json:"next_page,required,nullable"`
-	JSON     usageListWithGroupsResponseJSON   `json:"-"`
+	EndingBefore time.Time                       `json:"ending_before,required" format:"date-time"`
+	GroupKey     string                          `json:"group_key,required,nullable"`
+	GroupValue   string                          `json:"group_value,required,nullable"`
+	StartingOn   time.Time                       `json:"starting_on,required" format:"date-time"`
+	Value        float64                         `json:"value,required,nullable"`
+	JSON         usageListWithGroupsResponseJSON `json:"-"`
 }
 
 // usageListWithGroupsResponseJSON contains the JSON metadata for the struct
 // [UsageListWithGroupsResponse]
 type usageListWithGroupsResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *UsageListWithGroupsResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r usageListWithGroupsResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type UsageListWithGroupsResponseData struct {
-	EndingBefore time.Time                           `json:"ending_before,required" format:"date-time"`
-	GroupKey     string                              `json:"group_key,required,nullable"`
-	GroupValue   string                              `json:"group_value,required,nullable"`
-	StartingOn   time.Time                           `json:"starting_on,required" format:"date-time"`
-	Value        float64                             `json:"value,required,nullable"`
-	JSON         usageListWithGroupsResponseDataJSON `json:"-"`
-}
-
-// usageListWithGroupsResponseDataJSON contains the JSON metadata for the struct
-// [UsageListWithGroupsResponseData]
-type usageListWithGroupsResponseDataJSON struct {
 	EndingBefore apijson.Field
 	GroupKey     apijson.Field
 	GroupValue   apijson.Field
@@ -167,11 +161,11 @@ type usageListWithGroupsResponseDataJSON struct {
 	ExtraFields  map[string]apijson.Field
 }
 
-func (r *UsageListWithGroupsResponseData) UnmarshalJSON(data []byte) (err error) {
+func (r *UsageListWithGroupsResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r usageListWithGroupsResponseDataJSON) RawJSON() string {
+func (r usageListWithGroupsResponseJSON) RawJSON() string {
 	return r.raw
 }
 

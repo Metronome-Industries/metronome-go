@@ -11,6 +11,7 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/internal/pagination"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
@@ -57,15 +58,26 @@ func (r *BillableMetricService) Get(ctx context.Context, billableMetricID string
 }
 
 // List all billable metrics.
-func (r *BillableMetricService) List(ctx context.Context, customerID string, query BillableMetricListParams, opts ...option.RequestOption) (res *BillableMetricListResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if customerID == "" {
-		err = errors.New("missing required customer_id parameter")
-		return
-	}
+func (r *BillableMetricService) List(ctx context.Context, customerID string, query BillableMetricListParams, opts ...option.RequestOption) (res *pagination.CursorPage[BillableMetricListResponse], err error) {
+	var raw *http.Response
+	opts = append(r.Options, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("customers/%s/billable-metrics", customerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all billable metrics.
+func (r *BillableMetricService) ListAutoPaging(ctx context.Context, customerID string, query BillableMetricListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[BillableMetricListResponse] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, customerID, query, opts...))
 }
 
 // Archive an existing billable metric
@@ -265,16 +277,18 @@ func (r billableMetricGetResponseDataPropertyFilterJSON) RawJSON() string {
 }
 
 type BillableMetricListResponse struct {
-	Data     []BillableMetricListResponseData `json:"data,required"`
-	NextPage string                           `json:"next_page,required,nullable"`
-	JSON     billableMetricListResponseJSON   `json:"-"`
+	ID      string                         `json:"id,required" format:"uuid"`
+	Name    string                         `json:"name,required"`
+	GroupBy []string                       `json:"group_by"`
+	JSON    billableMetricListResponseJSON `json:"-"`
 }
 
 // billableMetricListResponseJSON contains the JSON metadata for the struct
 // [BillableMetricListResponse]
 type billableMetricListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
+	ID          apijson.Field
+	Name        apijson.Field
+	GroupBy     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -284,31 +298,6 @@ func (r *BillableMetricListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r billableMetricListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type BillableMetricListResponseData struct {
-	ID      string                             `json:"id,required" format:"uuid"`
-	Name    string                             `json:"name,required"`
-	GroupBy []string                           `json:"group_by"`
-	JSON    billableMetricListResponseDataJSON `json:"-"`
-}
-
-// billableMetricListResponseDataJSON contains the JSON metadata for the struct
-// [BillableMetricListResponseData]
-type billableMetricListResponseDataJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	GroupBy     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillableMetricListResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billableMetricListResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
