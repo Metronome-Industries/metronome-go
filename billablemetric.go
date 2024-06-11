@@ -45,7 +45,7 @@ func (r *BillableMetricService) New(ctx context.Context, body BillableMetricNewP
 	return
 }
 
-// Get a billable metric
+// Get a billable metric.
 func (r *BillableMetricService) Get(ctx context.Context, billableMetricID string, opts ...option.RequestOption) (res *BillableMetricGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if billableMetricID == "" {
@@ -57,7 +57,7 @@ func (r *BillableMetricService) Get(ctx context.Context, billableMetricID string
 	return
 }
 
-// List all billable metrics.
+// Get all billable metrics for a given customer.
 func (r *BillableMetricService) List(ctx context.Context, customerID string, query BillableMetricListParams, opts ...option.RequestOption) (res *pagination.CursorPage[BillableMetricListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options, opts...)
@@ -75,12 +75,12 @@ func (r *BillableMetricService) List(ctx context.Context, customerID string, que
 	return res, nil
 }
 
-// List all billable metrics.
+// Get all billable metrics for a given customer.
 func (r *BillableMetricService) ListAutoPaging(ctx context.Context, customerID string, query BillableMetricListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[BillableMetricListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, customerID, query, opts...))
 }
 
-// Archive an existing billable metric
+// Archive an existing billable metric.
 func (r *BillableMetricService) Archive(ctx context.Context, body BillableMetricArchiveParams, opts ...option.RequestOption) (res *BillableMetricArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "billable-metrics/archive"

@@ -97,7 +97,7 @@ func (r *CustomerService) Archive(ctx context.Context, body CustomerArchiveParam
 	return
 }
 
-// List all billable metrics.
+// Get all billable metrics for a given customer.
 func (r *CustomerService) ListBillableMetrics(ctx context.Context, customerID string, query CustomerListBillableMetricsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerListBillableMetricsResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options, opts...)
@@ -115,7 +115,7 @@ func (r *CustomerService) ListBillableMetrics(ctx context.Context, customerID st
 	return res, nil
 }
 
-// List all billable metrics.
+// Get all billable metrics for a given customer.
 func (r *CustomerService) ListBillableMetricsAutoPaging(ctx context.Context, customerID string, query CustomerListBillableMetricsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerListBillableMetricsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListBillableMetrics(ctx, customerID, query, opts...))
 }
