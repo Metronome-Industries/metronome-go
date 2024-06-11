@@ -381,20 +381,52 @@ func (r customerArchiveResponseJSON) RawJSON() string {
 }
 
 type CustomerListBillableMetricsResponse struct {
-	ID      string                                  `json:"id,required" format:"uuid"`
-	Name    string                                  `json:"name,required"`
-	GroupBy []string                                `json:"group_by"`
-	JSON    customerListBillableMetricsResponseJSON `json:"-"`
+	ID   string `json:"id,required" format:"uuid"`
+	Name string `json:"name,required"`
+	// (DEPRECATED) use aggregation_type instead
+	Aggregate string `json:"aggregate"`
+	// (DEPRECATED) use aggregation_key instead
+	AggregateKeys []string `json:"aggregate_keys"`
+	// A key that specifies which property of the event is used to aggregate data. This
+	// key must be one of the property filter names and is not applicable when the
+	// aggregation type is 'count'.
+	AggregationKey string `json:"aggregation_key"`
+	// Specifies the type of aggregation performed on matching events.
+	AggregationType CustomerListBillableMetricsResponseAggregationType `json:"aggregation_type"`
+	CustomFields    map[string]string                                  `json:"custom_fields"`
+	// An optional filtering rule to match the 'event_type' property of an event.
+	EventTypeFilter CustomerListBillableMetricsResponseEventTypeFilter `json:"event_type_filter"`
+	// (DEPRECATED) use property_filters & event_type_filter instead
+	Filter map[string]interface{} `json:"filter"`
+	// (DEPRECATED) use group_keys instead
+	GroupBy []string `json:"group_by"`
+	// Property names that are used to group usage costs on an invoice. Each entry
+	// represents a set of properties used to slice events into distinct buckets.
+	GroupKeys [][]string `json:"group_keys"`
+	// A list of filters to match events to this billable metric. Each filter defines a
+	// rule on an event property. All rules must pass for the event to match the
+	// billable metric.
+	PropertyFilters []CustomerListBillableMetricsResponsePropertyFilter `json:"property_filters"`
+	JSON            customerListBillableMetricsResponseJSON             `json:"-"`
 }
 
 // customerListBillableMetricsResponseJSON contains the JSON metadata for the
 // struct [CustomerListBillableMetricsResponse]
 type customerListBillableMetricsResponseJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	GroupBy     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ID              apijson.Field
+	Name            apijson.Field
+	Aggregate       apijson.Field
+	AggregateKeys   apijson.Field
+	AggregationKey  apijson.Field
+	AggregationType apijson.Field
+	CustomFields    apijson.Field
+	EventTypeFilter apijson.Field
+	Filter          apijson.Field
+	GroupBy         apijson.Field
+	GroupKeys       apijson.Field
+	PropertyFilters apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
 }
 
 func (r *CustomerListBillableMetricsResponse) UnmarshalJSON(data []byte) (err error) {
@@ -402,6 +434,105 @@ func (r *CustomerListBillableMetricsResponse) UnmarshalJSON(data []byte) (err er
 }
 
 func (r customerListBillableMetricsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Specifies the type of aggregation performed on matching events.
+type CustomerListBillableMetricsResponseAggregationType string
+
+const (
+	CustomerListBillableMetricsResponseAggregationTypeCount  CustomerListBillableMetricsResponseAggregationType = "count"
+	CustomerListBillableMetricsResponseAggregationTypeCount  CustomerListBillableMetricsResponseAggregationType = "Count"
+	CustomerListBillableMetricsResponseAggregationTypeCount  CustomerListBillableMetricsResponseAggregationType = "COUNT"
+	CustomerListBillableMetricsResponseAggregationTypeLatest CustomerListBillableMetricsResponseAggregationType = "latest"
+	CustomerListBillableMetricsResponseAggregationTypeLatest CustomerListBillableMetricsResponseAggregationType = "Latest"
+	CustomerListBillableMetricsResponseAggregationTypeLatest CustomerListBillableMetricsResponseAggregationType = "LATEST"
+	CustomerListBillableMetricsResponseAggregationTypeMax    CustomerListBillableMetricsResponseAggregationType = "max"
+	CustomerListBillableMetricsResponseAggregationTypeMax    CustomerListBillableMetricsResponseAggregationType = "Max"
+	CustomerListBillableMetricsResponseAggregationTypeMax    CustomerListBillableMetricsResponseAggregationType = "MAX"
+	CustomerListBillableMetricsResponseAggregationTypeSum    CustomerListBillableMetricsResponseAggregationType = "sum"
+	CustomerListBillableMetricsResponseAggregationTypeSum    CustomerListBillableMetricsResponseAggregationType = "Sum"
+	CustomerListBillableMetricsResponseAggregationTypeSum    CustomerListBillableMetricsResponseAggregationType = "SUM"
+	CustomerListBillableMetricsResponseAggregationTypeUnique CustomerListBillableMetricsResponseAggregationType = "unique"
+	CustomerListBillableMetricsResponseAggregationTypeUnique CustomerListBillableMetricsResponseAggregationType = "Unique"
+	CustomerListBillableMetricsResponseAggregationTypeUnique CustomerListBillableMetricsResponseAggregationType = "UNIQUE"
+)
+
+func (r CustomerListBillableMetricsResponseAggregationType) IsKnown() bool {
+	switch r {
+	case CustomerListBillableMetricsResponseAggregationTypeCount, CustomerListBillableMetricsResponseAggregationTypeCount, CustomerListBillableMetricsResponseAggregationTypeCount, CustomerListBillableMetricsResponseAggregationTypeLatest, CustomerListBillableMetricsResponseAggregationTypeLatest, CustomerListBillableMetricsResponseAggregationTypeLatest, CustomerListBillableMetricsResponseAggregationTypeMax, CustomerListBillableMetricsResponseAggregationTypeMax, CustomerListBillableMetricsResponseAggregationTypeMax, CustomerListBillableMetricsResponseAggregationTypeSum, CustomerListBillableMetricsResponseAggregationTypeSum, CustomerListBillableMetricsResponseAggregationTypeSum, CustomerListBillableMetricsResponseAggregationTypeUnique, CustomerListBillableMetricsResponseAggregationTypeUnique, CustomerListBillableMetricsResponseAggregationTypeUnique:
+		return true
+	}
+	return false
+}
+
+// An optional filtering rule to match the 'event_type' property of an event.
+type CustomerListBillableMetricsResponseEventTypeFilter struct {
+	// A list of event types that are explicitly included in the billable metric. If
+	// specified, only events of these types will match the billable metric. Must be
+	// non-empty if present.
+	InValues []string `json:"in_values"`
+	// A list of event types that are explicitly excluded from the billable metric. If
+	// specified, events of these types will not match the billable metric. Must be
+	// non-empty if present.
+	NotInValues []string                                               `json:"not_in_values"`
+	JSON        customerListBillableMetricsResponseEventTypeFilterJSON `json:"-"`
+}
+
+// customerListBillableMetricsResponseEventTypeFilterJSON contains the JSON
+// metadata for the struct [CustomerListBillableMetricsResponseEventTypeFilter]
+type customerListBillableMetricsResponseEventTypeFilterJSON struct {
+	InValues    apijson.Field
+	NotInValues apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerListBillableMetricsResponseEventTypeFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerListBillableMetricsResponseEventTypeFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerListBillableMetricsResponsePropertyFilter struct {
+	// The name of the event property.
+	Name string `json:"name,required"`
+	// Determines whether the property must exist in the event. If true, only events
+	// with this property will pass the filter. If false, only events without this
+	// property will pass the filter. If null or omitted, the existence of the property
+	// is optional.
+	Exists bool `json:"exists"`
+	// Specifies the allowed values for the property to match an event. An event will
+	// pass the filter only if its property value is included in this list. If
+	// undefined, all property values will pass the filter. Must be non-empty if
+	// present.
+	InValues []string `json:"in_values"`
+	// Specifies the values that prevent an event from matching the filter. An event
+	// will not pass the filter if its property value is included in this list. If null
+	// or empty, all property values will pass the filter. Must be non-empty if
+	// present.
+	NotInValues []string                                              `json:"not_in_values"`
+	JSON        customerListBillableMetricsResponsePropertyFilterJSON `json:"-"`
+}
+
+// customerListBillableMetricsResponsePropertyFilterJSON contains the JSON metadata
+// for the struct [CustomerListBillableMetricsResponsePropertyFilter]
+type customerListBillableMetricsResponsePropertyFilterJSON struct {
+	Name        apijson.Field
+	Exists      apijson.Field
+	InValues    apijson.Field
+	NotInValues apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerListBillableMetricsResponsePropertyFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerListBillableMetricsResponsePropertyFilterJSON) RawJSON() string {
 	return r.raw
 }
 

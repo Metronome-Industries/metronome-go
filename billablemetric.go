@@ -277,20 +277,52 @@ func (r billableMetricGetResponseDataPropertyFilterJSON) RawJSON() string {
 }
 
 type BillableMetricListResponse struct {
-	ID      string                         `json:"id,required" format:"uuid"`
-	Name    string                         `json:"name,required"`
-	GroupBy []string                       `json:"group_by"`
-	JSON    billableMetricListResponseJSON `json:"-"`
+	ID   string `json:"id,required" format:"uuid"`
+	Name string `json:"name,required"`
+	// (DEPRECATED) use aggregation_type instead
+	Aggregate string `json:"aggregate"`
+	// (DEPRECATED) use aggregation_key instead
+	AggregateKeys []string `json:"aggregate_keys"`
+	// A key that specifies which property of the event is used to aggregate data. This
+	// key must be one of the property filter names and is not applicable when the
+	// aggregation type is 'count'.
+	AggregationKey string `json:"aggregation_key"`
+	// Specifies the type of aggregation performed on matching events.
+	AggregationType BillableMetricListResponseAggregationType `json:"aggregation_type"`
+	CustomFields    map[string]string                         `json:"custom_fields"`
+	// An optional filtering rule to match the 'event_type' property of an event.
+	EventTypeFilter BillableMetricListResponseEventTypeFilter `json:"event_type_filter"`
+	// (DEPRECATED) use property_filters & event_type_filter instead
+	Filter map[string]interface{} `json:"filter"`
+	// (DEPRECATED) use group_keys instead
+	GroupBy []string `json:"group_by"`
+	// Property names that are used to group usage costs on an invoice. Each entry
+	// represents a set of properties used to slice events into distinct buckets.
+	GroupKeys [][]string `json:"group_keys"`
+	// A list of filters to match events to this billable metric. Each filter defines a
+	// rule on an event property. All rules must pass for the event to match the
+	// billable metric.
+	PropertyFilters []BillableMetricListResponsePropertyFilter `json:"property_filters"`
+	JSON            billableMetricListResponseJSON             `json:"-"`
 }
 
 // billableMetricListResponseJSON contains the JSON metadata for the struct
 // [BillableMetricListResponse]
 type billableMetricListResponseJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	GroupBy     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ID              apijson.Field
+	Name            apijson.Field
+	Aggregate       apijson.Field
+	AggregateKeys   apijson.Field
+	AggregationKey  apijson.Field
+	AggregationType apijson.Field
+	CustomFields    apijson.Field
+	EventTypeFilter apijson.Field
+	Filter          apijson.Field
+	GroupBy         apijson.Field
+	GroupKeys       apijson.Field
+	PropertyFilters apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
 }
 
 func (r *BillableMetricListResponse) UnmarshalJSON(data []byte) (err error) {
@@ -298,6 +330,105 @@ func (r *BillableMetricListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r billableMetricListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Specifies the type of aggregation performed on matching events.
+type BillableMetricListResponseAggregationType string
+
+const (
+	BillableMetricListResponseAggregationTypeCount  BillableMetricListResponseAggregationType = "count"
+	BillableMetricListResponseAggregationTypeCount  BillableMetricListResponseAggregationType = "Count"
+	BillableMetricListResponseAggregationTypeCount  BillableMetricListResponseAggregationType = "COUNT"
+	BillableMetricListResponseAggregationTypeLatest BillableMetricListResponseAggregationType = "latest"
+	BillableMetricListResponseAggregationTypeLatest BillableMetricListResponseAggregationType = "Latest"
+	BillableMetricListResponseAggregationTypeLatest BillableMetricListResponseAggregationType = "LATEST"
+	BillableMetricListResponseAggregationTypeMax    BillableMetricListResponseAggregationType = "max"
+	BillableMetricListResponseAggregationTypeMax    BillableMetricListResponseAggregationType = "Max"
+	BillableMetricListResponseAggregationTypeMax    BillableMetricListResponseAggregationType = "MAX"
+	BillableMetricListResponseAggregationTypeSum    BillableMetricListResponseAggregationType = "sum"
+	BillableMetricListResponseAggregationTypeSum    BillableMetricListResponseAggregationType = "Sum"
+	BillableMetricListResponseAggregationTypeSum    BillableMetricListResponseAggregationType = "SUM"
+	BillableMetricListResponseAggregationTypeUnique BillableMetricListResponseAggregationType = "unique"
+	BillableMetricListResponseAggregationTypeUnique BillableMetricListResponseAggregationType = "Unique"
+	BillableMetricListResponseAggregationTypeUnique BillableMetricListResponseAggregationType = "UNIQUE"
+)
+
+func (r BillableMetricListResponseAggregationType) IsKnown() bool {
+	switch r {
+	case BillableMetricListResponseAggregationTypeCount, BillableMetricListResponseAggregationTypeCount, BillableMetricListResponseAggregationTypeCount, BillableMetricListResponseAggregationTypeLatest, BillableMetricListResponseAggregationTypeLatest, BillableMetricListResponseAggregationTypeLatest, BillableMetricListResponseAggregationTypeMax, BillableMetricListResponseAggregationTypeMax, BillableMetricListResponseAggregationTypeMax, BillableMetricListResponseAggregationTypeSum, BillableMetricListResponseAggregationTypeSum, BillableMetricListResponseAggregationTypeSum, BillableMetricListResponseAggregationTypeUnique, BillableMetricListResponseAggregationTypeUnique, BillableMetricListResponseAggregationTypeUnique:
+		return true
+	}
+	return false
+}
+
+// An optional filtering rule to match the 'event_type' property of an event.
+type BillableMetricListResponseEventTypeFilter struct {
+	// A list of event types that are explicitly included in the billable metric. If
+	// specified, only events of these types will match the billable metric. Must be
+	// non-empty if present.
+	InValues []string `json:"in_values"`
+	// A list of event types that are explicitly excluded from the billable metric. If
+	// specified, events of these types will not match the billable metric. Must be
+	// non-empty if present.
+	NotInValues []string                                      `json:"not_in_values"`
+	JSON        billableMetricListResponseEventTypeFilterJSON `json:"-"`
+}
+
+// billableMetricListResponseEventTypeFilterJSON contains the JSON metadata for the
+// struct [BillableMetricListResponseEventTypeFilter]
+type billableMetricListResponseEventTypeFilterJSON struct {
+	InValues    apijson.Field
+	NotInValues apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BillableMetricListResponseEventTypeFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r billableMetricListResponseEventTypeFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+type BillableMetricListResponsePropertyFilter struct {
+	// The name of the event property.
+	Name string `json:"name,required"`
+	// Determines whether the property must exist in the event. If true, only events
+	// with this property will pass the filter. If false, only events without this
+	// property will pass the filter. If null or omitted, the existence of the property
+	// is optional.
+	Exists bool `json:"exists"`
+	// Specifies the allowed values for the property to match an event. An event will
+	// pass the filter only if its property value is included in this list. If
+	// undefined, all property values will pass the filter. Must be non-empty if
+	// present.
+	InValues []string `json:"in_values"`
+	// Specifies the values that prevent an event from matching the filter. An event
+	// will not pass the filter if its property value is included in this list. If null
+	// or empty, all property values will pass the filter. Must be non-empty if
+	// present.
+	NotInValues []string                                     `json:"not_in_values"`
+	JSON        billableMetricListResponsePropertyFilterJSON `json:"-"`
+}
+
+// billableMetricListResponsePropertyFilterJSON contains the JSON metadata for the
+// struct [BillableMetricListResponsePropertyFilter]
+type billableMetricListResponsePropertyFilterJSON struct {
+	Name        apijson.Field
+	Exists      apijson.Field
+	InValues    apijson.Field
+	NotInValues apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BillableMetricListResponsePropertyFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r billableMetricListResponsePropertyFilterJSON) RawJSON() string {
 	return r.raw
 }
 
