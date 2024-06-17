@@ -313,6 +313,9 @@ type PlanListChargesResponse struct {
 	// Used in price ramps. Indicates how many billing periods pass before the charge
 	// applies.
 	StartPeriod float64 `json:"start_period"`
+	// Used in pricing tiers. Indicates how often the tier resets. Default is 1 - the
+	// tier count resets every billing period.
+	TierResetFrequency float64 `json:"tier_reset_frequency"`
 	// Specifies how quantities for usage based charges will be converted.
 	UnitConversion PlanListChargesResponseUnitConversion `json:"unit_conversion"`
 	JSON           planListChargesResponseJSON           `json:"-"`
@@ -321,19 +324,20 @@ type PlanListChargesResponse struct {
 // planListChargesResponseJSON contains the JSON metadata for the struct
 // [PlanListChargesResponse]
 type planListChargesResponseJSON struct {
-	ID             apijson.Field
-	ChargeType     apijson.Field
-	CreditType     apijson.Field
-	CustomFields   apijson.Field
-	Name           apijson.Field
-	Prices         apijson.Field
-	ProductID      apijson.Field
-	ProductName    apijson.Field
-	Quantity       apijson.Field
-	StartPeriod    apijson.Field
-	UnitConversion apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
+	ID                 apijson.Field
+	ChargeType         apijson.Field
+	CreditType         apijson.Field
+	CustomFields       apijson.Field
+	Name               apijson.Field
+	Prices             apijson.Field
+	ProductID          apijson.Field
+	ProductName        apijson.Field
+	Quantity           apijson.Field
+	StartPeriod        apijson.Field
+	TierResetFrequency apijson.Field
+	UnitConversion     apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *PlanListChargesResponse) UnmarshalJSON(data []byte) (err error) {
