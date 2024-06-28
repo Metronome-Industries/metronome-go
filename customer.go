@@ -635,6 +635,7 @@ func (r customerSetNameResponseJSON) RawJSON() string {
 }
 
 type CustomerNewParams struct {
+	// This will be truncated to 160 characters if the provided name is longer.
 	Name          param.Field[string]                         `json:"name,required"`
 	BillingConfig param.Field[CustomerNewParamsBillingConfig] `json:"billing_config"`
 	CustomFields  param.Field[map[string]string]              `json:"custom_fields"`
@@ -815,7 +816,8 @@ func (r CustomerSetIngestAliasesParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CustomerSetNameParams struct {
-	// The new name for the customer
+	// The new name for the customer. This will be truncated to 160 characters if the
+	// provided name is longer.
 	Name param.Field[string] `json:"name,required"`
 }
 
