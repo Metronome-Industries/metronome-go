@@ -340,11 +340,15 @@ type InvoiceLineItemsSubLineItem struct {
 	Subtotal      float64           `json:"subtotal,required"`
 	ChargeID      string            `json:"charge_id" format:"uuid"`
 	CreditGrantID string            `json:"credit_grant_id" format:"uuid"`
+	// The end date for the charge (for seats charges only).
+	EndDate time.Time `json:"end_date" format:"date-time"`
 	// the unit price for this charge, present only if the charge is not tiered and the
 	// quantity is nonzero
-	Price float64                            `json:"price"`
-	Tiers []InvoiceLineItemsSubLineItemsTier `json:"tiers"`
-	JSON  invoiceLineItemsSubLineItemJSON    `json:"-"`
+	Price float64 `json:"price"`
+	// The start date for the charge (for seats charges only).
+	StartDate time.Time                          `json:"start_date" format:"date-time"`
+	Tiers     []InvoiceLineItemsSubLineItemsTier `json:"tiers"`
+	JSON      invoiceLineItemsSubLineItemJSON    `json:"-"`
 }
 
 // invoiceLineItemsSubLineItemJSON contains the JSON metadata for the struct
@@ -356,7 +360,9 @@ type invoiceLineItemsSubLineItemJSON struct {
 	Subtotal      apijson.Field
 	ChargeID      apijson.Field
 	CreditGrantID apijson.Field
+	EndDate       apijson.Field
 	Price         apijson.Field
+	StartDate     apijson.Field
 	Tiers         apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field

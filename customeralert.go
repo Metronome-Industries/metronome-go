@@ -100,8 +100,12 @@ type CustomerAlertAlert struct {
 	// Type of the alert
 	Type CustomerAlertAlertType `json:"type,required"`
 	// Timestamp for when the alert was last updated
-	UpdatedAt  time.Time         `json:"updated_at,required" format:"date-time"`
-	CreditType shared.CreditType `json:"credit_type,nullable"`
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	// An array of strings, representing a way to filter the credit grant this alert
+	// applies to, by looking at the credit_grant_type field on the credit grant. This
+	// field is only defined for CreditPercentage and CreditBalance alerts
+	CreditGrantTypeFilters []string          `json:"credit_grant_type_filters"`
+	CreditType             shared.CreditType `json:"credit_type,nullable"`
 	// A list of custom field filters for alert types that support advanced filtering
 	CustomFieldFilters []CustomerAlertAlertCustomFieldFilter `json:"custom_field_filters"`
 	// Scopes alert evaluation to a specific presentation group key on individual line
@@ -120,19 +124,20 @@ type CustomerAlertAlert struct {
 // customerAlertAlertJSON contains the JSON metadata for the struct
 // [CustomerAlertAlert]
 type customerAlertAlertJSON struct {
-	ID                 apijson.Field
-	Name               apijson.Field
-	Status             apijson.Field
-	Threshold          apijson.Field
-	Type               apijson.Field
-	UpdatedAt          apijson.Field
-	CreditType         apijson.Field
-	CustomFieldFilters apijson.Field
-	GroupKeyFilter     apijson.Field
-	InvoiceTypesFilter apijson.Field
-	UniquenessKey      apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
+	ID                     apijson.Field
+	Name                   apijson.Field
+	Status                 apijson.Field
+	Threshold              apijson.Field
+	Type                   apijson.Field
+	UpdatedAt              apijson.Field
+	CreditGrantTypeFilters apijson.Field
+	CreditType             apijson.Field
+	CustomFieldFilters     apijson.Field
+	GroupKeyFilter         apijson.Field
+	InvoiceTypesFilter     apijson.Field
+	UniquenessKey          apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
 }
 
 func (r *CustomerAlertAlert) UnmarshalJSON(data []byte) (err error) {

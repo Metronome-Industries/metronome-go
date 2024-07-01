@@ -100,7 +100,11 @@ type AlertNewParams struct {
 	// For alerts of type `usage_threshold_reached`, specifies which billable metric to
 	// track the usage for.
 	BillableMetricID param.Field[string] `json:"billable_metric_id" format:"uuid"`
-	CreditTypeID     param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// An array of strings, representing a way to filter the credit grant this alert
+	// applies to, by looking at the credit_grant_type field on the credit grant. This
+	// field is only defined for CreditPercentage and CreditBalance alerts
+	CreditGrantTypeFilters param.Field[[]string] `json:"credit_grant_type_filters"`
+	CreditTypeID           param.Field[string]   `json:"credit_type_id" format:"uuid"`
 	// Only present for beta contract invoices. This field's availability is dependent
 	// on your client's configuration. A list of custom field filters for alert types
 	// that support advanced filtering
