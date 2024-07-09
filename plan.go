@@ -41,7 +41,7 @@ func NewPlanService(opts ...option.RequestOption) (r *PlanService) {
 // List all available plans.
 func (r *PlanService) List(ctx context.Context, query PlanListParams, opts ...option.RequestOption) (res *pagination.CursorPage[PlanListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options, opts...)
+	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "plans"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -76,8 +76,12 @@ func (r *PlanService) GetDetails(ctx context.Context, planID string, opts ...opt
 // Fetches a list of charges of a specific plan.
 func (r *PlanService) ListCharges(ctx context.Context, planID string, query PlanListChargesParams, opts ...option.RequestOption) (res *pagination.CursorPage[PlanListChargesResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options, opts...)
+	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	if planID == "" {
+		err = errors.New("missing required plan_id parameter")
+		return
+	}
 	path := fmt.Sprintf("planDetails/%s/charges", planID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -100,8 +104,12 @@ func (r *PlanService) ListChargesAutoPaging(ctx context.Context, planID string, 
 // active plans are included)
 func (r *PlanService) ListCustomers(ctx context.Context, planID string, query PlanListCustomersParams, opts ...option.RequestOption) (res *pagination.CursorPage[PlanListCustomersResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options, opts...)
+	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	if planID == "" {
+		err = errors.New("missing required plan_id parameter")
+		return
+	}
 	path := fmt.Sprintf("planDetails/%s/customers", planID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {

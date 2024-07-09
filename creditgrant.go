@@ -47,7 +47,7 @@ func (r *CreditGrantService) New(ctx context.Context, body CreditGrantNewParams,
 // List credit grants. This list does not included voided grants.
 func (r *CreditGrantService) List(ctx context.Context, params CreditGrantListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CreditGrantListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options, opts...)
+	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "credits/listGrants"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -78,7 +78,7 @@ func (r *CreditGrantService) Edit(ctx context.Context, body CreditGrantEditParam
 // List all pricing units (known in the API by the legacy term "credit types").
 func (r *CreditGrantService) ListCreditTypes(ctx context.Context, query CreditGrantListCreditTypesParams, opts ...option.RequestOption) (res *pagination.CursorPage[CreditGrantListCreditTypesResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options, opts...)
+	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "credit-types/list"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

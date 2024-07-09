@@ -61,7 +61,7 @@ func (r *UsageService) Ingest(ctx context.Context, body UsageIngestParams, opts 
 // optional group, broken into intervals of the specified length.
 func (r *UsageService) ListWithGroups(ctx context.Context, params UsageListWithGroupsParams, opts ...option.RequestOption) (res *pagination.CursorPage[UsageListWithGroupsResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options, opts...)
+	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "usage/groups"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)

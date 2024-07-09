@@ -41,7 +41,7 @@ func NewAuditLogService(opts ...option.RequestOption) (r *AuditLogService) {
 // array, ensuring a continuous and uninterrupted reading of audit logs.
 func (r *AuditLogService) List(ctx context.Context, query AuditLogListParams, opts ...option.RequestOption) (res *pagination.CursorPage[AuditLogListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options, opts...)
+	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "auditLogs"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
