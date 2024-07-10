@@ -350,9 +350,11 @@ type InvoiceLineItemsSubLineItem struct {
 	// quantity is nonzero
 	Price float64 `json:"price"`
 	// The start date for the charge (for seats charges only).
-	StartDate time.Time                          `json:"start_date" format:"date-time"`
-	Tiers     []InvoiceLineItemsSubLineItemsTier `json:"tiers"`
-	JSON      invoiceLineItemsSubLineItemJSON    `json:"-"`
+	StartDate time.Time `json:"start_date" format:"date-time"`
+	// when the current tier started and ends (for tiered charges only)
+	TierPeriod InvoiceLineItemsSubLineItemsTierPeriod `json:"tier_period"`
+	Tiers      []InvoiceLineItemsSubLineItemsTier     `json:"tiers"`
+	JSON       invoiceLineItemsSubLineItemJSON        `json:"-"`
 }
 
 // invoiceLineItemsSubLineItemJSON contains the JSON metadata for the struct
@@ -367,6 +369,7 @@ type invoiceLineItemsSubLineItemJSON struct {
 	EndDate       apijson.Field
 	Price         apijson.Field
 	StartDate     apijson.Field
+	TierPeriod    apijson.Field
 	Tiers         apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
@@ -377,6 +380,30 @@ func (r *InvoiceLineItemsSubLineItem) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r invoiceLineItemsSubLineItemJSON) RawJSON() string {
+	return r.raw
+}
+
+// when the current tier started and ends (for tiered charges only)
+type InvoiceLineItemsSubLineItemsTierPeriod struct {
+	StartingAt   time.Time                                  `json:"starting_at,required" format:"date-time"`
+	EndingBefore time.Time                                  `json:"ending_before" format:"date-time"`
+	JSON         invoiceLineItemsSubLineItemsTierPeriodJSON `json:"-"`
+}
+
+// invoiceLineItemsSubLineItemsTierPeriodJSON contains the JSON metadata for the
+// struct [InvoiceLineItemsSubLineItemsTierPeriod]
+type invoiceLineItemsSubLineItemsTierPeriodJSON struct {
+	StartingAt   apijson.Field
+	EndingBefore apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *InvoiceLineItemsSubLineItemsTierPeriod) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r invoiceLineItemsSubLineItemsTierPeriodJSON) RawJSON() string {
 	return r.raw
 }
 
