@@ -31,7 +31,7 @@ func TestCustomerPlanListWithOptionalParams(t *testing.T) {
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		metronome.CustomerPlanListParams{
 			Limit:    metronome.F(int64(1)),
-			NextPage: metronome.F("string"),
+			NextPage: metronome.F("next_page"),
 		},
 	)
 	if err != nil {
@@ -101,7 +101,7 @@ func TestCustomerPlanAddWithOptionalParams(t *testing.T) {
 			TrialSpec: metronome.F(metronome.CustomerPlanAddParamsTrialSpec{
 				LengthInDays: metronome.F(0.000000),
 				SpendingCap: metronome.F(metronome.CustomerPlanAddParamsTrialSpecSpendingCap{
-					CreditTypeID: metronome.F("string"),
+					CreditTypeID: metronome.F("credit_type_id"),
 					Amount:       metronome.F(0.000000),
 				}),
 			}),
@@ -165,7 +165,7 @@ func TestCustomerPlanListPriceAdjustmentsWithOptionalParams(t *testing.T) {
 		"7aa11640-0703-4600-8eb9-293f535a6b74",
 		metronome.CustomerPlanListPriceAdjustmentsParams{
 			Limit:    metronome.F(int64(1)),
-			NextPage: metronome.F("string"),
+			NextPage: metronome.F("next_page"),
 		},
 	)
 	if err != nil {

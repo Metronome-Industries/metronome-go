@@ -30,23 +30,23 @@ func TestUsageListWithOptionalParams(t *testing.T) {
 		EndingBefore: metronome.F(time.Now()),
 		StartingOn:   metronome.F(time.Now()),
 		WindowSize:   metronome.F(metronome.UsageListParamsWindowSizeDay),
-		NextPage:     metronome.F("string"),
+		NextPage:     metronome.F("next_page"),
 		BillableMetrics: metronome.F([]metronome.UsageListParamsBillableMetric{{
 			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			GroupBy: metronome.F(metronome.UsageListParamsBillableMetricsGroupBy{
-				Key:    metronome.F("string"),
+				Key:    metronome.F("key"),
 				Values: metronome.F([]string{"x"}),
 			}),
 		}, {
 			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			GroupBy: metronome.F(metronome.UsageListParamsBillableMetricsGroupBy{
-				Key:    metronome.F("string"),
+				Key:    metronome.F("key"),
 				Values: metronome.F([]string{"x"}),
 			}),
 		}, {
 			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			GroupBy: metronome.F(metronome.UsageListParamsBillableMetricsGroupBy{
-				Key:    metronome.F("string"),
+				Key:    metronome.F("key"),
 				Values: metronome.F([]string{"x"}),
 			}),
 		}}),
@@ -112,7 +112,7 @@ func TestUsageListWithGroupsWithOptionalParams(t *testing.T) {
 		CustomerID:       metronome.F("04ca7e72-4229-4a6e-ab11-9f7376fccbcb"),
 		WindowSize:       metronome.F(metronome.UsageListWithGroupsParamsWindowSizeDay),
 		Limit:            metronome.F(int64(1)),
-		NextPage:         metronome.F("string"),
+		NextPage:         metronome.F("next_page"),
 		CurrentPeriod:    metronome.F(true),
 		EndingBefore:     metronome.F(time.Now()),
 		GroupBy: metronome.F(metronome.UsageListWithGroupsParamsGroupBy{

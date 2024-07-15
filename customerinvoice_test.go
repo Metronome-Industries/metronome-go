@@ -59,14 +59,14 @@ func TestCustomerInvoiceListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		metronome.CustomerInvoiceListParams{
-			CreditTypeID:         metronome.F("string"),
+			CreditTypeID:         metronome.F("credit_type_id"),
 			EndingBefore:         metronome.F(time.Now()),
 			Limit:                metronome.F(int64(1)),
-			NextPage:             metronome.F("string"),
+			NextPage:             metronome.F("next_page"),
 			SkipZeroQtyLineItems: metronome.F(true),
 			Sort:                 metronome.F(metronome.CustomerInvoiceListParamsSortDateAsc),
 			StartingOn:           metronome.F(time.Now()),
-			Status:               metronome.F("string"),
+			Status:               metronome.F("status"),
 		},
 	)
 	if err != nil {

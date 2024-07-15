@@ -78,7 +78,7 @@ func TestCustomFieldListKeysWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.CustomFields.ListKeys(context.TODO(), metronome.CustomFieldListKeysParams{
-		NextPage: metronome.F("string"),
+		NextPage: metronome.F("next_page"),
 		Entities: metronome.F([]metronome.CustomFieldListKeysParamsEntity{metronome.CustomFieldListKeysParamsEntityCustomer, metronome.CustomFieldListKeysParamsEntityCreditGrant}),
 	})
 	if err != nil {

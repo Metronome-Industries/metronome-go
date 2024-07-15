@@ -31,9 +31,9 @@ func TestCustomerNewWithOptionalParams(t *testing.T) {
 		Name: metronome.F("Example, Inc."),
 		BillingConfig: metronome.F(metronome.CustomerNewParamsBillingConfig{
 			BillingProviderType:       metronome.F(metronome.CustomerNewParamsBillingConfigBillingProviderTypeAwsMarketplace),
-			BillingProviderCustomerID: metronome.F("string"),
+			BillingProviderCustomerID: metronome.F("billing_provider_customer_id"),
 			StripeCollectionMethod:    metronome.F(metronome.CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically),
-			AwsProductCode:            metronome.F("string"),
+			AwsProductCode:            metronome.F("aws_product_code"),
 			AwsRegion:                 metronome.F(metronome.CustomerNewParamsBillingConfigAwsRegionAfSouth1),
 		}),
 		CustomFields: metronome.F(map[string]string{
@@ -87,9 +87,9 @@ func TestCustomerListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Customers.List(context.TODO(), metronome.CustomerListParams{
 		CustomerIDs:          metronome.F([]string{"string", "string", "string"}),
-		IngestAlias:          metronome.F("string"),
+		IngestAlias:          metronome.F("ingest_alias"),
 		Limit:                metronome.F(int64(1)),
-		NextPage:             metronome.F("string"),
+		NextPage:             metronome.F("next_page"),
 		OnlyArchived:         metronome.F(true),
 		SalesforceAccountIDs: metronome.F([]string{"string", "string", "string"}),
 	})
@@ -145,7 +145,7 @@ func TestCustomerListBillableMetricsWithOptionalParams(t *testing.T) {
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		metronome.CustomerListBillableMetricsParams{
 			Limit:         metronome.F(int64(1)),
-			NextPage:      metronome.F("string"),
+			NextPage:      metronome.F("next_page"),
 			OnCurrentPlan: metronome.F(true),
 		},
 	)
@@ -177,7 +177,7 @@ func TestCustomerListCostsWithOptionalParams(t *testing.T) {
 			EndingBefore: metronome.F(time.Now()),
 			StartingOn:   metronome.F(time.Now()),
 			Limit:        metronome.F(int64(1)),
-			NextPage:     metronome.F("string"),
+			NextPage:     metronome.F("next_page"),
 		},
 	)
 	if err != nil {

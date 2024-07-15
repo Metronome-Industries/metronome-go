@@ -80,7 +80,7 @@ func TestCreditGrantListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CreditGrants.List(context.TODO(), metronome.CreditGrantListParams{
 		Limit:             metronome.F(int64(1)),
-		NextPage:          metronome.F("string"),
+		NextPage:          metronome.F("next_page"),
 		CreditGrantIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 		CreditTypeIDs:     metronome.F([]string{"2714e483-4ff1-48e4-9e25-ac732e8f24f2"}),
 		CustomerIDs:       metronome.F([]string{"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc", "0e5b8609-d901-4992-b394-c3c2e3f37b1c"}),
@@ -136,7 +136,7 @@ func TestCreditGrantListCreditTypesWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CreditGrants.ListCreditTypes(context.TODO(), metronome.CreditGrantListCreditTypesParams{
 		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("string"),
+		NextPage: metronome.F("next_page"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -160,7 +160,7 @@ func TestCreditGrantListEntriesWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.CreditGrants.ListEntries(context.TODO(), metronome.CreditGrantListEntriesParams{
-		NextPage:      metronome.F("string"),
+		NextPage:      metronome.F("next_page"),
 		CreditTypeIDs: metronome.F([]string{"2714e483-4ff1-48e4-9e25-ac732e8f24f2"}),
 		CustomerIDs:   metronome.F([]string{"6a37bb88-8538-48c5-b37b-a41c836328bd"}),
 		EndingBefore:  metronome.F(time.Now()),

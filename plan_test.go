@@ -27,7 +27,7 @@ func TestPlanListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Plans.List(context.TODO(), metronome.PlanListParams{
 		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("string"),
+		NextPage: metronome.F("next_page"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -77,7 +77,7 @@ func TestPlanListChargesWithOptionalParams(t *testing.T) {
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		metronome.PlanListChargesParams{
 			Limit:    metronome.F(int64(1)),
-			NextPage: metronome.F("string"),
+			NextPage: metronome.F("next_page"),
 		},
 	)
 	if err != nil {
@@ -106,7 +106,7 @@ func TestPlanListCustomersWithOptionalParams(t *testing.T) {
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		metronome.PlanListCustomersParams{
 			Limit:    metronome.F(int64(1)),
-			NextPage: metronome.F("string"),
+			NextPage: metronome.F("next_page"),
 			Status:   metronome.F(metronome.PlanListCustomersParamsStatusAll),
 		},
 	)

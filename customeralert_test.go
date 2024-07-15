@@ -52,7 +52,7 @@ func TestCustomerAlertListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Customers.Alerts.List(context.TODO(), metronome.CustomerAlertListParams{
 		CustomerID:    metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
-		NextPage:      metronome.F("string"),
+		NextPage:      metronome.F("next_page"),
 		AlertStatuses: metronome.F([]metronome.CustomerAlertListParamsAlertStatus{metronome.CustomerAlertListParamsAlertStatusEnabled}),
 	})
 	if err != nil {

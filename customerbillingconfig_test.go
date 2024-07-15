@@ -31,7 +31,7 @@ func TestCustomerBillingConfigNewWithOptionalParams(t *testing.T) {
 		metronome.CustomerBillingConfigNewParamsBillingProviderTypeStripe,
 		metronome.CustomerBillingConfigNewParams{
 			BillingProviderCustomerID: metronome.F("cus_AJ6y20bjkOOayM"),
-			AwsProductCode:            metronome.F("string"),
+			AwsProductCode:            metronome.F("aws_product_code"),
 			AwsRegion:                 metronome.F(metronome.CustomerBillingConfigNewParamsAwsRegionAfSouth1),
 			StripeCollectionMethod:    metronome.F(metronome.CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically),
 		},

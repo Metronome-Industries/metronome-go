@@ -103,7 +103,7 @@ func TestBillableMetricListWithOptionalParams(t *testing.T) {
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		metronome.BillableMetricListParams{
 			Limit:         metronome.F(int64(1)),
-			NextPage:      metronome.F("string"),
+			NextPage:      metronome.F("next_page"),
 			OnCurrentPlan: metronome.F(true),
 		},
 	)

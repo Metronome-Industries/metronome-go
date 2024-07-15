@@ -33,14 +33,14 @@ func TestDashboardGetEmbeddableURLWithOptionalParams(t *testing.T) {
 			Value: metronome.F("#ff0000"),
 		}}),
 		DashboardOptions: metronome.F([]metronome.DashboardGetEmbeddableURLParamsDashboardOption{{
-			Key:   metronome.F("string"),
-			Value: metronome.F("string"),
+			Key:   metronome.F("key"),
+			Value: metronome.F("value"),
 		}, {
-			Key:   metronome.F("string"),
-			Value: metronome.F("string"),
+			Key:   metronome.F("key"),
+			Value: metronome.F("value"),
 		}, {
-			Key:   metronome.F("string"),
-			Value: metronome.F("string"),
+			Key:   metronome.F("key"),
+			Value: metronome.F("value"),
 		}}),
 	})
 	if err != nil {

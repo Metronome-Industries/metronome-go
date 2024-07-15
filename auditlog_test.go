@@ -29,9 +29,9 @@ func TestAuditLogListWithOptionalParams(t *testing.T) {
 	_, err := client.AuditLogs.List(context.TODO(), metronome.AuditLogListParams{
 		EndingBefore: metronome.F(time.Now()),
 		Limit:        metronome.F(int64(1)),
-		NextPage:     metronome.F("string"),
-		ResourceID:   metronome.F("string"),
-		ResourceType: metronome.F("string"),
+		NextPage:     metronome.F("next_page"),
+		ResourceID:   metronome.F("resource_id"),
+		ResourceType: metronome.F("resource_type"),
 		Sort:         metronome.F(metronome.AuditLogListParamsSortDateAsc),
 		StartingOn:   metronome.F(time.Now()),
 	})
