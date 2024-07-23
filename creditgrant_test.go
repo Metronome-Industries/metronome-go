@@ -189,6 +189,7 @@ func TestCreditGrantVoidWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CreditGrants.Void(context.TODO(), metronome.CreditGrantVoidParams{
 		ID:                        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		ReleaseUniquenessKey:      metronome.F(true),
 		VoidCreditPurchaseInvoice: metronome.F(true),
 	})
 	if err != nil {

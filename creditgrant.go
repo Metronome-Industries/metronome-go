@@ -829,6 +829,8 @@ func (r CreditGrantListEntriesParams) URLQuery() (v url.Values) {
 
 type CreditGrantVoidParams struct {
 	ID param.Field[string] `json:"id,required" format:"uuid"`
+	// If true, resets the uniqueness key on this grant so it can be re-used
+	ReleaseUniquenessKey param.Field[bool] `json:"release_uniqueness_key"`
 	// If true, void the purchase invoice associated with the grant
 	VoidCreditPurchaseInvoice param.Field[bool] `json:"void_credit_purchase_invoice"`
 }
