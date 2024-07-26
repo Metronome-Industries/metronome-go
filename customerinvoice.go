@@ -607,22 +607,24 @@ func (r InvoiceExternalInvoiceExternalStatus) IsKnown() bool {
 }
 
 type InvoiceInvoiceAdjustment struct {
-	CreditType    shared.CreditType            `json:"credit_type,required"`
-	Name          string                       `json:"name,required"`
-	Total         float64                      `json:"total,required"`
-	CreditGrantID string                       `json:"credit_grant_id"`
-	JSON          invoiceInvoiceAdjustmentJSON `json:"-"`
+	CreditType              shared.CreditType            `json:"credit_type,required"`
+	Name                    string                       `json:"name,required"`
+	Total                   float64                      `json:"total,required"`
+	CreditGrantCustomFields map[string]string            `json:"credit_grant_custom_fields"`
+	CreditGrantID           string                       `json:"credit_grant_id"`
+	JSON                    invoiceInvoiceAdjustmentJSON `json:"-"`
 }
 
 // invoiceInvoiceAdjustmentJSON contains the JSON metadata for the struct
 // [InvoiceInvoiceAdjustment]
 type invoiceInvoiceAdjustmentJSON struct {
-	CreditType    apijson.Field
-	Name          apijson.Field
-	Total         apijson.Field
-	CreditGrantID apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	CreditType              apijson.Field
+	Name                    apijson.Field
+	Total                   apijson.Field
+	CreditGrantCustomFields apijson.Field
+	CreditGrantID           apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
 }
 
 func (r *InvoiceInvoiceAdjustment) UnmarshalJSON(data []byte) (err error) {
