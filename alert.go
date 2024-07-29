@@ -139,24 +139,25 @@ func (r AlertNewParams) MarshalJSON() (data []byte, err error) {
 type AlertNewParamsAlertType string
 
 const (
-	AlertNewParamsAlertTypeLowCreditBalanceReached                         AlertNewParamsAlertType = "low_credit_balance_reached"
-	AlertNewParamsAlertTypeSpendThresholdReached                           AlertNewParamsAlertType = "spend_threshold_reached"
-	AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached        AlertNewParamsAlertType = "monthly_invoice_total_spend_threshold_reached"
-	AlertNewParamsAlertTypeLowRemainingDaysInPlanReached                   AlertNewParamsAlertType = "low_remaining_days_in_plan_reached"
-	AlertNewParamsAlertTypeLowRemainingCreditPercentageReached             AlertNewParamsAlertType = "low_remaining_credit_percentage_reached"
-	AlertNewParamsAlertTypeUsageThresholdReached                           AlertNewParamsAlertType = "usage_threshold_reached"
-	AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached         AlertNewParamsAlertType = "low_remaining_days_for_commit_segment_reached"
-	AlertNewParamsAlertTypeLowRemainingCommitBalanceReached                AlertNewParamsAlertType = "low_remaining_commit_balance_reached"
-	AlertNewParamsAlertTypeLowRemainingCommitPercentageReached             AlertNewParamsAlertType = "low_remaining_commit_percentage_reached"
-	AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached AlertNewParamsAlertType = "low_remaining_days_for_contract_credit_segment_reached"
-	AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached        AlertNewParamsAlertType = "low_remaining_contract_credit_balance_reached"
-	AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached     AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
-	AlertNewParamsAlertTypeInvoiceTotalReached                             AlertNewParamsAlertType = "invoice_total_reached"
+	AlertNewParamsAlertTypeLowCreditBalanceReached                           AlertNewParamsAlertType = "low_credit_balance_reached"
+	AlertNewParamsAlertTypeSpendThresholdReached                             AlertNewParamsAlertType = "spend_threshold_reached"
+	AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached          AlertNewParamsAlertType = "monthly_invoice_total_spend_threshold_reached"
+	AlertNewParamsAlertTypeLowRemainingDaysInPlanReached                     AlertNewParamsAlertType = "low_remaining_days_in_plan_reached"
+	AlertNewParamsAlertTypeLowRemainingCreditPercentageReached               AlertNewParamsAlertType = "low_remaining_credit_percentage_reached"
+	AlertNewParamsAlertTypeUsageThresholdReached                             AlertNewParamsAlertType = "usage_threshold_reached"
+	AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached           AlertNewParamsAlertType = "low_remaining_days_for_commit_segment_reached"
+	AlertNewParamsAlertTypeLowRemainingCommitBalanceReached                  AlertNewParamsAlertType = "low_remaining_commit_balance_reached"
+	AlertNewParamsAlertTypeLowRemainingCommitPercentageReached               AlertNewParamsAlertType = "low_remaining_commit_percentage_reached"
+	AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached   AlertNewParamsAlertType = "low_remaining_days_for_contract_credit_segment_reached"
+	AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached          AlertNewParamsAlertType = "low_remaining_contract_credit_balance_reached"
+	AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached       AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
+	AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached AlertNewParamsAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
+	AlertNewParamsAlertTypeInvoiceTotalReached                               AlertNewParamsAlertType = "invoice_total_reached"
 )
 
 func (r AlertNewParamsAlertType) IsKnown() bool {
 	switch r {
-	case AlertNewParamsAlertTypeLowCreditBalanceReached, AlertNewParamsAlertTypeSpendThresholdReached, AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached, AlertNewParamsAlertTypeLowRemainingDaysInPlanReached, AlertNewParamsAlertTypeLowRemainingCreditPercentageReached, AlertNewParamsAlertTypeUsageThresholdReached, AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached, AlertNewParamsAlertTypeLowRemainingCommitBalanceReached, AlertNewParamsAlertTypeLowRemainingCommitPercentageReached, AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached, AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached, AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached, AlertNewParamsAlertTypeInvoiceTotalReached:
+	case AlertNewParamsAlertTypeLowCreditBalanceReached, AlertNewParamsAlertTypeSpendThresholdReached, AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached, AlertNewParamsAlertTypeLowRemainingDaysInPlanReached, AlertNewParamsAlertTypeLowRemainingCreditPercentageReached, AlertNewParamsAlertTypeUsageThresholdReached, AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached, AlertNewParamsAlertTypeLowRemainingCommitBalanceReached, AlertNewParamsAlertTypeLowRemainingCommitPercentageReached, AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached, AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached, AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached, AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached, AlertNewParamsAlertTypeInvoiceTotalReached:
 		return true
 	}
 	return false

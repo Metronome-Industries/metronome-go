@@ -169,24 +169,25 @@ func (r CustomerAlertAlertStatus) IsKnown() bool {
 type CustomerAlertAlertType string
 
 const (
-	CustomerAlertAlertTypeLowCreditBalanceReached                         CustomerAlertAlertType = "low_credit_balance_reached"
-	CustomerAlertAlertTypeSpendThresholdReached                           CustomerAlertAlertType = "spend_threshold_reached"
-	CustomerAlertAlertTypeMonthlyInvoiceTotalSpendThresholdReached        CustomerAlertAlertType = "monthly_invoice_total_spend_threshold_reached"
-	CustomerAlertAlertTypeLowRemainingDaysInPlanReached                   CustomerAlertAlertType = "low_remaining_days_in_plan_reached"
-	CustomerAlertAlertTypeLowRemainingCreditPercentageReached             CustomerAlertAlertType = "low_remaining_credit_percentage_reached"
-	CustomerAlertAlertTypeUsageThresholdReached                           CustomerAlertAlertType = "usage_threshold_reached"
-	CustomerAlertAlertTypeLowRemainingDaysForCommitSegmentReached         CustomerAlertAlertType = "low_remaining_days_for_commit_segment_reached"
-	CustomerAlertAlertTypeLowRemainingCommitBalanceReached                CustomerAlertAlertType = "low_remaining_commit_balance_reached"
-	CustomerAlertAlertTypeLowRemainingCommitPercentageReached             CustomerAlertAlertType = "low_remaining_commit_percentage_reached"
-	CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached CustomerAlertAlertType = "low_remaining_days_for_contract_credit_segment_reached"
-	CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached        CustomerAlertAlertType = "low_remaining_contract_credit_balance_reached"
-	CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached     CustomerAlertAlertType = "low_remaining_contract_credit_percentage_reached"
-	CustomerAlertAlertTypeInvoiceTotalReached                             CustomerAlertAlertType = "invoice_total_reached"
+	CustomerAlertAlertTypeLowCreditBalanceReached                           CustomerAlertAlertType = "low_credit_balance_reached"
+	CustomerAlertAlertTypeSpendThresholdReached                             CustomerAlertAlertType = "spend_threshold_reached"
+	CustomerAlertAlertTypeMonthlyInvoiceTotalSpendThresholdReached          CustomerAlertAlertType = "monthly_invoice_total_spend_threshold_reached"
+	CustomerAlertAlertTypeLowRemainingDaysInPlanReached                     CustomerAlertAlertType = "low_remaining_days_in_plan_reached"
+	CustomerAlertAlertTypeLowRemainingCreditPercentageReached               CustomerAlertAlertType = "low_remaining_credit_percentage_reached"
+	CustomerAlertAlertTypeUsageThresholdReached                             CustomerAlertAlertType = "usage_threshold_reached"
+	CustomerAlertAlertTypeLowRemainingDaysForCommitSegmentReached           CustomerAlertAlertType = "low_remaining_days_for_commit_segment_reached"
+	CustomerAlertAlertTypeLowRemainingCommitBalanceReached                  CustomerAlertAlertType = "low_remaining_commit_balance_reached"
+	CustomerAlertAlertTypeLowRemainingCommitPercentageReached               CustomerAlertAlertType = "low_remaining_commit_percentage_reached"
+	CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached   CustomerAlertAlertType = "low_remaining_days_for_contract_credit_segment_reached"
+	CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached          CustomerAlertAlertType = "low_remaining_contract_credit_balance_reached"
+	CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached       CustomerAlertAlertType = "low_remaining_contract_credit_percentage_reached"
+	CustomerAlertAlertTypeLowRemainingContractCreditAndCommitBalanceReached CustomerAlertAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
+	CustomerAlertAlertTypeInvoiceTotalReached                               CustomerAlertAlertType = "invoice_total_reached"
 )
 
 func (r CustomerAlertAlertType) IsKnown() bool {
 	switch r {
-	case CustomerAlertAlertTypeLowCreditBalanceReached, CustomerAlertAlertTypeSpendThresholdReached, CustomerAlertAlertTypeMonthlyInvoiceTotalSpendThresholdReached, CustomerAlertAlertTypeLowRemainingDaysInPlanReached, CustomerAlertAlertTypeLowRemainingCreditPercentageReached, CustomerAlertAlertTypeUsageThresholdReached, CustomerAlertAlertTypeLowRemainingDaysForCommitSegmentReached, CustomerAlertAlertTypeLowRemainingCommitBalanceReached, CustomerAlertAlertTypeLowRemainingCommitPercentageReached, CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached, CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached, CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached, CustomerAlertAlertTypeInvoiceTotalReached:
+	case CustomerAlertAlertTypeLowCreditBalanceReached, CustomerAlertAlertTypeSpendThresholdReached, CustomerAlertAlertTypeMonthlyInvoiceTotalSpendThresholdReached, CustomerAlertAlertTypeLowRemainingDaysInPlanReached, CustomerAlertAlertTypeLowRemainingCreditPercentageReached, CustomerAlertAlertTypeUsageThresholdReached, CustomerAlertAlertTypeLowRemainingDaysForCommitSegmentReached, CustomerAlertAlertTypeLowRemainingCommitBalanceReached, CustomerAlertAlertTypeLowRemainingCommitPercentageReached, CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached, CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached, CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached, CustomerAlertAlertTypeLowRemainingContractCreditAndCommitBalanceReached, CustomerAlertAlertTypeInvoiceTotalReached:
 		return true
 	}
 	return false
