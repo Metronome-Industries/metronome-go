@@ -230,29 +230,30 @@ func (r customerJSON) RawJSON() string {
 
 type CustomerDetail struct {
 	// the Metronome ID of the customer
-	ID                    string                              `json:"id,required" format:"uuid"`
-	CurrentBillableStatus CustomerDetailCurrentBillableStatus `json:"current_billable_status,required"`
-	CustomFields          map[string]string                   `json:"custom_fields,required"`
-	CustomerConfig        CustomerDetailCustomerConfig        `json:"customer_config,required"`
+	ID             string                       `json:"id,required" format:"uuid"`
+	CustomFields   map[string]string            `json:"custom_fields,required"`
+	CustomerConfig CustomerDetailCustomerConfig `json:"customer_config,required"`
 	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
 	// alias) that can be used in usage events
 	ExternalID string `json:"external_id,required"`
 	// aliases for this customer that can be used instead of the Metronome customer ID
 	// in usage events
-	IngestAliases []string           `json:"ingest_aliases,required"`
-	Name          string             `json:"name,required"`
-	JSON          customerDetailJSON `json:"-"`
+	IngestAliases []string `json:"ingest_aliases,required"`
+	Name          string   `json:"name,required"`
+	// This field's availability is dependent on your client's configuration.
+	CurrentBillableStatus CustomerDetailCurrentBillableStatus `json:"current_billable_status"`
+	JSON                  customerDetailJSON                  `json:"-"`
 }
 
 // customerDetailJSON contains the JSON metadata for the struct [CustomerDetail]
 type customerDetailJSON struct {
 	ID                    apijson.Field
-	CurrentBillableStatus apijson.Field
 	CustomFields          apijson.Field
 	CustomerConfig        apijson.Field
 	ExternalID            apijson.Field
 	IngestAliases         apijson.Field
 	Name                  apijson.Field
+	CurrentBillableStatus apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -265,6 +266,29 @@ func (r customerDetailJSON) RawJSON() string {
 	return r.raw
 }
 
+type CustomerDetailCustomerConfig struct {
+	// The Salesforce account ID for the customer
+	SalesforceAccountID string                           `json:"salesforce_account_id,required,nullable"`
+	JSON                customerDetailCustomerConfigJSON `json:"-"`
+}
+
+// customerDetailCustomerConfigJSON contains the JSON metadata for the struct
+// [CustomerDetailCustomerConfig]
+type customerDetailCustomerConfigJSON struct {
+	SalesforceAccountID apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *CustomerDetailCustomerConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerDetailCustomerConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// This field's availability is dependent on your client's configuration.
 type CustomerDetailCurrentBillableStatus struct {
 	Value       CustomerDetailCurrentBillableStatusValue `json:"value,required"`
 	EffectiveAt time.Time                                `json:"effective_at,nullable" format:"date-time"`
@@ -301,28 +325,6 @@ func (r CustomerDetailCurrentBillableStatusValue) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type CustomerDetailCustomerConfig struct {
-	// The Salesforce account ID for the customer
-	SalesforceAccountID string                           `json:"salesforce_account_id,required,nullable"`
-	JSON                customerDetailCustomerConfigJSON `json:"-"`
-}
-
-// customerDetailCustomerConfigJSON contains the JSON metadata for the struct
-// [CustomerDetailCustomerConfig]
-type customerDetailCustomerConfigJSON struct {
-	SalesforceAccountID apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *CustomerDetailCustomerConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerDetailCustomerConfigJSON) RawJSON() string {
-	return r.raw
 }
 
 type CustomerNewResponse struct {

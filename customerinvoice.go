@@ -96,15 +96,16 @@ func (r *CustomerInvoiceService) AddCharge(ctx context.Context, customerID strin
 }
 
 type Invoice struct {
-	ID                   string                  `json:"id,required" format:"uuid"`
-	BillableStatus       InvoiceBillableStatus   `json:"billable_status,required"`
-	CreditType           shared.CreditType       `json:"credit_type,required"`
-	CustomerID           string                  `json:"customer_id,required" format:"uuid"`
-	LineItems            []InvoiceLineItem       `json:"line_items,required"`
-	Status               string                  `json:"status,required"`
-	Total                float64                 `json:"total,required"`
-	Type                 string                  `json:"type,required"`
-	AmendmentID          string                  `json:"amendment_id" format:"uuid"`
+	ID          string            `json:"id,required" format:"uuid"`
+	CreditType  shared.CreditType `json:"credit_type,required"`
+	CustomerID  string            `json:"customer_id,required" format:"uuid"`
+	LineItems   []InvoiceLineItem `json:"line_items,required"`
+	Status      string            `json:"status,required"`
+	Total       float64           `json:"total,required"`
+	Type        string            `json:"type,required"`
+	AmendmentID string            `json:"amendment_id" format:"uuid"`
+	// This field's availability is dependent on your client's configuration.
+	BillableStatus       InvoiceBillableStatus   `json:"billable_status"`
 	ContractCustomFields map[string]string       `json:"contract_custom_fields"`
 	ContractID           string                  `json:"contract_id" format:"uuid"`
 	CorrectionRecord     InvoiceCorrectionRecord `json:"correction_record"`
@@ -138,7 +139,6 @@ type Invoice struct {
 // invoiceJSON contains the JSON metadata for the struct [Invoice]
 type invoiceJSON struct {
 	ID                      apijson.Field
-	BillableStatus          apijson.Field
 	CreditType              apijson.Field
 	CustomerID              apijson.Field
 	LineItems               apijson.Field
@@ -146,6 +146,7 @@ type invoiceJSON struct {
 	Total                   apijson.Field
 	Type                    apijson.Field
 	AmendmentID             apijson.Field
+	BillableStatus          apijson.Field
 	ContractCustomFields    apijson.Field
 	ContractID              apijson.Field
 	CorrectionRecord        apijson.Field
@@ -175,21 +176,6 @@ func (r *Invoice) UnmarshalJSON(data []byte) (err error) {
 
 func (r invoiceJSON) RawJSON() string {
 	return r.raw
-}
-
-type InvoiceBillableStatus string
-
-const (
-	InvoiceBillableStatusBillable   InvoiceBillableStatus = "billable"
-	InvoiceBillableStatusUnbillable InvoiceBillableStatus = "unbillable"
-)
-
-func (r InvoiceBillableStatus) IsKnown() bool {
-	switch r {
-	case InvoiceBillableStatusBillable, InvoiceBillableStatusUnbillable:
-		return true
-	}
-	return false
 }
 
 type InvoiceLineItem struct {
@@ -433,6 +419,22 @@ func (r *InvoiceLineItemsSubLineItemsTier) UnmarshalJSON(data []byte) (err error
 
 func (r invoiceLineItemsSubLineItemsTierJSON) RawJSON() string {
 	return r.raw
+}
+
+// This field's availability is dependent on your client's configuration.
+type InvoiceBillableStatus string
+
+const (
+	InvoiceBillableStatusBillable   InvoiceBillableStatus = "billable"
+	InvoiceBillableStatusUnbillable InvoiceBillableStatus = "unbillable"
+)
+
+func (r InvoiceBillableStatus) IsKnown() bool {
+	switch r {
+	case InvoiceBillableStatusBillable, InvoiceBillableStatusUnbillable:
+		return true
+	}
+	return false
 }
 
 type InvoiceCorrectionRecord struct {
