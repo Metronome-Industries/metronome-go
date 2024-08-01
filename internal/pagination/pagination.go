@@ -58,6 +58,9 @@ func (r *CursorPage[T]) GetNextPage() (res *CursorPage[T], err error) {
 }
 
 func (r *CursorPage[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &CursorPage[T]{}
+	}
 	r.cfg = cfg
 	r.res = res
 }
