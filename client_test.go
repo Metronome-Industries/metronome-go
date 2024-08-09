@@ -36,10 +36,9 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Alerts.New(context.Background(), metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-		Name:      metronome.F("$100 spend threshold reached"),
-		Threshold: metronome.F(10000.000000),
+	client.Contracts.New(context.Background(), metronome.ContractNewParams{
+		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		StartingAt: metronome.F(time.Now()),
 	})
 	if userAgent != fmt.Sprintf("Metronome/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
@@ -63,10 +62,9 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	res, err := client.Alerts.New(context.Background(), metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-		Name:      metronome.F("$100 spend threshold reached"),
-		Threshold: metronome.F(10000.000000),
+	res, err := client.Contracts.New(context.Background(), metronome.ContractNewParams{
+		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		StartingAt: metronome.F(time.Now()),
 	})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
@@ -93,10 +91,9 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	res, err := client.Alerts.New(context.Background(), metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-		Name:      metronome.F("$100 spend threshold reached"),
-		Threshold: metronome.F(10000.000000),
+	res, err := client.Contracts.New(context.Background(), metronome.ContractNewParams{
+		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		StartingAt: metronome.F(time.Now()),
 	})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
@@ -119,10 +116,9 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	res, err := client.Alerts.New(cancelCtx, metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-		Name:      metronome.F("$100 spend threshold reached"),
-		Threshold: metronome.F(10000.000000),
+	res, err := client.Contracts.New(cancelCtx, metronome.ContractNewParams{
+		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		StartingAt: metronome.F(time.Now()),
 	})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
@@ -142,10 +138,9 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	res, err := client.Alerts.New(cancelCtx, metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-		Name:      metronome.F("$100 spend threshold reached"),
-		Threshold: metronome.F(10000.000000),
+	res, err := client.Contracts.New(cancelCtx, metronome.ContractNewParams{
+		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		StartingAt: metronome.F(time.Now()),
 	})
 	if err == nil || res != nil {
 		t.Error("expected there to be a cancel error and for the response to be nil")
@@ -171,10 +166,9 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		res, err := client.Alerts.New(deadlineCtx, metronome.AlertNewParams{
-			AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-			Name:      metronome.F("$100 spend threshold reached"),
-			Threshold: metronome.F(10000.000000),
+		res, err := client.Contracts.New(deadlineCtx, metronome.ContractNewParams{
+			CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			StartingAt: metronome.F(time.Now()),
 		})
 		if err == nil || res != nil {
 			t.Error("expected there to be a deadline error and for the response to be nil")

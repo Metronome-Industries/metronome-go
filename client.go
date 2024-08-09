@@ -26,6 +26,8 @@ type Client struct {
 	CustomFields    *CustomFieldService
 	BillableMetrics *BillableMetricService
 	Services        *ServiceService
+	Invoices        *InvoiceService
+	Contracts       *ContractService
 }
 
 // NewClient generates a new client with the default option read from the
@@ -54,6 +56,8 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.CustomFields = NewCustomFieldService(opts...)
 	r.BillableMetrics = NewBillableMetricService(opts...)
 	r.Services = NewServiceService(opts...)
+	r.Invoices = NewInvoiceService(opts...)
+	r.Contracts = NewContractService(opts...)
 
 	return
 }

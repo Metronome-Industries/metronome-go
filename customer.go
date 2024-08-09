@@ -26,11 +26,14 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCustomerService] method instead.
 type CustomerService struct {
-	Options       []option.RequestOption
-	Alerts        *CustomerAlertService
-	Plans         *CustomerPlanService
-	Invoices      *CustomerInvoiceService
-	BillingConfig *CustomerBillingConfigService
+	Options        []option.RequestOption
+	Alerts         *CustomerAlertService
+	Plans          *CustomerPlanService
+	Invoices       *CustomerInvoiceService
+	BillingConfig  *CustomerBillingConfigService
+	Commits        *CustomerCommitService
+	Credits        *CustomerCreditService
+	NamedSchedules *CustomerNamedScheduleService
 }
 
 // NewCustomerService generates a new service that applies the given options to
@@ -43,6 +46,9 @@ func NewCustomerService(opts ...option.RequestOption) (r *CustomerService) {
 	r.Plans = NewCustomerPlanService(opts...)
 	r.Invoices = NewCustomerInvoiceService(opts...)
 	r.BillingConfig = NewCustomerBillingConfigService(opts...)
+	r.Commits = NewCustomerCommitService(opts...)
+	r.Credits = NewCustomerCreditService(opts...)
+	r.NamedSchedules = NewCustomerNamedScheduleService(opts...)
 	return
 }
 

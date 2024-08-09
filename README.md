@@ -150,7 +150,7 @@ client := metronome.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Alerts.New(context.TODO(), ...,
+client.Contracts.New(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -166,8 +166,33 @@ This library provides some conveniences for working with paginated list endpoint
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
+```go
+iter := client.Contracts.Products.ListAutoPaging(context.TODO(), metronome.ContractProductListParams{})
+// Automatically fetches more pages as needed.
+for iter.Next() {
+	contractProductListResponse := iter.Current()
+	fmt.Printf("%+v\n", contractProductListResponse)
+}
+if err := iter.Err(); err != nil {
+	panic(err.Error())
+}
+```
+
 Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
 with additional helper methods like `.GetNextPage()`, e.g.:
+
+```go
+page, err := client.Contracts.Products.List(context.TODO(), metronome.ContractProductListParams{})
+for page != nil {
+	for _, product := range page.Data {
+		fmt.Printf("%+v\n", product)
+	}
+	page, err = page.GetNextPage()
+}
+if err != nil {
+	panic(err.Error())
+}
+```
 
 ### Errors
 
@@ -179,10 +204,9 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Alerts.New(context.TODO(), metronome.AlertNewParams{
-	AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-	Name:      metronome.F("$100 spend threshold reached"),
-	Threshold: metronome.F(10000.000000),
+_, err := client.Contracts.New(context.TODO(), metronome.ContractNewParams{
+	CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+	StartingAt: metronome.F(time.Now()),
 })
 if err != nil {
 	var apierr *metronome.Error
@@ -190,7 +214,7 @@ if err != nil {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/alerts/create": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/contracts/create": 400 Bad Request { ... }
 }
 ```
 
@@ -208,12 +232,11 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Alerts.New(
+client.Contracts.New(
 	ctx,
-	metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-		Name:      metronome.F("$100 spend threshold reached"),
-		Threshold: metronome.F(10000.000000),
+	metronome.ContractNewParams{
+		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		StartingAt: metronome.F(time.Now()),
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -248,12 +271,11 @@ client := metronome.NewClient(
 )
 
 // Override per-request:
-client.Alerts.New(
+client.Contracts.New(
 	context.TODO(),
-	metronome.AlertNewParams{
-		AlertType: metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
-		Name:      metronome.F("$100 spend threshold reached"),
-		Threshold: metronome.F(10000.000000),
+	metronome.ContractNewParams{
+		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		StartingAt: metronome.F(time.Now()),
 	},
 	option.WithMaxRetries(5),
 )
