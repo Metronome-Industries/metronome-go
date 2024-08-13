@@ -769,6 +769,8 @@ func (r CreditGrantListParams) URLQuery() (v url.Values) {
 type CreditGrantEditParams struct {
 	// the ID of the credit grant
 	ID param.Field[string] `json:"id,required" format:"uuid"`
+	// the updated credit grant type
+	CreditGrantType param.Field[string] `json:"credit_grant_type"`
 	// the updated expiration date for the credit grant
 	ExpiresAt param.Field[time.Time] `json:"expires_at" format:"date-time"`
 	// the updated name for the credit grant

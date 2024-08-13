@@ -109,9 +109,10 @@ func TestCreditGrantEditWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.CreditGrants.Edit(context.TODO(), metronome.CreditGrantEditParams{
-		ID:        metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
-		ExpiresAt: metronome.F(time.Now()),
-		Name:      metronome.F("Acme Corp Promotional Credit Grant"),
+		ID:              metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
+		CreditGrantType: metronome.F("credit_grant_type"),
+		ExpiresAt:       metronome.F(time.Now()),
+		Name:            metronome.F("Acme Corp Promotional Credit Grant"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
