@@ -423,7 +423,9 @@ type CustomerListBillableMetricsResponse struct {
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
 	PropertyFilters []CustomerListBillableMetricsResponsePropertyFilter `json:"property_filters"`
-	JSON            customerListBillableMetricsResponseJSON             `json:"-"`
+	// The SQL query associated with the billable metric
+	Sql  string                                  `json:"sql"`
+	JSON customerListBillableMetricsResponseJSON `json:"-"`
 }
 
 // customerListBillableMetricsResponseJSON contains the JSON metadata for the
@@ -441,6 +443,7 @@ type customerListBillableMetricsResponseJSON struct {
 	GroupBy         apijson.Field
 	GroupKeys       apijson.Field
 	PropertyFilters apijson.Field
+	Sql             apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }

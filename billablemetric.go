@@ -137,15 +137,15 @@ func (r billableMetricGetResponseJSON) RawJSON() string {
 type BillableMetricGetResponseData struct {
 	// ID of the billable metric
 	ID string `json:"id,required" format:"uuid"`
-	// Specifies the type of aggregation performed on matching events.
-	AggregationType BillableMetricGetResponseDataAggregationType `json:"aggregation_type,required"`
 	// The display name of the billable metric.
 	Name string `json:"name,required"`
 	// A key that specifies which property of the event is used to aggregate data. This
 	// key must be one of the property filter names and is not applicable when the
 	// aggregation type is 'count'.
-	AggregationKey string            `json:"aggregation_key"`
-	CustomFields   map[string]string `json:"custom_fields"`
+	AggregationKey string `json:"aggregation_key"`
+	// Specifies the type of aggregation performed on matching events.
+	AggregationType BillableMetricGetResponseDataAggregationType `json:"aggregation_type"`
+	CustomFields    map[string]string                            `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter BillableMetricGetResponseDataEventTypeFilter `json:"event_type_filter"`
 	// Property names that are used to group usage costs on an invoice. Each entry
@@ -155,20 +155,23 @@ type BillableMetricGetResponseData struct {
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
 	PropertyFilters []BillableMetricGetResponseDataPropertyFilter `json:"property_filters"`
-	JSON            billableMetricGetResponseDataJSON             `json:"-"`
+	// The SQL query associated with the billable metric
+	Sql  string                            `json:"sql"`
+	JSON billableMetricGetResponseDataJSON `json:"-"`
 }
 
 // billableMetricGetResponseDataJSON contains the JSON metadata for the struct
 // [BillableMetricGetResponseData]
 type billableMetricGetResponseDataJSON struct {
 	ID              apijson.Field
-	AggregationType apijson.Field
 	Name            apijson.Field
 	AggregationKey  apijson.Field
+	AggregationType apijson.Field
 	CustomFields    apijson.Field
 	EventTypeFilter apijson.Field
 	GroupKeys       apijson.Field
 	PropertyFilters apijson.Field
+	Sql             apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
@@ -307,7 +310,9 @@ type BillableMetricListResponse struct {
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
 	PropertyFilters []BillableMetricListResponsePropertyFilter `json:"property_filters"`
-	JSON            billableMetricListResponseJSON             `json:"-"`
+	// The SQL query associated with the billable metric
+	Sql  string                         `json:"sql"`
+	JSON billableMetricListResponseJSON `json:"-"`
 }
 
 // billableMetricListResponseJSON contains the JSON metadata for the struct
@@ -325,6 +330,7 @@ type billableMetricListResponseJSON struct {
 	GroupBy         apijson.Field
 	GroupKeys       apijson.Field
 	PropertyFilters apijson.Field
+	Sql             apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
