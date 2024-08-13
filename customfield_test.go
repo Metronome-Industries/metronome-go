@@ -27,7 +27,7 @@ func TestCustomFieldAddKey(t *testing.T) {
 	)
 	err := client.CustomFields.AddKey(context.TODO(), metronome.CustomFieldAddKeyParams{
 		EnforceUniqueness: metronome.F(true),
-		Entity:            metronome.F(metronome.CustomFieldAddKeyParamsEntityCustomer),
+		Entity:            metronome.F(metronome.CustomFieldAddKeyParamsEntityAlert),
 		Key:               metronome.F("x_account_id"),
 	})
 	if err != nil {
@@ -52,7 +52,7 @@ func TestCustomFieldDeleteValues(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.CustomFields.DeleteValues(context.TODO(), metronome.CustomFieldDeleteValuesParams{
-		Entity:   metronome.F(metronome.CustomFieldDeleteValuesParamsEntityCustomer),
+		Entity:   metronome.F(metronome.CustomFieldDeleteValuesParamsEntityAlert),
 		EntityID: metronome.F("99594816-e8a5-4bca-be21-8d1de0f45120"),
 		Keys:     metronome.F([]string{"x_account_id"}),
 	})
@@ -79,7 +79,7 @@ func TestCustomFieldListKeysWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CustomFields.ListKeys(context.TODO(), metronome.CustomFieldListKeysParams{
 		NextPage: metronome.F("next_page"),
-		Entities: metronome.F([]metronome.CustomFieldListKeysParamsEntity{metronome.CustomFieldListKeysParamsEntityCustomer, metronome.CustomFieldListKeysParamsEntityCreditGrant}),
+		Entities: metronome.F([]metronome.CustomFieldListKeysParamsEntity{metronome.CustomFieldListKeysParamsEntityAlert, metronome.CustomFieldListKeysParamsEntityBillableMetric}),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -103,7 +103,7 @@ func TestCustomFieldRemoveKey(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.CustomFields.RemoveKey(context.TODO(), metronome.CustomFieldRemoveKeyParams{
-		Entity: metronome.F(metronome.CustomFieldRemoveKeyParamsEntityCustomer),
+		Entity: metronome.F(metronome.CustomFieldRemoveKeyParamsEntityAlert),
 		Key:    metronome.F("x_account_id"),
 	})
 	if err != nil {
@@ -131,7 +131,7 @@ func TestCustomFieldSetValues(t *testing.T) {
 		CustomFields: metronome.F(map[string]string{
 			"x_account_id": "KyVnHhSBWl7eY2bl",
 		}),
-		Entity:   metronome.F(metronome.CustomFieldSetValuesParamsEntityCustomer),
+		Entity:   metronome.F(metronome.CustomFieldSetValuesParamsEntityAlert),
 		EntityID: metronome.F("99594816-e8a5-4bca-be21-8d1de0f45120"),
 	})
 	if err != nil {

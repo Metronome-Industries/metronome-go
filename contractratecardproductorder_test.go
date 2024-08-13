@@ -27,11 +27,11 @@ func TestContractRateCardProductOrderUpdate(t *testing.T) {
 	)
 	_, err := client.Contracts.RateCards.ProductOrders.Update(context.TODO(), metronome.ContractRateCardProductOrderUpdateParams{
 		ProductMoves: metronome.F([]metronome.ContractRateCardProductOrderUpdateParamsProductMove{{
-			ProductID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 			Position:  metronome.F(0.000000),
+			ProductID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		}, {
-			ProductID: metronome.F("b086f2f4-9851-4466-9ca0-30d53e6a42ac"),
 			Position:  metronome.F(1.000000),
+			ProductID: metronome.F("b086f2f4-9851-4466-9ca0-30d53e6a42ac"),
 		}}),
 		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
 	})

@@ -28,12 +28,12 @@ func TestCustomerCreditNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Customers.Credits.New(context.TODO(), metronome.CustomerCreditNewParams{
 		AccessSchedule: metronome.F(metronome.CustomerCreditNewParamsAccessSchedule{
-			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 			ScheduleItems: metronome.F([]metronome.CustomerCreditNewParamsAccessScheduleScheduleItem{{
 				Amount:       metronome.F(1000.000000),
-				StartingAt:   metronome.F(time.Now()),
 				EndingBefore: metronome.F(time.Now()),
+				StartingAt:   metronome.F(time.Now()),
 			}}),
+			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 		}),
 		CustomerID:            metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		Priority:              metronome.F(100.000000),

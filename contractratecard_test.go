@@ -31,8 +31,8 @@ func TestContractRateCardNewWithOptionalParams(t *testing.T) {
 		Name: metronome.F("My Rate Card"),
 		Aliases: metronome.F([]metronome.ContractRateCardNewParamsAlias{{
 			Name:         metronome.F("my-rate-card"),
-			StartingAt:   metronome.F(time.Now()),
 			EndingBefore: metronome.F(time.Now()),
+			StartingAt:   metronome.F(time.Now()),
 		}}),
 		CreditTypeConversions: metronome.F([]metronome.ContractRateCardNewParamsCreditTypeConversion{{
 			CustomCreditTypeID:  metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
@@ -95,16 +95,16 @@ func TestContractRateCardUpdateWithOptionalParams(t *testing.T) {
 		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
 		Aliases: metronome.F([]metronome.ContractRateCardUpdateParamsAlias{{
 			Name:         metronome.F("name"),
-			StartingAt:   metronome.F(time.Now()),
 			EndingBefore: metronome.F(time.Now()),
+			StartingAt:   metronome.F(time.Now()),
 		}, {
 			Name:         metronome.F("name"),
-			StartingAt:   metronome.F(time.Now()),
 			EndingBefore: metronome.F(time.Now()),
+			StartingAt:   metronome.F(time.Now()),
 		}, {
 			Name:         metronome.F("name"),
-			StartingAt:   metronome.F(time.Now()),
 			EndingBefore: metronome.F(time.Now()),
+			StartingAt:   metronome.F(time.Now()),
 		}}),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
@@ -166,14 +166,14 @@ func TestContractRateCardGetRateScheduleWithOptionalParams(t *testing.T) {
 		NextPage:     metronome.F("next_page"),
 		EndingBefore: metronome.F(time.Now()),
 		Selectors: metronome.F([]metronome.ContractRateCardGetRateScheduleParamsSelector{{
-			ProductID: metronome.F("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
-			PricingGroupValues: metronome.F(map[string]string{
-				"foo": "string",
-			}),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
 			}),
+			PricingGroupValues: metronome.F(map[string]string{
+				"foo": "string",
+			}),
+			ProductID: metronome.F("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
 		}}),
 	})
 	if err != nil {

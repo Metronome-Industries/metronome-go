@@ -27,7 +27,7 @@ func TestAlertNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Alerts.New(context.TODO(), metronome.AlertNewParams{
-		AlertType:              metronome.F(metronome.AlertNewParamsAlertTypeSpendThresholdReached),
+		AlertType:              metronome.F(metronome.AlertNewParamsAlertTypeLowCreditBalanceReached),
 		Name:                   metronome.F("$100 spend threshold reached"),
 		Threshold:              metronome.F(10000.000000),
 		BillableMetricID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),

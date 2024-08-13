@@ -28,12 +28,12 @@ func TestCustomerCommitNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Customers.Commits.New(context.TODO(), metronome.CustomerCommitNewParams{
 		AccessSchedule: metronome.F(metronome.CustomerCommitNewParamsAccessSchedule{
-			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 			ScheduleItems: metronome.F([]metronome.CustomerCommitNewParamsAccessScheduleScheduleItem{{
 				Amount:       metronome.F(1000.000000),
-				StartingAt:   metronome.F(time.Now()),
 				EndingBefore: metronome.F(time.Now()),
+				StartingAt:   metronome.F(time.Now()),
 			}}),
+			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 		}),
 		CustomerID:            metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		Priority:              metronome.F(100.000000),
@@ -49,21 +49,21 @@ func TestCustomerCommitNewWithOptionalParams(t *testing.T) {
 		InvoiceContractID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		InvoiceSchedule: metronome.F(metronome.CustomerCommitNewParamsInvoiceSchedule{
 			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-			ScheduleItems: metronome.F([]metronome.CustomerCommitNewParamsInvoiceScheduleScheduleItem{{
-				UnitPrice: metronome.F(10000000.000000),
-				Quantity:  metronome.F(1.000000),
-				Amount:    metronome.F(10000000.000000),
-				Timestamp: metronome.F(time.Now()),
-			}}),
 			RecurringSchedule: metronome.F(metronome.CustomerCommitNewParamsInvoiceScheduleRecurringSchedule{
-				StartingAt:         metronome.F(time.Now()),
+				AmountDistribution: metronome.F(metronome.CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionDivided),
 				EndingBefore:       metronome.F(time.Now()),
 				Frequency:          metronome.F(metronome.CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencyMonthly),
-				UnitPrice:          metronome.F(0.000000),
-				Quantity:           metronome.F(0.000000),
+				StartingAt:         metronome.F(time.Now()),
 				Amount:             metronome.F(0.000000),
-				AmountDistribution: metronome.F(metronome.CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionDivided),
+				Quantity:           metronome.F(0.000000),
+				UnitPrice:          metronome.F(0.000000),
 			}),
+			ScheduleItems: metronome.F([]metronome.CustomerCommitNewParamsInvoiceScheduleScheduleItem{{
+				Timestamp: metronome.F(time.Now()),
+				Amount:    metronome.F(10000000.000000),
+				Quantity:  metronome.F(1.000000),
+				UnitPrice: metronome.F(10000000.000000),
+			}}),
 		}),
 		Name:                    metronome.F("My Commit"),
 		NetsuiteSalesOrderID:    metronome.F("netsuite_sales_order_id"),

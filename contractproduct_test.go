@@ -29,7 +29,7 @@ func TestContractProductNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Contracts.Products.New(context.TODO(), metronome.ContractProductNewParams{
 		Name:                   metronome.F("My Product"),
-		Type:                   metronome.F(metronome.ContractProductNewParamsTypeUsage),
+		Type:                   metronome.F(metronome.ContractProductNewParamsTypeFixed),
 		BillableMetricID:       metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		CompositeProductIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 		CompositeTags:          metronome.F([]string{"string", "string", "string"}),
@@ -40,13 +40,13 @@ func TestContractProductNewWithOptionalParams(t *testing.T) {
 		PresentationGroupKey:   metronome.F([]string{"string", "string", "string"}),
 		PricingGroupKey:        metronome.F([]string{"string", "string", "string"}),
 		QuantityConversion: metronome.F(metronome.ContractProductNewParamsQuantityConversion{
-			Name:             metronome.F("name"),
 			ConversionFactor: metronome.F(0.000000),
 			Operation:        metronome.F(metronome.ContractProductNewParamsQuantityConversionOperationMultiply),
+			Name:             metronome.F("name"),
 		}),
 		QuantityRounding: metronome.F(metronome.ContractProductNewParamsQuantityRounding{
-			RoundingMethod: metronome.F(metronome.ContractProductNewParamsQuantityRoundingRoundingMethodRoundUp),
 			DecimalPlaces:  metronome.F(0.000000),
+			RoundingMethod: metronome.F(metronome.ContractProductNewParamsQuantityRoundingRoundingMethodRoundUp),
 		}),
 		Tags: metronome.F([]string{"string", "string", "string"}),
 	})
@@ -111,13 +111,13 @@ func TestContractProductUpdateWithOptionalParams(t *testing.T) {
 		PresentationGroupKey:   metronome.F([]string{"string", "string", "string"}),
 		PricingGroupKey:        metronome.F([]string{"string", "string", "string"}),
 		QuantityConversion: metronome.F(metronome.ContractProductUpdateParamsQuantityConversion{
-			Name:             metronome.F("name"),
 			ConversionFactor: metronome.F(0.000000),
 			Operation:        metronome.F(metronome.ContractProductUpdateParamsQuantityConversionOperationMultiply),
+			Name:             metronome.F("name"),
 		}),
 		QuantityRounding: metronome.F(metronome.ContractProductUpdateParamsQuantityRounding{
-			RoundingMethod: metronome.F(metronome.ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundUp),
 			DecimalPlaces:  metronome.F(0.000000),
+			RoundingMethod: metronome.F(metronome.ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundUp),
 		}),
 		Tags: metronome.F([]string{"string", "string", "string"}),
 	})
@@ -145,7 +145,7 @@ func TestContractProductListWithOptionalParams(t *testing.T) {
 	_, err := client.Contracts.Products.List(context.TODO(), metronome.ContractProductListParams{
 		Limit:         metronome.F(int64(1)),
 		NextPage:      metronome.F("next_page"),
-		ArchiveFilter: metronome.F(metronome.ContractProductListParamsArchiveFilterNotArchived),
+		ArchiveFilter: metronome.F(metronome.ContractProductListParamsArchiveFilterArchived),
 	})
 	if err != nil {
 		var apierr *metronome.Error

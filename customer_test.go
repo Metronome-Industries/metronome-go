@@ -30,11 +30,11 @@ func TestCustomerNewWithOptionalParams(t *testing.T) {
 	_, err := client.Customers.New(context.TODO(), metronome.CustomerNewParams{
 		Name: metronome.F("Example, Inc."),
 		BillingConfig: metronome.F(metronome.CustomerNewParamsBillingConfig{
-			BillingProviderType:       metronome.F(metronome.CustomerNewParamsBillingConfigBillingProviderTypeAwsMarketplace),
 			BillingProviderCustomerID: metronome.F("billing_provider_customer_id"),
-			StripeCollectionMethod:    metronome.F(metronome.CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically),
+			BillingProviderType:       metronome.F(metronome.CustomerNewParamsBillingConfigBillingProviderTypeAwsMarketplace),
 			AwsProductCode:            metronome.F("aws_product_code"),
 			AwsRegion:                 metronome.F(metronome.CustomerNewParamsBillingConfigAwsRegionAfSouth1),
+			StripeCollectionMethod:    metronome.F(metronome.CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically),
 		}),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",

@@ -32,15 +32,15 @@ func TestContractRateCardRateListWithOptionalParams(t *testing.T) {
 		Limit:      metronome.F(int64(1)),
 		NextPage:   metronome.F("next_page"),
 		Selectors: metronome.F([]metronome.ContractRateCardRateListParamsSelector{{
-			ProductID:   metronome.F("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
-			ProductTags: metronome.F([]string{"string", "string", "string"}),
-			PricingGroupValues: metronome.F(map[string]string{
-				"foo": "string",
-			}),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
 			}),
+			PricingGroupValues: metronome.F(map[string]string{
+				"foo": "string",
+			}),
+			ProductID:   metronome.F("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
+			ProductTags: metronome.F([]string{"string", "string", "string"}),
 		}}),
 	})
 	if err != nil {
@@ -82,14 +82,14 @@ func TestContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		}),
 		Quantity: metronome.F(0.000000),
 		Tiers: metronome.F([]metronome.ContractRateCardRateAddParamsTier{{
-			Size:  metronome.F(0.000000),
 			Price: metronome.F(0.000000),
+			Size:  metronome.F(0.000000),
 		}, {
-			Size:  metronome.F(0.000000),
 			Price: metronome.F(0.000000),
+			Size:  metronome.F(0.000000),
 		}, {
-			Size:  metronome.F(0.000000),
 			Price: metronome.F(0.000000),
+			Size:  metronome.F(0.000000),
 		}}),
 		UseListPrices: metronome.F(true),
 	})
@@ -117,61 +117,61 @@ func TestContractRateCardRateAddManyWithOptionalParams(t *testing.T) {
 	_, err := client.Contracts.RateCards.Rates.AddMany(context.TODO(), metronome.ContractRateCardRateAddManyParams{
 		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
 		Rates: metronome.F([]metronome.ContractRateCardRateAddManyParamsRate{{
-			ProductID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			Entitled:     metronome.F(true),
+			ProductID:    metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			RateType:     metronome.F(metronome.ContractRateCardRateAddManyParamsRatesRateTypeFlat),
+			StartingAt:   metronome.F(time.Now()),
+			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+			CustomRate: metronome.F(map[string]interface{}{
+				"foo": "bar",
+			}),
+			EndingBefore: metronome.F(time.Now()),
+			IsProrated:   metronome.F(true),
+			Price:        metronome.F(100.000000),
 			PricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
 			}),
-			StartingAt:    metronome.F(time.Now()),
-			EndingBefore:  metronome.F(time.Now()),
-			Entitled:      metronome.F(true),
-			RateType:      metronome.F(metronome.ContractRateCardRateAddManyParamsRatesRateTypeFlat),
-			Price:         metronome.F(100.000000),
-			CreditTypeID:  metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-			Quantity:      metronome.F(0.000000),
-			IsProrated:    metronome.F(true),
-			UseListPrices: metronome.F(true),
+			Quantity: metronome.F(0.000000),
 			Tiers: metronome.F([]metronome.ContractRateCardRateAddManyParamsRatesTier{{
-				Size:  metronome.F(0.000000),
 				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
 			}, {
-				Size:  metronome.F(0.000000),
 				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
 			}, {
-				Size:  metronome.F(0.000000),
 				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
 			}}),
+			UseListPrices: metronome.F(true),
+		}, {
+			Entitled:     metronome.F(true),
+			ProductID:    metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			RateType:     metronome.F(metronome.ContractRateCardRateAddManyParamsRatesRateTypeFlat),
+			StartingAt:   metronome.F(time.Now()),
+			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 			CustomRate: metronome.F(map[string]interface{}{
 				"foo": "bar",
 			}),
-		}, {
-			ProductID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			EndingBefore: metronome.F(time.Now()),
+			IsProrated:   metronome.F(true),
+			Price:        metronome.F(120.000000),
 			PricingGroupValues: metronome.F(map[string]string{
 				"region": "us-east-2",
 				"cloud":  "aws",
 			}),
-			StartingAt:    metronome.F(time.Now()),
-			EndingBefore:  metronome.F(time.Now()),
-			Entitled:      metronome.F(true),
-			RateType:      metronome.F(metronome.ContractRateCardRateAddManyParamsRatesRateTypeFlat),
-			Price:         metronome.F(120.000000),
-			CreditTypeID:  metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-			Quantity:      metronome.F(0.000000),
-			IsProrated:    metronome.F(true),
-			UseListPrices: metronome.F(true),
+			Quantity: metronome.F(0.000000),
 			Tiers: metronome.F([]metronome.ContractRateCardRateAddManyParamsRatesTier{{
-				Size:  metronome.F(0.000000),
 				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
 			}, {
-				Size:  metronome.F(0.000000),
 				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
 			}, {
-				Size:  metronome.F(0.000000),
 				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
 			}}),
-			CustomRate: metronome.F(map[string]interface{}{
-				"foo": "bar",
-			}),
+			UseListPrices: metronome.F(true),
 		}}),
 	})
 	if err != nil {

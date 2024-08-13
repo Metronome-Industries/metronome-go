@@ -28,7 +28,7 @@ func TestCustomerBillingConfigNewWithOptionalParams(t *testing.T) {
 	err := client.Customers.BillingConfig.New(
 		context.TODO(),
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.CustomerBillingConfigNewParamsBillingProviderTypeStripe,
+		metronome.CustomerBillingConfigNewParamsBillingProviderTypeAwsMarketplace,
 		metronome.CustomerBillingConfigNewParams{
 			BillingProviderCustomerID: metronome.F("cus_AJ6y20bjkOOayM"),
 			AwsProductCode:            metronome.F("aws_product_code"),
@@ -60,7 +60,7 @@ func TestCustomerBillingConfigGet(t *testing.T) {
 	_, err := client.Customers.BillingConfig.Get(
 		context.TODO(),
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.CustomerBillingConfigGetParamsBillingProviderTypeStripe,
+		metronome.CustomerBillingConfigGetParamsBillingProviderTypeAwsMarketplace,
 	)
 	if err != nil {
 		var apierr *metronome.Error
@@ -86,7 +86,7 @@ func TestCustomerBillingConfigDelete(t *testing.T) {
 	err := client.Customers.BillingConfig.Delete(
 		context.TODO(),
 		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.CustomerBillingConfigDeleteParamsBillingProviderTypeStripe,
+		metronome.CustomerBillingConfigDeleteParamsBillingProviderTypeAwsMarketplace,
 	)
 	if err != nil {
 		var apierr *metronome.Error

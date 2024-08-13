@@ -27,7 +27,7 @@ func TestBillableMetricNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.BillableMetrics.New(context.TODO(), metronome.BillableMetricNewParams{
-		AggregationType: metronome.F(metronome.BillableMetricNewParamsAggregationTypeSum),
+		AggregationType: metronome.F(metronome.BillableMetricNewParamsAggregationTypeCount),
 		Name:            metronome.F("CPU Hours"),
 		AggregationKey:  metronome.F("cpu_hours"),
 		CustomFields: metronome.F(map[string]string{

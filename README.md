@@ -53,10 +53,10 @@ func main() {
 	)
 	response, err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
 		Usage: []metronome.UsageIngestParamsUsage{{
-			TransactionID: metronome.F("2021-01-01T00:00:00Z_cluster42"),
 			CustomerID:    metronome.F("team@example.com"),
 			EventType:     metronome.F("heartbeat"),
 			Timestamp:     metronome.F("2021-01-01T00:00:00Z"),
+			TransactionID: metronome.F("2021-01-01T00:00:00Z_cluster42"),
 		}},
 	})
 	if err != nil {
