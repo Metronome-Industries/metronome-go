@@ -2716,8 +2716,10 @@ func (r ContractNewParams) MarshalJSON() (data []byte, err error) {
 
 // This field's availability is dependent on your client's configuration.
 type ContractNewParamsBillingProviderConfiguration struct {
-	BillingProvider param.Field[ContractNewParamsBillingProviderConfigurationBillingProvider] `json:"billing_provider,required"`
-	DeliveryMethod  param.Field[ContractNewParamsBillingProviderConfigurationDeliveryMethod]  `json:"delivery_method,required"`
+	BillingProvider param.Field[ContractNewParamsBillingProviderConfigurationBillingProvider] `json:"billing_provider"`
+	// The Metronome ID of the billing provider configuration
+	BillingProviderConfigurationID param.Field[string]                                                      `json:"billing_provider_configuration_id" format:"uuid"`
+	DeliveryMethod                 param.Field[ContractNewParamsBillingProviderConfigurationDeliveryMethod] `json:"delivery_method"`
 }
 
 func (r ContractNewParamsBillingProviderConfiguration) MarshalJSON() (data []byte, err error) {

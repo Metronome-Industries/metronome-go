@@ -30,8 +30,9 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 		BillingProviderConfiguration: metronome.F(metronome.ContractNewParamsBillingProviderConfiguration{
-			BillingProvider: metronome.F(metronome.ContractNewParamsBillingProviderConfigurationBillingProviderAwsMarketplace),
-			DeliveryMethod:  metronome.F(metronome.ContractNewParamsBillingProviderConfigurationDeliveryMethodDirectToBillingProvider),
+			BillingProvider:                metronome.F(metronome.ContractNewParamsBillingProviderConfigurationBillingProviderAwsMarketplace),
+			BillingProviderConfigurationID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			DeliveryMethod:                 metronome.F(metronome.ContractNewParamsBillingProviderConfigurationDeliveryMethodDirectToBillingProvider),
 		}),
 		Commits: metronome.F([]metronome.ContractNewParamsCommit{{
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
