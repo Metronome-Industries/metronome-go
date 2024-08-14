@@ -1970,17 +1970,33 @@ func (r IDParam) MarshalJSON() (data []byte, err error) {
 }
 
 type Override struct {
-	ID                    string                      `json:"id,required" format:"uuid"`
-	StartingAt            time.Time                   `json:"starting_at,required" format:"date-time"`
-	ApplicableProductTags []string                    `json:"applicable_product_tags"`
-	EndingBefore          time.Time                   `json:"ending_before" format:"date-time"`
-	Entitled              bool                        `json:"entitled"`
-	Multiplier            float64                     `json:"multiplier"`
-	OverrideSpecifiers    []OverrideOverrideSpecifier `json:"override_specifiers"`
-	OverwriteRate         OverrideOverwriteRate       `json:"overwrite_rate"`
-	Product               OverrideProduct             `json:"product"`
-	Type                  OverrideType                `json:"type"`
-	JSON                  overrideJSON                `json:"-"`
+	ID                    string     `json:"id,required" format:"uuid"`
+	StartingAt            time.Time  `json:"starting_at,required" format:"date-time"`
+	ApplicableProductTags []string   `json:"applicable_product_tags"`
+	CreditType            CreditType `json:"credit_type"`
+	EndingBefore          time.Time  `json:"ending_before" format:"date-time"`
+	Entitled              bool       `json:"entitled"`
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
+	IsProrated         bool                        `json:"is_prorated"`
+	Multiplier         float64                     `json:"multiplier"`
+	OverrideSpecifiers []OverrideOverrideSpecifier `json:"override_specifiers"`
+	OverrideTiers      []OverrideOverrideTier      `json:"override_tiers"`
+	OverwriteRate      OverrideOverwriteRate       `json:"overwrite_rate"`
+	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+	Price    float64         `json:"price"`
+	Priority float64         `json:"priority"`
+	Product  OverrideProduct `json:"product"`
+	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+	Quantity float64          `json:"quantity"`
+	RateType OverrideRateType `json:"rate_type"`
+	// Only set for TIERED rate_type.
+	Tiers []OverrideTier `json:"tiers"`
+	Type  OverrideType   `json:"type"`
+	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+	// processors.
+	Value map[string]interface{} `json:"value"`
+	JSON  overrideJSON           `json:"-"`
 }
 
 // overrideJSON contains the JSON metadata for the struct [Override]
@@ -1988,13 +2004,22 @@ type overrideJSON struct {
 	ID                    apijson.Field
 	StartingAt            apijson.Field
 	ApplicableProductTags apijson.Field
+	CreditType            apijson.Field
 	EndingBefore          apijson.Field
 	Entitled              apijson.Field
+	IsProrated            apijson.Field
 	Multiplier            apijson.Field
 	OverrideSpecifiers    apijson.Field
+	OverrideTiers         apijson.Field
 	OverwriteRate         apijson.Field
+	Price                 apijson.Field
+	Priority              apijson.Field
 	Product               apijson.Field
+	Quantity              apijson.Field
+	RateType              apijson.Field
+	Tiers                 apijson.Field
 	Type                  apijson.Field
+	Value                 apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -2034,8 +2059,32 @@ func (r overrideOverrideSpecifierJSON) RawJSON() string {
 	return r.raw
 }
 
+type OverrideOverrideTier struct {
+	Multiplier float64                  `json:"multiplier,required"`
+	Size       float64                  `json:"size"`
+	JSON       overrideOverrideTierJSON `json:"-"`
+}
+
+// overrideOverrideTierJSON contains the JSON metadata for the struct
+// [OverrideOverrideTier]
+type overrideOverrideTierJSON struct {
+	Multiplier  apijson.Field
+	Size        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *OverrideOverrideTier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r overrideOverrideTierJSON) RawJSON() string {
+	return r.raw
+}
+
 type OverrideOverwriteRate struct {
-	RateType OverrideOverwriteRateRateType `json:"rate_type,required"`
+	RateType   OverrideOverwriteRateRateType `json:"rate_type,required"`
+	CreditType CreditType                    `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]interface{} `json:"custom_rate"`
@@ -2055,6 +2104,7 @@ type OverrideOverwriteRate struct {
 // [OverrideOverwriteRate]
 type overrideOverwriteRateJSON struct {
 	RateType    apijson.Field
+	CreditType  apijson.Field
 	CustomRate  apijson.Field
 	IsProrated  apijson.Field
 	Price       apijson.Field
@@ -2140,16 +2190,62 @@ func (r overrideProductJSON) RawJSON() string {
 	return r.raw
 }
 
+type OverrideRateType string
+
+const (
+	OverrideRateTypeFlat         OverrideRateType = "FLAT"
+	OverrideRateTypeFlat         OverrideRateType = "flat"
+	OverrideRateTypePercentage   OverrideRateType = "PERCENTAGE"
+	OverrideRateTypePercentage   OverrideRateType = "percentage"
+	OverrideRateTypeSubscription OverrideRateType = "SUBSCRIPTION"
+	OverrideRateTypeSubscription OverrideRateType = "subscription"
+	OverrideRateTypeTiered       OverrideRateType = "TIERED"
+	OverrideRateTypeTiered       OverrideRateType = "tiered"
+	OverrideRateTypeCustom       OverrideRateType = "CUSTOM"
+	OverrideRateTypeCustom       OverrideRateType = "custom"
+)
+
+func (r OverrideRateType) IsKnown() bool {
+	switch r {
+	case OverrideRateTypeFlat, OverrideRateTypeFlat, OverrideRateTypePercentage, OverrideRateTypePercentage, OverrideRateTypeSubscription, OverrideRateTypeSubscription, OverrideRateTypeTiered, OverrideRateTypeTiered, OverrideRateTypeCustom, OverrideRateTypeCustom:
+		return true
+	}
+	return false
+}
+
+type OverrideTier struct {
+	Price float64          `json:"price,required"`
+	Size  float64          `json:"size"`
+	JSON  overrideTierJSON `json:"-"`
+}
+
+// overrideTierJSON contains the JSON metadata for the struct [OverrideTier]
+type overrideTierJSON struct {
+	Price       apijson.Field
+	Size        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *OverrideTier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r overrideTierJSON) RawJSON() string {
+	return r.raw
+}
+
 type OverrideType string
 
 const (
 	OverrideTypeOverwrite  OverrideType = "OVERWRITE"
 	OverrideTypeMultiplier OverrideType = "MULTIPLIER"
+	OverrideTypeTiered     OverrideType = "TIERED"
 )
 
 func (r OverrideType) IsKnown() bool {
 	switch r {
-	case OverrideTypeOverwrite, OverrideTypeMultiplier:
+	case OverrideTypeOverwrite, OverrideTypeMultiplier, OverrideTypeTiered:
 		return true
 	}
 	return false

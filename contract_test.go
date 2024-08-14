@@ -451,7 +451,17 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Type:      metronome.F(metronome.ContractNewParamsOverridesTypeOverwrite),
+			Tiers: metronome.F([]metronome.ContractNewParamsOverridesTier{{
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}}),
+			Type: metronome.F(metronome.ContractNewParamsOverridesTypeOverwrite),
 		}, {
 			StartingAt:            metronome.F(time.Now()),
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
@@ -508,7 +518,17 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Type:      metronome.F(metronome.ContractNewParamsOverridesTypeOverwrite),
+			Tiers: metronome.F([]metronome.ContractNewParamsOverridesTier{{
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}}),
+			Type: metronome.F(metronome.ContractNewParamsOverridesTypeOverwrite),
 		}, {
 			StartingAt:            metronome.F(time.Now()),
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
@@ -565,7 +585,17 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Type:      metronome.F(metronome.ContractNewParamsOverridesTypeOverwrite),
+			Tiers: metronome.F([]metronome.ContractNewParamsOverridesTier{{
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}}),
+			Type: metronome.F(metronome.ContractNewParamsOverridesTypeOverwrite),
 		}}),
 		ProfessionalServices: metronome.F([]metronome.ContractNewParamsProfessionalService{{
 			MaxAmount: metronome.F(0.000000),
@@ -1296,7 +1326,17 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Type:      metronome.F(metronome.ContractAmendParamsOverridesTypeOverwrite),
+			Tiers: metronome.F([]metronome.ContractAmendParamsOverridesTier{{
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}}),
+			Type: metronome.F(metronome.ContractAmendParamsOverridesTypeOverwrite),
 		}, {
 			StartingAt:            metronome.F(time.Now()),
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
@@ -1353,7 +1393,17 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Type:      metronome.F(metronome.ContractAmendParamsOverridesTypeOverwrite),
+			Tiers: metronome.F([]metronome.ContractAmendParamsOverridesTier{{
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}}),
+			Type: metronome.F(metronome.ContractAmendParamsOverridesTypeOverwrite),
 		}, {
 			StartingAt:            metronome.F(time.Now()),
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
@@ -1410,7 +1460,17 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Type:      metronome.F(metronome.ContractAmendParamsOverridesTypeOverwrite),
+			Tiers: metronome.F([]metronome.ContractAmendParamsOverridesTier{{
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}, {
+				Multiplier: metronome.F(0.000000),
+				Size:       metronome.F(0.000000),
+			}}),
+			Type: metronome.F(metronome.ContractAmendParamsOverridesTypeOverwrite),
 		}}),
 		ProfessionalServices: metronome.F([]metronome.ContractAmendParamsProfessionalService{{
 			MaxAmount: metronome.F(0.000000),

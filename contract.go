@@ -2681,7 +2681,7 @@ type ContractNewParams struct {
 	// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 	// prices automatically. EXPLICIT prioritization requires specifying priorities for
 	// each multiplier; the one with the lowest priority value will be prioritized
-	// first.
+	// first. If tiered overrides are used, prioritization must be explicit.
 	MultiplierOverridePrioritization param.Field[ContractNewParamsMultiplierOverridePrioritization] `json:"multiplier_override_prioritization"`
 	Name                             param.Field[string]                                            `json:"name"`
 	NetPaymentTermsDays              param.Field[float64]                                           `json:"net_payment_terms_days"`
@@ -3116,7 +3116,7 @@ func (r ContractNewParamsDiscountsScheduleScheduleItem) MarshalJSON() (data []by
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 // prices automatically. EXPLICIT prioritization requires specifying priorities for
 // each multiplier; the one with the lowest priority value will be prioritized
-// first.
+// first. If tiered overrides are used, prioritization must be explicit.
 type ContractNewParamsMultiplierOverridePrioritization string
 
 const (
@@ -3149,13 +3149,16 @@ type ContractNewParamsOverride struct {
 	OverrideSpecifiers param.Field[[]ContractNewParamsOverridesOverrideSpecifier] `json:"override_specifiers"`
 	// Required for OVERWRITE type.
 	OverwriteRate param.Field[ContractNewParamsOverridesOverwriteRate] `json:"overwrite_rate"`
-	// Required for EXPLICIT multiplier prioritization scheme. If multiple multipliers
-	// are applicable, the one with the lower priority value will apply first. Must
-	// be >0.
+	// Required for EXPLICIT multiplier prioritization scheme and all TIERED overrides.
+	// Under EXPLICIT prioritization, overwrites are prioritized first, and then tiered
+	// and multiplier overrides are prioritized by their priority value (lowest first).
+	// Must be > 0.
 	Priority param.Field[float64] `json:"priority"`
 	// ID of the product whose rate is being overridden
 	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// Overwrites are prioritized over multipliers.
+	// Required for TIERED type. Must have at least one tier.
+	Tiers param.Field[[]ContractNewParamsOverridesTier] `json:"tiers"`
+	// Overwrites are prioritized over multipliers and tiered overrides.
 	Type param.Field[ContractNewParamsOverridesType] `json:"type"`
 }
 
@@ -3236,7 +3239,16 @@ func (r ContractNewParamsOverridesOverwriteRateTier) MarshalJSON() (data []byte,
 	return apijson.MarshalRoot(r)
 }
 
-// Overwrites are prioritized over multipliers.
+type ContractNewParamsOverridesTier struct {
+	Multiplier param.Field[float64] `json:"multiplier,required"`
+	Size       param.Field[float64] `json:"size"`
+}
+
+func (r ContractNewParamsOverridesTier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Overwrites are prioritized over multipliers and tiered overrides.
 type ContractNewParamsOverridesType string
 
 const (
@@ -3244,11 +3256,13 @@ const (
 	ContractNewParamsOverridesTypeOverwrite  ContractNewParamsOverridesType = "overwrite"
 	ContractNewParamsOverridesTypeMultiplier ContractNewParamsOverridesType = "MULTIPLIER"
 	ContractNewParamsOverridesTypeMultiplier ContractNewParamsOverridesType = "multiplier"
+	ContractNewParamsOverridesTypeTiered     ContractNewParamsOverridesType = "TIERED"
+	ContractNewParamsOverridesTypeTiered     ContractNewParamsOverridesType = "tiered"
 )
 
 func (r ContractNewParamsOverridesType) IsKnown() bool {
 	switch r {
-	case ContractNewParamsOverridesTypeOverwrite, ContractNewParamsOverridesTypeOverwrite, ContractNewParamsOverridesTypeMultiplier, ContractNewParamsOverridesTypeMultiplier:
+	case ContractNewParamsOverridesTypeOverwrite, ContractNewParamsOverridesTypeOverwrite, ContractNewParamsOverridesTypeMultiplier, ContractNewParamsOverridesTypeMultiplier, ContractNewParamsOverridesTypeTiered, ContractNewParamsOverridesTypeTiered:
 		return true
 	}
 	return false
@@ -4020,13 +4034,16 @@ type ContractAmendParamsOverride struct {
 	OverrideSpecifiers param.Field[[]ContractAmendParamsOverridesOverrideSpecifier] `json:"override_specifiers"`
 	// Required for OVERWRITE type.
 	OverwriteRate param.Field[ContractAmendParamsOverridesOverwriteRate] `json:"overwrite_rate"`
-	// Required for EXPLICIT multiplier prioritization scheme. If multiple multipliers
-	// are applicable, the one with the lower priority value will apply first. Must
-	// be >0.
+	// Required for EXPLICIT multiplier prioritization scheme and all TIERED overrides.
+	// Under EXPLICIT prioritization, overwrites are prioritized first, and then tiered
+	// and multiplier overrides are prioritized by their priority value (lowest first).
+	// Must be > 0.
 	Priority param.Field[float64] `json:"priority"`
 	// ID of the product whose rate is being overridden
 	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// Overwrites are prioritized over multipliers.
+	// Required for TIERED type. Must have at least one tier.
+	Tiers param.Field[[]ContractAmendParamsOverridesTier] `json:"tiers"`
+	// Overwrites are prioritized over multipliers and tiered overrides.
 	Type param.Field[ContractAmendParamsOverridesType] `json:"type"`
 }
 
@@ -4107,7 +4124,16 @@ func (r ContractAmendParamsOverridesOverwriteRateTier) MarshalJSON() (data []byt
 	return apijson.MarshalRoot(r)
 }
 
-// Overwrites are prioritized over multipliers.
+type ContractAmendParamsOverridesTier struct {
+	Multiplier param.Field[float64] `json:"multiplier,required"`
+	Size       param.Field[float64] `json:"size"`
+}
+
+func (r ContractAmendParamsOverridesTier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Overwrites are prioritized over multipliers and tiered overrides.
 type ContractAmendParamsOverridesType string
 
 const (
@@ -4115,11 +4141,13 @@ const (
 	ContractAmendParamsOverridesTypeOverwrite  ContractAmendParamsOverridesType = "overwrite"
 	ContractAmendParamsOverridesTypeMultiplier ContractAmendParamsOverridesType = "MULTIPLIER"
 	ContractAmendParamsOverridesTypeMultiplier ContractAmendParamsOverridesType = "multiplier"
+	ContractAmendParamsOverridesTypeTiered     ContractAmendParamsOverridesType = "TIERED"
+	ContractAmendParamsOverridesTypeTiered     ContractAmendParamsOverridesType = "tiered"
 )
 
 func (r ContractAmendParamsOverridesType) IsKnown() bool {
 	switch r {
-	case ContractAmendParamsOverridesTypeOverwrite, ContractAmendParamsOverridesTypeOverwrite, ContractAmendParamsOverridesTypeMultiplier, ContractAmendParamsOverridesTypeMultiplier:
+	case ContractAmendParamsOverridesTypeOverwrite, ContractAmendParamsOverridesTypeOverwrite, ContractAmendParamsOverridesTypeMultiplier, ContractAmendParamsOverridesTypeMultiplier, ContractAmendParamsOverridesTypeTiered, ContractAmendParamsOverridesTypeTiered:
 		return true
 	}
 	return false

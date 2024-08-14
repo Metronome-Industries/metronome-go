@@ -389,6 +389,9 @@ type Override = shared.Override
 type OverrideOverrideSpecifier = shared.OverrideOverrideSpecifier
 
 // This is an alias to an internal type.
+type OverrideOverrideTier = shared.OverrideOverrideTier
+
+// This is an alias to an internal type.
 type OverrideOverwriteRate = shared.OverrideOverwriteRate
 
 // This is an alias to an internal type.
@@ -416,6 +419,27 @@ type OverrideOverwriteRateTier = shared.OverrideOverwriteRateTier
 type OverrideProduct = shared.OverrideProduct
 
 // This is an alias to an internal type.
+type OverrideRateType = shared.OverrideRateType
+
+// This is an alias to an internal value.
+const OverrideRateTypeFlat = shared.OverrideRateTypeFlat
+
+// This is an alias to an internal value.
+const OverrideRateTypePercentage = shared.OverrideRateTypePercentage
+
+// This is an alias to an internal value.
+const OverrideRateTypeSubscription = shared.OverrideRateTypeSubscription
+
+// This is an alias to an internal value.
+const OverrideRateTypeTiered = shared.OverrideRateTypeTiered
+
+// This is an alias to an internal value.
+const OverrideRateTypeCustom = shared.OverrideRateTypeCustom
+
+// This is an alias to an internal type.
+type OverrideTier = shared.OverrideTier
+
+// This is an alias to an internal type.
 type OverrideType = shared.OverrideType
 
 // This is an alias to an internal value.
@@ -423,6 +447,9 @@ const OverrideTypeOverwrite = shared.OverrideTypeOverwrite
 
 // This is an alias to an internal value.
 const OverrideTypeMultiplier = shared.OverrideTypeMultiplier
+
+// This is an alias to an internal value.
+const OverrideTypeTiered = shared.OverrideTypeTiered
 
 // This is an alias to an internal type.
 type Rate = shared.Rate
