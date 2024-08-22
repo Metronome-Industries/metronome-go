@@ -1098,14 +1098,12 @@ type ContractWithoutAmendmentsUsageStatementScheduleFrequency string
 
 const (
 	ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly   ContractWithoutAmendmentsUsageStatementScheduleFrequency = "MONTHLY"
-	ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly   ContractWithoutAmendmentsUsageStatementScheduleFrequency = "monthly"
 	ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly ContractWithoutAmendmentsUsageStatementScheduleFrequency = "QUARTERLY"
-	ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly ContractWithoutAmendmentsUsageStatementScheduleFrequency = "quarterly"
 )
 
 func (r ContractWithoutAmendmentsUsageStatementScheduleFrequency) IsKnown() bool {
 	switch r {
-	case ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly:
+	case ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly:
 		return true
 	}
 	return false
@@ -2126,20 +2124,15 @@ type OverrideOverwriteRateRateType string
 
 const (
 	OverrideOverwriteRateRateTypeFlat         OverrideOverwriteRateRateType = "FLAT"
-	OverrideOverwriteRateRateTypeFlat         OverrideOverwriteRateRateType = "flat"
 	OverrideOverwriteRateRateTypePercentage   OverrideOverwriteRateRateType = "PERCENTAGE"
-	OverrideOverwriteRateRateTypePercentage   OverrideOverwriteRateRateType = "percentage"
 	OverrideOverwriteRateRateTypeSubscription OverrideOverwriteRateRateType = "SUBSCRIPTION"
-	OverrideOverwriteRateRateTypeSubscription OverrideOverwriteRateRateType = "subscription"
 	OverrideOverwriteRateRateTypeTiered       OverrideOverwriteRateRateType = "TIERED"
-	OverrideOverwriteRateRateTypeTiered       OverrideOverwriteRateRateType = "tiered"
 	OverrideOverwriteRateRateTypeCustom       OverrideOverwriteRateRateType = "CUSTOM"
-	OverrideOverwriteRateRateTypeCustom       OverrideOverwriteRateRateType = "custom"
 )
 
 func (r OverrideOverwriteRateRateType) IsKnown() bool {
 	switch r {
-	case OverrideOverwriteRateRateTypeFlat, OverrideOverwriteRateRateTypeFlat, OverrideOverwriteRateRateTypePercentage, OverrideOverwriteRateRateTypePercentage, OverrideOverwriteRateRateTypeSubscription, OverrideOverwriteRateRateTypeSubscription, OverrideOverwriteRateRateTypeTiered, OverrideOverwriteRateRateTypeTiered, OverrideOverwriteRateRateTypeCustom, OverrideOverwriteRateRateTypeCustom:
+	case OverrideOverwriteRateRateTypeFlat, OverrideOverwriteRateRateTypePercentage, OverrideOverwriteRateRateTypeSubscription, OverrideOverwriteRateRateTypeTiered, OverrideOverwriteRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -2194,20 +2187,15 @@ type OverrideRateType string
 
 const (
 	OverrideRateTypeFlat         OverrideRateType = "FLAT"
-	OverrideRateTypeFlat         OverrideRateType = "flat"
 	OverrideRateTypePercentage   OverrideRateType = "PERCENTAGE"
-	OverrideRateTypePercentage   OverrideRateType = "percentage"
 	OverrideRateTypeSubscription OverrideRateType = "SUBSCRIPTION"
-	OverrideRateTypeSubscription OverrideRateType = "subscription"
 	OverrideRateTypeTiered       OverrideRateType = "TIERED"
-	OverrideRateTypeTiered       OverrideRateType = "tiered"
 	OverrideRateTypeCustom       OverrideRateType = "CUSTOM"
-	OverrideRateTypeCustom       OverrideRateType = "custom"
 )
 
 func (r OverrideRateType) IsKnown() bool {
 	switch r {
-	case OverrideRateTypeFlat, OverrideRateTypeFlat, OverrideRateTypePercentage, OverrideRateTypePercentage, OverrideRateTypeSubscription, OverrideRateTypeSubscription, OverrideRateTypeTiered, OverrideRateTypeTiered, OverrideRateTypeCustom, OverrideRateTypeCustom:
+	case OverrideRateTypeFlat, OverrideRateTypePercentage, OverrideRateTypeSubscription, OverrideRateTypeTiered, OverrideRateTypeCustom:
 		return true
 	}
 	return false
@@ -2303,20 +2291,15 @@ type RateRateType string
 
 const (
 	RateRateTypeFlat         RateRateType = "FLAT"
-	RateRateTypeFlat         RateRateType = "flat"
 	RateRateTypePercentage   RateRateType = "PERCENTAGE"
-	RateRateTypePercentage   RateRateType = "percentage"
 	RateRateTypeSubscription RateRateType = "SUBSCRIPTION"
-	RateRateTypeSubscription RateRateType = "subscription"
 	RateRateTypeCustom       RateRateType = "CUSTOM"
-	RateRateTypeCustom       RateRateType = "custom"
 	RateRateTypeTiered       RateRateType = "TIERED"
-	RateRateTypeTiered       RateRateType = "tiered"
 )
 
 func (r RateRateType) IsKnown() bool {
 	switch r {
-	case RateRateTypeFlat, RateRateTypeFlat, RateRateTypePercentage, RateRateTypePercentage, RateRateTypeSubscription, RateRateTypeSubscription, RateRateTypeCustom, RateRateTypeCustom, RateRateTypeTiered, RateRateTypeTiered:
+	case RateRateTypeFlat, RateRateTypePercentage, RateRateTypeSubscription, RateRateTypeCustom, RateRateTypeTiered:
 		return true
 	}
 	return false

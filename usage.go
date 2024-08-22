@@ -204,20 +204,14 @@ func (r UsageListParams) URLQuery() (v url.Values) {
 type UsageListParamsWindowSize string
 
 const (
-	UsageListParamsWindowSizeHour UsageListParamsWindowSize = "hour"
-	UsageListParamsWindowSizeDay  UsageListParamsWindowSize = "day"
-	UsageListParamsWindowSizeNone UsageListParamsWindowSize = "none"
 	UsageListParamsWindowSizeHour UsageListParamsWindowSize = "HOUR"
 	UsageListParamsWindowSizeDay  UsageListParamsWindowSize = "DAY"
 	UsageListParamsWindowSizeNone UsageListParamsWindowSize = "NONE"
-	UsageListParamsWindowSizeHour UsageListParamsWindowSize = "Hour"
-	UsageListParamsWindowSizeDay  UsageListParamsWindowSize = "Day"
-	UsageListParamsWindowSizeNone UsageListParamsWindowSize = "None"
 )
 
 func (r UsageListParamsWindowSize) IsKnown() bool {
 	switch r {
-	case UsageListParamsWindowSizeHour, UsageListParamsWindowSizeDay, UsageListParamsWindowSizeNone, UsageListParamsWindowSizeHour, UsageListParamsWindowSizeDay, UsageListParamsWindowSizeNone, UsageListParamsWindowSizeHour, UsageListParamsWindowSizeDay, UsageListParamsWindowSizeNone:
+	case UsageListParamsWindowSizeHour, UsageListParamsWindowSizeDay, UsageListParamsWindowSizeNone:
 		return true
 	}
 	return false
@@ -304,20 +298,14 @@ func (r UsageListWithGroupsParams) URLQuery() (v url.Values) {
 type UsageListWithGroupsParamsWindowSize string
 
 const (
-	UsageListWithGroupsParamsWindowSizeHour UsageListWithGroupsParamsWindowSize = "hour"
-	UsageListWithGroupsParamsWindowSizeDay  UsageListWithGroupsParamsWindowSize = "day"
-	UsageListWithGroupsParamsWindowSizeNone UsageListWithGroupsParamsWindowSize = "none"
 	UsageListWithGroupsParamsWindowSizeHour UsageListWithGroupsParamsWindowSize = "HOUR"
 	UsageListWithGroupsParamsWindowSizeDay  UsageListWithGroupsParamsWindowSize = "DAY"
 	UsageListWithGroupsParamsWindowSizeNone UsageListWithGroupsParamsWindowSize = "NONE"
-	UsageListWithGroupsParamsWindowSizeHour UsageListWithGroupsParamsWindowSize = "Hour"
-	UsageListWithGroupsParamsWindowSizeDay  UsageListWithGroupsParamsWindowSize = "Day"
-	UsageListWithGroupsParamsWindowSizeNone UsageListWithGroupsParamsWindowSize = "None"
 )
 
 func (r UsageListWithGroupsParamsWindowSize) IsKnown() bool {
 	switch r {
-	case UsageListWithGroupsParamsWindowSizeHour, UsageListWithGroupsParamsWindowSizeDay, UsageListWithGroupsParamsWindowSizeNone, UsageListWithGroupsParamsWindowSizeHour, UsageListWithGroupsParamsWindowSizeDay, UsageListWithGroupsParamsWindowSizeNone, UsageListWithGroupsParamsWindowSizeHour, UsageListWithGroupsParamsWindowSizeDay, UsageListWithGroupsParamsWindowSizeNone:
+	case UsageListWithGroupsParamsWindowSizeHour, UsageListWithGroupsParamsWindowSizeDay, UsageListWithGroupsParamsWindowSizeNone:
 		return true
 	}
 	return false

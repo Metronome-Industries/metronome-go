@@ -99,8 +99,8 @@ func (r *CreditGrantService) ListCreditTypesAutoPaging(ctx context.Context, quer
 }
 
 // Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
-// Ledger entries are returned in reverse chronological order. Ledger entries
-// associated with voided credit grants are not included.
+// Ledger entries are returned in chronological order. Ledger entries associated
+// with voided credit grants are not included.
 func (r *CreditGrantService) ListEntries(ctx context.Context, params CreditGrantListEntriesParams, opts ...option.RequestOption) (res *CreditGrantListEntriesResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "credits/listEntries"

@@ -358,20 +358,14 @@ func (r CustomerAlertListParams) URLQuery() (v url.Values) {
 type CustomerAlertListParamsAlertStatus string
 
 const (
-	CustomerAlertListParamsAlertStatusEnabled  CustomerAlertListParamsAlertStatus = "enabled"
-	CustomerAlertListParamsAlertStatusDisabled CustomerAlertListParamsAlertStatus = "disabled"
-	CustomerAlertListParamsAlertStatusArchived CustomerAlertListParamsAlertStatus = "archived"
 	CustomerAlertListParamsAlertStatusEnabled  CustomerAlertListParamsAlertStatus = "ENABLED"
 	CustomerAlertListParamsAlertStatusDisabled CustomerAlertListParamsAlertStatus = "DISABLED"
 	CustomerAlertListParamsAlertStatusArchived CustomerAlertListParamsAlertStatus = "ARCHIVED"
-	CustomerAlertListParamsAlertStatusEnabled  CustomerAlertListParamsAlertStatus = "Enabled"
-	CustomerAlertListParamsAlertStatusDisabled CustomerAlertListParamsAlertStatus = "Disabled"
-	CustomerAlertListParamsAlertStatusArchived CustomerAlertListParamsAlertStatus = "Archived"
 )
 
 func (r CustomerAlertListParamsAlertStatus) IsKnown() bool {
 	switch r {
-	case CustomerAlertListParamsAlertStatusEnabled, CustomerAlertListParamsAlertStatusDisabled, CustomerAlertListParamsAlertStatusArchived, CustomerAlertListParamsAlertStatusEnabled, CustomerAlertListParamsAlertStatusDisabled, CustomerAlertListParamsAlertStatusArchived, CustomerAlertListParamsAlertStatusEnabled, CustomerAlertListParamsAlertStatusDisabled, CustomerAlertListParamsAlertStatusArchived:
+	case CustomerAlertListParamsAlertStatusEnabled, CustomerAlertListParamsAlertStatusDisabled, CustomerAlertListParamsAlertStatusArchived:
 		return true
 	}
 	return false
