@@ -33,12 +33,12 @@ func TestBillableMetricNewWithOptionalParams(t *testing.T) {
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
 		}),
-		EventTypeFilter: metronome.F(metronome.BillableMetricNewParamsEventTypeFilter{
+		EventTypeFilter: metronome.F(shared.EventTypeFilterParam{
 			InValues:    metronome.F([]string{"cpu_usage"}),
 			NotInValues: metronome.F([]string{"string", "string", "string"}),
 		}),
 		GroupKeys: metronome.F([][]string{{"region"}, {"machine_type"}}),
-		PropertyFilters: metronome.F([]metronome.BillableMetricNewParamsPropertyFilter{{
+		PropertyFilters: metronome.F([]shared.PropertyFilterParam{{
 			Name:        metronome.F("cpu_hours"),
 			Exists:      metronome.F(true),
 			InValues:    metronome.F([]string{"string", "string", "string"}),

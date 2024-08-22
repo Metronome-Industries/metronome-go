@@ -39,14 +39,14 @@ func TestContractProductNewWithOptionalParams(t *testing.T) {
 		NetsuiteOverageItemID:  metronome.F("netsuite_overage_item_id"),
 		PresentationGroupKey:   metronome.F([]string{"string", "string", "string"}),
 		PricingGroupKey:        metronome.F([]string{"string", "string", "string"}),
-		QuantityConversion: metronome.F(metronome.ContractProductNewParamsQuantityConversion{
+		QuantityConversion: metronome.F(metronome.QuantityConversionParam{
 			ConversionFactor: metronome.F(0.000000),
-			Operation:        metronome.F(metronome.ContractProductNewParamsQuantityConversionOperationMultiply),
+			Operation:        metronome.F(metronome.QuantityConversionOperationMultiply),
 			Name:             metronome.F("name"),
 		}),
-		QuantityRounding: metronome.F(metronome.ContractProductNewParamsQuantityRounding{
+		QuantityRounding: metronome.F(metronome.QuantityRoundingParam{
 			DecimalPlaces:  metronome.F(0.000000),
-			RoundingMethod: metronome.F(metronome.ContractProductNewParamsQuantityRoundingRoundingMethodRoundUp),
+			RoundingMethod: metronome.F(metronome.QuantityRoundingRoundingMethodRoundUp),
 		}),
 		Tags: metronome.F([]string{"string", "string", "string"}),
 	})
@@ -110,14 +110,14 @@ func TestContractProductUpdateWithOptionalParams(t *testing.T) {
 		NetsuiteOverageItemID:  metronome.F("netsuite_overage_item_id"),
 		PresentationGroupKey:   metronome.F([]string{"string", "string", "string"}),
 		PricingGroupKey:        metronome.F([]string{"string", "string", "string"}),
-		QuantityConversion: metronome.F(metronome.ContractProductUpdateParamsQuantityConversion{
+		QuantityConversion: metronome.F(metronome.QuantityConversionParam{
 			ConversionFactor: metronome.F(0.000000),
-			Operation:        metronome.F(metronome.ContractProductUpdateParamsQuantityConversionOperationMultiply),
+			Operation:        metronome.F(metronome.QuantityConversionOperationMultiply),
 			Name:             metronome.F("name"),
 		}),
-		QuantityRounding: metronome.F(metronome.ContractProductUpdateParamsQuantityRounding{
+		QuantityRounding: metronome.F(metronome.QuantityRoundingParam{
 			DecimalPlaces:  metronome.F(0.000000),
-			RoundingMethod: metronome.F(metronome.ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundUp),
+			RoundingMethod: metronome.F(metronome.QuantityRoundingRoundingMethodRoundUp),
 		}),
 		Tags: metronome.F([]string{"string", "string", "string"}),
 	})

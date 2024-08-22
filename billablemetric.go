@@ -147,14 +147,14 @@ type BillableMetricGetResponseData struct {
 	AggregationType BillableMetricGetResponseDataAggregationType `json:"aggregation_type"`
 	CustomFields    map[string]string                            `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
-	EventTypeFilter BillableMetricGetResponseDataEventTypeFilter `json:"event_type_filter"`
+	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// Property names that are used to group usage costs on an invoice. Each entry
 	// represents a set of properties used to slice events into distinct buckets.
 	GroupKeys [][]string `json:"group_keys"`
 	// A list of filters to match events to this billable metric. Each filter defines a
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
-	PropertyFilters []BillableMetricGetResponseDataPropertyFilter `json:"property_filters"`
+	PropertyFilters []shared.PropertyFilter `json:"property_filters"`
 	// The SQL query associated with the billable metric
 	Sql  string                            `json:"sql"`
 	JSON billableMetricGetResponseDataJSON `json:"-"`
@@ -203,76 +203,6 @@ func (r BillableMetricGetResponseDataAggregationType) IsKnown() bool {
 	return false
 }
 
-// An optional filtering rule to match the 'event_type' property of an event.
-type BillableMetricGetResponseDataEventTypeFilter struct {
-	// A list of event types that are explicitly included in the billable metric. If
-	// specified, only events of these types will match the billable metric. Must be
-	// non-empty if present.
-	InValues []string `json:"in_values"`
-	// A list of event types that are explicitly excluded from the billable metric. If
-	// specified, events of these types will not match the billable metric. Must be
-	// non-empty if present.
-	NotInValues []string                                         `json:"not_in_values"`
-	JSON        billableMetricGetResponseDataEventTypeFilterJSON `json:"-"`
-}
-
-// billableMetricGetResponseDataEventTypeFilterJSON contains the JSON metadata for
-// the struct [BillableMetricGetResponseDataEventTypeFilter]
-type billableMetricGetResponseDataEventTypeFilterJSON struct {
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillableMetricGetResponseDataEventTypeFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billableMetricGetResponseDataEventTypeFilterJSON) RawJSON() string {
-	return r.raw
-}
-
-type BillableMetricGetResponseDataPropertyFilter struct {
-	// The name of the event property.
-	Name string `json:"name,required"`
-	// Determines whether the property must exist in the event. If true, only events
-	// with this property will pass the filter. If false, only events without this
-	// property will pass the filter. If null or omitted, the existence of the property
-	// is optional.
-	Exists bool `json:"exists"`
-	// Specifies the allowed values for the property to match an event. An event will
-	// pass the filter only if its property value is included in this list. If
-	// undefined, all property values will pass the filter. Must be non-empty if
-	// present.
-	InValues []string `json:"in_values"`
-	// Specifies the values that prevent an event from matching the filter. An event
-	// will not pass the filter if its property value is included in this list. If null
-	// or empty, all property values will pass the filter. Must be non-empty if
-	// present.
-	NotInValues []string                                        `json:"not_in_values"`
-	JSON        billableMetricGetResponseDataPropertyFilterJSON `json:"-"`
-}
-
-// billableMetricGetResponseDataPropertyFilterJSON contains the JSON metadata for
-// the struct [BillableMetricGetResponseDataPropertyFilter]
-type billableMetricGetResponseDataPropertyFilterJSON struct {
-	Name        apijson.Field
-	Exists      apijson.Field
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillableMetricGetResponseDataPropertyFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billableMetricGetResponseDataPropertyFilterJSON) RawJSON() string {
-	return r.raw
-}
-
 type BillableMetricListResponse struct {
 	ID   string `json:"id,required" format:"uuid"`
 	Name string `json:"name,required"`
@@ -288,7 +218,7 @@ type BillableMetricListResponse struct {
 	AggregationType BillableMetricListResponseAggregationType `json:"aggregation_type"`
 	CustomFields    map[string]string                         `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
-	EventTypeFilter BillableMetricListResponseEventTypeFilter `json:"event_type_filter"`
+	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// (DEPRECATED) use property_filters & event_type_filter instead
 	Filter map[string]interface{} `json:"filter"`
 	// (DEPRECATED) use group_keys instead
@@ -299,7 +229,7 @@ type BillableMetricListResponse struct {
 	// A list of filters to match events to this billable metric. Each filter defines a
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
-	PropertyFilters []BillableMetricListResponsePropertyFilter `json:"property_filters"`
+	PropertyFilters []shared.PropertyFilter `json:"property_filters"`
 	// The SQL query associated with the billable metric
 	Sql  string                         `json:"sql"`
 	JSON billableMetricListResponseJSON `json:"-"`
@@ -352,76 +282,6 @@ func (r BillableMetricListResponseAggregationType) IsKnown() bool {
 	return false
 }
 
-// An optional filtering rule to match the 'event_type' property of an event.
-type BillableMetricListResponseEventTypeFilter struct {
-	// A list of event types that are explicitly included in the billable metric. If
-	// specified, only events of these types will match the billable metric. Must be
-	// non-empty if present.
-	InValues []string `json:"in_values"`
-	// A list of event types that are explicitly excluded from the billable metric. If
-	// specified, events of these types will not match the billable metric. Must be
-	// non-empty if present.
-	NotInValues []string                                      `json:"not_in_values"`
-	JSON        billableMetricListResponseEventTypeFilterJSON `json:"-"`
-}
-
-// billableMetricListResponseEventTypeFilterJSON contains the JSON metadata for the
-// struct [BillableMetricListResponseEventTypeFilter]
-type billableMetricListResponseEventTypeFilterJSON struct {
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillableMetricListResponseEventTypeFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billableMetricListResponseEventTypeFilterJSON) RawJSON() string {
-	return r.raw
-}
-
-type BillableMetricListResponsePropertyFilter struct {
-	// The name of the event property.
-	Name string `json:"name,required"`
-	// Determines whether the property must exist in the event. If true, only events
-	// with this property will pass the filter. If false, only events without this
-	// property will pass the filter. If null or omitted, the existence of the property
-	// is optional.
-	Exists bool `json:"exists"`
-	// Specifies the allowed values for the property to match an event. An event will
-	// pass the filter only if its property value is included in this list. If
-	// undefined, all property values will pass the filter. Must be non-empty if
-	// present.
-	InValues []string `json:"in_values"`
-	// Specifies the values that prevent an event from matching the filter. An event
-	// will not pass the filter if its property value is included in this list. If null
-	// or empty, all property values will pass the filter. Must be non-empty if
-	// present.
-	NotInValues []string                                     `json:"not_in_values"`
-	JSON        billableMetricListResponsePropertyFilterJSON `json:"-"`
-}
-
-// billableMetricListResponsePropertyFilterJSON contains the JSON metadata for the
-// struct [BillableMetricListResponsePropertyFilter]
-type billableMetricListResponsePropertyFilterJSON struct {
-	Name        apijson.Field
-	Exists      apijson.Field
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillableMetricListResponsePropertyFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billableMetricListResponsePropertyFilterJSON) RawJSON() string {
-	return r.raw
-}
-
 type BillableMetricArchiveResponse struct {
 	Data shared.ID                         `json:"data,required"`
 	JSON billableMetricArchiveResponseJSON `json:"-"`
@@ -455,14 +315,14 @@ type BillableMetricNewParams struct {
 	// Custom fields to attach to the billable metric.
 	CustomFields param.Field[map[string]string] `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
-	EventTypeFilter param.Field[BillableMetricNewParamsEventTypeFilter] `json:"event_type_filter"`
+	EventTypeFilter param.Field[shared.EventTypeFilterParam] `json:"event_type_filter"`
 	// Property names that are used to group usage costs on an invoice. Each entry
 	// represents a set of properties used to slice events into distinct buckets.
 	GroupKeys param.Field[[][]string] `json:"group_keys"`
 	// A list of filters to match events to this billable metric. Each filter defines a
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
-	PropertyFilters param.Field[[]BillableMetricNewParamsPropertyFilter] `json:"property_filters"`
+	PropertyFilters param.Field[[]shared.PropertyFilterParam] `json:"property_filters"`
 }
 
 func (r BillableMetricNewParams) MarshalJSON() (data []byte, err error) {
@@ -486,46 +346,6 @@ func (r BillableMetricNewParamsAggregationType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// An optional filtering rule to match the 'event_type' property of an event.
-type BillableMetricNewParamsEventTypeFilter struct {
-	// A list of event types that are explicitly included in the billable metric. If
-	// specified, only events of these types will match the billable metric. Must be
-	// non-empty if present.
-	InValues param.Field[[]string] `json:"in_values"`
-	// A list of event types that are explicitly excluded from the billable metric. If
-	// specified, events of these types will not match the billable metric. Must be
-	// non-empty if present.
-	NotInValues param.Field[[]string] `json:"not_in_values"`
-}
-
-func (r BillableMetricNewParamsEventTypeFilter) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type BillableMetricNewParamsPropertyFilter struct {
-	// The name of the event property.
-	Name param.Field[string] `json:"name,required"`
-	// Determines whether the property must exist in the event. If true, only events
-	// with this property will pass the filter. If false, only events without this
-	// property will pass the filter. If null or omitted, the existence of the property
-	// is optional.
-	Exists param.Field[bool] `json:"exists"`
-	// Specifies the allowed values for the property to match an event. An event will
-	// pass the filter only if its property value is included in this list. If
-	// undefined, all property values will pass the filter. Must be non-empty if
-	// present.
-	InValues param.Field[[]string] `json:"in_values"`
-	// Specifies the values that prevent an event from matching the filter. An event
-	// will not pass the filter if its property value is included in this list. If null
-	// or empty, all property values will pass the filter. Must be non-empty if
-	// present.
-	NotInValues param.Field[[]string] `json:"not_in_values"`
-}
-
-func (r BillableMetricNewParamsPropertyFilter) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type BillableMetricListParams struct {

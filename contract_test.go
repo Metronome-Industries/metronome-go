@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestContractNewWithOptionalParams(t *testing.T) {
@@ -439,7 +440,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.ContractNewParamsOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}, {
@@ -506,7 +507,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.ContractNewParamsOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}, {
@@ -573,7 +574,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.ContractNewParamsOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}, {
@@ -793,7 +794,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			}),
 		}),
 		UniquenessKey: metronome.F("x"),
-		UsageFilter: metronome.F(metronome.ContractNewParamsUsageFilter{
+		UsageFilter: metronome.F(shared.BaseUsageFilterParam{
 			GroupKey:    metronome.F("group_key"),
 			GroupValues: metronome.F([]string{"string", "string", "string"}),
 			StartingAt:  metronome.F(time.Now()),
@@ -1314,7 +1315,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.ContractAmendParamsOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}, {
@@ -1381,7 +1382,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.ContractAmendParamsOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}, {
@@ -1448,7 +1449,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.ContractAmendParamsOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}, {

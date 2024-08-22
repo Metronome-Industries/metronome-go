@@ -10,6 +10,12 @@ import (
 type Error = apierror.Error
 
 // This is an alias to an internal type.
+type BaseUsageFilter = shared.BaseUsageFilter
+
+// This is an alias to an internal type.
+type BaseUsageFilterParam = shared.BaseUsageFilterParam
+
+// This is an alias to an internal type.
 type Commit = shared.Commit
 
 // This is an alias to an internal type.
@@ -23,15 +29,6 @@ const CommitTypePrepaid = shared.CommitTypePrepaid
 
 // This is an alias to an internal value.
 const CommitTypePostpaid = shared.CommitTypePostpaid
-
-// The schedule that the customer will gain access to the credits purposed with
-// this commit.
-//
-// This is an alias to an internal type.
-type CommitAccessSchedule = shared.CommitAccessSchedule
-
-// This is an alias to an internal type.
-type CommitAccessScheduleScheduleItem = shared.CommitAccessScheduleScheduleItem
 
 // This is an alias to an internal type.
 type CommitContract = shared.CommitContract
@@ -234,110 +231,6 @@ const ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly = shared.C
 const ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly
 
 // This is an alias to an internal type.
-type ContractWithoutAmendmentsCredit = shared.ContractWithoutAmendmentsCredit
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsProduct = shared.ContractWithoutAmendmentsCreditsProduct
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsType = shared.ContractWithoutAmendmentsCreditsType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsTypeCredit = shared.ContractWithoutAmendmentsCreditsTypeCredit
-
-// The schedule that the customer will gain access to the credits.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsAccessSchedule = shared.ContractWithoutAmendmentsCreditsAccessSchedule
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsAccessScheduleScheduleItem = shared.ContractWithoutAmendmentsCreditsAccessScheduleScheduleItem
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsContract = shared.ContractWithoutAmendmentsCreditsContract
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedger = shared.ContractWithoutAmendmentsCreditsLedger
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry = shared.ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryType = shared.ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryTypeCreditSegmentStart = shared.ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryTypeCreditSegmentStart
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry = shared.ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryType = shared.ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryTypeCreditAutomatedInvoiceDeduction = shared.ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryTypeCreditAutomatedInvoiceDeduction
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry = shared.ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryType = shared.ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryTypeCreditExpiration = shared.ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryTypeCreditExpiration
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry = shared.ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryType = shared.ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryTypeCreditCanceled = shared.ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryTypeCreditCanceled
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry = shared.ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryType = shared.ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryTypeCreditCredited = shared.ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryTypeCreditCredited
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry = shared.ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryType = shared.ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryTypeCreditManual = shared.ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryTypeCreditManual
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsCreditsLedgerType = shared.ContractWithoutAmendmentsCreditsLedgerType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerTypeCreditSegmentStart = shared.ContractWithoutAmendmentsCreditsLedgerTypeCreditSegmentStart
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerTypeCreditAutomatedInvoiceDeduction = shared.ContractWithoutAmendmentsCreditsLedgerTypeCreditAutomatedInvoiceDeduction
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerTypeCreditExpiration = shared.ContractWithoutAmendmentsCreditsLedgerTypeCreditExpiration
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerTypeCreditCanceled = shared.ContractWithoutAmendmentsCreditsLedgerTypeCreditCanceled
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerTypeCreditCredited = shared.ContractWithoutAmendmentsCreditsLedgerTypeCreditCredited
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsCreditsLedgerTypeCreditManual = shared.ContractWithoutAmendmentsCreditsLedgerTypeCreditManual
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsProfessionalService = shared.ContractWithoutAmendmentsProfessionalService
-
-// This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
 
 // This is an alias to an internal type.
@@ -359,22 +252,116 @@ const ContractWithoutAmendmentsResellerRoyaltiesResellerTypeGcpProService = shar
 type ContractWithoutAmendmentsUsageFilter = shared.ContractWithoutAmendmentsUsageFilter
 
 // This is an alias to an internal type.
-type ContractWithoutAmendmentsUsageFilterCurrent = shared.ContractWithoutAmendmentsUsageFilterCurrent
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsUsageFilterInitial = shared.ContractWithoutAmendmentsUsageFilterInitial
-
-// This is an alias to an internal type.
 type ContractWithoutAmendmentsUsageFilterUpdate = shared.ContractWithoutAmendmentsUsageFilterUpdate
 
 // This is an alias to an internal type.
+type Credit = shared.Credit
+
+// This is an alias to an internal type.
+type CreditProduct = shared.CreditProduct
+
+// This is an alias to an internal type.
 type CreditType = shared.CreditType
+
+// This is an alias to an internal value.
+const CreditTypeCredit = shared.CreditTypeCredit
+
+// This is an alias to an internal type.
+type CreditContract = shared.CreditContract
+
+// This is an alias to an internal type.
+type CreditLedger = shared.CreditLedger
+
+// This is an alias to an internal type.
+type CreditLedgerCreditSegmentStartLedgerEntry = shared.CreditLedgerCreditSegmentStartLedgerEntry
+
+// This is an alias to an internal type.
+type CreditLedgerCreditSegmentStartLedgerEntryType = shared.CreditLedgerCreditSegmentStartLedgerEntryType
+
+// This is an alias to an internal value.
+const CreditLedgerCreditSegmentStartLedgerEntryTypeCreditSegmentStart = shared.CreditLedgerCreditSegmentStartLedgerEntryTypeCreditSegmentStart
+
+// This is an alias to an internal type.
+type CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry = shared.CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry
+
+// This is an alias to an internal type.
+type CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryType = shared.CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryType
+
+// This is an alias to an internal value.
+const CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryTypeCreditAutomatedInvoiceDeduction = shared.CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryTypeCreditAutomatedInvoiceDeduction
+
+// This is an alias to an internal type.
+type CreditLedgerCreditExpirationLedgerEntry = shared.CreditLedgerCreditExpirationLedgerEntry
+
+// This is an alias to an internal type.
+type CreditLedgerCreditExpirationLedgerEntryType = shared.CreditLedgerCreditExpirationLedgerEntryType
+
+// This is an alias to an internal value.
+const CreditLedgerCreditExpirationLedgerEntryTypeCreditExpiration = shared.CreditLedgerCreditExpirationLedgerEntryTypeCreditExpiration
+
+// This is an alias to an internal type.
+type CreditLedgerCreditCanceledLedgerEntry = shared.CreditLedgerCreditCanceledLedgerEntry
+
+// This is an alias to an internal type.
+type CreditLedgerCreditCanceledLedgerEntryType = shared.CreditLedgerCreditCanceledLedgerEntryType
+
+// This is an alias to an internal value.
+const CreditLedgerCreditCanceledLedgerEntryTypeCreditCanceled = shared.CreditLedgerCreditCanceledLedgerEntryTypeCreditCanceled
+
+// This is an alias to an internal type.
+type CreditLedgerCreditCreditedLedgerEntry = shared.CreditLedgerCreditCreditedLedgerEntry
+
+// This is an alias to an internal type.
+type CreditLedgerCreditCreditedLedgerEntryType = shared.CreditLedgerCreditCreditedLedgerEntryType
+
+// This is an alias to an internal value.
+const CreditLedgerCreditCreditedLedgerEntryTypeCreditCredited = shared.CreditLedgerCreditCreditedLedgerEntryTypeCreditCredited
+
+// This is an alias to an internal type.
+type CreditLedgerCreditManualLedgerEntry = shared.CreditLedgerCreditManualLedgerEntry
+
+// This is an alias to an internal type.
+type CreditLedgerCreditManualLedgerEntryType = shared.CreditLedgerCreditManualLedgerEntryType
+
+// This is an alias to an internal value.
+const CreditLedgerCreditManualLedgerEntryTypeCreditManual = shared.CreditLedgerCreditManualLedgerEntryTypeCreditManual
+
+// This is an alias to an internal type.
+type CreditLedgerType = shared.CreditLedgerType
+
+// This is an alias to an internal value.
+const CreditLedgerTypeCreditSegmentStart = shared.CreditLedgerTypeCreditSegmentStart
+
+// This is an alias to an internal value.
+const CreditLedgerTypeCreditAutomatedInvoiceDeduction = shared.CreditLedgerTypeCreditAutomatedInvoiceDeduction
+
+// This is an alias to an internal value.
+const CreditLedgerTypeCreditExpiration = shared.CreditLedgerTypeCreditExpiration
+
+// This is an alias to an internal value.
+const CreditLedgerTypeCreditCanceled = shared.CreditLedgerTypeCreditCanceled
+
+// This is an alias to an internal value.
+const CreditLedgerTypeCreditCredited = shared.CreditLedgerTypeCreditCredited
+
+// This is an alias to an internal value.
+const CreditLedgerTypeCreditManual = shared.CreditLedgerTypeCreditManual
 
 // This is an alias to an internal type.
 type Discount = shared.Discount
 
 // This is an alias to an internal type.
 type DiscountProduct = shared.DiscountProduct
+
+// An optional filtering rule to match the 'event_type' property of an event.
+//
+// This is an alias to an internal type.
+type EventTypeFilter = shared.EventTypeFilter
+
+// An optional filtering rule to match the 'event_type' property of an event.
+//
+// This is an alias to an internal type.
+type EventTypeFilterParam = shared.EventTypeFilterParam
 
 // This is an alias to an internal type.
 type ID = shared.ID
@@ -413,9 +400,6 @@ const OverrideOverwriteRateRateTypeTiered = shared.OverrideOverwriteRateRateType
 const OverrideOverwriteRateRateTypeCustom = shared.OverrideOverwriteRateRateTypeCustom
 
 // This is an alias to an internal type.
-type OverrideOverwriteRateTier = shared.OverrideOverwriteRateTier
-
-// This is an alias to an internal type.
 type OverrideProduct = shared.OverrideProduct
 
 // This is an alias to an internal type.
@@ -437,9 +421,6 @@ const OverrideRateTypeTiered = shared.OverrideRateTypeTiered
 const OverrideRateTypeCustom = shared.OverrideRateTypeCustom
 
 // This is an alias to an internal type.
-type OverrideTier = shared.OverrideTier
-
-// This is an alias to an internal type.
 type OverrideType = shared.OverrideType
 
 // This is an alias to an internal value.
@@ -450,6 +431,15 @@ const OverrideTypeMultiplier = shared.OverrideTypeMultiplier
 
 // This is an alias to an internal value.
 const OverrideTypeTiered = shared.OverrideTypeTiered
+
+// This is an alias to an internal type.
+type PropertyFilter = shared.PropertyFilter
+
+// This is an alias to an internal type.
+type PropertyFilterParam = shared.PropertyFilterParam
+
+// This is an alias to an internal type.
+type ProService = shared.ProService
 
 // This is an alias to an internal type.
 type Rate = shared.Rate
@@ -473,7 +463,16 @@ const RateRateTypeCustom = shared.RateRateTypeCustom
 const RateRateTypeTiered = shared.RateRateTypeTiered
 
 // This is an alias to an internal type.
-type RateTier = shared.RateTier
+type ScheduledCharge = shared.ScheduledCharge
+
+// This is an alias to an internal type.
+type ScheduledChargeProduct = shared.ScheduledChargeProduct
+
+// This is an alias to an internal type.
+type ScheduleDuration = shared.ScheduleDuration
+
+// This is an alias to an internal type.
+type ScheduleDurationScheduleItem = shared.ScheduleDurationScheduleItem
 
 // This is an alias to an internal type.
 type SchedulePointInTime = shared.SchedulePointInTime
@@ -482,7 +481,7 @@ type SchedulePointInTime = shared.SchedulePointInTime
 type SchedulePointInTimeScheduleItem = shared.SchedulePointInTimeScheduleItem
 
 // This is an alias to an internal type.
-type ScheduledCharge = shared.ScheduledCharge
+type Tier = shared.Tier
 
 // This is an alias to an internal type.
-type ScheduledChargeProduct = shared.ScheduledChargeProduct
+type TierParam = shared.TierParam
