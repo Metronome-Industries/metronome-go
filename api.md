@@ -1,18 +1,29 @@
 # Shared Params Types
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseUsageFilterParam">BaseUsageFilterParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#EventTypeFilterParam">EventTypeFilterParam</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#IDParam">IDParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PropertyFilterParam">PropertyFilterParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#TierParam">TierParam</a>
 
 # Shared Response Types
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseUsageFilter">BaseUsageFilter</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Commit">Commit</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ContractWithoutAmendments">ContractWithoutAmendments</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Credit">Credit</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CreditType">CreditType</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Discount">Discount</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#EventTypeFilter">EventTypeFilter</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ID">ID</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Override">Override</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PropertyFilter">PropertyFilter</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ProService">ProService</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Rate">Rate</a>
-- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#SchedulePointInTime">SchedulePointInTime</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ScheduledCharge">ScheduledCharge</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ScheduleDuration">ScheduleDuration</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#SchedulePointInTime">SchedulePointInTime</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Tier">Tier</a>
 
 # Alerts
 
@@ -302,8 +313,16 @@ Methods:
 
 ## Products
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#QuantityConversionParam">QuantityConversionParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#QuantityRoundingParam">QuantityRoundingParam</a>
+
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#ProductListItemState">ProductListItemState</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#QuantityConversion">QuantityConversion</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#QuantityRounding">QuantityRounding</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#ContractProductNewResponse">ContractProductNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#ContractProductGetResponse">ContractProductGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#ContractProductUpdateResponse">ContractProductUpdateResponse</a>

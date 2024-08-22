@@ -11,13 +11,47 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+type BaseUsageFilter struct {
+	GroupKey    string              `json:"group_key,required"`
+	GroupValues []string            `json:"group_values,required"`
+	StartingAt  time.Time           `json:"starting_at" format:"date-time"`
+	JSON        baseUsageFilterJSON `json:"-"`
+}
+
+// baseUsageFilterJSON contains the JSON metadata for the struct [BaseUsageFilter]
+type baseUsageFilterJSON struct {
+	GroupKey    apijson.Field
+	GroupValues apijson.Field
+	StartingAt  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BaseUsageFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r baseUsageFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+type BaseUsageFilterParam struct {
+	GroupKey    param.Field[string]    `json:"group_key,required"`
+	GroupValues param.Field[[]string]  `json:"group_values,required"`
+	StartingAt  param.Field[time.Time] `json:"starting_at" format:"date-time"`
+}
+
+func (r BaseUsageFilterParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type Commit struct {
 	ID      string        `json:"id,required" format:"uuid"`
 	Product CommitProduct `json:"product,required"`
 	Type    CommitType    `json:"type,required"`
 	// The schedule that the customer will gain access to the credits purposed with
 	// this commit.
-	AccessSchedule CommitAccessSchedule `json:"access_schedule"`
+	AccessSchedule ScheduleDuration `json:"access_schedule"`
 	// (DEPRECATED) Use access_schedule + invoice_schedule instead.
 	Amount                float64           `json:"amount"`
 	ApplicableContractIDs []string          `json:"applicable_contract_ids" format:"uuid"`
@@ -117,58 +151,6 @@ func (r CommitType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// The schedule that the customer will gain access to the credits purposed with
-// this commit.
-type CommitAccessSchedule struct {
-	ScheduleItems []CommitAccessScheduleScheduleItem `json:"schedule_items,required"`
-	CreditType    CreditType                         `json:"credit_type"`
-	JSON          commitAccessScheduleJSON           `json:"-"`
-}
-
-// commitAccessScheduleJSON contains the JSON metadata for the struct
-// [CommitAccessSchedule]
-type commitAccessScheduleJSON struct {
-	ScheduleItems apijson.Field
-	CreditType    apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *CommitAccessSchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commitAccessScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type CommitAccessScheduleScheduleItem struct {
-	ID           string                               `json:"id,required" format:"uuid"`
-	Amount       float64                              `json:"amount,required"`
-	EndingBefore time.Time                            `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time                            `json:"starting_at,required" format:"date-time"`
-	JSON         commitAccessScheduleScheduleItemJSON `json:"-"`
-}
-
-// commitAccessScheduleScheduleItemJSON contains the JSON metadata for the struct
-// [CommitAccessScheduleScheduleItem]
-type commitAccessScheduleScheduleItemJSON struct {
-	ID           apijson.Field
-	Amount       apijson.Field
-	EndingBefore apijson.Field
-	StartingAt   apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *CommitAccessScheduleScheduleItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commitAccessScheduleScheduleItemJSON) RawJSON() string {
-	return r.raw
 }
 
 type CommitContract struct {
@@ -977,7 +959,7 @@ type ContractWithoutAmendments struct {
 	StartingAt             time.Time                                       `json:"starting_at,required" format:"date-time"`
 	Transitions            []ContractWithoutAmendmentsTransition           `json:"transitions,required"`
 	UsageStatementSchedule ContractWithoutAmendmentsUsageStatementSchedule `json:"usage_statement_schedule,required"`
-	Credits                []ContractWithoutAmendmentsCredit               `json:"credits"`
+	Credits                []Credit                                        `json:"credits"`
 	// This field's availability is dependent on your client's configuration.
 	Discounts           []Discount `json:"discounts"`
 	EndingBefore        time.Time  `json:"ending_before" format:"date-time"`
@@ -986,8 +968,8 @@ type ContractWithoutAmendments struct {
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// This field's availability is dependent on your client's configuration.
-	ProfessionalServices []ContractWithoutAmendmentsProfessionalService `json:"professional_services"`
-	RateCardID           string                                         `json:"rate_card_id" format:"uuid"`
+	ProfessionalServices []ProService `json:"professional_services"`
+	RateCardID           string       `json:"rate_card_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
 	ResellerRoyalties []ContractWithoutAmendmentsResellerRoyalty `json:"reseller_royalties"`
 	// This field's availability is dependent on your client's configuration.
@@ -1109,601 +1091,6 @@ func (r ContractWithoutAmendmentsUsageStatementScheduleFrequency) IsKnown() bool
 	return false
 }
 
-type ContractWithoutAmendmentsCredit struct {
-	ID      string                                  `json:"id,required" format:"uuid"`
-	Product ContractWithoutAmendmentsCreditsProduct `json:"product,required"`
-	Type    ContractWithoutAmendmentsCreditsType    `json:"type,required"`
-	// The schedule that the customer will gain access to the credits.
-	AccessSchedule        ContractWithoutAmendmentsCreditsAccessSchedule `json:"access_schedule"`
-	ApplicableContractIDs []string                                       `json:"applicable_contract_ids" format:"uuid"`
-	ApplicableProductIDs  []string                                       `json:"applicable_product_ids" format:"uuid"`
-	ApplicableProductTags []string                                       `json:"applicable_product_tags"`
-	Contract              ContractWithoutAmendmentsCreditsContract       `json:"contract"`
-	CustomFields          map[string]string                              `json:"custom_fields"`
-	Description           string                                         `json:"description"`
-	// A list of ordered events that impact the balance of a credit. For example, an
-	// invoice deduction or an expiration.
-	Ledger []ContractWithoutAmendmentsCreditsLedger `json:"ledger"`
-	Name   string                                   `json:"name"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
-	// If multiple credits or commits are applicable, the one with the lower priority
-	// will apply first.
-	Priority float64 `json:"priority"`
-	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string                              `json:"salesforce_opportunity_id"`
-	JSON                    contractWithoutAmendmentsCreditJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditJSON contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsCredit]
-type contractWithoutAmendmentsCreditJSON struct {
-	ID                      apijson.Field
-	Product                 apijson.Field
-	Type                    apijson.Field
-	AccessSchedule          apijson.Field
-	ApplicableContractIDs   apijson.Field
-	ApplicableProductIDs    apijson.Field
-	ApplicableProductTags   apijson.Field
-	Contract                apijson.Field
-	CustomFields            apijson.Field
-	Description             apijson.Field
-	Ledger                  apijson.Field
-	Name                    apijson.Field
-	NetsuiteSalesOrderID    apijson.Field
-	Priority                apijson.Field
-	SalesforceOpportunityID apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCredit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsCreditsProduct struct {
-	ID   string                                      `json:"id,required" format:"uuid"`
-	Name string                                      `json:"name,required"`
-	JSON contractWithoutAmendmentsCreditsProductJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsProductJSON contains the JSON metadata for the
-// struct [ContractWithoutAmendmentsCreditsProduct]
-type contractWithoutAmendmentsCreditsProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsProduct) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsProductJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsCreditsType string
-
-const (
-	ContractWithoutAmendmentsCreditsTypeCredit ContractWithoutAmendmentsCreditsType = "CREDIT"
-)
-
-func (r ContractWithoutAmendmentsCreditsType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsCreditsTypeCredit:
-		return true
-	}
-	return false
-}
-
-// The schedule that the customer will gain access to the credits.
-type ContractWithoutAmendmentsCreditsAccessSchedule struct {
-	ScheduleItems []ContractWithoutAmendmentsCreditsAccessScheduleScheduleItem `json:"schedule_items,required"`
-	CreditType    CreditType                                                   `json:"credit_type"`
-	JSON          contractWithoutAmendmentsCreditsAccessScheduleJSON           `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsAccessScheduleJSON contains the JSON metadata
-// for the struct [ContractWithoutAmendmentsCreditsAccessSchedule]
-type contractWithoutAmendmentsCreditsAccessScheduleJSON struct {
-	ScheduleItems apijson.Field
-	CreditType    apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsAccessSchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsAccessScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsCreditsAccessScheduleScheduleItem struct {
-	ID           string                                                         `json:"id,required" format:"uuid"`
-	Amount       float64                                                        `json:"amount,required"`
-	EndingBefore time.Time                                                      `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time                                                      `json:"starting_at,required" format:"date-time"`
-	JSON         contractWithoutAmendmentsCreditsAccessScheduleScheduleItemJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsAccessScheduleScheduleItemJSON contains the JSON
-// metadata for the struct
-// [ContractWithoutAmendmentsCreditsAccessScheduleScheduleItem]
-type contractWithoutAmendmentsCreditsAccessScheduleScheduleItemJSON struct {
-	ID           apijson.Field
-	Amount       apijson.Field
-	EndingBefore apijson.Field
-	StartingAt   apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsAccessScheduleScheduleItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsAccessScheduleScheduleItemJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsCreditsContract struct {
-	ID   string                                       `json:"id,required" format:"uuid"`
-	JSON contractWithoutAmendmentsCreditsContractJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsContractJSON contains the JSON metadata for the
-// struct [ContractWithoutAmendmentsCreditsContract]
-type contractWithoutAmendmentsCreditsContractJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsContract) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsContractJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsCreditsLedger struct {
-	Type      ContractWithoutAmendmentsCreditsLedgerType `json:"type,required"`
-	Timestamp time.Time                                  `json:"timestamp,required" format:"date-time"`
-	Amount    float64                                    `json:"amount,required"`
-	SegmentID string                                     `json:"segment_id" format:"uuid"`
-	InvoiceID string                                     `json:"invoice_id" format:"uuid"`
-	Reason    string                                     `json:"reason"`
-	JSON      contractWithoutAmendmentsCreditsLedgerJSON `json:"-"`
-	union     ContractWithoutAmendmentsCreditsLedgerUnion
-}
-
-// contractWithoutAmendmentsCreditsLedgerJSON contains the JSON metadata for the
-// struct [ContractWithoutAmendmentsCreditsLedger]
-type contractWithoutAmendmentsCreditsLedgerJSON struct {
-	Type        apijson.Field
-	Timestamp   apijson.Field
-	Amount      apijson.Field
-	SegmentID   apijson.Field
-	InvoiceID   apijson.Field
-	Reason      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractWithoutAmendmentsCreditsLedgerJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractWithoutAmendmentsCreditsLedger) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractWithoutAmendmentsCreditsLedger{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [ContractWithoutAmendmentsCreditsLedgerUnion] interface which
-// you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry].
-func (r ContractWithoutAmendmentsCreditsLedger) AsUnion() ContractWithoutAmendmentsCreditsLedgerUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry],
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry] or
-// [shared.ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry].
-type ContractWithoutAmendmentsCreditsLedgerUnion interface {
-	implementsSharedContractWithoutAmendmentsCreditsLedger()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractWithoutAmendmentsCreditsLedgerUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry{}),
-		},
-	)
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry struct {
-	Amount    float64                                                                 `json:"amount,required"`
-	SegmentID string                                                                  `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time                                                               `json:"timestamp,required" format:"date-time"`
-	Type      ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryType `json:"type,required"`
-	JSON      contractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryJSON contains
-// the JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry]
-type contractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryJSON struct {
-	Amount      apijson.Field
-	SegmentID   apijson.Field
-	Timestamp   apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntry) implementsSharedContractWithoutAmendmentsCreditsLedger() {
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryType string
-
-const (
-	ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryTypeCreditSegmentStart ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryType = "CREDIT_SEGMENT_START"
-)
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsCreditsLedgerCreditSegmentStartLedgerEntryTypeCreditSegmentStart:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry struct {
-	Amount    float64                                                                              `json:"amount,required"`
-	InvoiceID string                                                                               `json:"invoice_id,required" format:"uuid"`
-	SegmentID string                                                                               `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time                                                                            `json:"timestamp,required" format:"date-time"`
-	Type      ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryType `json:"type,required"`
-	JSON      contractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry]
-type contractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON struct {
-	Amount      apijson.Field
-	InvoiceID   apijson.Field
-	SegmentID   apijson.Field
-	Timestamp   apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry) implementsSharedContractWithoutAmendmentsCreditsLedger() {
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryType string
-
-const (
-	ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryTypeCreditAutomatedInvoiceDeduction ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryType = "CREDIT_AUTOMATED_INVOICE_DEDUCTION"
-)
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntryTypeCreditAutomatedInvoiceDeduction:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry struct {
-	Amount    float64                                                               `json:"amount,required"`
-	SegmentID string                                                                `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time                                                             `json:"timestamp,required" format:"date-time"`
-	Type      ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryType `json:"type,required"`
-	JSON      contractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryJSON contains
-// the JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry]
-type contractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryJSON struct {
-	Amount      apijson.Field
-	SegmentID   apijson.Field
-	Timestamp   apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntry) implementsSharedContractWithoutAmendmentsCreditsLedger() {
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryType string
-
-const (
-	ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryTypeCreditExpiration ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryType = "CREDIT_EXPIRATION"
-)
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsCreditsLedgerCreditExpirationLedgerEntryTypeCreditExpiration:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry struct {
-	Amount    float64                                                             `json:"amount,required"`
-	InvoiceID string                                                              `json:"invoice_id,required" format:"uuid"`
-	SegmentID string                                                              `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time                                                           `json:"timestamp,required" format:"date-time"`
-	Type      ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryType `json:"type,required"`
-	JSON      contractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry]
-type contractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryJSON struct {
-	Amount      apijson.Field
-	InvoiceID   apijson.Field
-	SegmentID   apijson.Field
-	Timestamp   apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntry) implementsSharedContractWithoutAmendmentsCreditsLedger() {
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryType string
-
-const (
-	ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryTypeCreditCanceled ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryType = "CREDIT_CANCELED"
-)
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsCreditsLedgerCreditCanceledLedgerEntryTypeCreditCanceled:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry struct {
-	Amount    float64                                                             `json:"amount,required"`
-	InvoiceID string                                                              `json:"invoice_id,required" format:"uuid"`
-	SegmentID string                                                              `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time                                                           `json:"timestamp,required" format:"date-time"`
-	Type      ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryType `json:"type,required"`
-	JSON      contractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry]
-type contractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryJSON struct {
-	Amount      apijson.Field
-	InvoiceID   apijson.Field
-	SegmentID   apijson.Field
-	Timestamp   apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntry) implementsSharedContractWithoutAmendmentsCreditsLedger() {
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryType string
-
-const (
-	ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryTypeCreditCredited ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryType = "CREDIT_CREDITED"
-)
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsCreditsLedgerCreditCreditedLedgerEntryTypeCreditCredited:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry struct {
-	Amount    float64                                                           `json:"amount,required"`
-	Reason    string                                                            `json:"reason,required"`
-	Timestamp time.Time                                                         `json:"timestamp,required" format:"date-time"`
-	Type      ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryType `json:"type,required"`
-	JSON      contractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry]
-type contractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryJSON struct {
-	Amount      apijson.Field
-	Reason      apijson.Field
-	Timestamp   apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntry) implementsSharedContractWithoutAmendmentsCreditsLedger() {
-}
-
-type ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryType string
-
-const (
-	ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryTypeCreditManual ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryType = "CREDIT_MANUAL"
-)
-
-func (r ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsCreditsLedgerCreditManualLedgerEntryTypeCreditManual:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsCreditsLedgerType string
-
-const (
-	ContractWithoutAmendmentsCreditsLedgerTypeCreditSegmentStart              ContractWithoutAmendmentsCreditsLedgerType = "CREDIT_SEGMENT_START"
-	ContractWithoutAmendmentsCreditsLedgerTypeCreditAutomatedInvoiceDeduction ContractWithoutAmendmentsCreditsLedgerType = "CREDIT_AUTOMATED_INVOICE_DEDUCTION"
-	ContractWithoutAmendmentsCreditsLedgerTypeCreditExpiration                ContractWithoutAmendmentsCreditsLedgerType = "CREDIT_EXPIRATION"
-	ContractWithoutAmendmentsCreditsLedgerTypeCreditCanceled                  ContractWithoutAmendmentsCreditsLedgerType = "CREDIT_CANCELED"
-	ContractWithoutAmendmentsCreditsLedgerTypeCreditCredited                  ContractWithoutAmendmentsCreditsLedgerType = "CREDIT_CREDITED"
-	ContractWithoutAmendmentsCreditsLedgerTypeCreditManual                    ContractWithoutAmendmentsCreditsLedgerType = "CREDIT_MANUAL"
-)
-
-func (r ContractWithoutAmendmentsCreditsLedgerType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsCreditsLedgerTypeCreditSegmentStart, ContractWithoutAmendmentsCreditsLedgerTypeCreditAutomatedInvoiceDeduction, ContractWithoutAmendmentsCreditsLedgerTypeCreditExpiration, ContractWithoutAmendmentsCreditsLedgerTypeCreditCanceled, ContractWithoutAmendmentsCreditsLedgerTypeCreditCredited, ContractWithoutAmendmentsCreditsLedgerTypeCreditManual:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsProfessionalService struct {
-	ID string `json:"id,required" format:"uuid"`
-	// Maximum amount for the term.
-	MaxAmount float64 `json:"max_amount,required"`
-	ProductID string  `json:"product_id,required" format:"uuid"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount.
-	Quantity float64 `json:"quantity,required"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified.
-	UnitPrice    float64           `json:"unit_price,required"`
-	CustomFields map[string]string `json:"custom_fields"`
-	Description  string            `json:"description"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string                                           `json:"netsuite_sales_order_id"`
-	JSON                 contractWithoutAmendmentsProfessionalServiceJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsProfessionalServiceJSON contains the JSON metadata for
-// the struct [ContractWithoutAmendmentsProfessionalService]
-type contractWithoutAmendmentsProfessionalServiceJSON struct {
-	ID                   apijson.Field
-	MaxAmount            apijson.Field
-	ProductID            apijson.Field
-	Quantity             apijson.Field
-	UnitPrice            apijson.Field
-	CustomFields         apijson.Field
-	Description          apijson.Field
-	NetsuiteSalesOrderID apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsProfessionalService) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsProfessionalServiceJSON) RawJSON() string {
-	return r.raw
-}
-
 type ContractWithoutAmendmentsResellerRoyalty struct {
 	Fraction              float64                                                `json:"fraction,required"`
 	NetsuiteResellerID    string                                                 `json:"netsuite_reseller_id,required"`
@@ -1767,8 +1154,8 @@ func (r ContractWithoutAmendmentsResellerRoyaltiesResellerType) IsKnown() bool {
 }
 
 type ContractWithoutAmendmentsUsageFilter struct {
-	Current ContractWithoutAmendmentsUsageFilterCurrent  `json:"current,required,nullable"`
-	Initial ContractWithoutAmendmentsUsageFilterInitial  `json:"initial,required"`
+	Current BaseUsageFilter                              `json:"current,required,nullable"`
+	Initial BaseUsageFilter                              `json:"initial,required"`
 	Updates []ContractWithoutAmendmentsUsageFilterUpdate `json:"updates,required"`
 	JSON    contractWithoutAmendmentsUsageFilterJSON     `json:"-"`
 }
@@ -1788,56 +1175,6 @@ func (r *ContractWithoutAmendmentsUsageFilter) UnmarshalJSON(data []byte) (err e
 }
 
 func (r contractWithoutAmendmentsUsageFilterJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsUsageFilterCurrent struct {
-	GroupKey    string                                          `json:"group_key,required"`
-	GroupValues []string                                        `json:"group_values,required"`
-	StartingAt  time.Time                                       `json:"starting_at" format:"date-time"`
-	JSON        contractWithoutAmendmentsUsageFilterCurrentJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsUsageFilterCurrentJSON contains the JSON metadata for
-// the struct [ContractWithoutAmendmentsUsageFilterCurrent]
-type contractWithoutAmendmentsUsageFilterCurrentJSON struct {
-	GroupKey    apijson.Field
-	GroupValues apijson.Field
-	StartingAt  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsUsageFilterCurrent) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsUsageFilterCurrentJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsUsageFilterInitial struct {
-	GroupKey    string                                          `json:"group_key,required"`
-	GroupValues []string                                        `json:"group_values,required"`
-	StartingAt  time.Time                                       `json:"starting_at" format:"date-time"`
-	JSON        contractWithoutAmendmentsUsageFilterInitialJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsUsageFilterInitialJSON contains the JSON metadata for
-// the struct [ContractWithoutAmendmentsUsageFilterInitial]
-type contractWithoutAmendmentsUsageFilterInitialJSON struct {
-	GroupKey    apijson.Field
-	GroupValues apijson.Field
-	StartingAt  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsUsageFilterInitial) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsUsageFilterInitialJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1866,26 +1203,491 @@ func (r contractWithoutAmendmentsUsageFilterUpdateJSON) RawJSON() string {
 	return r.raw
 }
 
-type CreditType struct {
-	ID   string         `json:"id,required" format:"uuid"`
-	Name string         `json:"name,required"`
-	JSON creditTypeJSON `json:"-"`
+type Credit struct {
+	ID      string        `json:"id,required" format:"uuid"`
+	Product CreditProduct `json:"product,required"`
+	Type    CreditType    `json:"type,required"`
+	// The schedule that the customer will gain access to the credits.
+	AccessSchedule        ScheduleDuration  `json:"access_schedule"`
+	ApplicableContractIDs []string          `json:"applicable_contract_ids" format:"uuid"`
+	ApplicableProductIDs  []string          `json:"applicable_product_ids" format:"uuid"`
+	ApplicableProductTags []string          `json:"applicable_product_tags"`
+	Contract              CreditContract    `json:"contract"`
+	CustomFields          map[string]string `json:"custom_fields"`
+	Description           string            `json:"description"`
+	// A list of ordered events that impact the balance of a credit. For example, an
+	// invoice deduction or an expiration.
+	Ledger []CreditLedger `json:"ledger"`
+	Name   string         `json:"name"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// If multiple credits or commits are applicable, the one with the lower priority
+	// will apply first.
+	Priority float64 `json:"priority"`
+	// This field's availability is dependent on your client's configuration.
+	SalesforceOpportunityID string     `json:"salesforce_opportunity_id"`
+	JSON                    creditJSON `json:"-"`
 }
 
-// creditTypeJSON contains the JSON metadata for the struct [CreditType]
-type creditTypeJSON struct {
+// creditJSON contains the JSON metadata for the struct [Credit]
+type creditJSON struct {
+	ID                      apijson.Field
+	Product                 apijson.Field
+	Type                    apijson.Field
+	AccessSchedule          apijson.Field
+	ApplicableContractIDs   apijson.Field
+	ApplicableProductIDs    apijson.Field
+	ApplicableProductTags   apijson.Field
+	Contract                apijson.Field
+	CustomFields            apijson.Field
+	Description             apijson.Field
+	Ledger                  apijson.Field
+	Name                    apijson.Field
+	NetsuiteSalesOrderID    apijson.Field
+	Priority                apijson.Field
+	SalesforceOpportunityID apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *Credit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r Credit) ImplementsContractListBalancesResponseData() {}
+
+type CreditProduct struct {
+	ID   string            `json:"id,required" format:"uuid"`
+	Name string            `json:"name,required"`
+	JSON creditProductJSON `json:"-"`
+}
+
+// creditProductJSON contains the JSON metadata for the struct [CreditProduct]
+type creditProductJSON struct {
 	ID          apijson.Field
 	Name        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *CreditType) UnmarshalJSON(data []byte) (err error) {
+func (r *CreditProduct) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditTypeJSON) RawJSON() string {
+func (r creditProductJSON) RawJSON() string {
 	return r.raw
+}
+
+type CreditType string
+
+const (
+	CreditTypeCredit CreditType = "CREDIT"
+)
+
+func (r CreditType) IsKnown() bool {
+	switch r {
+	case CreditTypeCredit:
+		return true
+	}
+	return false
+}
+
+type CreditContract struct {
+	ID   string             `json:"id,required" format:"uuid"`
+	JSON creditContractJSON `json:"-"`
+}
+
+// creditContractJSON contains the JSON metadata for the struct [CreditContract]
+type creditContractJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditContract) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditContractJSON) RawJSON() string {
+	return r.raw
+}
+
+type CreditLedger struct {
+	Type      CreditLedgerType `json:"type,required"`
+	Timestamp time.Time        `json:"timestamp,required" format:"date-time"`
+	Amount    float64          `json:"amount,required"`
+	SegmentID string           `json:"segment_id" format:"uuid"`
+	InvoiceID string           `json:"invoice_id" format:"uuid"`
+	Reason    string           `json:"reason"`
+	JSON      creditLedgerJSON `json:"-"`
+	union     CreditLedgerUnion
+}
+
+// creditLedgerJSON contains the JSON metadata for the struct [CreditLedger]
+type creditLedgerJSON struct {
+	Type        apijson.Field
+	Timestamp   apijson.Field
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	InvoiceID   apijson.Field
+	Reason      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r creditLedgerJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *CreditLedger) UnmarshalJSON(data []byte) (err error) {
+	*r = CreditLedger{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [CreditLedgerUnion] interface which you can cast to the
+// specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [shared.CreditLedgerCreditSegmentStartLedgerEntry],
+// [shared.CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
+// [shared.CreditLedgerCreditExpirationLedgerEntry],
+// [shared.CreditLedgerCreditCanceledLedgerEntry],
+// [shared.CreditLedgerCreditCreditedLedgerEntry],
+// [shared.CreditLedgerCreditManualLedgerEntry].
+func (r CreditLedger) AsUnion() CreditLedgerUnion {
+	return r.union
+}
+
+// Union satisfied by [shared.CreditLedgerCreditSegmentStartLedgerEntry],
+// [shared.CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
+// [shared.CreditLedgerCreditExpirationLedgerEntry],
+// [shared.CreditLedgerCreditCanceledLedgerEntry],
+// [shared.CreditLedgerCreditCreditedLedgerEntry] or
+// [shared.CreditLedgerCreditManualLedgerEntry].
+type CreditLedgerUnion interface {
+	implementsSharedCreditLedger()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*CreditLedgerUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditLedgerCreditSegmentStartLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditLedgerCreditExpirationLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditLedgerCreditCanceledLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditLedgerCreditCreditedLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditLedgerCreditManualLedgerEntry{}),
+		},
+	)
+}
+
+type CreditLedgerCreditSegmentStartLedgerEntry struct {
+	Amount    float64                                       `json:"amount,required"`
+	SegmentID string                                        `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                     `json:"timestamp,required" format:"date-time"`
+	Type      CreditLedgerCreditSegmentStartLedgerEntryType `json:"type,required"`
+	JSON      creditLedgerCreditSegmentStartLedgerEntryJSON `json:"-"`
+}
+
+// creditLedgerCreditSegmentStartLedgerEntryJSON contains the JSON metadata for the
+// struct [CreditLedgerCreditSegmentStartLedgerEntry]
+type creditLedgerCreditSegmentStartLedgerEntryJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditLedgerCreditSegmentStartLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditLedgerCreditSegmentStartLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditLedgerCreditSegmentStartLedgerEntry) implementsSharedCreditLedger() {}
+
+type CreditLedgerCreditSegmentStartLedgerEntryType string
+
+const (
+	CreditLedgerCreditSegmentStartLedgerEntryTypeCreditSegmentStart CreditLedgerCreditSegmentStartLedgerEntryType = "CREDIT_SEGMENT_START"
+)
+
+func (r CreditLedgerCreditSegmentStartLedgerEntryType) IsKnown() bool {
+	switch r {
+	case CreditLedgerCreditSegmentStartLedgerEntryTypeCreditSegmentStart:
+		return true
+	}
+	return false
+}
+
+type CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry struct {
+	Amount    float64                                                    `json:"amount,required"`
+	InvoiceID string                                                     `json:"invoice_id,required" format:"uuid"`
+	SegmentID string                                                     `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                                  `json:"timestamp,required" format:"date-time"`
+	Type      CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryType `json:"type,required"`
+	JSON      creditLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON `json:"-"`
+}
+
+// creditLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON contains the JSON
+// metadata for the struct [CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry]
+type creditLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON struct {
+	Amount      apijson.Field
+	InvoiceID   apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry) implementsSharedCreditLedger() {}
+
+type CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryType string
+
+const (
+	CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryTypeCreditAutomatedInvoiceDeduction CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryType = "CREDIT_AUTOMATED_INVOICE_DEDUCTION"
+)
+
+func (r CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryType) IsKnown() bool {
+	switch r {
+	case CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryTypeCreditAutomatedInvoiceDeduction:
+		return true
+	}
+	return false
+}
+
+type CreditLedgerCreditExpirationLedgerEntry struct {
+	Amount    float64                                     `json:"amount,required"`
+	SegmentID string                                      `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                   `json:"timestamp,required" format:"date-time"`
+	Type      CreditLedgerCreditExpirationLedgerEntryType `json:"type,required"`
+	JSON      creditLedgerCreditExpirationLedgerEntryJSON `json:"-"`
+}
+
+// creditLedgerCreditExpirationLedgerEntryJSON contains the JSON metadata for the
+// struct [CreditLedgerCreditExpirationLedgerEntry]
+type creditLedgerCreditExpirationLedgerEntryJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditLedgerCreditExpirationLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditLedgerCreditExpirationLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditLedgerCreditExpirationLedgerEntry) implementsSharedCreditLedger() {}
+
+type CreditLedgerCreditExpirationLedgerEntryType string
+
+const (
+	CreditLedgerCreditExpirationLedgerEntryTypeCreditExpiration CreditLedgerCreditExpirationLedgerEntryType = "CREDIT_EXPIRATION"
+)
+
+func (r CreditLedgerCreditExpirationLedgerEntryType) IsKnown() bool {
+	switch r {
+	case CreditLedgerCreditExpirationLedgerEntryTypeCreditExpiration:
+		return true
+	}
+	return false
+}
+
+type CreditLedgerCreditCanceledLedgerEntry struct {
+	Amount    float64                                   `json:"amount,required"`
+	InvoiceID string                                    `json:"invoice_id,required" format:"uuid"`
+	SegmentID string                                    `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                 `json:"timestamp,required" format:"date-time"`
+	Type      CreditLedgerCreditCanceledLedgerEntryType `json:"type,required"`
+	JSON      creditLedgerCreditCanceledLedgerEntryJSON `json:"-"`
+}
+
+// creditLedgerCreditCanceledLedgerEntryJSON contains the JSON metadata for the
+// struct [CreditLedgerCreditCanceledLedgerEntry]
+type creditLedgerCreditCanceledLedgerEntryJSON struct {
+	Amount      apijson.Field
+	InvoiceID   apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditLedgerCreditCanceledLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditLedgerCreditCanceledLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditLedgerCreditCanceledLedgerEntry) implementsSharedCreditLedger() {}
+
+type CreditLedgerCreditCanceledLedgerEntryType string
+
+const (
+	CreditLedgerCreditCanceledLedgerEntryTypeCreditCanceled CreditLedgerCreditCanceledLedgerEntryType = "CREDIT_CANCELED"
+)
+
+func (r CreditLedgerCreditCanceledLedgerEntryType) IsKnown() bool {
+	switch r {
+	case CreditLedgerCreditCanceledLedgerEntryTypeCreditCanceled:
+		return true
+	}
+	return false
+}
+
+type CreditLedgerCreditCreditedLedgerEntry struct {
+	Amount    float64                                   `json:"amount,required"`
+	InvoiceID string                                    `json:"invoice_id,required" format:"uuid"`
+	SegmentID string                                    `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                 `json:"timestamp,required" format:"date-time"`
+	Type      CreditLedgerCreditCreditedLedgerEntryType `json:"type,required"`
+	JSON      creditLedgerCreditCreditedLedgerEntryJSON `json:"-"`
+}
+
+// creditLedgerCreditCreditedLedgerEntryJSON contains the JSON metadata for the
+// struct [CreditLedgerCreditCreditedLedgerEntry]
+type creditLedgerCreditCreditedLedgerEntryJSON struct {
+	Amount      apijson.Field
+	InvoiceID   apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditLedgerCreditCreditedLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditLedgerCreditCreditedLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditLedgerCreditCreditedLedgerEntry) implementsSharedCreditLedger() {}
+
+type CreditLedgerCreditCreditedLedgerEntryType string
+
+const (
+	CreditLedgerCreditCreditedLedgerEntryTypeCreditCredited CreditLedgerCreditCreditedLedgerEntryType = "CREDIT_CREDITED"
+)
+
+func (r CreditLedgerCreditCreditedLedgerEntryType) IsKnown() bool {
+	switch r {
+	case CreditLedgerCreditCreditedLedgerEntryTypeCreditCredited:
+		return true
+	}
+	return false
+}
+
+type CreditLedgerCreditManualLedgerEntry struct {
+	Amount    float64                                 `json:"amount,required"`
+	Reason    string                                  `json:"reason,required"`
+	Timestamp time.Time                               `json:"timestamp,required" format:"date-time"`
+	Type      CreditLedgerCreditManualLedgerEntryType `json:"type,required"`
+	JSON      creditLedgerCreditManualLedgerEntryJSON `json:"-"`
+}
+
+// creditLedgerCreditManualLedgerEntryJSON contains the JSON metadata for the
+// struct [CreditLedgerCreditManualLedgerEntry]
+type creditLedgerCreditManualLedgerEntryJSON struct {
+	Amount      apijson.Field
+	Reason      apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditLedgerCreditManualLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditLedgerCreditManualLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditLedgerCreditManualLedgerEntry) implementsSharedCreditLedger() {}
+
+type CreditLedgerCreditManualLedgerEntryType string
+
+const (
+	CreditLedgerCreditManualLedgerEntryTypeCreditManual CreditLedgerCreditManualLedgerEntryType = "CREDIT_MANUAL"
+)
+
+func (r CreditLedgerCreditManualLedgerEntryType) IsKnown() bool {
+	switch r {
+	case CreditLedgerCreditManualLedgerEntryTypeCreditManual:
+		return true
+	}
+	return false
+}
+
+type CreditLedgerType string
+
+const (
+	CreditLedgerTypeCreditSegmentStart              CreditLedgerType = "CREDIT_SEGMENT_START"
+	CreditLedgerTypeCreditAutomatedInvoiceDeduction CreditLedgerType = "CREDIT_AUTOMATED_INVOICE_DEDUCTION"
+	CreditLedgerTypeCreditExpiration                CreditLedgerType = "CREDIT_EXPIRATION"
+	CreditLedgerTypeCreditCanceled                  CreditLedgerType = "CREDIT_CANCELED"
+	CreditLedgerTypeCreditCredited                  CreditLedgerType = "CREDIT_CREDITED"
+	CreditLedgerTypeCreditManual                    CreditLedgerType = "CREDIT_MANUAL"
+)
+
+func (r CreditLedgerType) IsKnown() bool {
+	switch r {
+	case CreditLedgerTypeCreditSegmentStart, CreditLedgerTypeCreditAutomatedInvoiceDeduction, CreditLedgerTypeCreditExpiration, CreditLedgerTypeCreditCanceled, CreditLedgerTypeCreditCredited, CreditLedgerTypeCreditManual:
+		return true
+	}
+	return false
 }
 
 type Discount struct {
@@ -1939,6 +1741,51 @@ func (r discountProductJSON) RawJSON() string {
 	return r.raw
 }
 
+// An optional filtering rule to match the 'event_type' property of an event.
+type EventTypeFilter struct {
+	// A list of event types that are explicitly included in the billable metric. If
+	// specified, only events of these types will match the billable metric. Must be
+	// non-empty if present.
+	InValues []string `json:"in_values"`
+	// A list of event types that are explicitly excluded from the billable metric. If
+	// specified, events of these types will not match the billable metric. Must be
+	// non-empty if present.
+	NotInValues []string            `json:"not_in_values"`
+	JSON        eventTypeFilterJSON `json:"-"`
+}
+
+// eventTypeFilterJSON contains the JSON metadata for the struct [EventTypeFilter]
+type eventTypeFilterJSON struct {
+	InValues    apijson.Field
+	NotInValues apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EventTypeFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r eventTypeFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+// An optional filtering rule to match the 'event_type' property of an event.
+type EventTypeFilterParam struct {
+	// A list of event types that are explicitly included in the billable metric. If
+	// specified, only events of these types will match the billable metric. Must be
+	// non-empty if present.
+	InValues param.Field[[]string] `json:"in_values"`
+	// A list of event types that are explicitly excluded from the billable metric. If
+	// specified, events of these types will not match the billable metric. Must be
+	// non-empty if present.
+	NotInValues param.Field[[]string] `json:"not_in_values"`
+}
+
+func (r EventTypeFilterParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type ID struct {
 	ID   string `json:"id,required" format:"uuid"`
 	JSON idJSON `json:"-"`
@@ -1989,8 +1836,8 @@ type Override struct {
 	Quantity float64          `json:"quantity"`
 	RateType OverrideRateType `json:"rate_type"`
 	// Only set for TIERED rate_type.
-	Tiers []OverrideTier `json:"tiers"`
-	Type  OverrideType   `json:"type"`
+	Tiers []Tier       `json:"tiers"`
+	Type  OverrideType `json:"type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	Value map[string]interface{} `json:"value"`
@@ -2094,8 +1941,8 @@ type OverrideOverwriteRate struct {
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity float64 `json:"quantity"`
 	// Only set for TIERED rate_type.
-	Tiers []OverrideOverwriteRateTier `json:"tiers"`
-	JSON  overrideOverwriteRateJSON   `json:"-"`
+	Tiers []Tier                    `json:"tiers"`
+	JSON  overrideOverwriteRateJSON `json:"-"`
 }
 
 // overrideOverwriteRateJSON contains the JSON metadata for the struct
@@ -2138,29 +1985,6 @@ func (r OverrideOverwriteRateRateType) IsKnown() bool {
 	return false
 }
 
-type OverrideOverwriteRateTier struct {
-	Price float64                       `json:"price,required"`
-	Size  float64                       `json:"size"`
-	JSON  overrideOverwriteRateTierJSON `json:"-"`
-}
-
-// overrideOverwriteRateTierJSON contains the JSON metadata for the struct
-// [OverrideOverwriteRateTier]
-type overrideOverwriteRateTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *OverrideOverwriteRateTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r overrideOverwriteRateTierJSON) RawJSON() string {
-	return r.raw
-}
-
 type OverrideProduct struct {
 	ID   string              `json:"id,required" format:"uuid"`
 	Name string              `json:"name,required"`
@@ -2201,28 +2025,6 @@ func (r OverrideRateType) IsKnown() bool {
 	return false
 }
 
-type OverrideTier struct {
-	Price float64          `json:"price,required"`
-	Size  float64          `json:"size"`
-	JSON  overrideTierJSON `json:"-"`
-}
-
-// overrideTierJSON contains the JSON metadata for the struct [OverrideTier]
-type overrideTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *OverrideTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r overrideTierJSON) RawJSON() string {
-	return r.raw
-}
-
 type OverrideType string
 
 const (
@@ -2237,6 +2039,109 @@ func (r OverrideType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type PropertyFilter struct {
+	// The name of the event property.
+	Name string `json:"name,required"`
+	// Determines whether the property must exist in the event. If true, only events
+	// with this property will pass the filter. If false, only events without this
+	// property will pass the filter. If null or omitted, the existence of the property
+	// is optional.
+	Exists bool `json:"exists"`
+	// Specifies the allowed values for the property to match an event. An event will
+	// pass the filter only if its property value is included in this list. If
+	// undefined, all property values will pass the filter. Must be non-empty if
+	// present.
+	InValues []string `json:"in_values"`
+	// Specifies the values that prevent an event from matching the filter. An event
+	// will not pass the filter if its property value is included in this list. If null
+	// or empty, all property values will pass the filter. Must be non-empty if
+	// present.
+	NotInValues []string           `json:"not_in_values"`
+	JSON        propertyFilterJSON `json:"-"`
+}
+
+// propertyFilterJSON contains the JSON metadata for the struct [PropertyFilter]
+type propertyFilterJSON struct {
+	Name        apijson.Field
+	Exists      apijson.Field
+	InValues    apijson.Field
+	NotInValues apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PropertyFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r propertyFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+type PropertyFilterParam struct {
+	// The name of the event property.
+	Name param.Field[string] `json:"name,required"`
+	// Determines whether the property must exist in the event. If true, only events
+	// with this property will pass the filter. If false, only events without this
+	// property will pass the filter. If null or omitted, the existence of the property
+	// is optional.
+	Exists param.Field[bool] `json:"exists"`
+	// Specifies the allowed values for the property to match an event. An event will
+	// pass the filter only if its property value is included in this list. If
+	// undefined, all property values will pass the filter. Must be non-empty if
+	// present.
+	InValues param.Field[[]string] `json:"in_values"`
+	// Specifies the values that prevent an event from matching the filter. An event
+	// will not pass the filter if its property value is included in this list. If null
+	// or empty, all property values will pass the filter. Must be non-empty if
+	// present.
+	NotInValues param.Field[[]string] `json:"not_in_values"`
+}
+
+func (r PropertyFilterParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ProService struct {
+	ID string `json:"id,required" format:"uuid"`
+	// Maximum amount for the term.
+	MaxAmount float64 `json:"max_amount,required"`
+	ProductID string  `json:"product_id,required" format:"uuid"`
+	// Quantity for the charge. Will be multiplied by unit_price to determine the
+	// amount.
+	Quantity float64 `json:"quantity,required"`
+	// Unit price for the charge. Will be multiplied by quantity to determine the
+	// amount and must be specified.
+	UnitPrice    float64           `json:"unit_price,required"`
+	CustomFields map[string]string `json:"custom_fields"`
+	Description  string            `json:"description"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteSalesOrderID string         `json:"netsuite_sales_order_id"`
+	JSON                 proServiceJSON `json:"-"`
+}
+
+// proServiceJSON contains the JSON metadata for the struct [ProService]
+type proServiceJSON struct {
+	ID                   apijson.Field
+	MaxAmount            apijson.Field
+	ProductID            apijson.Field
+	Quantity             apijson.Field
+	UnitPrice            apijson.Field
+	CustomFields         apijson.Field
+	Description          apijson.Field
+	NetsuiteSalesOrderID apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
+}
+
+func (r *ProService) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r proServiceJSON) RawJSON() string {
+	return r.raw
 }
 
 type Rate struct {
@@ -2256,7 +2161,7 @@ type Rate struct {
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity float64 `json:"quantity"`
 	// Only set for TIERED rate_type.
-	Tiers []RateTier `json:"tiers"`
+	Tiers []Tier `json:"tiers"`
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
@@ -2305,25 +2210,108 @@ func (r RateRateType) IsKnown() bool {
 	return false
 }
 
-type RateTier struct {
-	Price float64      `json:"price,required"`
-	Size  float64      `json:"size"`
-	JSON  rateTierJSON `json:"-"`
+type ScheduledCharge struct {
+	ID           string                 `json:"id,required" format:"uuid"`
+	Product      ScheduledChargeProduct `json:"product,required"`
+	Schedule     SchedulePointInTime    `json:"schedule,required"`
+	CustomFields map[string]string      `json:"custom_fields"`
+	// displayed on invoices
+	Name string `json:"name"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteSalesOrderID string              `json:"netsuite_sales_order_id"`
+	JSON                 scheduledChargeJSON `json:"-"`
 }
 
-// rateTierJSON contains the JSON metadata for the struct [RateTier]
-type rateTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
+// scheduledChargeJSON contains the JSON metadata for the struct [ScheduledCharge]
+type scheduledChargeJSON struct {
+	ID                   apijson.Field
+	Product              apijson.Field
+	Schedule             apijson.Field
+	CustomFields         apijson.Field
+	Name                 apijson.Field
+	NetsuiteSalesOrderID apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
+}
+
+func (r *ScheduledCharge) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r scheduledChargeJSON) RawJSON() string {
+	return r.raw
+}
+
+type ScheduledChargeProduct struct {
+	ID   string                     `json:"id,required" format:"uuid"`
+	Name string                     `json:"name,required"`
+	JSON scheduledChargeProductJSON `json:"-"`
+}
+
+// scheduledChargeProductJSON contains the JSON metadata for the struct
+// [ScheduledChargeProduct]
+type scheduledChargeProductJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RateTier) UnmarshalJSON(data []byte) (err error) {
+func (r *ScheduledChargeProduct) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r rateTierJSON) RawJSON() string {
+func (r scheduledChargeProductJSON) RawJSON() string {
+	return r.raw
+}
+
+type ScheduleDuration struct {
+	ScheduleItems []ScheduleDurationScheduleItem `json:"schedule_items,required"`
+	CreditType    CreditType                     `json:"credit_type"`
+	JSON          scheduleDurationJSON           `json:"-"`
+}
+
+// scheduleDurationJSON contains the JSON metadata for the struct
+// [ScheduleDuration]
+type scheduleDurationJSON struct {
+	ScheduleItems apijson.Field
+	CreditType    apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ScheduleDuration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r scheduleDurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type ScheduleDurationScheduleItem struct {
+	ID           string                           `json:"id,required" format:"uuid"`
+	Amount       float64                          `json:"amount,required"`
+	EndingBefore time.Time                        `json:"ending_before,required" format:"date-time"`
+	StartingAt   time.Time                        `json:"starting_at,required" format:"date-time"`
+	JSON         scheduleDurationScheduleItemJSON `json:"-"`
+}
+
+// scheduleDurationScheduleItemJSON contains the JSON metadata for the struct
+// [ScheduleDurationScheduleItem]
+type scheduleDurationScheduleItemJSON struct {
+	ID           apijson.Field
+	Amount       apijson.Field
+	EndingBefore apijson.Field
+	StartingAt   apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *ScheduleDurationScheduleItem) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r scheduleDurationScheduleItemJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -2381,57 +2369,33 @@ func (r schedulePointInTimeScheduleItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type ScheduledCharge struct {
-	ID           string                 `json:"id,required" format:"uuid"`
-	Product      ScheduledChargeProduct `json:"product,required"`
-	Schedule     SchedulePointInTime    `json:"schedule,required"`
-	CustomFields map[string]string      `json:"custom_fields"`
-	// displayed on invoices
-	Name string `json:"name"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string              `json:"netsuite_sales_order_id"`
-	JSON                 scheduledChargeJSON `json:"-"`
+type Tier struct {
+	Price float64  `json:"price,required"`
+	Size  float64  `json:"size"`
+	JSON  tierJSON `json:"-"`
 }
 
-// scheduledChargeJSON contains the JSON metadata for the struct [ScheduledCharge]
-type scheduledChargeJSON struct {
-	ID                   apijson.Field
-	Product              apijson.Field
-	Schedule             apijson.Field
-	CustomFields         apijson.Field
-	Name                 apijson.Field
-	NetsuiteSalesOrderID apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
-}
-
-func (r *ScheduledCharge) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r scheduledChargeJSON) RawJSON() string {
-	return r.raw
-}
-
-type ScheduledChargeProduct struct {
-	ID   string                     `json:"id,required" format:"uuid"`
-	Name string                     `json:"name,required"`
-	JSON scheduledChargeProductJSON `json:"-"`
-}
-
-// scheduledChargeProductJSON contains the JSON metadata for the struct
-// [ScheduledChargeProduct]
-type scheduledChargeProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
+// tierJSON contains the JSON metadata for the struct [Tier]
+type tierJSON struct {
+	Price       apijson.Field
+	Size        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ScheduledChargeProduct) UnmarshalJSON(data []byte) (err error) {
+func (r *Tier) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r scheduledChargeProductJSON) RawJSON() string {
+func (r tierJSON) RawJSON() string {
 	return r.raw
+}
+
+type TierParam struct {
+	Price param.Field[float64] `json:"price,required"`
+	Size  param.Field[float64] `json:"size"`
+}
+
+func (r TierParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }

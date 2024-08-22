@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestContractRateCardRateListWithOptionalParams(t *testing.T) {
@@ -81,7 +82,7 @@ func TestContractRateCardRateAddWithOptionalParams(t *testing.T) {
 			"foo": "string",
 		}),
 		Quantity: metronome.F(0.000000),
-		Tiers: metronome.F([]metronome.ContractRateCardRateAddParamsTier{{
+		Tiers: metronome.F([]shared.TierParam{{
 			Price: metronome.F(0.000000),
 			Size:  metronome.F(0.000000),
 		}, {
@@ -133,7 +134,7 @@ func TestContractRateCardRateAddManyWithOptionalParams(t *testing.T) {
 				"cloud":  "aws",
 			}),
 			Quantity: metronome.F(0.000000),
-			Tiers: metronome.F([]metronome.ContractRateCardRateAddManyParamsRatesTier{{
+			Tiers: metronome.F([]shared.TierParam{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}, {
@@ -161,7 +162,7 @@ func TestContractRateCardRateAddManyWithOptionalParams(t *testing.T) {
 				"cloud":  "aws",
 			}),
 			Quantity: metronome.F(0.000000),
-			Tiers: metronome.F([]metronome.ContractRateCardRateAddManyParamsRatesTier{{
+			Tiers: metronome.F([]shared.TierParam{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}, {
