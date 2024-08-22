@@ -243,20 +243,15 @@ type ContractRateCardRateAddParamsRateType string
 
 const (
 	ContractRateCardRateAddParamsRateTypeFlat         ContractRateCardRateAddParamsRateType = "FLAT"
-	ContractRateCardRateAddParamsRateTypeFlat         ContractRateCardRateAddParamsRateType = "flat"
 	ContractRateCardRateAddParamsRateTypePercentage   ContractRateCardRateAddParamsRateType = "PERCENTAGE"
-	ContractRateCardRateAddParamsRateTypePercentage   ContractRateCardRateAddParamsRateType = "percentage"
 	ContractRateCardRateAddParamsRateTypeSubscription ContractRateCardRateAddParamsRateType = "SUBSCRIPTION"
-	ContractRateCardRateAddParamsRateTypeSubscription ContractRateCardRateAddParamsRateType = "subscription"
 	ContractRateCardRateAddParamsRateTypeTiered       ContractRateCardRateAddParamsRateType = "TIERED"
-	ContractRateCardRateAddParamsRateTypeTiered       ContractRateCardRateAddParamsRateType = "tiered"
 	ContractRateCardRateAddParamsRateTypeCustom       ContractRateCardRateAddParamsRateType = "CUSTOM"
-	ContractRateCardRateAddParamsRateTypeCustom       ContractRateCardRateAddParamsRateType = "custom"
 )
 
 func (r ContractRateCardRateAddParamsRateType) IsKnown() bool {
 	switch r {
-	case ContractRateCardRateAddParamsRateTypeFlat, ContractRateCardRateAddParamsRateTypeFlat, ContractRateCardRateAddParamsRateTypePercentage, ContractRateCardRateAddParamsRateTypePercentage, ContractRateCardRateAddParamsRateTypeSubscription, ContractRateCardRateAddParamsRateTypeSubscription, ContractRateCardRateAddParamsRateTypeTiered, ContractRateCardRateAddParamsRateTypeTiered, ContractRateCardRateAddParamsRateTypeCustom, ContractRateCardRateAddParamsRateTypeCustom:
+	case ContractRateCardRateAddParamsRateTypeFlat, ContractRateCardRateAddParamsRateTypePercentage, ContractRateCardRateAddParamsRateTypeSubscription, ContractRateCardRateAddParamsRateTypeTiered, ContractRateCardRateAddParamsRateTypeCustom:
 		return true
 	}
 	return false
@@ -323,20 +318,15 @@ type ContractRateCardRateAddManyParamsRatesRateType string
 
 const (
 	ContractRateCardRateAddManyParamsRatesRateTypeFlat         ContractRateCardRateAddManyParamsRatesRateType = "FLAT"
-	ContractRateCardRateAddManyParamsRatesRateTypeFlat         ContractRateCardRateAddManyParamsRatesRateType = "flat"
 	ContractRateCardRateAddManyParamsRatesRateTypePercentage   ContractRateCardRateAddManyParamsRatesRateType = "PERCENTAGE"
-	ContractRateCardRateAddManyParamsRatesRateTypePercentage   ContractRateCardRateAddManyParamsRatesRateType = "percentage"
 	ContractRateCardRateAddManyParamsRatesRateTypeSubscription ContractRateCardRateAddManyParamsRatesRateType = "SUBSCRIPTION"
-	ContractRateCardRateAddManyParamsRatesRateTypeSubscription ContractRateCardRateAddManyParamsRatesRateType = "subscription"
 	ContractRateCardRateAddManyParamsRatesRateTypeTiered       ContractRateCardRateAddManyParamsRatesRateType = "TIERED"
-	ContractRateCardRateAddManyParamsRatesRateTypeTiered       ContractRateCardRateAddManyParamsRatesRateType = "tiered"
 	ContractRateCardRateAddManyParamsRatesRateTypeCustom       ContractRateCardRateAddManyParamsRatesRateType = "CUSTOM"
-	ContractRateCardRateAddManyParamsRatesRateTypeCustom       ContractRateCardRateAddManyParamsRatesRateType = "custom"
 )
 
 func (r ContractRateCardRateAddManyParamsRatesRateType) IsKnown() bool {
 	switch r {
-	case ContractRateCardRateAddManyParamsRatesRateTypeFlat, ContractRateCardRateAddManyParamsRatesRateTypeFlat, ContractRateCardRateAddManyParamsRatesRateTypePercentage, ContractRateCardRateAddManyParamsRatesRateTypePercentage, ContractRateCardRateAddManyParamsRatesRateTypeSubscription, ContractRateCardRateAddManyParamsRatesRateTypeSubscription, ContractRateCardRateAddManyParamsRatesRateTypeTiered, ContractRateCardRateAddManyParamsRatesRateTypeTiered, ContractRateCardRateAddManyParamsRatesRateTypeCustom, ContractRateCardRateAddManyParamsRatesRateTypeCustom:
+	case ContractRateCardRateAddManyParamsRatesRateTypeFlat, ContractRateCardRateAddManyParamsRatesRateTypePercentage, ContractRateCardRateAddManyParamsRatesRateTypeSubscription, ContractRateCardRateAddManyParamsRatesRateTypeTiered, ContractRateCardRateAddManyParamsRatesRateTypeCustom:
 		return true
 	}
 	return false
