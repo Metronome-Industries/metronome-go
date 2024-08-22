@@ -228,7 +228,7 @@ type ContractRateCardRateAddParams struct {
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity param.Field[float64] `json:"quantity"`
 	// Only set for TIERED rate_type.
-	Tiers param.Field[[]ContractRateCardRateAddParamsTier] `json:"tiers"`
+	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
@@ -255,15 +255,6 @@ func (r ContractRateCardRateAddParamsRateType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ContractRateCardRateAddParamsTier struct {
-	Price param.Field[float64] `json:"price,required"`
-	Size  param.Field[float64] `json:"size"`
-}
-
-func (r ContractRateCardRateAddParamsTier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type ContractRateCardRateAddManyParams struct {
@@ -303,7 +294,7 @@ type ContractRateCardRateAddManyParamsRate struct {
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity param.Field[float64] `json:"quantity"`
 	// Only set for TIERED rate_type.
-	Tiers param.Field[[]ContractRateCardRateAddManyParamsRatesTier] `json:"tiers"`
+	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
@@ -330,13 +321,4 @@ func (r ContractRateCardRateAddManyParamsRatesRateType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ContractRateCardRateAddManyParamsRatesTier struct {
-	Price param.Field[float64] `json:"price,required"`
-	Size  param.Field[float64] `json:"size"`
-}
-
-func (r ContractRateCardRateAddManyParamsRatesTier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }

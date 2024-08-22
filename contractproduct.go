@@ -91,6 +91,201 @@ func (r *ContractProductService) Archive(ctx context.Context, body ContractProdu
 	return
 }
 
+type ProductListItemState struct {
+	CreatedAt           time.Time `json:"created_at,required" format:"date-time"`
+	CreatedBy           string    `json:"created_by,required"`
+	Name                string    `json:"name,required"`
+	BillableMetricID    string    `json:"billable_metric_id"`
+	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
+	CompositeTags       []string  `json:"composite_tags"`
+	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
+	// This field's availability is dependent on your client's configuration.
+	IsRefundable bool `json:"is_refundable"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
+	// For USAGE products only. Groups usage line items on invoices.
+	PresentationGroupKey []string `json:"presentation_group_key"`
+	// For USAGE products only. If set, pricing for this product will be determined for
+	// each pricing_group_key value, as opposed to the product as a whole.
+	PricingGroupKey []string `json:"pricing_group_key"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// converted using the provided conversion factor and operation. For example, if
+	// the operation is "multiply" and the conversion factor is 100, then the quantity
+	// will be multiplied by 100. This can be used in cases where data is sent in one
+	// unit and priced in another. For example, data could be sent in MB and priced in
+	// GB. In this case, the conversion factor would be 1024 and the operation would be
+	// "divide".
+	QuantityConversion QuantityConversion `json:"quantity_conversion,nullable"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// rounded using the provided rounding method and decimal places. For example, if
+	// the method is "round up" and the decimal places is 0, then the quantity will be
+	// rounded up to the nearest integer.
+	QuantityRounding QuantityRounding         `json:"quantity_rounding,nullable"`
+	StartingAt       time.Time                `json:"starting_at" format:"date-time"`
+	Tags             []string                 `json:"tags"`
+	JSON             productListItemStateJSON `json:"-"`
+}
+
+// productListItemStateJSON contains the JSON metadata for the struct
+// [ProductListItemState]
+type productListItemStateJSON struct {
+	CreatedAt              apijson.Field
+	CreatedBy              apijson.Field
+	Name                   apijson.Field
+	BillableMetricID       apijson.Field
+	CompositeProductIDs    apijson.Field
+	CompositeTags          apijson.Field
+	ExcludeFreeUsage       apijson.Field
+	IsRefundable           apijson.Field
+	NetsuiteInternalItemID apijson.Field
+	NetsuiteOverageItemID  apijson.Field
+	PresentationGroupKey   apijson.Field
+	PricingGroupKey        apijson.Field
+	QuantityConversion     apijson.Field
+	QuantityRounding       apijson.Field
+	StartingAt             apijson.Field
+	Tags                   apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *ProductListItemState) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r productListItemStateJSON) RawJSON() string {
+	return r.raw
+}
+
+// Optional. Only valid for USAGE products. If provided, the quantity will be
+// converted using the provided conversion factor and operation. For example, if
+// the operation is "multiply" and the conversion factor is 100, then the quantity
+// will be multiplied by 100. This can be used in cases where data is sent in one
+// unit and priced in another. For example, data could be sent in MB and priced in
+// GB. In this case, the conversion factor would be 1024 and the operation would be
+// "divide".
+type QuantityConversion struct {
+	// The factor to multiply or divide the quantity by.
+	ConversionFactor float64 `json:"conversion_factor,required"`
+	// The operation to perform on the quantity
+	Operation QuantityConversionOperation `json:"operation,required"`
+	// Optional name for this conversion.
+	Name string                 `json:"name"`
+	JSON quantityConversionJSON `json:"-"`
+}
+
+// quantityConversionJSON contains the JSON metadata for the struct
+// [QuantityConversion]
+type quantityConversionJSON struct {
+	ConversionFactor apijson.Field
+	Operation        apijson.Field
+	Name             apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *QuantityConversion) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r quantityConversionJSON) RawJSON() string {
+	return r.raw
+}
+
+// The operation to perform on the quantity
+type QuantityConversionOperation string
+
+const (
+	QuantityConversionOperationMultiply QuantityConversionOperation = "MULTIPLY"
+	QuantityConversionOperationDivide   QuantityConversionOperation = "DIVIDE"
+)
+
+func (r QuantityConversionOperation) IsKnown() bool {
+	switch r {
+	case QuantityConversionOperationMultiply, QuantityConversionOperationDivide:
+		return true
+	}
+	return false
+}
+
+// Optional. Only valid for USAGE products. If provided, the quantity will be
+// converted using the provided conversion factor and operation. For example, if
+// the operation is "multiply" and the conversion factor is 100, then the quantity
+// will be multiplied by 100. This can be used in cases where data is sent in one
+// unit and priced in another. For example, data could be sent in MB and priced in
+// GB. In this case, the conversion factor would be 1024 and the operation would be
+// "divide".
+type QuantityConversionParam struct {
+	// The factor to multiply or divide the quantity by.
+	ConversionFactor param.Field[float64] `json:"conversion_factor,required"`
+	// The operation to perform on the quantity
+	Operation param.Field[QuantityConversionOperation] `json:"operation,required"`
+	// Optional name for this conversion.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r QuantityConversionParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Optional. Only valid for USAGE products. If provided, the quantity will be
+// rounded using the provided rounding method and decimal places. For example, if
+// the method is "round up" and the decimal places is 0, then the quantity will be
+// rounded up to the nearest integer.
+type QuantityRounding struct {
+	DecimalPlaces  float64                        `json:"decimal_places,required"`
+	RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method,required"`
+	JSON           quantityRoundingJSON           `json:"-"`
+}
+
+// quantityRoundingJSON contains the JSON metadata for the struct
+// [QuantityRounding]
+type quantityRoundingJSON struct {
+	DecimalPlaces  apijson.Field
+	RoundingMethod apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *QuantityRounding) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r quantityRoundingJSON) RawJSON() string {
+	return r.raw
+}
+
+type QuantityRoundingRoundingMethod string
+
+const (
+	QuantityRoundingRoundingMethodRoundUp     QuantityRoundingRoundingMethod = "ROUND_UP"
+	QuantityRoundingRoundingMethodRoundDown   QuantityRoundingRoundingMethod = "ROUND_DOWN"
+	QuantityRoundingRoundingMethodRoundHalfUp QuantityRoundingRoundingMethod = "ROUND_HALF_UP"
+)
+
+func (r QuantityRoundingRoundingMethod) IsKnown() bool {
+	switch r {
+	case QuantityRoundingRoundingMethodRoundUp, QuantityRoundingRoundingMethodRoundDown, QuantityRoundingRoundingMethodRoundHalfUp:
+		return true
+	}
+	return false
+}
+
+// Optional. Only valid for USAGE products. If provided, the quantity will be
+// rounded using the provided rounding method and decimal places. For example, if
+// the method is "round up" and the decimal places is 0, then the quantity will be
+// rounded up to the nearest integer.
+type QuantityRoundingParam struct {
+	DecimalPlaces  param.Field[float64]                        `json:"decimal_places,required"`
+	RoundingMethod param.Field[QuantityRoundingRoundingMethod] `json:"rounding_method,required"`
+}
+
+func (r QuantityRoundingParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type ContractProductNewResponse struct {
 	Data shared.ID                      `json:"data,required"`
 	JSON contractProductNewResponseJSON `json:"-"`
@@ -135,8 +330,8 @@ func (r contractProductGetResponseJSON) RawJSON() string {
 
 type ContractProductGetResponseData struct {
 	ID           string                                 `json:"id,required" format:"uuid"`
-	Current      ContractProductGetResponseDataCurrent  `json:"current,required"`
-	Initial      ContractProductGetResponseDataInitial  `json:"initial,required"`
+	Current      ProductListItemState                   `json:"current,required"`
+	Initial      ProductListItemState                   `json:"initial,required"`
 	Type         ContractProductGetResponseDataType     `json:"type,required"`
 	Updates      []ContractProductGetResponseDataUpdate `json:"updates,required"`
 	ArchivedAt   time.Time                              `json:"archived_at,nullable" format:"date-time"`
@@ -164,332 +359,6 @@ func (r *ContractProductGetResponseData) UnmarshalJSON(data []byte) (err error) 
 
 func (r contractProductGetResponseDataJSON) RawJSON() string {
 	return r.raw
-}
-
-type ContractProductGetResponseDataCurrent struct {
-	CreatedAt           time.Time `json:"created_at,required" format:"date-time"`
-	CreatedBy           string    `json:"created_by,required"`
-	Name                string    `json:"name,required"`
-	BillableMetricID    string    `json:"billable_metric_id"`
-	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
-	CompositeTags       []string  `json:"composite_tags"`
-	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
-	// This field's availability is dependent on your client's configuration.
-	IsRefundable bool `json:"is_refundable"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
-	PresentationGroupKey []string `json:"presentation_group_key"`
-	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
-	PricingGroupKey []string `json:"pricing_group_key"`
-	// Optional. Only valid for USAGE products. If provided, the quantity will be
-	// converted using the provided conversion factor and operation. For example, if
-	// the operation is "multiply" and the conversion factor is 100, then the quantity
-	// will be multiplied by 100. This can be used in cases where data is sent in one
-	// unit and priced in another. For example, data could be sent in MB and priced in
-	// GB. In this case, the conversion factor would be 1024 and the operation would be
-	// "divide".
-	QuantityConversion ContractProductGetResponseDataCurrentQuantityConversion `json:"quantity_conversion,nullable"`
-	// Optional. Only valid for USAGE products. If provided, the quantity will be
-	// rounded using the provided rounding method and decimal places. For example, if
-	// the method is "round up" and the decimal places is 0, then the quantity will be
-	// rounded up to the nearest integer.
-	QuantityRounding ContractProductGetResponseDataCurrentQuantityRounding `json:"quantity_rounding,nullable"`
-	StartingAt       time.Time                                             `json:"starting_at" format:"date-time"`
-	Tags             []string                                              `json:"tags"`
-	JSON             contractProductGetResponseDataCurrentJSON             `json:"-"`
-}
-
-// contractProductGetResponseDataCurrentJSON contains the JSON metadata for the
-// struct [ContractProductGetResponseDataCurrent]
-type contractProductGetResponseDataCurrentJSON struct {
-	CreatedAt              apijson.Field
-	CreatedBy              apijson.Field
-	Name                   apijson.Field
-	BillableMetricID       apijson.Field
-	CompositeProductIDs    apijson.Field
-	CompositeTags          apijson.Field
-	ExcludeFreeUsage       apijson.Field
-	IsRefundable           apijson.Field
-	NetsuiteInternalItemID apijson.Field
-	NetsuiteOverageItemID  apijson.Field
-	PresentationGroupKey   apijson.Field
-	PricingGroupKey        apijson.Field
-	QuantityConversion     apijson.Field
-	QuantityRounding       apijson.Field
-	StartingAt             apijson.Field
-	Tags                   apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractProductGetResponseDataCurrent) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductGetResponseDataCurrentJSON) RawJSON() string {
-	return r.raw
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-type ContractProductGetResponseDataCurrentQuantityConversion struct {
-	// The factor to multiply or divide the quantity by.
-	ConversionFactor float64 `json:"conversion_factor,required"`
-	// The operation to perform on the quantity
-	Operation ContractProductGetResponseDataCurrentQuantityConversionOperation `json:"operation,required"`
-	// Optional name for this conversion.
-	Name string                                                      `json:"name"`
-	JSON contractProductGetResponseDataCurrentQuantityConversionJSON `json:"-"`
-}
-
-// contractProductGetResponseDataCurrentQuantityConversionJSON contains the JSON
-// metadata for the struct
-// [ContractProductGetResponseDataCurrentQuantityConversion]
-type contractProductGetResponseDataCurrentQuantityConversionJSON struct {
-	ConversionFactor apijson.Field
-	Operation        apijson.Field
-	Name             apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *ContractProductGetResponseDataCurrentQuantityConversion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductGetResponseDataCurrentQuantityConversionJSON) RawJSON() string {
-	return r.raw
-}
-
-// The operation to perform on the quantity
-type ContractProductGetResponseDataCurrentQuantityConversionOperation string
-
-const (
-	ContractProductGetResponseDataCurrentQuantityConversionOperationMultiply ContractProductGetResponseDataCurrentQuantityConversionOperation = "MULTIPLY"
-	ContractProductGetResponseDataCurrentQuantityConversionOperationDivide   ContractProductGetResponseDataCurrentQuantityConversionOperation = "DIVIDE"
-)
-
-func (r ContractProductGetResponseDataCurrentQuantityConversionOperation) IsKnown() bool {
-	switch r {
-	case ContractProductGetResponseDataCurrentQuantityConversionOperationMultiply, ContractProductGetResponseDataCurrentQuantityConversionOperationDivide:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-type ContractProductGetResponseDataCurrentQuantityRounding struct {
-	DecimalPlaces  float64                                                             `json:"decimal_places,required"`
-	RoundingMethod ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethod `json:"rounding_method,required"`
-	JSON           contractProductGetResponseDataCurrentQuantityRoundingJSON           `json:"-"`
-}
-
-// contractProductGetResponseDataCurrentQuantityRoundingJSON contains the JSON
-// metadata for the struct [ContractProductGetResponseDataCurrentQuantityRounding]
-type contractProductGetResponseDataCurrentQuantityRoundingJSON struct {
-	DecimalPlaces  apijson.Field
-	RoundingMethod apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *ContractProductGetResponseDataCurrentQuantityRounding) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductGetResponseDataCurrentQuantityRoundingJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethod string
-
-const (
-	ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethodRoundUp     ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethod = "ROUND_UP"
-	ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethodRoundDown   ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethod = "ROUND_DOWN"
-	ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethodRoundHalfUp ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-)
-
-func (r ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethod) IsKnown() bool {
-	switch r {
-	case ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethodRoundUp, ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethodRoundDown, ContractProductGetResponseDataCurrentQuantityRoundingRoundingMethodRoundHalfUp:
-		return true
-	}
-	return false
-}
-
-type ContractProductGetResponseDataInitial struct {
-	CreatedAt           time.Time `json:"created_at,required" format:"date-time"`
-	CreatedBy           string    `json:"created_by,required"`
-	Name                string    `json:"name,required"`
-	BillableMetricID    string    `json:"billable_metric_id"`
-	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
-	CompositeTags       []string  `json:"composite_tags"`
-	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
-	// This field's availability is dependent on your client's configuration.
-	IsRefundable bool `json:"is_refundable"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
-	PresentationGroupKey []string `json:"presentation_group_key"`
-	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
-	PricingGroupKey []string `json:"pricing_group_key"`
-	// Optional. Only valid for USAGE products. If provided, the quantity will be
-	// converted using the provided conversion factor and operation. For example, if
-	// the operation is "multiply" and the conversion factor is 100, then the quantity
-	// will be multiplied by 100. This can be used in cases where data is sent in one
-	// unit and priced in another. For example, data could be sent in MB and priced in
-	// GB. In this case, the conversion factor would be 1024 and the operation would be
-	// "divide".
-	QuantityConversion ContractProductGetResponseDataInitialQuantityConversion `json:"quantity_conversion,nullable"`
-	// Optional. Only valid for USAGE products. If provided, the quantity will be
-	// rounded using the provided rounding method and decimal places. For example, if
-	// the method is "round up" and the decimal places is 0, then the quantity will be
-	// rounded up to the nearest integer.
-	QuantityRounding ContractProductGetResponseDataInitialQuantityRounding `json:"quantity_rounding,nullable"`
-	StartingAt       time.Time                                             `json:"starting_at" format:"date-time"`
-	Tags             []string                                              `json:"tags"`
-	JSON             contractProductGetResponseDataInitialJSON             `json:"-"`
-}
-
-// contractProductGetResponseDataInitialJSON contains the JSON metadata for the
-// struct [ContractProductGetResponseDataInitial]
-type contractProductGetResponseDataInitialJSON struct {
-	CreatedAt              apijson.Field
-	CreatedBy              apijson.Field
-	Name                   apijson.Field
-	BillableMetricID       apijson.Field
-	CompositeProductIDs    apijson.Field
-	CompositeTags          apijson.Field
-	ExcludeFreeUsage       apijson.Field
-	IsRefundable           apijson.Field
-	NetsuiteInternalItemID apijson.Field
-	NetsuiteOverageItemID  apijson.Field
-	PresentationGroupKey   apijson.Field
-	PricingGroupKey        apijson.Field
-	QuantityConversion     apijson.Field
-	QuantityRounding       apijson.Field
-	StartingAt             apijson.Field
-	Tags                   apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractProductGetResponseDataInitial) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductGetResponseDataInitialJSON) RawJSON() string {
-	return r.raw
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-type ContractProductGetResponseDataInitialQuantityConversion struct {
-	// The factor to multiply or divide the quantity by.
-	ConversionFactor float64 `json:"conversion_factor,required"`
-	// The operation to perform on the quantity
-	Operation ContractProductGetResponseDataInitialQuantityConversionOperation `json:"operation,required"`
-	// Optional name for this conversion.
-	Name string                                                      `json:"name"`
-	JSON contractProductGetResponseDataInitialQuantityConversionJSON `json:"-"`
-}
-
-// contractProductGetResponseDataInitialQuantityConversionJSON contains the JSON
-// metadata for the struct
-// [ContractProductGetResponseDataInitialQuantityConversion]
-type contractProductGetResponseDataInitialQuantityConversionJSON struct {
-	ConversionFactor apijson.Field
-	Operation        apijson.Field
-	Name             apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *ContractProductGetResponseDataInitialQuantityConversion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductGetResponseDataInitialQuantityConversionJSON) RawJSON() string {
-	return r.raw
-}
-
-// The operation to perform on the quantity
-type ContractProductGetResponseDataInitialQuantityConversionOperation string
-
-const (
-	ContractProductGetResponseDataInitialQuantityConversionOperationMultiply ContractProductGetResponseDataInitialQuantityConversionOperation = "MULTIPLY"
-	ContractProductGetResponseDataInitialQuantityConversionOperationDivide   ContractProductGetResponseDataInitialQuantityConversionOperation = "DIVIDE"
-)
-
-func (r ContractProductGetResponseDataInitialQuantityConversionOperation) IsKnown() bool {
-	switch r {
-	case ContractProductGetResponseDataInitialQuantityConversionOperationMultiply, ContractProductGetResponseDataInitialQuantityConversionOperationDivide:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-type ContractProductGetResponseDataInitialQuantityRounding struct {
-	DecimalPlaces  float64                                                             `json:"decimal_places,required"`
-	RoundingMethod ContractProductGetResponseDataInitialQuantityRoundingRoundingMethod `json:"rounding_method,required"`
-	JSON           contractProductGetResponseDataInitialQuantityRoundingJSON           `json:"-"`
-}
-
-// contractProductGetResponseDataInitialQuantityRoundingJSON contains the JSON
-// metadata for the struct [ContractProductGetResponseDataInitialQuantityRounding]
-type contractProductGetResponseDataInitialQuantityRoundingJSON struct {
-	DecimalPlaces  apijson.Field
-	RoundingMethod apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *ContractProductGetResponseDataInitialQuantityRounding) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductGetResponseDataInitialQuantityRoundingJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractProductGetResponseDataInitialQuantityRoundingRoundingMethod string
-
-const (
-	ContractProductGetResponseDataInitialQuantityRoundingRoundingMethodRoundUp     ContractProductGetResponseDataInitialQuantityRoundingRoundingMethod = "ROUND_UP"
-	ContractProductGetResponseDataInitialQuantityRoundingRoundingMethodRoundDown   ContractProductGetResponseDataInitialQuantityRoundingRoundingMethod = "ROUND_DOWN"
-	ContractProductGetResponseDataInitialQuantityRoundingRoundingMethodRoundHalfUp ContractProductGetResponseDataInitialQuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-)
-
-func (r ContractProductGetResponseDataInitialQuantityRoundingRoundingMethod) IsKnown() bool {
-	switch r {
-	case ContractProductGetResponseDataInitialQuantityRoundingRoundingMethodRoundUp, ContractProductGetResponseDataInitialQuantityRoundingRoundingMethodRoundDown, ContractProductGetResponseDataInitialQuantityRoundingRoundingMethodRoundHalfUp:
-		return true
-	}
-	return false
 }
 
 type ContractProductGetResponseDataType string
@@ -535,15 +404,15 @@ type ContractProductGetResponseDataUpdate struct {
 	// unit and priced in another. For example, data could be sent in MB and priced in
 	// GB. In this case, the conversion factor would be 1024 and the operation would be
 	// "divide".
-	QuantityConversion ContractProductGetResponseDataUpdatesQuantityConversion `json:"quantity_conversion,nullable"`
+	QuantityConversion QuantityConversion `json:"quantity_conversion,nullable"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// rounded using the provided rounding method and decimal places. For example, if
 	// the method is "round up" and the decimal places is 0, then the quantity will be
 	// rounded up to the nearest integer.
-	QuantityRounding ContractProductGetResponseDataUpdatesQuantityRounding `json:"quantity_rounding,nullable"`
-	StartingAt       time.Time                                             `json:"starting_at" format:"date-time"`
-	Tags             []string                                              `json:"tags"`
-	JSON             contractProductGetResponseDataUpdateJSON              `json:"-"`
+	QuantityRounding QuantityRounding                         `json:"quantity_rounding,nullable"`
+	StartingAt       time.Time                                `json:"starting_at" format:"date-time"`
+	Tags             []string                                 `json:"tags"`
+	JSON             contractProductGetResponseDataUpdateJSON `json:"-"`
 }
 
 // contractProductGetResponseDataUpdateJSON contains the JSON metadata for the
@@ -577,101 +446,6 @@ func (r contractProductGetResponseDataUpdateJSON) RawJSON() string {
 	return r.raw
 }
 
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-type ContractProductGetResponseDataUpdatesQuantityConversion struct {
-	// The factor to multiply or divide the quantity by.
-	ConversionFactor float64 `json:"conversion_factor,required"`
-	// The operation to perform on the quantity
-	Operation ContractProductGetResponseDataUpdatesQuantityConversionOperation `json:"operation,required"`
-	// Optional name for this conversion.
-	Name string                                                      `json:"name"`
-	JSON contractProductGetResponseDataUpdatesQuantityConversionJSON `json:"-"`
-}
-
-// contractProductGetResponseDataUpdatesQuantityConversionJSON contains the JSON
-// metadata for the struct
-// [ContractProductGetResponseDataUpdatesQuantityConversion]
-type contractProductGetResponseDataUpdatesQuantityConversionJSON struct {
-	ConversionFactor apijson.Field
-	Operation        apijson.Field
-	Name             apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *ContractProductGetResponseDataUpdatesQuantityConversion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductGetResponseDataUpdatesQuantityConversionJSON) RawJSON() string {
-	return r.raw
-}
-
-// The operation to perform on the quantity
-type ContractProductGetResponseDataUpdatesQuantityConversionOperation string
-
-const (
-	ContractProductGetResponseDataUpdatesQuantityConversionOperationMultiply ContractProductGetResponseDataUpdatesQuantityConversionOperation = "MULTIPLY"
-	ContractProductGetResponseDataUpdatesQuantityConversionOperationDivide   ContractProductGetResponseDataUpdatesQuantityConversionOperation = "DIVIDE"
-)
-
-func (r ContractProductGetResponseDataUpdatesQuantityConversionOperation) IsKnown() bool {
-	switch r {
-	case ContractProductGetResponseDataUpdatesQuantityConversionOperationMultiply, ContractProductGetResponseDataUpdatesQuantityConversionOperationDivide:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-type ContractProductGetResponseDataUpdatesQuantityRounding struct {
-	DecimalPlaces  float64                                                             `json:"decimal_places,required"`
-	RoundingMethod ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethod `json:"rounding_method,required"`
-	JSON           contractProductGetResponseDataUpdatesQuantityRoundingJSON           `json:"-"`
-}
-
-// contractProductGetResponseDataUpdatesQuantityRoundingJSON contains the JSON
-// metadata for the struct [ContractProductGetResponseDataUpdatesQuantityRounding]
-type contractProductGetResponseDataUpdatesQuantityRoundingJSON struct {
-	DecimalPlaces  apijson.Field
-	RoundingMethod apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *ContractProductGetResponseDataUpdatesQuantityRounding) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductGetResponseDataUpdatesQuantityRoundingJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethod string
-
-const (
-	ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethodRoundUp     ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethod = "ROUND_UP"
-	ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethodRoundDown   ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethod = "ROUND_DOWN"
-	ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethodRoundHalfUp ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-)
-
-func (r ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethod) IsKnown() bool {
-	switch r {
-	case ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethodRoundUp, ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethodRoundDown, ContractProductGetResponseDataUpdatesQuantityRoundingRoundingMethodRoundHalfUp:
-		return true
-	}
-	return false
-}
-
 type ContractProductUpdateResponse struct {
 	Data shared.ID                         `json:"data,required"`
 	JSON contractProductUpdateResponseJSON `json:"-"`
@@ -695,8 +469,8 @@ func (r contractProductUpdateResponseJSON) RawJSON() string {
 
 type ContractProductListResponse struct {
 	ID           string                              `json:"id,required" format:"uuid"`
-	Current      ContractProductListResponseCurrent  `json:"current,required"`
-	Initial      ContractProductListResponseInitial  `json:"initial,required"`
+	Current      ProductListItemState                `json:"current,required"`
+	Initial      ProductListItemState                `json:"initial,required"`
 	Type         ContractProductListResponseType     `json:"type,required"`
 	Updates      []ContractProductListResponseUpdate `json:"updates,required"`
 	ArchivedAt   time.Time                           `json:"archived_at,nullable" format:"date-time"`
@@ -724,330 +498,6 @@ func (r *ContractProductListResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r contractProductListResponseJSON) RawJSON() string {
 	return r.raw
-}
-
-type ContractProductListResponseCurrent struct {
-	CreatedAt           time.Time `json:"created_at,required" format:"date-time"`
-	CreatedBy           string    `json:"created_by,required"`
-	Name                string    `json:"name,required"`
-	BillableMetricID    string    `json:"billable_metric_id"`
-	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
-	CompositeTags       []string  `json:"composite_tags"`
-	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
-	// This field's availability is dependent on your client's configuration.
-	IsRefundable bool `json:"is_refundable"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
-	PresentationGroupKey []string `json:"presentation_group_key"`
-	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
-	PricingGroupKey []string `json:"pricing_group_key"`
-	// Optional. Only valid for USAGE products. If provided, the quantity will be
-	// converted using the provided conversion factor and operation. For example, if
-	// the operation is "multiply" and the conversion factor is 100, then the quantity
-	// will be multiplied by 100. This can be used in cases where data is sent in one
-	// unit and priced in another. For example, data could be sent in MB and priced in
-	// GB. In this case, the conversion factor would be 1024 and the operation would be
-	// "divide".
-	QuantityConversion ContractProductListResponseCurrentQuantityConversion `json:"quantity_conversion,nullable"`
-	// Optional. Only valid for USAGE products. If provided, the quantity will be
-	// rounded using the provided rounding method and decimal places. For example, if
-	// the method is "round up" and the decimal places is 0, then the quantity will be
-	// rounded up to the nearest integer.
-	QuantityRounding ContractProductListResponseCurrentQuantityRounding `json:"quantity_rounding,nullable"`
-	StartingAt       time.Time                                          `json:"starting_at" format:"date-time"`
-	Tags             []string                                           `json:"tags"`
-	JSON             contractProductListResponseCurrentJSON             `json:"-"`
-}
-
-// contractProductListResponseCurrentJSON contains the JSON metadata for the struct
-// [ContractProductListResponseCurrent]
-type contractProductListResponseCurrentJSON struct {
-	CreatedAt              apijson.Field
-	CreatedBy              apijson.Field
-	Name                   apijson.Field
-	BillableMetricID       apijson.Field
-	CompositeProductIDs    apijson.Field
-	CompositeTags          apijson.Field
-	ExcludeFreeUsage       apijson.Field
-	IsRefundable           apijson.Field
-	NetsuiteInternalItemID apijson.Field
-	NetsuiteOverageItemID  apijson.Field
-	PresentationGroupKey   apijson.Field
-	PricingGroupKey        apijson.Field
-	QuantityConversion     apijson.Field
-	QuantityRounding       apijson.Field
-	StartingAt             apijson.Field
-	Tags                   apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractProductListResponseCurrent) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductListResponseCurrentJSON) RawJSON() string {
-	return r.raw
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-type ContractProductListResponseCurrentQuantityConversion struct {
-	// The factor to multiply or divide the quantity by.
-	ConversionFactor float64 `json:"conversion_factor,required"`
-	// The operation to perform on the quantity
-	Operation ContractProductListResponseCurrentQuantityConversionOperation `json:"operation,required"`
-	// Optional name for this conversion.
-	Name string                                                   `json:"name"`
-	JSON contractProductListResponseCurrentQuantityConversionJSON `json:"-"`
-}
-
-// contractProductListResponseCurrentQuantityConversionJSON contains the JSON
-// metadata for the struct [ContractProductListResponseCurrentQuantityConversion]
-type contractProductListResponseCurrentQuantityConversionJSON struct {
-	ConversionFactor apijson.Field
-	Operation        apijson.Field
-	Name             apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *ContractProductListResponseCurrentQuantityConversion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductListResponseCurrentQuantityConversionJSON) RawJSON() string {
-	return r.raw
-}
-
-// The operation to perform on the quantity
-type ContractProductListResponseCurrentQuantityConversionOperation string
-
-const (
-	ContractProductListResponseCurrentQuantityConversionOperationMultiply ContractProductListResponseCurrentQuantityConversionOperation = "MULTIPLY"
-	ContractProductListResponseCurrentQuantityConversionOperationDivide   ContractProductListResponseCurrentQuantityConversionOperation = "DIVIDE"
-)
-
-func (r ContractProductListResponseCurrentQuantityConversionOperation) IsKnown() bool {
-	switch r {
-	case ContractProductListResponseCurrentQuantityConversionOperationMultiply, ContractProductListResponseCurrentQuantityConversionOperationDivide:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-type ContractProductListResponseCurrentQuantityRounding struct {
-	DecimalPlaces  float64                                                          `json:"decimal_places,required"`
-	RoundingMethod ContractProductListResponseCurrentQuantityRoundingRoundingMethod `json:"rounding_method,required"`
-	JSON           contractProductListResponseCurrentQuantityRoundingJSON           `json:"-"`
-}
-
-// contractProductListResponseCurrentQuantityRoundingJSON contains the JSON
-// metadata for the struct [ContractProductListResponseCurrentQuantityRounding]
-type contractProductListResponseCurrentQuantityRoundingJSON struct {
-	DecimalPlaces  apijson.Field
-	RoundingMethod apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *ContractProductListResponseCurrentQuantityRounding) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductListResponseCurrentQuantityRoundingJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractProductListResponseCurrentQuantityRoundingRoundingMethod string
-
-const (
-	ContractProductListResponseCurrentQuantityRoundingRoundingMethodRoundUp     ContractProductListResponseCurrentQuantityRoundingRoundingMethod = "ROUND_UP"
-	ContractProductListResponseCurrentQuantityRoundingRoundingMethodRoundDown   ContractProductListResponseCurrentQuantityRoundingRoundingMethod = "ROUND_DOWN"
-	ContractProductListResponseCurrentQuantityRoundingRoundingMethodRoundHalfUp ContractProductListResponseCurrentQuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-)
-
-func (r ContractProductListResponseCurrentQuantityRoundingRoundingMethod) IsKnown() bool {
-	switch r {
-	case ContractProductListResponseCurrentQuantityRoundingRoundingMethodRoundUp, ContractProductListResponseCurrentQuantityRoundingRoundingMethodRoundDown, ContractProductListResponseCurrentQuantityRoundingRoundingMethodRoundHalfUp:
-		return true
-	}
-	return false
-}
-
-type ContractProductListResponseInitial struct {
-	CreatedAt           time.Time `json:"created_at,required" format:"date-time"`
-	CreatedBy           string    `json:"created_by,required"`
-	Name                string    `json:"name,required"`
-	BillableMetricID    string    `json:"billable_metric_id"`
-	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
-	CompositeTags       []string  `json:"composite_tags"`
-	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
-	// This field's availability is dependent on your client's configuration.
-	IsRefundable bool `json:"is_refundable"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
-	PresentationGroupKey []string `json:"presentation_group_key"`
-	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
-	PricingGroupKey []string `json:"pricing_group_key"`
-	// Optional. Only valid for USAGE products. If provided, the quantity will be
-	// converted using the provided conversion factor and operation. For example, if
-	// the operation is "multiply" and the conversion factor is 100, then the quantity
-	// will be multiplied by 100. This can be used in cases where data is sent in one
-	// unit and priced in another. For example, data could be sent in MB and priced in
-	// GB. In this case, the conversion factor would be 1024 and the operation would be
-	// "divide".
-	QuantityConversion ContractProductListResponseInitialQuantityConversion `json:"quantity_conversion,nullable"`
-	// Optional. Only valid for USAGE products. If provided, the quantity will be
-	// rounded using the provided rounding method and decimal places. For example, if
-	// the method is "round up" and the decimal places is 0, then the quantity will be
-	// rounded up to the nearest integer.
-	QuantityRounding ContractProductListResponseInitialQuantityRounding `json:"quantity_rounding,nullable"`
-	StartingAt       time.Time                                          `json:"starting_at" format:"date-time"`
-	Tags             []string                                           `json:"tags"`
-	JSON             contractProductListResponseInitialJSON             `json:"-"`
-}
-
-// contractProductListResponseInitialJSON contains the JSON metadata for the struct
-// [ContractProductListResponseInitial]
-type contractProductListResponseInitialJSON struct {
-	CreatedAt              apijson.Field
-	CreatedBy              apijson.Field
-	Name                   apijson.Field
-	BillableMetricID       apijson.Field
-	CompositeProductIDs    apijson.Field
-	CompositeTags          apijson.Field
-	ExcludeFreeUsage       apijson.Field
-	IsRefundable           apijson.Field
-	NetsuiteInternalItemID apijson.Field
-	NetsuiteOverageItemID  apijson.Field
-	PresentationGroupKey   apijson.Field
-	PricingGroupKey        apijson.Field
-	QuantityConversion     apijson.Field
-	QuantityRounding       apijson.Field
-	StartingAt             apijson.Field
-	Tags                   apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractProductListResponseInitial) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductListResponseInitialJSON) RawJSON() string {
-	return r.raw
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-type ContractProductListResponseInitialQuantityConversion struct {
-	// The factor to multiply or divide the quantity by.
-	ConversionFactor float64 `json:"conversion_factor,required"`
-	// The operation to perform on the quantity
-	Operation ContractProductListResponseInitialQuantityConversionOperation `json:"operation,required"`
-	// Optional name for this conversion.
-	Name string                                                   `json:"name"`
-	JSON contractProductListResponseInitialQuantityConversionJSON `json:"-"`
-}
-
-// contractProductListResponseInitialQuantityConversionJSON contains the JSON
-// metadata for the struct [ContractProductListResponseInitialQuantityConversion]
-type contractProductListResponseInitialQuantityConversionJSON struct {
-	ConversionFactor apijson.Field
-	Operation        apijson.Field
-	Name             apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *ContractProductListResponseInitialQuantityConversion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductListResponseInitialQuantityConversionJSON) RawJSON() string {
-	return r.raw
-}
-
-// The operation to perform on the quantity
-type ContractProductListResponseInitialQuantityConversionOperation string
-
-const (
-	ContractProductListResponseInitialQuantityConversionOperationMultiply ContractProductListResponseInitialQuantityConversionOperation = "MULTIPLY"
-	ContractProductListResponseInitialQuantityConversionOperationDivide   ContractProductListResponseInitialQuantityConversionOperation = "DIVIDE"
-)
-
-func (r ContractProductListResponseInitialQuantityConversionOperation) IsKnown() bool {
-	switch r {
-	case ContractProductListResponseInitialQuantityConversionOperationMultiply, ContractProductListResponseInitialQuantityConversionOperationDivide:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-type ContractProductListResponseInitialQuantityRounding struct {
-	DecimalPlaces  float64                                                          `json:"decimal_places,required"`
-	RoundingMethod ContractProductListResponseInitialQuantityRoundingRoundingMethod `json:"rounding_method,required"`
-	JSON           contractProductListResponseInitialQuantityRoundingJSON           `json:"-"`
-}
-
-// contractProductListResponseInitialQuantityRoundingJSON contains the JSON
-// metadata for the struct [ContractProductListResponseInitialQuantityRounding]
-type contractProductListResponseInitialQuantityRoundingJSON struct {
-	DecimalPlaces  apijson.Field
-	RoundingMethod apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *ContractProductListResponseInitialQuantityRounding) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductListResponseInitialQuantityRoundingJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractProductListResponseInitialQuantityRoundingRoundingMethod string
-
-const (
-	ContractProductListResponseInitialQuantityRoundingRoundingMethodRoundUp     ContractProductListResponseInitialQuantityRoundingRoundingMethod = "ROUND_UP"
-	ContractProductListResponseInitialQuantityRoundingRoundingMethodRoundDown   ContractProductListResponseInitialQuantityRoundingRoundingMethod = "ROUND_DOWN"
-	ContractProductListResponseInitialQuantityRoundingRoundingMethodRoundHalfUp ContractProductListResponseInitialQuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-)
-
-func (r ContractProductListResponseInitialQuantityRoundingRoundingMethod) IsKnown() bool {
-	switch r {
-	case ContractProductListResponseInitialQuantityRoundingRoundingMethodRoundUp, ContractProductListResponseInitialQuantityRoundingRoundingMethodRoundDown, ContractProductListResponseInitialQuantityRoundingRoundingMethodRoundHalfUp:
-		return true
-	}
-	return false
 }
 
 type ContractProductListResponseType string
@@ -1093,15 +543,15 @@ type ContractProductListResponseUpdate struct {
 	// unit and priced in another. For example, data could be sent in MB and priced in
 	// GB. In this case, the conversion factor would be 1024 and the operation would be
 	// "divide".
-	QuantityConversion ContractProductListResponseUpdatesQuantityConversion `json:"quantity_conversion,nullable"`
+	QuantityConversion QuantityConversion `json:"quantity_conversion,nullable"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// rounded using the provided rounding method and decimal places. For example, if
 	// the method is "round up" and the decimal places is 0, then the quantity will be
 	// rounded up to the nearest integer.
-	QuantityRounding ContractProductListResponseUpdatesQuantityRounding `json:"quantity_rounding,nullable"`
-	StartingAt       time.Time                                          `json:"starting_at" format:"date-time"`
-	Tags             []string                                           `json:"tags"`
-	JSON             contractProductListResponseUpdateJSON              `json:"-"`
+	QuantityRounding QuantityRounding                      `json:"quantity_rounding,nullable"`
+	StartingAt       time.Time                             `json:"starting_at" format:"date-time"`
+	Tags             []string                              `json:"tags"`
+	JSON             contractProductListResponseUpdateJSON `json:"-"`
 }
 
 // contractProductListResponseUpdateJSON contains the JSON metadata for the struct
@@ -1133,100 +583,6 @@ func (r *ContractProductListResponseUpdate) UnmarshalJSON(data []byte) (err erro
 
 func (r contractProductListResponseUpdateJSON) RawJSON() string {
 	return r.raw
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-type ContractProductListResponseUpdatesQuantityConversion struct {
-	// The factor to multiply or divide the quantity by.
-	ConversionFactor float64 `json:"conversion_factor,required"`
-	// The operation to perform on the quantity
-	Operation ContractProductListResponseUpdatesQuantityConversionOperation `json:"operation,required"`
-	// Optional name for this conversion.
-	Name string                                                   `json:"name"`
-	JSON contractProductListResponseUpdatesQuantityConversionJSON `json:"-"`
-}
-
-// contractProductListResponseUpdatesQuantityConversionJSON contains the JSON
-// metadata for the struct [ContractProductListResponseUpdatesQuantityConversion]
-type contractProductListResponseUpdatesQuantityConversionJSON struct {
-	ConversionFactor apijson.Field
-	Operation        apijson.Field
-	Name             apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *ContractProductListResponseUpdatesQuantityConversion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductListResponseUpdatesQuantityConversionJSON) RawJSON() string {
-	return r.raw
-}
-
-// The operation to perform on the quantity
-type ContractProductListResponseUpdatesQuantityConversionOperation string
-
-const (
-	ContractProductListResponseUpdatesQuantityConversionOperationMultiply ContractProductListResponseUpdatesQuantityConversionOperation = "MULTIPLY"
-	ContractProductListResponseUpdatesQuantityConversionOperationDivide   ContractProductListResponseUpdatesQuantityConversionOperation = "DIVIDE"
-)
-
-func (r ContractProductListResponseUpdatesQuantityConversionOperation) IsKnown() bool {
-	switch r {
-	case ContractProductListResponseUpdatesQuantityConversionOperationMultiply, ContractProductListResponseUpdatesQuantityConversionOperationDivide:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-type ContractProductListResponseUpdatesQuantityRounding struct {
-	DecimalPlaces  float64                                                          `json:"decimal_places,required"`
-	RoundingMethod ContractProductListResponseUpdatesQuantityRoundingRoundingMethod `json:"rounding_method,required"`
-	JSON           contractProductListResponseUpdatesQuantityRoundingJSON           `json:"-"`
-}
-
-// contractProductListResponseUpdatesQuantityRoundingJSON contains the JSON
-// metadata for the struct [ContractProductListResponseUpdatesQuantityRounding]
-type contractProductListResponseUpdatesQuantityRoundingJSON struct {
-	DecimalPlaces  apijson.Field
-	RoundingMethod apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *ContractProductListResponseUpdatesQuantityRounding) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractProductListResponseUpdatesQuantityRoundingJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractProductListResponseUpdatesQuantityRoundingRoundingMethod string
-
-const (
-	ContractProductListResponseUpdatesQuantityRoundingRoundingMethodRoundUp     ContractProductListResponseUpdatesQuantityRoundingRoundingMethod = "ROUND_UP"
-	ContractProductListResponseUpdatesQuantityRoundingRoundingMethodRoundDown   ContractProductListResponseUpdatesQuantityRoundingRoundingMethod = "ROUND_DOWN"
-	ContractProductListResponseUpdatesQuantityRoundingRoundingMethodRoundHalfUp ContractProductListResponseUpdatesQuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-)
-
-func (r ContractProductListResponseUpdatesQuantityRoundingRoundingMethod) IsKnown() bool {
-	switch r {
-	case ContractProductListResponseUpdatesQuantityRoundingRoundingMethodRoundUp, ContractProductListResponseUpdatesQuantityRoundingRoundingMethodRoundDown, ContractProductListResponseUpdatesQuantityRoundingRoundingMethodRoundHalfUp:
-		return true
-	}
-	return false
 }
 
 type ContractProductArchiveResponse struct {
@@ -1282,13 +638,13 @@ type ContractProductNewParams struct {
 	// unit and priced in another. For example, data could be sent in MB and priced in
 	// GB. In this case, the conversion factor would be 1024 and the operation would be
 	// "divide".
-	QuantityConversion param.Field[ContractProductNewParamsQuantityConversion] `json:"quantity_conversion"`
+	QuantityConversion param.Field[QuantityConversionParam] `json:"quantity_conversion"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// rounded using the provided rounding method and decimal places. For example, if
 	// the method is "round up" and the decimal places is 0, then the quantity will be
 	// rounded up to the nearest integer.
-	QuantityRounding param.Field[ContractProductNewParamsQuantityRounding] `json:"quantity_rounding"`
-	Tags             param.Field[[]string]                                 `json:"tags"`
+	QuantityRounding param.Field[QuantityRoundingParam] `json:"quantity_rounding"`
+	Tags             param.Field[[]string]              `json:"tags"`
 }
 
 func (r ContractProductNewParams) MarshalJSON() (data []byte, err error) {
@@ -1309,71 +665,6 @@ const (
 func (r ContractProductNewParamsType) IsKnown() bool {
 	switch r {
 	case ContractProductNewParamsTypeFixed, ContractProductNewParamsTypeUsage, ContractProductNewParamsTypeComposite, ContractProductNewParamsTypeSubscription, ContractProductNewParamsTypeProfessionalService, ContractProductNewParamsTypeProService:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-type ContractProductNewParamsQuantityConversion struct {
-	// The factor to multiply or divide the quantity by.
-	ConversionFactor param.Field[float64] `json:"conversion_factor,required"`
-	// The operation to perform on the quantity
-	Operation param.Field[ContractProductNewParamsQuantityConversionOperation] `json:"operation,required"`
-	// Optional name for this conversion.
-	Name param.Field[string] `json:"name"`
-}
-
-func (r ContractProductNewParamsQuantityConversion) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The operation to perform on the quantity
-type ContractProductNewParamsQuantityConversionOperation string
-
-const (
-	ContractProductNewParamsQuantityConversionOperationMultiply ContractProductNewParamsQuantityConversionOperation = "MULTIPLY"
-	ContractProductNewParamsQuantityConversionOperationDivide   ContractProductNewParamsQuantityConversionOperation = "DIVIDE"
-)
-
-func (r ContractProductNewParamsQuantityConversionOperation) IsKnown() bool {
-	switch r {
-	case ContractProductNewParamsQuantityConversionOperationMultiply, ContractProductNewParamsQuantityConversionOperationDivide:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-type ContractProductNewParamsQuantityRounding struct {
-	DecimalPlaces  param.Field[float64]                                                `json:"decimal_places,required"`
-	RoundingMethod param.Field[ContractProductNewParamsQuantityRoundingRoundingMethod] `json:"rounding_method,required"`
-}
-
-func (r ContractProductNewParamsQuantityRounding) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ContractProductNewParamsQuantityRoundingRoundingMethod string
-
-const (
-	ContractProductNewParamsQuantityRoundingRoundingMethodRoundUp     ContractProductNewParamsQuantityRoundingRoundingMethod = "ROUND_UP"
-	ContractProductNewParamsQuantityRoundingRoundingMethodRoundDown   ContractProductNewParamsQuantityRoundingRoundingMethod = "ROUND_DOWN"
-	ContractProductNewParamsQuantityRoundingRoundingMethodRoundHalfUp ContractProductNewParamsQuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-)
-
-func (r ContractProductNewParamsQuantityRoundingRoundingMethod) IsKnown() bool {
-	switch r {
-	case ContractProductNewParamsQuantityRoundingRoundingMethodRoundUp, ContractProductNewParamsQuantityRoundingRoundingMethodRoundDown, ContractProductNewParamsQuantityRoundingRoundingMethodRoundHalfUp:
 		return true
 	}
 	return false
@@ -1429,83 +720,18 @@ type ContractProductUpdateParams struct {
 	// unit and priced in another. For example, data could be sent in MB and priced in
 	// GB. In this case, the conversion factor would be 1024 and the operation would be
 	// "divide".
-	QuantityConversion param.Field[ContractProductUpdateParamsQuantityConversion] `json:"quantity_conversion"`
+	QuantityConversion param.Field[QuantityConversionParam] `json:"quantity_conversion"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// rounded using the provided rounding method and decimal places. For example, if
 	// the method is "round up" and the decimal places is 0, then the quantity will be
 	// rounded up to the nearest integer.
-	QuantityRounding param.Field[ContractProductUpdateParamsQuantityRounding] `json:"quantity_rounding"`
+	QuantityRounding param.Field[QuantityRoundingParam] `json:"quantity_rounding"`
 	// If not provided, defaults to product's current tags
 	Tags param.Field[[]string] `json:"tags"`
 }
 
 func (r ContractProductUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-type ContractProductUpdateParamsQuantityConversion struct {
-	// The factor to multiply or divide the quantity by.
-	ConversionFactor param.Field[float64] `json:"conversion_factor,required"`
-	// The operation to perform on the quantity
-	Operation param.Field[ContractProductUpdateParamsQuantityConversionOperation] `json:"operation,required"`
-	// Optional name for this conversion.
-	Name param.Field[string] `json:"name"`
-}
-
-func (r ContractProductUpdateParamsQuantityConversion) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The operation to perform on the quantity
-type ContractProductUpdateParamsQuantityConversionOperation string
-
-const (
-	ContractProductUpdateParamsQuantityConversionOperationMultiply ContractProductUpdateParamsQuantityConversionOperation = "MULTIPLY"
-	ContractProductUpdateParamsQuantityConversionOperationDivide   ContractProductUpdateParamsQuantityConversionOperation = "DIVIDE"
-)
-
-func (r ContractProductUpdateParamsQuantityConversionOperation) IsKnown() bool {
-	switch r {
-	case ContractProductUpdateParamsQuantityConversionOperationMultiply, ContractProductUpdateParamsQuantityConversionOperationDivide:
-		return true
-	}
-	return false
-}
-
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-type ContractProductUpdateParamsQuantityRounding struct {
-	DecimalPlaces  param.Field[float64]                                                   `json:"decimal_places,required"`
-	RoundingMethod param.Field[ContractProductUpdateParamsQuantityRoundingRoundingMethod] `json:"rounding_method,required"`
-}
-
-func (r ContractProductUpdateParamsQuantityRounding) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ContractProductUpdateParamsQuantityRoundingRoundingMethod string
-
-const (
-	ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundUp     ContractProductUpdateParamsQuantityRoundingRoundingMethod = "ROUND_UP"
-	ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundDown   ContractProductUpdateParamsQuantityRoundingRoundingMethod = "ROUND_DOWN"
-	ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundHalfUp ContractProductUpdateParamsQuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-)
-
-func (r ContractProductUpdateParamsQuantityRoundingRoundingMethod) IsKnown() bool {
-	switch r {
-	case ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundUp, ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundDown, ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundHalfUp:
-		return true
-	}
-	return false
 }
 
 type ContractProductListParams struct {

@@ -213,7 +213,7 @@ type ContractRateCardGetResponseDataRateCardEntriesCurrent struct {
 	ProductID    string                                                        `json:"product_id" format:"uuid"`
 	RateType     ContractRateCardGetResponseDataRateCardEntriesCurrentRateType `json:"rate_type"`
 	StartingAt   time.Time                                                     `json:"starting_at" format:"date-time"`
-	Tiers        []ContractRateCardGetResponseDataRateCardEntriesCurrentTier   `json:"tiers"`
+	Tiers        []shared.Tier                                                 `json:"tiers"`
 	JSON         contractRateCardGetResponseDataRateCardEntriesCurrentJSON     `json:"-"`
 }
 
@@ -262,30 +262,6 @@ func (r ContractRateCardGetResponseDataRateCardEntriesCurrentRateType) IsKnown()
 	return false
 }
 
-type ContractRateCardGetResponseDataRateCardEntriesCurrentTier struct {
-	Price float64                                                       `json:"price,required"`
-	Size  float64                                                       `json:"size"`
-	JSON  contractRateCardGetResponseDataRateCardEntriesCurrentTierJSON `json:"-"`
-}
-
-// contractRateCardGetResponseDataRateCardEntriesCurrentTierJSON contains the JSON
-// metadata for the struct
-// [ContractRateCardGetResponseDataRateCardEntriesCurrentTier]
-type contractRateCardGetResponseDataRateCardEntriesCurrentTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractRateCardGetResponseDataRateCardEntriesCurrentTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractRateCardGetResponseDataRateCardEntriesCurrentTierJSON) RawJSON() string {
-	return r.raw
-}
-
 type ContractRateCardGetResponseDataRateCardEntriesUpdate struct {
 	ID           string                                                        `json:"id,required" format:"uuid"`
 	CreatedAt    time.Time                                                     `json:"created_at,required" format:"date-time"`
@@ -300,7 +276,7 @@ type ContractRateCardGetResponseDataRateCardEntriesUpdate struct {
 	IsProrated   bool                                                          `json:"is_prorated"`
 	Price        float64                                                       `json:"price"`
 	Quantity     float64                                                       `json:"quantity"`
-	Tiers        []ContractRateCardGetResponseDataRateCardEntriesUpdatesTier   `json:"tiers"`
+	Tiers        []shared.Tier                                                 `json:"tiers"`
 	JSON         contractRateCardGetResponseDataRateCardEntriesUpdateJSON      `json:"-"`
 }
 
@@ -349,30 +325,6 @@ func (r ContractRateCardGetResponseDataRateCardEntriesUpdatesRateType) IsKnown()
 		return true
 	}
 	return false
-}
-
-type ContractRateCardGetResponseDataRateCardEntriesUpdatesTier struct {
-	Price float64                                                       `json:"price,required"`
-	Size  float64                                                       `json:"size"`
-	JSON  contractRateCardGetResponseDataRateCardEntriesUpdatesTierJSON `json:"-"`
-}
-
-// contractRateCardGetResponseDataRateCardEntriesUpdatesTierJSON contains the JSON
-// metadata for the struct
-// [ContractRateCardGetResponseDataRateCardEntriesUpdatesTier]
-type contractRateCardGetResponseDataRateCardEntriesUpdatesTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractRateCardGetResponseDataRateCardEntriesUpdatesTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractRateCardGetResponseDataRateCardEntriesUpdatesTierJSON) RawJSON() string {
-	return r.raw
 }
 
 type ContractRateCardGetResponseDataAlias struct {
@@ -518,7 +470,7 @@ type ContractRateCardListResponseRateCardEntriesCurrent struct {
 	ProductID    string                                                     `json:"product_id" format:"uuid"`
 	RateType     ContractRateCardListResponseRateCardEntriesCurrentRateType `json:"rate_type"`
 	StartingAt   time.Time                                                  `json:"starting_at" format:"date-time"`
-	Tiers        []ContractRateCardListResponseRateCardEntriesCurrentTier   `json:"tiers"`
+	Tiers        []shared.Tier                                              `json:"tiers"`
 	JSON         contractRateCardListResponseRateCardEntriesCurrentJSON     `json:"-"`
 }
 
@@ -567,29 +519,6 @@ func (r ContractRateCardListResponseRateCardEntriesCurrentRateType) IsKnown() bo
 	return false
 }
 
-type ContractRateCardListResponseRateCardEntriesCurrentTier struct {
-	Price float64                                                    `json:"price,required"`
-	Size  float64                                                    `json:"size"`
-	JSON  contractRateCardListResponseRateCardEntriesCurrentTierJSON `json:"-"`
-}
-
-// contractRateCardListResponseRateCardEntriesCurrentTierJSON contains the JSON
-// metadata for the struct [ContractRateCardListResponseRateCardEntriesCurrentTier]
-type contractRateCardListResponseRateCardEntriesCurrentTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractRateCardListResponseRateCardEntriesCurrentTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractRateCardListResponseRateCardEntriesCurrentTierJSON) RawJSON() string {
-	return r.raw
-}
-
 type ContractRateCardListResponseRateCardEntriesUpdate struct {
 	ID           string                                                     `json:"id,required" format:"uuid"`
 	CreatedAt    time.Time                                                  `json:"created_at,required" format:"date-time"`
@@ -604,7 +533,7 @@ type ContractRateCardListResponseRateCardEntriesUpdate struct {
 	IsProrated   bool                                                       `json:"is_prorated"`
 	Price        float64                                                    `json:"price"`
 	Quantity     float64                                                    `json:"quantity"`
-	Tiers        []ContractRateCardListResponseRateCardEntriesUpdatesTier   `json:"tiers"`
+	Tiers        []shared.Tier                                              `json:"tiers"`
 	JSON         contractRateCardListResponseRateCardEntriesUpdateJSON      `json:"-"`
 }
 
@@ -653,29 +582,6 @@ func (r ContractRateCardListResponseRateCardEntriesUpdatesRateType) IsKnown() bo
 		return true
 	}
 	return false
-}
-
-type ContractRateCardListResponseRateCardEntriesUpdatesTier struct {
-	Price float64                                                    `json:"price,required"`
-	Size  float64                                                    `json:"size"`
-	JSON  contractRateCardListResponseRateCardEntriesUpdatesTierJSON `json:"-"`
-}
-
-// contractRateCardListResponseRateCardEntriesUpdatesTierJSON contains the JSON
-// metadata for the struct [ContractRateCardListResponseRateCardEntriesUpdatesTier]
-type contractRateCardListResponseRateCardEntriesUpdatesTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractRateCardListResponseRateCardEntriesUpdatesTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractRateCardListResponseRateCardEntriesUpdatesTierJSON) RawJSON() string {
-	return r.raw
 }
 
 type ContractRateCardListResponseAlias struct {
