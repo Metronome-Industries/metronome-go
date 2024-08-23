@@ -39,6 +39,14 @@ func (r *InvoiceService) Regenerate(ctx context.Context, body InvoiceRegenerateP
 	return
 }
 
+// Void an invoice
+func (r *InvoiceService) Void(ctx context.Context, body InvoiceVoidParams, opts ...option.RequestOption) (res *InvoiceVoidResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "invoices/void"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 type InvoiceRegenerateResponse struct {
 	Data InvoiceRegenerateResponseData `json:"data"`
 	JSON invoiceRegenerateResponseJSON `json:"-"`
@@ -82,11 +90,62 @@ func (r invoiceRegenerateResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type InvoiceVoidResponse struct {
+	Data InvoiceVoidResponseData `json:"data"`
+	JSON invoiceVoidResponseJSON `json:"-"`
+}
+
+// invoiceVoidResponseJSON contains the JSON metadata for the struct
+// [InvoiceVoidResponse]
+type invoiceVoidResponseJSON struct {
+	Data        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *InvoiceVoidResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r invoiceVoidResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type InvoiceVoidResponseData struct {
+	ID   string                      `json:"id,required" format:"uuid"`
+	JSON invoiceVoidResponseDataJSON `json:"-"`
+}
+
+// invoiceVoidResponseDataJSON contains the JSON metadata for the struct
+// [InvoiceVoidResponseData]
+type invoiceVoidResponseDataJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *InvoiceVoidResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r invoiceVoidResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type InvoiceRegenerateParams struct {
 	// The invoice id to regenerate
 	ID param.Field[string] `json:"id,required" format:"uuid"`
 }
 
 func (r InvoiceRegenerateParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type InvoiceVoidParams struct {
+	// The invoice id to void
+	ID param.Field[string] `json:"id,required" format:"uuid"`
+}
+
+func (r InvoiceVoidParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
