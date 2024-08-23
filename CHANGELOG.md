@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-beta.1 (2024-08-23)
+
+Full Changelog: [v0.1.0-beta.0...v0.1.0-beta.1](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.0...v0.1.0-beta.1)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#10](https://github.com/Metronome-Industries/metronome-go/issues/10)) ([1c29212](https://github.com/Metronome-Industries/metronome-go/commit/1c29212bba0d3cf7cdc657902c4b4bc5708a59df))
+* **api:** OpenAPI spec update via Stainless API ([#11](https://github.com/Metronome-Industries/metronome-go/issues/11)) ([f78620b](https://github.com/Metronome-Industries/metronome-go/commit/f78620b6958ee234080c2e2fcccc1a5755c77177))
+* **api:** OpenAPI spec update via Stainless API ([#8](https://github.com/Metronome-Industries/metronome-go/issues/8)) ([98ea36a](https://github.com/Metronome-Industries/metronome-go/commit/98ea36ad633db24e118b29c385d051c38bfa5467))
+
 ## 0.1.0-beta.0 (2024-08-22)
 
 Full Changelog: [v0.1.0-alpha.0...v0.1.0-beta.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-alpha.0...v0.1.0-beta.0)
