@@ -278,10 +278,12 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#InvoiceRegenerateResponse">InvoiceRegenerateResponse</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#InvoiceVoidResponse">InvoiceVoidResponse</a>
 
 Methods:
 
 - <code title="post /invoices/regenerate">client.Invoices.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#InvoiceService.Regenerate">Regenerate</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#InvoiceRegenerateParams">InvoiceRegenerateParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#InvoiceRegenerateResponse">InvoiceRegenerateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /invoices/void">client.Invoices.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#InvoiceService.Void">Void</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#InvoiceVoidParams">InvoiceVoidParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#InvoiceVoidResponse">InvoiceVoidResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Contracts
 
