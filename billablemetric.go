@@ -57,16 +57,12 @@ func (r *BillableMetricService) Get(ctx context.Context, billableMetricID string
 	return
 }
 
-// Get all billable metrics for a given customer.
-func (r *BillableMetricService) List(ctx context.Context, customerID string, query BillableMetricListParams, opts ...option.RequestOption) (res *pagination.CursorPage[BillableMetricListResponse], err error) {
+// List all billable metrics.
+func (r *BillableMetricService) List(ctx context.Context, query BillableMetricListParams, opts ...option.RequestOption) (res *pagination.CursorPage[BillableMetricListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if customerID == "" {
-		err = errors.New("missing required customer_id parameter")
-		return
-	}
-	path := fmt.Sprintf("customers/%s/billable-metrics", customerID)
+	path := "billable-metrics"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -79,9 +75,9 @@ func (r *BillableMetricService) List(ctx context.Context, customerID string, que
 	return res, nil
 }
 
-// Get all billable metrics for a given customer.
-func (r *BillableMetricService) ListAutoPaging(ctx context.Context, customerID string, query BillableMetricListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[BillableMetricListResponse] {
-	return pagination.NewCursorPageAutoPager(r.List(ctx, customerID, query, opts...))
+// List all billable metrics.
+func (r *BillableMetricService) ListAutoPaging(ctx context.Context, query BillableMetricListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[BillableMetricListResponse] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Archive an existing billable metric.
@@ -204,12 +200,10 @@ func (r BillableMetricGetResponseDataAggregationType) IsKnown() bool {
 }
 
 type BillableMetricListResponse struct {
-	ID   string `json:"id,required" format:"uuid"`
+	// ID of the billable metric
+	ID string `json:"id,required" format:"uuid"`
+	// The display name of the billable metric.
 	Name string `json:"name,required"`
-	// (DEPRECATED) use aggregation_type instead
-	Aggregate string `json:"aggregate"`
-	// (DEPRECATED) use aggregation_key instead
-	AggregateKeys []string `json:"aggregate_keys"`
 	// A key that specifies which property of the event is used to aggregate data. This
 	// key must be one of the property filter names and is not applicable when the
 	// aggregation type is 'count'.
@@ -219,10 +213,6 @@ type BillableMetricListResponse struct {
 	CustomFields    map[string]string                         `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
-	// (DEPRECATED) use property_filters & event_type_filter instead
-	Filter map[string]interface{} `json:"filter"`
-	// (DEPRECATED) use group_keys instead
-	GroupBy []string `json:"group_by"`
 	// Property names that are used to group usage costs on an invoice. Each entry
 	// represents a set of properties used to slice events into distinct buckets.
 	GroupKeys [][]string `json:"group_keys"`
@@ -240,14 +230,10 @@ type BillableMetricListResponse struct {
 type billableMetricListResponseJSON struct {
 	ID              apijson.Field
 	Name            apijson.Field
-	Aggregate       apijson.Field
-	AggregateKeys   apijson.Field
 	AggregationKey  apijson.Field
 	AggregationType apijson.Field
 	CustomFields    apijson.Field
 	EventTypeFilter apijson.Field
-	Filter          apijson.Field
-	GroupBy         apijson.Field
 	GroupKeys       apijson.Field
 	PropertyFilters apijson.Field
 	Sql             apijson.Field
@@ -353,9 +339,6 @@ type BillableMetricListParams struct {
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.
 	NextPage param.Field[string] `query:"next_page"`
-	// If true, the list of metrics will be filtered to just ones that are on the
-	// customer's current plan
-	OnCurrentPlan param.Field[bool] `query:"on_current_plan"`
 }
 
 // URLQuery serializes [BillableMetricListParams]'s query parameters as
