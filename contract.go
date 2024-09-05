@@ -92,6 +92,14 @@ func (r *ContractService) Archive(ctx context.Context, body ContractArchiveParam
 	return
 }
 
+// Creates historical usage invoices for a contract
+func (r *ContractService) NewHistoricalInvoices(ctx context.Context, body ContractNewHistoricalInvoicesParams, opts ...option.RequestOption) (res *ContractNewHistoricalInvoicesResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "contracts/createHistoricalInvoices"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // List balances (commits and credits).
 func (r *ContractService) ListBalances(ctx context.Context, body ContractListBalancesParams, opts ...option.RequestOption) (res *ContractListBalancesResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -656,6 +664,27 @@ func (r *ContractArchiveResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r contractArchiveResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractNewHistoricalInvoicesResponse struct {
+	Data []Invoice                                 `json:"data,required"`
+	JSON contractNewHistoricalInvoicesResponseJSON `json:"-"`
+}
+
+// contractNewHistoricalInvoicesResponseJSON contains the JSON metadata for the
+// struct [ContractNewHistoricalInvoicesResponse]
+type contractNewHistoricalInvoicesResponseJSON struct {
+	Data        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractNewHistoricalInvoicesResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractNewHistoricalInvoicesResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -2514,6 +2543,92 @@ type ContractArchiveParams struct {
 
 func (r ContractArchiveParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractNewHistoricalInvoicesParams struct {
+	Invoices param.Field[[]ContractNewHistoricalInvoicesParamsInvoice] `json:"invoices,required"`
+	Preview  param.Field[bool]                                         `json:"preview,required"`
+}
+
+func (r ContractNewHistoricalInvoicesParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractNewHistoricalInvoicesParamsInvoice struct {
+	ContractID         param.Field[string]                                                     `json:"contract_id,required" format:"uuid"`
+	CreditTypeID       param.Field[string]                                                     `json:"credit_type_id,required" format:"uuid"`
+	CustomerID         param.Field[string]                                                     `json:"customer_id,required" format:"uuid"`
+	ExclusiveEndDate   param.Field[time.Time]                                                  `json:"exclusive_end_date,required" format:"date-time"`
+	InclusiveStartDate param.Field[time.Time]                                                  `json:"inclusive_start_date,required" format:"date-time"`
+	IssueDate          param.Field[time.Time]                                                  `json:"issue_date,required" format:"date-time"`
+	UsageLineItems     param.Field[[]ContractNewHistoricalInvoicesParamsInvoicesUsageLineItem] `json:"usage_line_items,required"`
+	// This field's availability is dependent on your client's configuration.
+	BillableStatus       param.Field[ContractNewHistoricalInvoicesParamsInvoicesBillableStatus]       `json:"billable_status"`
+	BreakdownGranularity param.Field[ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity] `json:"breakdown_granularity"`
+	CustomFields         param.Field[map[string]string]                                               `json:"custom_fields"`
+}
+
+func (r ContractNewHistoricalInvoicesParamsInvoice) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractNewHistoricalInvoicesParamsInvoicesUsageLineItem struct {
+	ExclusiveEndDate        param.Field[time.Time]                                                                        `json:"exclusive_end_date,required" format:"date-time"`
+	InclusiveStartDate      param.Field[time.Time]                                                                        `json:"inclusive_start_date,required" format:"date-time"`
+	ProductID               param.Field[string]                                                                           `json:"product_id,required" format:"uuid"`
+	PresentationGroupValues param.Field[map[string]string]                                                                `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string]                                                                `json:"pricing_group_values"`
+	Quantity                param.Field[float64]                                                                          `json:"quantity"`
+	SubtotalsWithQuantity   param.Field[[]ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity] `json:"subtotals_with_quantity"`
+}
+
+func (r ContractNewHistoricalInvoicesParamsInvoicesUsageLineItem) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity struct {
+	ExclusiveEndDate   param.Field[time.Time] `json:"exclusive_end_date,required" format:"date-time"`
+	InclusiveStartDate param.Field[time.Time] `json:"inclusive_start_date,required" format:"date-time"`
+	Quantity           param.Field[float64]   `json:"quantity,required"`
+}
+
+func (r ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// This field's availability is dependent on your client's configuration.
+type ContractNewHistoricalInvoicesParamsInvoicesBillableStatus string
+
+const (
+	ContractNewHistoricalInvoicesParamsInvoicesBillableStatusBillable   ContractNewHistoricalInvoicesParamsInvoicesBillableStatus = "billable"
+	ContractNewHistoricalInvoicesParamsInvoicesBillableStatusUnbillable ContractNewHistoricalInvoicesParamsInvoicesBillableStatus = "unbillable"
+)
+
+func (r ContractNewHistoricalInvoicesParamsInvoicesBillableStatus) IsKnown() bool {
+	switch r {
+	case ContractNewHistoricalInvoicesParamsInvoicesBillableStatusBillable, ContractNewHistoricalInvoicesParamsInvoicesBillableStatusUnbillable:
+		return true
+	}
+	return false
+}
+
+type ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity string
+
+const (
+	ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityHour ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity = "hour"
+	ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityDay  ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity = "day"
+	ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityHour ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity = "HOUR"
+	ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityDay  ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity = "DAY"
+	ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityHour ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity = "Hour"
+	ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityDay  ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity = "Day"
+)
+
+func (r ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity) IsKnown() bool {
+	switch r {
+	case ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityHour, ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityDay, ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityHour, ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityDay, ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityHour, ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityDay:
+		return true
+	}
+	return false
 }
 
 type ContractListBalancesParams struct {

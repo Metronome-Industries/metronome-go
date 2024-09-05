@@ -86,7 +86,9 @@ func (r dashboardGetEmbeddableURLResponseDataJSON) RawJSON() string {
 type DashboardGetEmbeddableURLParams struct {
 	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
 	// The type of dashboard to retrieve.
-	Dashboard param.Field[DashboardGetEmbeddableURLParamsDashboard] `json:"dashboard,required"`
+	Dashboard                            param.Field[DashboardGetEmbeddableURLParamsDashboard]                            `json:"dashboard,required"`
+	BmGroupKeyDisplayNameOverrides       param.Field[DashboardGetEmbeddableURLParamsBmGroupKeyDisplayNameOverrides]       `json:"bm_group_key_display_name_overrides"`
+	BmGroupKeyValuesDisplayNameOverrides param.Field[DashboardGetEmbeddableURLParamsBmGroupKeyValuesDisplayNameOverrides] `json:"bm_group_key_values_display_name_overrides"`
 	// Optional list of colors to override
 	ColorOverrides param.Field[[]DashboardGetEmbeddableURLParamsColorOverride] `json:"color_overrides"`
 	// Optional dashboard specific options
@@ -112,6 +114,43 @@ func (r DashboardGetEmbeddableURLParamsDashboard) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type DashboardGetEmbeddableURLParamsBmGroupKeyDisplayNameOverrides struct {
+	// The new display name for the group key. e.g. "Tenant ID"
+	DisplayName param.Field[string] `json:"display_name"`
+	// The current name of the group key. e.g. "tenant_id"
+	GroupKeyName param.Field[string] `json:"group_key_name"`
+}
+
+func (r DashboardGetEmbeddableURLParamsBmGroupKeyDisplayNameOverrides) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type DashboardGetEmbeddableURLParamsBmGroupKeyValuesDisplayNameOverrides struct {
+	// The actual value of the group key. e.g. "123-xyz-abc". If group key is not used,
+	// it is the BM's name.
+	GroupKeyName param.Field[string] `json:"group_key_name"`
+	// An object containing the group key value and the new display name for the group
+	// key value.
+	ValueDisplayName param.Field[DashboardGetEmbeddableURLParamsBmGroupKeyValuesDisplayNameOverridesValueDisplayName] `json:"value_display_name"`
+}
+
+func (r DashboardGetEmbeddableURLParamsBmGroupKeyValuesDisplayNameOverrides) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// An object containing the group key value and the new display name for the group
+// key value.
+type DashboardGetEmbeddableURLParamsBmGroupKeyValuesDisplayNameOverridesValueDisplayName struct {
+	// The new display name for the group key value. e.g. "EU-Cluster-A"
+	DisplayName param.Field[string] `json:"display_name"`
+	// The actual value of the group key. e.g. "123-xyz-abc"
+	GroupKeyValue param.Field[string] `json:"group_key_value"`
+}
+
+func (r DashboardGetEmbeddableURLParamsBmGroupKeyValuesDisplayNameOverridesValueDisplayName) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type DashboardGetEmbeddableURLParamsColorOverride struct {

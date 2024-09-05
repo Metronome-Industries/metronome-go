@@ -201,8 +201,12 @@ type InvoiceLineItem struct {
 	GroupKey     string    `json:"group_key"`
 	GroupValue   string    `json:"group_value,nullable"`
 	// only present for beta contract invoices
-	IsProrated bool   `json:"is_prorated"`
-	Metadata   string `json:"metadata"`
+	IsProrated bool `json:"is_prorated"`
+	// only present for contract invoices and when the include_list_prices query
+	// parameter is set to true. This will include the list rate for the charge if
+	// applicable. Only present for usage and subscription line items.
+	ListPrice shared.Rate `json:"list_price"`
+	Metadata  string      `json:"metadata"`
 	// The end date for the billing period on the invoice.
 	NetsuiteInvoiceBillingEnd time.Time `json:"netsuite_invoice_billing_end" format:"date-time"`
 	// The start date for the billing period on the invoice.
@@ -253,6 +257,7 @@ type invoiceLineItemJSON struct {
 	GroupKey                        apijson.Field
 	GroupValue                      apijson.Field
 	IsProrated                      apijson.Field
+	ListPrice                       apijson.Field
 	Metadata                        apijson.Field
 	NetsuiteInvoiceBillingEnd       apijson.Field
 	NetsuiteInvoiceBillingStart     apijson.Field
