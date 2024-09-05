@@ -98,15 +98,10 @@ func TestBillableMetricListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.BillableMetrics.List(
-		context.TODO(),
-		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.BillableMetricListParams{
-			Limit:         metronome.F(int64(1)),
-			NextPage:      metronome.F("next_page"),
-			OnCurrentPlan: metronome.F(true),
-		},
-	)
+	_, err := client.BillableMetrics.List(context.TODO(), metronome.BillableMetricListParams{
+		Limit:    metronome.F(int64(1)),
+		NextPage: metronome.F("next_page"),
+	})
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {
