@@ -53,7 +53,7 @@ func main() {
 	client := metronome.NewClient(
 		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("METRONOME_BEARER_TOKEN")
 	)
-	response, err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
+	client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
 		Usage: []metronome.UsageIngestParamsUsage{{
 			CustomerID:    metronome.F("team@example.com"),
 			EventType:     metronome.F("heartbeat"),
