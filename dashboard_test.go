@@ -28,17 +28,14 @@ func TestDashboardGetEmbeddableURLWithOptionalParams(t *testing.T) {
 	_, err := client.Dashboards.GetEmbeddableURL(context.TODO(), metronome.DashboardGetEmbeddableURLParams{
 		CustomerID: metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
 		Dashboard:  metronome.F(metronome.DashboardGetEmbeddableURLParamsDashboardInvoices),
-		BmGroupKeyDisplayNameOverrides: metronome.F(metronome.DashboardGetEmbeddableURLParamsBmGroupKeyDisplayNameOverrides{
-			DisplayName:  metronome.F("display_name"),
-			GroupKeyName: metronome.F("group_key_name"),
-		}),
-		BmGroupKeyValuesDisplayNameOverrides: metronome.F(metronome.DashboardGetEmbeddableURLParamsBmGroupKeyValuesDisplayNameOverrides{
-			GroupKeyName: metronome.F("group_key_name"),
-			ValueDisplayName: metronome.F(metronome.DashboardGetEmbeddableURLParamsBmGroupKeyValuesDisplayNameOverridesValueDisplayName{
-				DisplayName:   metronome.F("display_name"),
-				GroupKeyValue: metronome.F("group_key_value"),
+		BmGroupKeyOverrides: metronome.F([]metronome.DashboardGetEmbeddableURLParamsBmGroupKeyOverride{{
+			GroupKeyName: metronome.F("tenant_id"),
+			DisplayName:  metronome.F("Org ID"),
+			ValueDisplayNames: metronome.F(map[string]interface{}{
+				"48ecb18f358f": "bar",
+				"e358f3ce242d": "bar",
 			}),
-		}),
+		}}),
 		ColorOverrides: metronome.F([]metronome.DashboardGetEmbeddableURLParamsColorOverride{{
 			Name:  metronome.F(metronome.DashboardGetEmbeddableURLParamsColorOverridesNameGrayDark),
 			Value: metronome.F("#ff0000"),
