@@ -50,7 +50,8 @@ func (r *ContractRateCardService) New(ctx context.Context, body ContractRateCard
 	return
 }
 
-// Get a specific rate card
+// Get a specific rate card NOTE: Use `/contract-pricing/rate-cards/getRates` to
+// retrieve rate card rates.
 func (r *ContractRateCardService) Get(ctx context.Context, body ContractRateCardGetParams, opts ...option.RequestOption) (res *ContractRateCardGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "contract-pricing/rate-cards/get"
@@ -66,7 +67,8 @@ func (r *ContractRateCardService) Update(ctx context.Context, body ContractRateC
 	return
 }
 
-// List rate cards
+// List rate cards NOTE: Use `/contract-pricing/rate-cards/getRates` to retrieve
+// rate card rates.
 func (r *ContractRateCardService) List(ctx context.Context, params ContractRateCardListParams, opts ...option.RequestOption) (res *pagination.CursorPage[ContractRateCardListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -84,7 +86,8 @@ func (r *ContractRateCardService) List(ctx context.Context, params ContractRateC
 	return res, nil
 }
 
-// List rate cards
+// List rate cards NOTE: Use `/contract-pricing/rate-cards/getRates` to retrieve
+// rate card rates.
 func (r *ContractRateCardService) ListAutoPaging(ctx context.Context, params ContractRateCardListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[ContractRateCardListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
