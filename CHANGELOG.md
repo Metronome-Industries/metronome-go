@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.1.0-beta.3 (2024-09-20)
+
+Full Changelog: [v0.1.0-beta.2...v0.1.0-beta.3](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.2...v0.1.0-beta.3)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#18](https://github.com/Metronome-Industries/metronome-go/issues/18)) ([e12bb3d](https://github.com/Metronome-Industries/metronome-go/commit/e12bb3d7cc27a9644f8ac46773db3ac830cec5db))
+* **api:** OpenAPI spec update via Stainless API ([#23](https://github.com/Metronome-Industries/metronome-go/issues/23)) ([a1d3ef4](https://github.com/Metronome-Industries/metronome-go/commit/a1d3ef41588d5d7d5c8b59d366ef47350278a567))
+* **api:** OpenAPI spec update via Stainless API ([#24](https://github.com/Metronome-Industries/metronome-go/issues/24)) ([a79cfcd](https://github.com/Metronome-Industries/metronome-go/commit/a79cfcd74bbf56742a248775035602b9d100b477))
+
+
+### Bug Fixes
+
+* **requestconfig:** copy over more fields when cloning ([#20](https://github.com/Metronome-Industries/metronome-go/issues/20)) ([0d3fe8a](https://github.com/Metronome-Industries/metronome-go/commit/0d3fe8a93ba7b054492022dd965eeca1179ef859))
+
+
+### Chores
+
+* **internal:** codegen related update ([#21](https://github.com/Metronome-Industries/metronome-go/issues/21)) ([9aa4a07](https://github.com/Metronome-Industries/metronome-go/commit/9aa4a0797c1e030edf64cb0a09635d395490cc73))
+
+
+### Documentation
+
+* update CONTRIBUTING.md ([#22](https://github.com/Metronome-Industries/metronome-go/issues/22)) ([49ac4b9](https://github.com/Metronome-Industries/metronome-go/commit/49ac4b9e2a5e0b17ea2657d15f6289d713c89e58))
+
 ## 0.1.0-beta.2 (2024-09-05)
 
 Full Changelog: [v0.1.0-beta.1...v0.1.0-beta.2](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.1...v0.1.0-beta.2)
