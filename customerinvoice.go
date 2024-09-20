@@ -95,6 +95,35 @@ func (r *CustomerInvoiceService) AddCharge(ctx context.Context, customerID strin
 	return
 }
 
+// List daily or hourly breakdown invoices for a given customer, optionally
+// filtered by status, date range, and/or credit type.
+func (r *CustomerInvoiceService) ListBreakdowns(ctx context.Context, customerID string, query CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerInvoiceListBreakdownsResponse], err error) {
+	var raw *http.Response
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	if customerID == "" {
+		err = errors.New("missing required customer_id parameter")
+		return
+	}
+	path := fmt.Sprintf("customers/%s/invoices/breakdowns", customerID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List daily or hourly breakdown invoices for a given customer, optionally
+// filtered by status, date range, and/or credit type.
+func (r *CustomerInvoiceService) ListBreakdownsAutoPaging(ctx context.Context, customerID string, query CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerInvoiceListBreakdownsResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListBreakdowns(ctx, customerID, query, opts...))
+}
+
 type Invoice struct {
 	ID          string            `json:"id,required" format:"uuid"`
 	CreditType  shared.CreditType `json:"credit_type,required"`
@@ -777,6 +806,30 @@ func (r customerInvoiceAddChargeResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type CustomerInvoiceListBreakdownsResponse struct {
+	BreakdownEndTimestamp   time.Time                                 `json:"breakdown_end_timestamp,required" format:"date-time"`
+	BreakdownStartTimestamp time.Time                                 `json:"breakdown_start_timestamp,required" format:"date-time"`
+	JSON                    customerInvoiceListBreakdownsResponseJSON `json:"-"`
+	Invoice
+}
+
+// customerInvoiceListBreakdownsResponseJSON contains the JSON metadata for the
+// struct [CustomerInvoiceListBreakdownsResponse]
+type customerInvoiceListBreakdownsResponseJSON struct {
+	BreakdownEndTimestamp   apijson.Field
+	BreakdownStartTimestamp apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *CustomerInvoiceListBreakdownsResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerInvoiceListBreakdownsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 type CustomerInvoiceGetParams struct {
 	// If set, all zero quantity line items will be filtered out of the response
 	SkipZeroQtyLineItems param.Field[bool] `query:"skip_zero_qty_line_items"`
@@ -857,4 +910,73 @@ type CustomerInvoiceAddChargeParams struct {
 
 func (r CustomerInvoiceAddChargeParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type CustomerInvoiceListBreakdownsParams struct {
+	// RFC 3339 timestamp. Breakdowns will only be returned for time windows that end
+	// on or before this time.
+	EndingBefore param.Field[time.Time] `query:"ending_before,required" format:"date-time"`
+	// RFC 3339 timestamp. Breakdowns will only be returned for time windows that start
+	// on or after this time.
+	StartingOn param.Field[time.Time] `query:"starting_on,required" format:"date-time"`
+	// Only return invoices for the specified credit type
+	CreditTypeID param.Field[string] `query:"credit_type_id"`
+	// Max number of results that should be returned. For daily breakdowns, the
+	// response can return up to 35 days worth of breakdowns. For hourly breakdowns,
+	// the response can return up to 24 hours. If there are more results, a cursor to
+	// the next page is returned.
+	Limit param.Field[int64] `query:"limit"`
+	// Cursor that indicates where the next page of results should start.
+	NextPage param.Field[string] `query:"next_page"`
+	// If set, all zero quantity line items will be filtered out of the response
+	SkipZeroQtyLineItems param.Field[bool] `query:"skip_zero_qty_line_items"`
+	// Invoice sort order by issued_at, e.g. date_asc or date_desc. Defaults to
+	// date_asc.
+	Sort param.Field[CustomerInvoiceListBreakdownsParamsSort] `query:"sort"`
+	// Invoice status, e.g. DRAFT or FINALIZED
+	Status param.Field[string] `query:"status"`
+	// The granularity of the breakdowns to return. Defaults to day.
+	WindowSize param.Field[CustomerInvoiceListBreakdownsParamsWindowSize] `query:"window_size"`
+}
+
+// URLQuery serializes [CustomerInvoiceListBreakdownsParams]'s query parameters as
+// `url.Values`.
+func (r CustomerInvoiceListBreakdownsParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Invoice sort order by issued_at, e.g. date_asc or date_desc. Defaults to
+// date_asc.
+type CustomerInvoiceListBreakdownsParamsSort string
+
+const (
+	CustomerInvoiceListBreakdownsParamsSortDateAsc  CustomerInvoiceListBreakdownsParamsSort = "date_asc"
+	CustomerInvoiceListBreakdownsParamsSortDateDesc CustomerInvoiceListBreakdownsParamsSort = "date_desc"
+)
+
+func (r CustomerInvoiceListBreakdownsParamsSort) IsKnown() bool {
+	switch r {
+	case CustomerInvoiceListBreakdownsParamsSortDateAsc, CustomerInvoiceListBreakdownsParamsSortDateDesc:
+		return true
+	}
+	return false
+}
+
+// The granularity of the breakdowns to return. Defaults to day.
+type CustomerInvoiceListBreakdownsParamsWindowSize string
+
+const (
+	CustomerInvoiceListBreakdownsParamsWindowSizeHour CustomerInvoiceListBreakdownsParamsWindowSize = "HOUR"
+	CustomerInvoiceListBreakdownsParamsWindowSizeDay  CustomerInvoiceListBreakdownsParamsWindowSize = "DAY"
+)
+
+func (r CustomerInvoiceListBreakdownsParamsWindowSize) IsKnown() bool {
+	switch r {
+	case CustomerInvoiceListBreakdownsParamsWindowSizeHour, CustomerInvoiceListBreakdownsParamsWindowSizeDay:
+		return true
+	}
+	return false
 }
