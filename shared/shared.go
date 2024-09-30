@@ -1081,11 +1081,12 @@ type ContractWithoutAmendmentsUsageStatementScheduleFrequency string
 const (
 	ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly   ContractWithoutAmendmentsUsageStatementScheduleFrequency = "MONTHLY"
 	ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly ContractWithoutAmendmentsUsageStatementScheduleFrequency = "QUARTERLY"
+	ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual    ContractWithoutAmendmentsUsageStatementScheduleFrequency = "ANNUAL"
 )
 
 func (r ContractWithoutAmendmentsUsageStatementScheduleFrequency) IsKnown() bool {
 	switch r {
-	case ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly:
+	case ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual:
 		return true
 	}
 	return false

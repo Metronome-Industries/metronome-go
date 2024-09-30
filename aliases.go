@@ -230,6 +230,9 @@ const ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly = shared.C
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly
 
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
 

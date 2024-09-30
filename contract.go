@@ -1777,11 +1777,12 @@ type ContractNewParamsUsageStatementScheduleFrequency string
 const (
 	ContractNewParamsUsageStatementScheduleFrequencyMonthly   ContractNewParamsUsageStatementScheduleFrequency = "MONTHLY"
 	ContractNewParamsUsageStatementScheduleFrequencyQuarterly ContractNewParamsUsageStatementScheduleFrequency = "QUARTERLY"
+	ContractNewParamsUsageStatementScheduleFrequencyAnnual    ContractNewParamsUsageStatementScheduleFrequency = "ANNUAL"
 )
 
 func (r ContractNewParamsUsageStatementScheduleFrequency) IsKnown() bool {
 	switch r {
-	case ContractNewParamsUsageStatementScheduleFrequencyMonthly, ContractNewParamsUsageStatementScheduleFrequencyQuarterly:
+	case ContractNewParamsUsageStatementScheduleFrequencyMonthly, ContractNewParamsUsageStatementScheduleFrequencyQuarterly, ContractNewParamsUsageStatementScheduleFrequencyAnnual:
 		return true
 	}
 	return false
