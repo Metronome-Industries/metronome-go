@@ -50,7 +50,9 @@ func TestPlanGetDetails(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Plans.GetDetails(context.TODO(), "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc")
+	_, err := client.Plans.GetDetails(context.TODO(), metronome.PlanGetDetailsParams{
+		PlanID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+	})
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {
@@ -72,14 +74,11 @@ func TestPlanListChargesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Plans.ListCharges(
-		context.TODO(),
-		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.PlanListChargesParams{
-			Limit:    metronome.F(int64(1)),
-			NextPage: metronome.F("next_page"),
-		},
-	)
+	_, err := client.Plans.ListCharges(context.TODO(), metronome.PlanListChargesParams{
+		PlanID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		Limit:    metronome.F(int64(1)),
+		NextPage: metronome.F("next_page"),
+	})
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {
@@ -101,15 +100,12 @@ func TestPlanListCustomersWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Plans.ListCustomers(
-		context.TODO(),
-		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.PlanListCustomersParams{
-			Limit:    metronome.F(int64(1)),
-			NextPage: metronome.F("next_page"),
-			Status:   metronome.F(metronome.PlanListCustomersParamsStatusAll),
-		},
-	)
+	_, err := client.Plans.ListCustomers(context.TODO(), metronome.PlanListCustomersParams{
+		PlanID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		Limit:    metronome.F(int64(1)),
+		NextPage: metronome.F("next_page"),
+		Status:   metronome.F(metronome.PlanListCustomersParamsStatusAll),
+	})
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {

@@ -39,16 +39,16 @@ func NewCustomerPlanService(opts ...option.RequestOption) (r *CustomerPlanServic
 }
 
 // List the given customer's plans in reverse-chronological order.
-func (r *CustomerPlanService) List(ctx context.Context, customerID string, query CustomerPlanListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerPlanListResponse], err error) {
+func (r *CustomerPlanService) List(ctx context.Context, params CustomerPlanListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerPlanListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/plans", customerID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("customers/%s/plans", params.CustomerID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,57 +61,57 @@ func (r *CustomerPlanService) List(ctx context.Context, customerID string, query
 }
 
 // List the given customer's plans in reverse-chronological order.
-func (r *CustomerPlanService) ListAutoPaging(ctx context.Context, customerID string, query CustomerPlanListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerPlanListResponse] {
-	return pagination.NewCursorPageAutoPager(r.List(ctx, customerID, query, opts...))
+func (r *CustomerPlanService) ListAutoPaging(ctx context.Context, params CustomerPlanListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerPlanListResponse] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Associate an existing customer with a plan for a specified date range. See the
 // [price adjustments documentation](https://docs.metronome.com/pricing/managing-plans/#price-adjustments)
 // for details on the price adjustments.
-func (r *CustomerPlanService) Add(ctx context.Context, customerID string, body CustomerPlanAddParams, opts ...option.RequestOption) (res *CustomerPlanAddResponse, err error) {
+func (r *CustomerPlanService) Add(ctx context.Context, params CustomerPlanAddParams, opts ...option.RequestOption) (res *CustomerPlanAddResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/plans/add", customerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("customers/%s/plans/add", params.CustomerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Change the end date of a customer's plan.
-func (r *CustomerPlanService) End(ctx context.Context, customerID string, customerPlanID string, body CustomerPlanEndParams, opts ...option.RequestOption) (res *CustomerPlanEndResponse, err error) {
+func (r *CustomerPlanService) End(ctx context.Context, params CustomerPlanEndParams, opts ...option.RequestOption) (res *CustomerPlanEndResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	if customerPlanID == "" {
+	if params.CustomerPlanID.Value == "" {
 		err = errors.New("missing required customer_plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/plans/%s/end", customerID, customerPlanID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("customers/%s/plans/%s/end", params.CustomerID, params.CustomerPlanID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Lists a customer plans adjustments. See the
 // [price adjustments documentation](https://docs.metronome.com/pricing/managing-plans/#price-adjustments)
 // for details.
-func (r *CustomerPlanService) ListPriceAdjustments(ctx context.Context, customerID string, customerPlanID string, query CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerPlanListPriceAdjustmentsResponse], err error) {
+func (r *CustomerPlanService) ListPriceAdjustments(ctx context.Context, params CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerPlanListPriceAdjustmentsResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	if customerPlanID == "" {
+	if params.CustomerPlanID.Value == "" {
 		err = errors.New("missing required customer_plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/plans/%s/priceAdjustments", customerID, customerPlanID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("customers/%s/plans/%s/priceAdjustments", params.CustomerID, params.CustomerPlanID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -126,8 +126,8 @@ func (r *CustomerPlanService) ListPriceAdjustments(ctx context.Context, customer
 // Lists a customer plans adjustments. See the
 // [price adjustments documentation](https://docs.metronome.com/pricing/managing-plans/#price-adjustments)
 // for details.
-func (r *CustomerPlanService) ListPriceAdjustmentsAutoPaging(ctx context.Context, customerID string, customerPlanID string, query CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerPlanListPriceAdjustmentsResponse] {
-	return pagination.NewCursorPageAutoPager(r.ListPriceAdjustments(ctx, customerID, customerPlanID, query, opts...))
+func (r *CustomerPlanService) ListPriceAdjustmentsAutoPaging(ctx context.Context, params CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerPlanListPriceAdjustmentsResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListPriceAdjustments(ctx, params, opts...))
 }
 
 type CustomerPlanListResponse struct {
@@ -350,6 +350,7 @@ func (r CustomerPlanListPriceAdjustmentsResponsePricesAdjustmentType) IsKnown() 
 }
 
 type CustomerPlanListParams struct {
+	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
 	// Max number of results that should be returned
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.
@@ -365,7 +366,8 @@ func (r CustomerPlanListParams) URLQuery() (v url.Values) {
 }
 
 type CustomerPlanAddParams struct {
-	PlanID param.Field[string] `json:"plan_id,required" format:"uuid"`
+	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
+	PlanID     param.Field[string] `json:"plan_id,required" format:"uuid"`
 	// RFC 3339 timestamp for when the plan becomes active for this customer. Must be
 	// at 0:00 UTC (midnight).
 	StartingOn param.Field[time.Time] `json:"starting_on,required" format:"date-time"`
@@ -467,6 +469,8 @@ func (r CustomerPlanAddParamsTrialSpecSpendingCap) MarshalJSON() (data []byte, e
 }
 
 type CustomerPlanEndParams struct {
+	CustomerID     param.Field[string] `path:"customer_id,required" format:"uuid"`
+	CustomerPlanID param.Field[string] `path:"customer_plan_id,required" format:"uuid"`
 	// RFC 3339 timestamp for when the plan ends (exclusive) for this customer. Must be
 	// at 0:00 UTC (midnight). If not provided, the plan end date will be cleared.
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
@@ -484,6 +488,8 @@ func (r CustomerPlanEndParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CustomerPlanListPriceAdjustmentsParams struct {
+	CustomerID     param.Field[string] `path:"customer_id,required" format:"uuid"`
+	CustomerPlanID param.Field[string] `path:"customer_plan_id,required" format:"uuid"`
 	// Max number of results that should be returned
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.

@@ -46,13 +46,13 @@ func (r *BillableMetricService) New(ctx context.Context, body BillableMetricNewP
 }
 
 // Get a billable metric.
-func (r *BillableMetricService) Get(ctx context.Context, billableMetricID string, opts ...option.RequestOption) (res *BillableMetricGetResponse, err error) {
+func (r *BillableMetricService) Get(ctx context.Context, query BillableMetricGetParams, opts ...option.RequestOption) (res *BillableMetricGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if billableMetricID == "" {
+	if query.BillableMetricID.Value == "" {
 		err = errors.New("missing required billable_metric_id parameter")
 		return
 	}
-	path := fmt.Sprintf("billable-metrics/%s", billableMetricID)
+	path := fmt.Sprintf("billable-metrics/%s", query.BillableMetricID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -332,6 +332,10 @@ func (r BillableMetricNewParamsAggregationType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type BillableMetricGetParams struct {
+	BillableMetricID param.Field[string] `path:"billable_metric_id,required" format:"uuid"`
 }
 
 type BillableMetricListParams struct {

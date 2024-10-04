@@ -62,28 +62,28 @@ func (r *PlanService) ListAutoPaging(ctx context.Context, query PlanListParams, 
 }
 
 // Fetch high level details of a specific plan.
-func (r *PlanService) GetDetails(ctx context.Context, planID string, opts ...option.RequestOption) (res *PlanGetDetailsResponse, err error) {
+func (r *PlanService) GetDetails(ctx context.Context, query PlanGetDetailsParams, opts ...option.RequestOption) (res *PlanGetDetailsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if planID == "" {
+	if query.PlanID.Value == "" {
 		err = errors.New("missing required plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("planDetails/%s", planID)
+	path := fmt.Sprintf("planDetails/%s", query.PlanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Fetches a list of charges of a specific plan.
-func (r *PlanService) ListCharges(ctx context.Context, planID string, query PlanListChargesParams, opts ...option.RequestOption) (res *pagination.CursorPage[PlanListChargesResponse], err error) {
+func (r *PlanService) ListCharges(ctx context.Context, params PlanListChargesParams, opts ...option.RequestOption) (res *pagination.CursorPage[PlanListChargesResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if planID == "" {
+	if params.PlanID.Value == "" {
 		err = errors.New("missing required plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("planDetails/%s/charges", planID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("planDetails/%s/charges", params.PlanID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,22 +96,22 @@ func (r *PlanService) ListCharges(ctx context.Context, planID string, query Plan
 }
 
 // Fetches a list of charges of a specific plan.
-func (r *PlanService) ListChargesAutoPaging(ctx context.Context, planID string, query PlanListChargesParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[PlanListChargesResponse] {
-	return pagination.NewCursorPageAutoPager(r.ListCharges(ctx, planID, query, opts...))
+func (r *PlanService) ListChargesAutoPaging(ctx context.Context, params PlanListChargesParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[PlanListChargesResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListCharges(ctx, params, opts...))
 }
 
 // Fetches a list of customers on a specific plan (by default, only currently
 // active plans are included)
-func (r *PlanService) ListCustomers(ctx context.Context, planID string, query PlanListCustomersParams, opts ...option.RequestOption) (res *pagination.CursorPage[PlanListCustomersResponse], err error) {
+func (r *PlanService) ListCustomers(ctx context.Context, params PlanListCustomersParams, opts ...option.RequestOption) (res *pagination.CursorPage[PlanListCustomersResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if planID == "" {
+	if params.PlanID.Value == "" {
 		err = errors.New("missing required plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("planDetails/%s/customers", planID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("planDetails/%s/customers", params.PlanID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +125,8 @@ func (r *PlanService) ListCustomers(ctx context.Context, planID string, query Pl
 
 // Fetches a list of customers on a specific plan (by default, only currently
 // active plans are included)
-func (r *PlanService) ListCustomersAutoPaging(ctx context.Context, planID string, query PlanListCustomersParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[PlanListCustomersResponse] {
-	return pagination.NewCursorPageAutoPager(r.ListCustomers(ctx, planID, query, opts...))
+func (r *PlanService) ListCustomersAutoPaging(ctx context.Context, params PlanListCustomersParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[PlanListCustomersResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListCustomers(ctx, params, opts...))
 }
 
 type PlanDetail struct {
@@ -519,7 +519,12 @@ func (r PlanListParams) URLQuery() (v url.Values) {
 	})
 }
 
+type PlanGetDetailsParams struct {
+	PlanID param.Field[string] `path:"plan_id,required" format:"uuid"`
+}
+
 type PlanListChargesParams struct {
+	PlanID param.Field[string] `path:"plan_id,required" format:"uuid"`
 	// Max number of results that should be returned
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.
@@ -535,6 +540,7 @@ func (r PlanListChargesParams) URLQuery() (v url.Values) {
 }
 
 type PlanListCustomersParams struct {
+	PlanID param.Field[string] `path:"plan_id,required" format:"uuid"`
 	// Max number of results that should be returned
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.
