@@ -39,33 +39,33 @@ func NewCustomerInvoiceService(opts ...option.RequestOption) (r *CustomerInvoice
 }
 
 // Fetch a specific invoice for a given customer.
-func (r *CustomerInvoiceService) Get(ctx context.Context, customerID string, invoiceID string, query CustomerInvoiceGetParams, opts ...option.RequestOption) (res *CustomerInvoiceGetResponse, err error) {
+func (r *CustomerInvoiceService) Get(ctx context.Context, params CustomerInvoiceGetParams, opts ...option.RequestOption) (res *CustomerInvoiceGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	if invoiceID == "" {
+	if params.InvoiceID.Value == "" {
 		err = errors.New("missing required invoice_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/invoices/%s", customerID, invoiceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("customers/%s/invoices/%s", params.CustomerID, params.InvoiceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
 // List all invoices for a given customer, optionally filtered by status, date
 // range, and/or credit type.
-func (r *CustomerInvoiceService) List(ctx context.Context, customerID string, query CustomerInvoiceListParams, opts ...option.RequestOption) (res *pagination.CursorPage[Invoice], err error) {
+func (r *CustomerInvoiceService) List(ctx context.Context, params CustomerInvoiceListParams, opts ...option.RequestOption) (res *pagination.CursorPage[Invoice], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/invoices", customerID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("customers/%s/invoices", params.CustomerID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -79,34 +79,34 @@ func (r *CustomerInvoiceService) List(ctx context.Context, customerID string, qu
 
 // List all invoices for a given customer, optionally filtered by status, date
 // range, and/or credit type.
-func (r *CustomerInvoiceService) ListAutoPaging(ctx context.Context, customerID string, query CustomerInvoiceListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[Invoice] {
-	return pagination.NewCursorPageAutoPager(r.List(ctx, customerID, query, opts...))
+func (r *CustomerInvoiceService) ListAutoPaging(ctx context.Context, params CustomerInvoiceListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[Invoice] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Add a one time charge to the specified invoice
-func (r *CustomerInvoiceService) AddCharge(ctx context.Context, customerID string, body CustomerInvoiceAddChargeParams, opts ...option.RequestOption) (res *CustomerInvoiceAddChargeResponse, err error) {
+func (r *CustomerInvoiceService) AddCharge(ctx context.Context, params CustomerInvoiceAddChargeParams, opts ...option.RequestOption) (res *CustomerInvoiceAddChargeResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/addCharge", customerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("customers/%s/addCharge", params.CustomerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // List daily or hourly breakdown invoices for a given customer, optionally
 // filtered by status, date range, and/or credit type.
-func (r *CustomerInvoiceService) ListBreakdowns(ctx context.Context, customerID string, query CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerInvoiceListBreakdownsResponse], err error) {
+func (r *CustomerInvoiceService) ListBreakdowns(ctx context.Context, params CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerInvoiceListBreakdownsResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/invoices/breakdowns", customerID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("customers/%s/invoices/breakdowns", params.CustomerID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -120,8 +120,8 @@ func (r *CustomerInvoiceService) ListBreakdowns(ctx context.Context, customerID 
 
 // List daily or hourly breakdown invoices for a given customer, optionally
 // filtered by status, date range, and/or credit type.
-func (r *CustomerInvoiceService) ListBreakdownsAutoPaging(ctx context.Context, customerID string, query CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerInvoiceListBreakdownsResponse] {
-	return pagination.NewCursorPageAutoPager(r.ListBreakdowns(ctx, customerID, query, opts...))
+func (r *CustomerInvoiceService) ListBreakdownsAutoPaging(ctx context.Context, params CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerInvoiceListBreakdownsResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListBreakdowns(ctx, params, opts...))
 }
 
 type Invoice struct {
@@ -831,6 +831,8 @@ func (r customerInvoiceListBreakdownsResponseJSON) RawJSON() string {
 }
 
 type CustomerInvoiceGetParams struct {
+	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
+	InvoiceID  param.Field[string] `path:"invoice_id,required" format:"uuid"`
 	// If set, all zero quantity line items will be filtered out of the response
 	SkipZeroQtyLineItems param.Field[bool] `query:"skip_zero_qty_line_items"`
 }
@@ -845,6 +847,7 @@ func (r CustomerInvoiceGetParams) URLQuery() (v url.Values) {
 }
 
 type CustomerInvoiceListParams struct {
+	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
 	// Only return invoices for the specified credit type
 	CreditTypeID param.Field[string] `query:"credit_type_id"`
 	// RFC 3339 timestamp (exclusive). Invoices will only be returned for billing
@@ -893,6 +896,7 @@ func (r CustomerInvoiceListParamsSort) IsKnown() bool {
 }
 
 type CustomerInvoiceAddChargeParams struct {
+	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
 	// The Metronome ID of the charge to add to the invoice. Note that the charge must
 	// be on a product that is not on the current plan, and the product must have only
 	// fixed charges.
@@ -913,6 +917,7 @@ func (r CustomerInvoiceAddChargeParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CustomerInvoiceListBreakdownsParams struct {
+	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
 	// RFC 3339 timestamp. Breakdowns will only be returned for time windows that end
 	// on or before this time.
 	EndingBefore param.Field[time.Time] `query:"ending_before,required" format:"date-time"`
