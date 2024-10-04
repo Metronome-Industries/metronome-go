@@ -95,7 +95,8 @@ type AlertNewParams struct {
 	AlertType param.Field[AlertNewParamsAlertType] `json:"alert_type,required"`
 	// Name of the alert
 	Name param.Field[string] `json:"name,required"`
-	// Threshold value of the alert policy
+	// Threshold value of the alert policy. Depending upon the alert type, this number
+	// may represent a financial amount, the days remaining, or a percentage reached.
 	Threshold param.Field[float64] `json:"threshold,required"`
 	// For alerts of type `usage_threshold_reached`, specifies which billable metric to
 	// track the usage for.

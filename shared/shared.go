@@ -1056,16 +1056,19 @@ func (r ContractWithoutAmendmentsTransitionsType) IsKnown() bool {
 }
 
 type ContractWithoutAmendmentsUsageStatementSchedule struct {
-	Frequency ContractWithoutAmendmentsUsageStatementScheduleFrequency `json:"frequency,required"`
-	JSON      contractWithoutAmendmentsUsageStatementScheduleJSON      `json:"-"`
+	// Contract usage statements follow a selected cadence based on this date.
+	BillingAnchorDate time.Time                                                `json:"billing_anchor_date,required" format:"date-time"`
+	Frequency         ContractWithoutAmendmentsUsageStatementScheduleFrequency `json:"frequency,required"`
+	JSON              contractWithoutAmendmentsUsageStatementScheduleJSON      `json:"-"`
 }
 
 // contractWithoutAmendmentsUsageStatementScheduleJSON contains the JSON metadata
 // for the struct [ContractWithoutAmendmentsUsageStatementSchedule]
 type contractWithoutAmendmentsUsageStatementScheduleJSON struct {
-	Frequency   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	BillingAnchorDate apijson.Field
+	Frequency         apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
 func (r *ContractWithoutAmendmentsUsageStatementSchedule) UnmarshalJSON(data []byte) (err error) {
@@ -1689,6 +1692,15 @@ func (r CreditLedgerType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type CreditTypeParam struct {
+	ID   param.Field[string] `json:"id,required" format:"uuid"`
+	Name param.Field[string] `json:"name,required"`
+}
+
+func (r CreditTypeParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type Discount struct {

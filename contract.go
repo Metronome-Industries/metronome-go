@@ -864,18 +864,22 @@ func (r contractGetRateScheduleResponseJSON) RawJSON() string {
 }
 
 type ContractGetRateScheduleResponseData struct {
-	Entitled            bool                                    `json:"entitled,required"`
-	ListRate            shared.Rate                             `json:"list_rate,required"`
-	ProductCustomFields map[string]string                       `json:"product_custom_fields,required"`
-	ProductID           string                                  `json:"product_id,required" format:"uuid"`
-	ProductName         string                                  `json:"product_name,required"`
-	ProductTags         []string                                `json:"product_tags,required"`
-	RateCardID          string                                  `json:"rate_card_id,required" format:"uuid"`
-	StartingAt          time.Time                               `json:"starting_at,required" format:"date-time"`
-	EndingBefore        time.Time                               `json:"ending_before" format:"date-time"`
-	OverrideRate        shared.Rate                             `json:"override_rate"`
-	PricingGroupValues  map[string]string                       `json:"pricing_group_values"`
-	JSON                contractGetRateScheduleResponseDataJSON `json:"-"`
+	Entitled            bool              `json:"entitled,required"`
+	ListRate            shared.Rate       `json:"list_rate,required"`
+	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
+	ProductID           string            `json:"product_id,required" format:"uuid"`
+	ProductName         string            `json:"product_name,required"`
+	ProductTags         []string          `json:"product_tags,required"`
+	RateCardID          string            `json:"rate_card_id,required" format:"uuid"`
+	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
+	// The rate that will be used to rate a product when it is paid for by a commit.
+	// This feature requires opt-in before it can be used. Please contact Metronome
+	// support to enable this feature.
+	CommitRate         ContractGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
+	EndingBefore       time.Time                                     `json:"ending_before" format:"date-time"`
+	OverrideRate       shared.Rate                                   `json:"override_rate"`
+	PricingGroupValues map[string]string                             `json:"pricing_group_values"`
+	JSON               contractGetRateScheduleResponseDataJSON       `json:"-"`
 }
 
 // contractGetRateScheduleResponseDataJSON contains the JSON metadata for the
@@ -889,6 +893,7 @@ type contractGetRateScheduleResponseDataJSON struct {
 	ProductTags         apijson.Field
 	RateCardID          apijson.Field
 	StartingAt          apijson.Field
+	CommitRate          apijson.Field
 	EndingBefore        apijson.Field
 	OverrideRate        apijson.Field
 	PricingGroupValues  apijson.Field
@@ -902,6 +907,74 @@ func (r *ContractGetRateScheduleResponseData) UnmarshalJSON(data []byte) (err er
 
 func (r contractGetRateScheduleResponseDataJSON) RawJSON() string {
 	return r.raw
+}
+
+// The rate that will be used to rate a product when it is paid for by a commit.
+// This feature requires opt-in before it can be used. Please contact Metronome
+// support to enable this feature.
+type ContractGetRateScheduleResponseDataCommitRate struct {
+	RateType   ContractGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
+	CreditType shared.CreditType                                     `json:"credit_type"`
+	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
+	IsProrated bool `json:"is_prorated"`
+	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
+	// rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0
+	// and <=1.
+	Price float64 `json:"price"`
+	// Commit rate quantity. For SUBSCRIPTION rate_type, this must be >=0.
+	Quantity float64 `json:"quantity"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.Tier `json:"tiers"`
+	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
+	// using list prices rather than the standard rates for this product on the
+	// contract.
+	UseListPrices bool                                              `json:"use_list_prices"`
+	JSON          contractGetRateScheduleResponseDataCommitRateJSON `json:"-"`
+}
+
+// contractGetRateScheduleResponseDataCommitRateJSON contains the JSON metadata for
+// the struct [ContractGetRateScheduleResponseDataCommitRate]
+type contractGetRateScheduleResponseDataCommitRateJSON struct {
+	RateType      apijson.Field
+	CreditType    apijson.Field
+	IsProrated    apijson.Field
+	Price         apijson.Field
+	Quantity      apijson.Field
+	Tiers         apijson.Field
+	UseListPrices apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ContractGetRateScheduleResponseDataCommitRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractGetRateScheduleResponseDataCommitRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractGetRateScheduleResponseDataCommitRateRateType string
+
+const (
+	ContractGetRateScheduleResponseDataCommitRateRateTypeFlat         ContractGetRateScheduleResponseDataCommitRateRateType = "FLAT"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeFlat         ContractGetRateScheduleResponseDataCommitRateRateType = "flat"
+	ContractGetRateScheduleResponseDataCommitRateRateTypePercentage   ContractGetRateScheduleResponseDataCommitRateRateType = "PERCENTAGE"
+	ContractGetRateScheduleResponseDataCommitRateRateTypePercentage   ContractGetRateScheduleResponseDataCommitRateRateType = "percentage"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription ContractGetRateScheduleResponseDataCommitRateRateType = "SUBSCRIPTION"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription ContractGetRateScheduleResponseDataCommitRateRateType = "subscription"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeTiered       ContractGetRateScheduleResponseDataCommitRateRateType = "TIERED"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeTiered       ContractGetRateScheduleResponseDataCommitRateRateType = "tiered"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeCustom       ContractGetRateScheduleResponseDataCommitRateRateType = "CUSTOM"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeCustom       ContractGetRateScheduleResponseDataCommitRateRateType = "custom"
+)
+
+func (r ContractGetRateScheduleResponseDataCommitRateRateType) IsKnown() bool {
+	switch r {
+	case ContractGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractGetRateScheduleResponseDataCommitRateRateTypeCustom, ContractGetRateScheduleResponseDataCommitRateRateTypeCustom:
+		return true
+	}
+	return false
 }
 
 type ContractScheduleProServicesInvoiceResponse struct {
@@ -1759,6 +1832,12 @@ func (r ContractNewParamsTransitionFutureInvoiceBehaviorTrueup) IsKnown() bool {
 
 type ContractNewParamsUsageStatementSchedule struct {
 	Frequency param.Field[ContractNewParamsUsageStatementScheduleFrequency] `json:"frequency,required"`
+	// Required when using CUSTOM_DATE. This option lets you set a historical billing
+	// anchor date, aligning future billing cycles with a chosen cadence. For example,
+	// if a contract starts on 2024-09-15 and you set the anchor date to 2024-09-10
+	// with a MONTHLY frequency, the first usage statement will cover 09-15 to 10-10.
+	// Subsequent statements will follow the 10th of each month.
+	BillingAnchorDate param.Field[time.Time] `json:"billing_anchor_date" format:"date-time"`
 	// If not provided, defaults to the first day of the month.
 	Day param.Field[ContractNewParamsUsageStatementScheduleDay] `json:"day"`
 	// The date Metronome should start generating usage invoices. If unspecified,
@@ -1794,11 +1873,13 @@ type ContractNewParamsUsageStatementScheduleDay string
 const (
 	ContractNewParamsUsageStatementScheduleDayFirstOfMonth  ContractNewParamsUsageStatementScheduleDay = "FIRST_OF_MONTH"
 	ContractNewParamsUsageStatementScheduleDayContractStart ContractNewParamsUsageStatementScheduleDay = "CONTRACT_START"
+	ContractNewParamsUsageStatementScheduleDayCustomDate    ContractNewParamsUsageStatementScheduleDay = "CUSTOM_DATE"
+	ContractNewParamsUsageStatementScheduleDayCustomDate    ContractNewParamsUsageStatementScheduleDay = "custom_date"
 )
 
 func (r ContractNewParamsUsageStatementScheduleDay) IsKnown() bool {
 	switch r {
-	case ContractNewParamsUsageStatementScheduleDayFirstOfMonth, ContractNewParamsUsageStatementScheduleDayContractStart:
+	case ContractNewParamsUsageStatementScheduleDayFirstOfMonth, ContractNewParamsUsageStatementScheduleDayContractStart, ContractNewParamsUsageStatementScheduleDayCustomDate, ContractNewParamsUsageStatementScheduleDayCustomDate:
 		return true
 	}
 	return false
