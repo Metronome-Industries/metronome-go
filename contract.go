@@ -914,7 +914,7 @@ func (r contractGetRateScheduleResponseDataJSON) RawJSON() string {
 // support to enable this feature.
 type ContractGetRateScheduleResponseDataCommitRate struct {
 	RateType   ContractGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
-	CreditType shared.CreditType                                     `json:"credit_type"`
+	CreditType shared.CreditTypeData                                 `json:"credit_type"`
 	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated bool `json:"is_prorated"`
 	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE

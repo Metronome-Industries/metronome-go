@@ -163,9 +163,9 @@ func (r planDetailJSON) RawJSON() string {
 
 type PlanDetailCreditGrant struct {
 	AmountGranted           float64                   `json:"amount_granted,required"`
-	AmountGrantedCreditType shared.CreditType         `json:"amount_granted_credit_type,required"`
+	AmountGrantedCreditType shared.CreditTypeData     `json:"amount_granted_credit_type,required"`
 	AmountPaid              float64                   `json:"amount_paid,required"`
-	AmountPaidCreditType    shared.CreditType         `json:"amount_paid_credit_type,required"`
+	AmountPaidCreditType    shared.CreditTypeData     `json:"amount_paid_credit_type,required"`
 	EffectiveDuration       float64                   `json:"effective_duration,required"`
 	Name                    string                    `json:"name,required"`
 	Priority                string                    `json:"priority,required"`
@@ -203,8 +203,8 @@ func (r planDetailCreditGrantJSON) RawJSON() string {
 }
 
 type PlanDetailMinimum struct {
-	CreditType shared.CreditType `json:"credit_type,required"`
-	Name       string            `json:"name,required"`
+	CreditType shared.CreditTypeData `json:"credit_type,required"`
+	Name       string                `json:"name,required"`
 	// Used in price ramps. Indicates how many billing periods pass before the charge
 	// applies.
 	StartPeriod float64               `json:"start_period,required"`
@@ -232,8 +232,8 @@ func (r planDetailMinimumJSON) RawJSON() string {
 }
 
 type PlanDetailOverageRate struct {
-	CreditType     shared.CreditType `json:"credit_type,required"`
-	FiatCreditType shared.CreditType `json:"fiat_credit_type,required"`
+	CreditType     shared.CreditTypeData `json:"credit_type,required"`
+	FiatCreditType shared.CreditTypeData `json:"fiat_credit_type,required"`
 	// Used in price ramps. Indicates how many billing periods pass before the charge
 	// applies.
 	StartPeriod            float64                   `json:"start_period,required"`
@@ -311,7 +311,7 @@ func (r planGetDetailsResponseJSON) RawJSON() string {
 type PlanListChargesResponse struct {
 	ID           string                            `json:"id,required" format:"uuid"`
 	ChargeType   PlanListChargesResponseChargeType `json:"charge_type,required"`
-	CreditType   shared.CreditType                 `json:"credit_type,required"`
+	CreditType   shared.CreditTypeData             `json:"credit_type,required"`
 	CustomFields map[string]string                 `json:"custom_fields,required"`
 	Name         string                            `json:"name,required"`
 	Prices       []PlanListChargesResponsePrice    `json:"prices,required"`

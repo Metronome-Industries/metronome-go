@@ -202,9 +202,12 @@ func (r AlertNewParamsGroupKeyFilter) MarshalJSON() (data []byte, err error) {
 }
 
 type AlertArchiveParams struct {
-	ID shared.IDParam `json:"id,required"`
+	// The Metronome ID of the alert
+	ID param.Field[string] `json:"id,required" format:"uuid"`
+	// If true, resets the uniqueness key on this alert so it can be re-used
+	ReleaseUniquenessKey param.Field[bool] `json:"release_uniqueness_key"`
 }
 
 func (r AlertArchiveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.ID)
+	return apijson.MarshalRoot(r)
 }

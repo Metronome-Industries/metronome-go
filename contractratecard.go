@@ -153,7 +153,7 @@ type ContractRateCardGetResponseData struct {
 	CreditTypeConversions []ContractRateCardGetResponseDataCreditTypeConversion   `json:"credit_type_conversions"`
 	CustomFields          map[string]string                                       `json:"custom_fields"`
 	Description           string                                                  `json:"description"`
-	FiatCreditType        shared.CreditType                                       `json:"fiat_credit_type"`
+	FiatCreditType        shared.CreditTypeData                                   `json:"fiat_credit_type"`
 	JSON                  contractRateCardGetResponseDataJSON                     `json:"-"`
 }
 
@@ -209,7 +209,7 @@ type ContractRateCardGetResponseDataRateCardEntriesCurrent struct {
 	ID           string                                                        `json:"id" format:"uuid"`
 	CreatedAt    time.Time                                                     `json:"created_at" format:"date-time"`
 	CreatedBy    string                                                        `json:"created_by"`
-	CreditType   shared.CreditType                                             `json:"credit_type"`
+	CreditType   shared.CreditTypeData                                         `json:"credit_type"`
 	CustomRate   map[string]interface{}                                        `json:"custom_rate"`
 	EndingBefore time.Time                                                     `json:"ending_before" format:"date-time"`
 	Entitled     bool                                                          `json:"entitled"`
@@ -278,7 +278,7 @@ type ContractRateCardGetResponseDataRateCardEntriesUpdate struct {
 	// This feature requires opt-in before it can be used. Please contact Metronome
 	// support to enable this feature.
 	CommitRate   ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRate `json:"commit_rate"`
-	CreditType   shared.CreditType                                               `json:"credit_type"`
+	CreditType   shared.CreditTypeData                                           `json:"credit_type"`
 	CustomRate   map[string]interface{}                                          `json:"custom_rate"`
 	EndingBefore time.Time                                                       `json:"ending_before" format:"date-time"`
 	IsProrated   bool                                                            `json:"is_prorated"`
@@ -341,7 +341,7 @@ func (r ContractRateCardGetResponseDataRateCardEntriesUpdatesRateType) IsKnown()
 // support to enable this feature.
 type ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRate struct {
 	RateType   ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType `json:"rate_type,required"`
-	CreditType shared.CreditType                                                       `json:"credit_type"`
+	CreditType shared.CreditTypeData                                                   `json:"credit_type"`
 	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated bool `json:"is_prorated"`
 	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
@@ -431,7 +431,7 @@ func (r contractRateCardGetResponseDataAliasJSON) RawJSON() string {
 }
 
 type ContractRateCardGetResponseDataCreditTypeConversion struct {
-	CustomCreditType    shared.CreditType                                       `json:"custom_credit_type,required"`
+	CustomCreditType    shared.CreditTypeData                                   `json:"custom_credit_type,required"`
 	FiatPerCustomCredit string                                                  `json:"fiat_per_custom_credit,required"`
 	JSON                contractRateCardGetResponseDataCreditTypeConversionJSON `json:"-"`
 }
@@ -484,7 +484,7 @@ type ContractRateCardListResponse struct {
 	CreditTypeConversions []ContractRateCardListResponseCreditTypeConversion   `json:"credit_type_conversions"`
 	CustomFields          map[string]string                                    `json:"custom_fields"`
 	Description           string                                               `json:"description"`
-	FiatCreditType        shared.CreditType                                    `json:"fiat_credit_type"`
+	FiatCreditType        shared.CreditTypeData                                `json:"fiat_credit_type"`
 	JSON                  contractRateCardListResponseJSON                     `json:"-"`
 }
 
@@ -540,7 +540,7 @@ type ContractRateCardListResponseRateCardEntriesCurrent struct {
 	ID           string                                                     `json:"id" format:"uuid"`
 	CreatedAt    time.Time                                                  `json:"created_at" format:"date-time"`
 	CreatedBy    string                                                     `json:"created_by"`
-	CreditType   shared.CreditType                                          `json:"credit_type"`
+	CreditType   shared.CreditTypeData                                      `json:"credit_type"`
 	CustomRate   map[string]interface{}                                     `json:"custom_rate"`
 	EndingBefore time.Time                                                  `json:"ending_before" format:"date-time"`
 	Entitled     bool                                                       `json:"entitled"`
@@ -609,7 +609,7 @@ type ContractRateCardListResponseRateCardEntriesUpdate struct {
 	// This feature requires opt-in before it can be used. Please contact Metronome
 	// support to enable this feature.
 	CommitRate   ContractRateCardListResponseRateCardEntriesUpdatesCommitRate `json:"commit_rate"`
-	CreditType   shared.CreditType                                            `json:"credit_type"`
+	CreditType   shared.CreditTypeData                                        `json:"credit_type"`
 	CustomRate   map[string]interface{}                                       `json:"custom_rate"`
 	EndingBefore time.Time                                                    `json:"ending_before" format:"date-time"`
 	IsProrated   bool                                                         `json:"is_prorated"`
@@ -672,7 +672,7 @@ func (r ContractRateCardListResponseRateCardEntriesUpdatesRateType) IsKnown() bo
 // support to enable this feature.
 type ContractRateCardListResponseRateCardEntriesUpdatesCommitRate struct {
 	RateType   ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType `json:"rate_type,required"`
-	CreditType shared.CreditType                                                    `json:"credit_type"`
+	CreditType shared.CreditTypeData                                                `json:"credit_type"`
 	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated bool `json:"is_prorated"`
 	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
@@ -762,7 +762,7 @@ func (r contractRateCardListResponseAliasJSON) RawJSON() string {
 }
 
 type ContractRateCardListResponseCreditTypeConversion struct {
-	CustomCreditType    shared.CreditType                                    `json:"custom_credit_type,required"`
+	CustomCreditType    shared.CreditTypeData                                `json:"custom_credit_type,required"`
 	FiatPerCustomCredit string                                               `json:"fiat_per_custom_credit,required"`
 	JSON                contractRateCardListResponseCreditTypeConversionJSON `json:"-"`
 }
@@ -852,7 +852,7 @@ func (r contractRateCardGetRateScheduleResponseDataJSON) RawJSON() string {
 // support to enable this feature.
 type ContractRateCardGetRateScheduleResponseDataCommitRate struct {
 	RateType   ContractRateCardGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
-	CreditType shared.CreditType                                             `json:"credit_type"`
+	CreditType shared.CreditTypeData                                         `json:"credit_type"`
 	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated bool `json:"is_prorated"`
 	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
