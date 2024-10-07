@@ -1694,12 +1694,34 @@ func (r CreditLedgerType) IsKnown() bool {
 	return false
 }
 
-type CreditTypeParam struct {
+type CreditTypeData struct {
+	ID   string             `json:"id,required" format:"uuid"`
+	Name string             `json:"name,required"`
+	JSON creditTypeDataJSON `json:"-"`
+}
+
+// creditTypeDataJSON contains the JSON metadata for the struct [CreditTypeData]
+type creditTypeDataJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditTypeData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditTypeDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type CreditTypeDataParam struct {
 	ID   param.Field[string] `json:"id,required" format:"uuid"`
 	Name param.Field[string] `json:"name,required"`
 }
 
-func (r CreditTypeParam) MarshalJSON() (data []byte, err error) {
+func (r CreditTypeDataParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1828,12 +1850,12 @@ func (r IDParam) MarshalJSON() (data []byte, err error) {
 }
 
 type Override struct {
-	ID                    string     `json:"id,required" format:"uuid"`
-	StartingAt            time.Time  `json:"starting_at,required" format:"date-time"`
-	ApplicableProductTags []string   `json:"applicable_product_tags"`
-	CreditType            CreditType `json:"credit_type"`
-	EndingBefore          time.Time  `json:"ending_before" format:"date-time"`
-	Entitled              bool       `json:"entitled"`
+	ID                    string         `json:"id,required" format:"uuid"`
+	StartingAt            time.Time      `json:"starting_at,required" format:"date-time"`
+	ApplicableProductTags []string       `json:"applicable_product_tags"`
+	CreditType            CreditTypeData `json:"credit_type"`
+	EndingBefore          time.Time      `json:"ending_before" format:"date-time"`
+	Entitled              bool           `json:"entitled"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated         bool                        `json:"is_prorated"`
 	Multiplier         float64                     `json:"multiplier"`
@@ -1942,7 +1964,7 @@ func (r overrideOverrideTierJSON) RawJSON() string {
 
 type OverrideOverwriteRate struct {
 	RateType   OverrideOverwriteRateRateType `json:"rate_type,required"`
-	CreditType CreditType                    `json:"credit_type"`
+	CreditType CreditTypeData                `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]interface{} `json:"custom_rate"`
@@ -2158,8 +2180,8 @@ func (r proServiceJSON) RawJSON() string {
 }
 
 type Rate struct {
-	RateType   RateRateType `json:"rate_type,required"`
-	CreditType CreditType   `json:"credit_type"`
+	RateType   RateRateType   `json:"rate_type,required"`
+	CreditType CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]interface{} `json:"custom_rate"`
@@ -2280,7 +2302,7 @@ func (r scheduledChargeProductJSON) RawJSON() string {
 
 type ScheduleDuration struct {
 	ScheduleItems []ScheduleDurationScheduleItem `json:"schedule_items,required"`
-	CreditType    CreditType                     `json:"credit_type"`
+	CreditType    CreditTypeData                 `json:"credit_type"`
 	JSON          scheduleDurationJSON           `json:"-"`
 }
 
@@ -2329,7 +2351,7 @@ func (r scheduleDurationScheduleItemJSON) RawJSON() string {
 }
 
 type SchedulePointInTime struct {
-	CreditType    CreditType                        `json:"credit_type"`
+	CreditType    CreditTypeData                    `json:"credit_type"`
 	ScheduleItems []SchedulePointInTimeScheduleItem `json:"schedule_items"`
 	JSON          schedulePointInTimeJSON           `json:"-"`
 }

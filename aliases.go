@@ -351,7 +351,10 @@ const CreditLedgerTypeCreditCredited = shared.CreditLedgerTypeCreditCredited
 const CreditLedgerTypeCreditManual = shared.CreditLedgerTypeCreditManual
 
 // This is an alias to an internal type.
-type CreditTypeParam = shared.CreditTypeParam
+type CreditTypeData = shared.CreditTypeData
+
+// This is an alias to an internal type.
+type CreditTypeDataParam = shared.CreditTypeDataParam
 
 // This is an alias to an internal type.
 type Discount = shared.Discount

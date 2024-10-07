@@ -125,14 +125,14 @@ func (r *CustomerInvoiceService) ListBreakdownsAutoPaging(ctx context.Context, p
 }
 
 type Invoice struct {
-	ID          string            `json:"id,required" format:"uuid"`
-	CreditType  shared.CreditType `json:"credit_type,required"`
-	CustomerID  string            `json:"customer_id,required" format:"uuid"`
-	LineItems   []InvoiceLineItem `json:"line_items,required"`
-	Status      string            `json:"status,required"`
-	Total       float64           `json:"total,required"`
-	Type        string            `json:"type,required"`
-	AmendmentID string            `json:"amendment_id" format:"uuid"`
+	ID          string                `json:"id,required" format:"uuid"`
+	CreditType  shared.CreditTypeData `json:"credit_type,required"`
+	CustomerID  string                `json:"customer_id,required" format:"uuid"`
+	LineItems   []InvoiceLineItem     `json:"line_items,required"`
+	Status      string                `json:"status,required"`
+	Total       float64               `json:"total,required"`
+	Type        string                `json:"type,required"`
+	AmendmentID string                `json:"amendment_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
 	BillableStatus       InvoiceBillableStatus   `json:"billable_status"`
 	ContractCustomFields map[string]string       `json:"contract_custom_fields"`
@@ -208,10 +208,10 @@ func (r invoiceJSON) RawJSON() string {
 }
 
 type InvoiceLineItem struct {
-	CreditType         shared.CreditType `json:"credit_type,required"`
-	Name               string            `json:"name,required"`
-	Total              float64           `json:"total,required"`
-	CommitCustomFields map[string]string `json:"commit_custom_fields"`
+	CreditType         shared.CreditTypeData `json:"credit_type,required"`
+	Name               string                `json:"name,required"`
+	Total              float64               `json:"total,required"`
+	CommitCustomFields map[string]string     `json:"commit_custom_fields"`
 	// only present for beta contract invoices
 	CommitID string `json:"commit_id" format:"uuid"`
 	// only present for beta contract invoices. This field's availability is dependent
@@ -643,7 +643,7 @@ func (r InvoiceExternalInvoiceExternalStatus) IsKnown() bool {
 }
 
 type InvoiceInvoiceAdjustment struct {
-	CreditType              shared.CreditType            `json:"credit_type,required"`
+	CreditType              shared.CreditTypeData        `json:"credit_type,required"`
 	Name                    string                       `json:"name,required"`
 	Total                   float64                      `json:"total,required"`
 	CreditGrantCustomFields map[string]string            `json:"credit_grant_custom_fields"`

@@ -120,7 +120,7 @@ func (r contractRateCardRateListResponseJSON) RawJSON() string {
 // support to enable this feature.
 type ContractRateCardRateListResponseCommitRate struct {
 	RateType   ContractRateCardRateListResponseCommitRateRateType `json:"rate_type,required"`
-	CreditType shared.CreditType                                  `json:"credit_type"`
+	CreditType shared.CreditTypeData                              `json:"credit_type"`
 	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated bool `json:"is_prorated"`
 	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
@@ -210,7 +210,7 @@ type ContractRateCardRateAddResponseData struct {
 	// This feature requires opt-in before it can be used. Please contact Metronome
 	// support to enable this feature.
 	CommitRate ContractRateCardRateAddResponseDataCommitRate `json:"commit_rate"`
-	CreditType shared.CreditType                             `json:"credit_type"`
+	CreditType shared.CreditTypeData                         `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]interface{} `json:"custom_rate"`
@@ -286,7 +286,7 @@ func (r ContractRateCardRateAddResponseDataRateType) IsKnown() bool {
 // support to enable this feature.
 type ContractRateCardRateAddResponseDataCommitRate struct {
 	RateType   ContractRateCardRateAddResponseDataCommitRateRateType `json:"rate_type,required"`
-	CreditType shared.CreditType                                     `json:"credit_type"`
+	CreditType shared.CreditTypeData                                 `json:"credit_type"`
 	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated bool `json:"is_prorated"`
 	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
@@ -484,7 +484,7 @@ func (r ContractRateCardRateAddParamsRateType) IsKnown() bool {
 // support to enable this feature.
 type ContractRateCardRateAddParamsCommitRate struct {
 	RateType   param.Field[ContractRateCardRateAddParamsCommitRateRateType] `json:"rate_type,required"`
-	CreditType param.Field[shared.CreditTypeParam]                          `json:"credit_type"`
+	CreditType param.Field[shared.CreditTypeDataParam]                      `json:"credit_type"`
 	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated param.Field[bool] `json:"is_prorated"`
 	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
@@ -603,7 +603,7 @@ func (r ContractRateCardRateAddManyParamsRatesRateType) IsKnown() bool {
 // support to enable this feature.
 type ContractRateCardRateAddManyParamsRatesCommitRate struct {
 	RateType   param.Field[ContractRateCardRateAddManyParamsRatesCommitRateRateType] `json:"rate_type,required"`
-	CreditType param.Field[shared.CreditTypeParam]                                   `json:"credit_type"`
+	CreditType param.Field[shared.CreditTypeDataParam]                               `json:"credit_type"`
 	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated param.Field[bool] `json:"is_prorated"`
 	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE

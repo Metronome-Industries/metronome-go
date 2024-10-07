@@ -1,7 +1,7 @@
 # Shared Params Types
 
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseUsageFilterParam">BaseUsageFilterParam</a>
-- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CreditTypeParam">CreditTypeParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CreditTypeDataParam">CreditTypeDataParam</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#EventTypeFilterParam">EventTypeFilterParam</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#IDParam">IDParam</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PropertyFilterParam">PropertyFilterParam</a>
@@ -13,7 +13,7 @@
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Commit">Commit</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ContractWithoutAmendments">ContractWithoutAmendments</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Credit">Credit</a>
-- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CreditType">CreditType</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CreditTypeData">CreditTypeData</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Discount">Discount</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#EventTypeFilter">EventTypeFilter</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ID">ID</a>
