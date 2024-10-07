@@ -340,7 +340,7 @@ func (r creditGrantListResponseBalanceJSON) RawJSON() string {
 type CreditGrantListResponseGrantAmount struct {
 	Amount float64 `json:"amount,required"`
 	// the credit type for the amount granted
-	CreditType shared.CreditType                      `json:"credit_type,required"`
+	CreditType shared.CreditTypeData                  `json:"credit_type,required"`
 	JSON       creditGrantListResponseGrantAmountJSON `json:"-"`
 }
 
@@ -365,7 +365,7 @@ func (r creditGrantListResponseGrantAmountJSON) RawJSON() string {
 type CreditGrantListResponsePaidAmount struct {
 	Amount float64 `json:"amount,required"`
 	// the credit type for the amount paid
-	CreditType shared.CreditType                     `json:"credit_type,required"`
+	CreditType shared.CreditTypeData                 `json:"credit_type,required"`
 	JSON       creditGrantListResponsePaidAmountJSON `json:"-"`
 }
 
@@ -502,7 +502,7 @@ func (r creditGrantListEntriesResponseDataJSON) RawJSON() string {
 }
 
 type CreditGrantListEntriesResponseDataLedger struct {
-	CreditType shared.CreditType `json:"credit_type,required"`
+	CreditType shared.CreditTypeData `json:"credit_type,required"`
 	// the effective balances at the end of the specified time window
 	EndingBalance   CreditGrantListEntriesResponseDataLedgersEndingBalance   `json:"ending_balance,required"`
 	Entries         []CreditLedgerEntry                                      `json:"entries,required"`

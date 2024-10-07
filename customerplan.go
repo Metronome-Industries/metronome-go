@@ -195,7 +195,7 @@ func (r customerPlanListResponseTrialInfoJSON) RawJSON() string {
 type CustomerPlanListResponseTrialInfoSpendingCap struct {
 	Amount          float64                                          `json:"amount,required"`
 	AmountRemaining float64                                          `json:"amount_remaining,required"`
-	CreditType      shared.CreditType                                `json:"credit_type,required"`
+	CreditType      shared.CreditTypeData                            `json:"credit_type,required"`
 	JSON            customerPlanListResponseTrialInfoSpendingCapJSON `json:"-"`
 }
 

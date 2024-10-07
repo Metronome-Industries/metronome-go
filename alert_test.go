@@ -11,7 +11,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestAlertNewWithOptionalParams(t *testing.T) {
@@ -65,7 +64,7 @@ func TestAlertNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAlertArchive(t *testing.T) {
+func TestAlertArchiveWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -78,9 +77,8 @@ func TestAlertArchive(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Alerts.Archive(context.TODO(), metronome.AlertArchiveParams{
-		ID: shared.IDParam{
-			ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
-		},
+		ID:                   metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
+		ReleaseUniquenessKey: metronome.F(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error

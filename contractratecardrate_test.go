@@ -73,7 +73,7 @@ func TestContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		StartingAt: metronome.F(time.Now()),
 		CommitRate: metronome.F(metronome.ContractRateCardRateAddParamsCommitRate{
 			RateType: metronome.F(metronome.ContractRateCardRateAddParamsCommitRateRateTypeFlat),
-			CreditType: metronome.F(shared.CreditTypeParam{
+			CreditType: metronome.F(shared.CreditTypeDataParam{
 				ID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Name: metronome.F("name"),
 			}),
@@ -145,7 +145,7 @@ func TestContractRateCardRateAddManyWithOptionalParams(t *testing.T) {
 			StartingAt: metronome.F(time.Now()),
 			CommitRate: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRate{
 				RateType: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
-				CreditType: metronome.F(shared.CreditTypeParam{
+				CreditType: metronome.F(shared.CreditTypeDataParam{
 					ID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 					Name: metronome.F("name"),
 				}),
@@ -194,7 +194,7 @@ func TestContractRateCardRateAddManyWithOptionalParams(t *testing.T) {
 			StartingAt: metronome.F(time.Now()),
 			CommitRate: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRate{
 				RateType: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
-				CreditType: metronome.F(shared.CreditTypeParam{
+				CreditType: metronome.F(shared.CreditTypeDataParam{
 					ID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 					Name: metronome.F("name"),
 				}),
