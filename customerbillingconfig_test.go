@@ -25,17 +25,14 @@ func TestCustomerBillingConfigNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.Customers.BillingConfig.New(
-		context.TODO(),
-		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.CustomerBillingConfigNewParamsBillingProviderTypeAwsMarketplace,
-		metronome.CustomerBillingConfigNewParams{
-			BillingProviderCustomerID: metronome.F("cus_AJ6y20bjkOOayM"),
-			AwsProductCode:            metronome.F("aws_product_code"),
-			AwsRegion:                 metronome.F(metronome.CustomerBillingConfigNewParamsAwsRegionAfSouth1),
-			StripeCollectionMethod:    metronome.F(metronome.CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically),
-		},
-	)
+	err := client.Customers.BillingConfig.New(context.TODO(), metronome.CustomerBillingConfigNewParams{
+		CustomerID:                metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		BillingProviderType:       metronome.F(metronome.CustomerBillingConfigNewParamsBillingProviderTypeAwsMarketplace),
+		BillingProviderCustomerID: metronome.F("cus_AJ6y20bjkOOayM"),
+		AwsProductCode:            metronome.F("aws_product_code"),
+		AwsRegion:                 metronome.F(metronome.CustomerBillingConfigNewParamsAwsRegionAfSouth1),
+		StripeCollectionMethod:    metronome.F(metronome.CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically),
+	})
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {
@@ -57,11 +54,10 @@ func TestCustomerBillingConfigGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Customers.BillingConfig.Get(
-		context.TODO(),
-		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.CustomerBillingConfigGetParamsBillingProviderTypeAwsMarketplace,
-	)
+	_, err := client.Customers.BillingConfig.Get(context.TODO(), metronome.CustomerBillingConfigGetParams{
+		CustomerID:          metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		BillingProviderType: metronome.F(metronome.CustomerBillingConfigGetParamsBillingProviderTypeAwsMarketplace),
+	})
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {
@@ -83,11 +79,10 @@ func TestCustomerBillingConfigDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.Customers.BillingConfig.Delete(
-		context.TODO(),
-		"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		metronome.CustomerBillingConfigDeleteParamsBillingProviderTypeAwsMarketplace,
-	)
+	err := client.Customers.BillingConfig.Delete(context.TODO(), metronome.CustomerBillingConfigDeleteParams{
+		CustomerID:          metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		BillingProviderType: metronome.F(metronome.CustomerBillingConfigDeleteParamsBillingProviderTypeAwsMarketplace),
+	})
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {

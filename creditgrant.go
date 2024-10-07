@@ -340,7 +340,7 @@ func (r creditGrantListResponseBalanceJSON) RawJSON() string {
 type CreditGrantListResponseGrantAmount struct {
 	Amount float64 `json:"amount,required"`
 	// the credit type for the amount granted
-	CreditType shared.CreditType                      `json:"credit_type,required"`
+	CreditType shared.CreditTypeData                  `json:"credit_type,required"`
 	JSON       creditGrantListResponseGrantAmountJSON `json:"-"`
 }
 
@@ -365,7 +365,7 @@ func (r creditGrantListResponseGrantAmountJSON) RawJSON() string {
 type CreditGrantListResponsePaidAmount struct {
 	Amount float64 `json:"amount,required"`
 	// the credit type for the amount paid
-	CreditType shared.CreditType                     `json:"credit_type,required"`
+	CreditType shared.CreditTypeData                 `json:"credit_type,required"`
 	JSON       creditGrantListResponsePaidAmountJSON `json:"-"`
 }
 
@@ -502,7 +502,7 @@ func (r creditGrantListEntriesResponseDataJSON) RawJSON() string {
 }
 
 type CreditGrantListEntriesResponseDataLedger struct {
-	CreditType shared.CreditType `json:"credit_type,required"`
+	CreditType shared.CreditTypeData `json:"credit_type,required"`
 	// the effective balances at the end of the specified time window
 	EndingBalance   CreditGrantListEntriesResponseDataLedgersEndingBalance   `json:"ending_balance,required"`
 	Entries         []CreditLedgerEntry                                      `json:"entries,required"`
@@ -620,8 +620,7 @@ func (r creditGrantVoidResponseJSON) RawJSON() string {
 type CreditGrantNewParams struct {
 	// the Metronome ID of the customer
 	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
-	// The credit grant will only apply to billing periods that end before this
-	// timestamp.
+	// The credit grant will only apply to usage or charges dated before this timestamp
 	ExpiresAt param.Field[time.Time] `json:"expires_at,required" format:"date-time"`
 	// the amount of credits granted
 	GrantAmount param.Field[CreditGrantNewParamsGrantAmount] `json:"grant_amount,required"`
@@ -633,8 +632,8 @@ type CreditGrantNewParams struct {
 	CreditGrantType param.Field[string]                         `json:"credit_grant_type"`
 	// Custom fields to attach to the credit grant.
 	CustomFields param.Field[map[string]string] `json:"custom_fields"`
-	// The credit grant will only apply to billing periods that end at or after this
-	// timestamp.
+	// The credit grant will only apply to usage or charges dated on or after this
+	// timestamp
 	EffectiveAt param.Field[time.Time] `json:"effective_at" format:"date-time"`
 	// The date to issue an invoice for the paid_amount.
 	InvoiceDate param.Field[time.Time] `json:"invoice_date" format:"date-time"`
@@ -660,8 +659,9 @@ func (r CreditGrantNewParams) MarshalJSON() (data []byte, err error) {
 
 // the amount of credits granted
 type CreditGrantNewParamsGrantAmount struct {
-	Amount       param.Field[float64] `json:"amount,required"`
-	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
+	Amount param.Field[float64] `json:"amount,required"`
+	// the ID of the pricing unit to be used
+	CreditTypeID param.Field[string] `json:"credit_type_id,required" format:"uuid"`
 }
 
 func (r CreditGrantNewParamsGrantAmount) MarshalJSON() (data []byte, err error) {
@@ -670,8 +670,9 @@ func (r CreditGrantNewParamsGrantAmount) MarshalJSON() (data []byte, err error) 
 
 // the amount paid for this credit grant
 type CreditGrantNewParamsPaidAmount struct {
-	Amount       param.Field[float64] `json:"amount,required"`
-	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
+	Amount param.Field[float64] `json:"amount,required"`
+	// the ID of the pricing unit to be used
+	CreditTypeID param.Field[string] `json:"credit_type_id,required" format:"uuid"`
 }
 
 func (r CreditGrantNewParamsPaidAmount) MarshalJSON() (data []byte, err error) {

@@ -230,6 +230,9 @@ const ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly = shared.C
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly
 
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
 
@@ -346,6 +349,12 @@ const CreditLedgerTypeCreditCredited = shared.CreditLedgerTypeCreditCredited
 
 // This is an alias to an internal value.
 const CreditLedgerTypeCreditManual = shared.CreditLedgerTypeCreditManual
+
+// This is an alias to an internal type.
+type CreditTypeData = shared.CreditTypeData
+
+// This is an alias to an internal type.
+type CreditTypeDataParam = shared.CreditTypeDataParam
 
 // This is an alias to an internal type.
 type Discount = shared.Discount
