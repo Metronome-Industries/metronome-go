@@ -76,7 +76,9 @@ func TestBillableMetricGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.BillableMetrics.Get(context.TODO(), "13117714-3f05-48e5-a6e9-a66093f13b4d")
+	_, err := client.BillableMetrics.Get(context.TODO(), metronome.BillableMetricGetParams{
+		BillableMetricID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+	})
 	if err != nil {
 		var apierr *metronome.Error
 		if errors.As(err, &apierr) {

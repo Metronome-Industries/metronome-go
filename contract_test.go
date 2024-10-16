@@ -801,6 +801,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		}),
 		UsageStatementSchedule: metronome.F(metronome.ContractNewParamsUsageStatementSchedule{
 			Frequency:                   metronome.F(metronome.ContractNewParamsUsageStatementScheduleFrequencyMonthly),
+			BillingAnchorDate:           metronome.F(time.Now()),
 			Day:                         metronome.F(metronome.ContractNewParamsUsageStatementScheduleDayFirstOfMonth),
 			InvoiceGenerationStartingAt: metronome.F(time.Now()),
 		}),

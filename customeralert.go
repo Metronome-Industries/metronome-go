@@ -104,8 +104,8 @@ type CustomerAlertAlert struct {
 	// An array of strings, representing a way to filter the credit grant this alert
 	// applies to, by looking at the credit_grant_type field on the credit grant. This
 	// field is only defined for CreditPercentage and CreditBalance alerts
-	CreditGrantTypeFilters []string          `json:"credit_grant_type_filters"`
-	CreditType             shared.CreditType `json:"credit_type,nullable"`
+	CreditGrantTypeFilters []string              `json:"credit_grant_type_filters"`
+	CreditType             shared.CreditTypeData `json:"credit_type,nullable"`
 	// A list of custom field filters for alert types that support advanced filtering
 	CustomFieldFilters []CustomerAlertAlertCustomFieldFilter `json:"custom_field_filters"`
 	// Scopes alert evaluation to a specific presentation group key on individual line

@@ -35,40 +35,40 @@ func NewCustomerBillingConfigService(opts ...option.RequestOption) (r *CustomerB
 }
 
 // Set the billing configuration for a given customer.
-func (r *CustomerBillingConfigService) New(ctx context.Context, customerID string, billingProviderType CustomerBillingConfigNewParamsBillingProviderType, body CustomerBillingConfigNewParams, opts ...option.RequestOption) (err error) {
+func (r *CustomerBillingConfigService) New(ctx context.Context, params CustomerBillingConfigNewParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if customerID == "" {
+	if params.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/billing-config/%v", customerID, billingProviderType)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	path := fmt.Sprintf("customers/%s/billing-config/%v", params.CustomerID, params.BillingProviderType)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return
 }
 
 // Fetch the billing configuration for the given customer.
-func (r *CustomerBillingConfigService) Get(ctx context.Context, customerID string, billingProviderType CustomerBillingConfigGetParamsBillingProviderType, opts ...option.RequestOption) (res *CustomerBillingConfigGetResponse, err error) {
+func (r *CustomerBillingConfigService) Get(ctx context.Context, query CustomerBillingConfigGetParams, opts ...option.RequestOption) (res *CustomerBillingConfigGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if customerID == "" {
+	if query.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/billing-config/%v", customerID, billingProviderType)
+	path := fmt.Sprintf("customers/%s/billing-config/%v", query.CustomerID, query.BillingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Delete the billing configuration for a given customer. Note: this is unsupported
 // for Azure and AWS Marketplace customers.
-func (r *CustomerBillingConfigService) Delete(ctx context.Context, customerID string, billingProviderType CustomerBillingConfigDeleteParamsBillingProviderType, opts ...option.RequestOption) (err error) {
+func (r *CustomerBillingConfigService) Delete(ctx context.Context, body CustomerBillingConfigDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if customerID == "" {
+	if body.CustomerID.Value == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/billing-config/%v", customerID, billingProviderType)
+	path := fmt.Sprintf("customers/%s/billing-config/%v", body.CustomerID, body.BillingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
@@ -211,6 +211,8 @@ func (r CustomerBillingConfigGetResponseDataStripeCollectionMethod) IsKnown() bo
 }
 
 type CustomerBillingConfigNewParams struct {
+	CustomerID          param.Field[string]                                            `path:"customer_id,required" format:"uuid"`
+	BillingProviderType param.Field[CustomerBillingConfigNewParamsBillingProviderType] `path:"billing_provider_type,required"`
 	// The customer ID in the billing provider's system. For Azure, this is the
 	// subscription ID.
 	BillingProviderCustomerID param.Field[string]                                               `json:"billing_provider_customer_id,required"`
@@ -297,6 +299,11 @@ func (r CustomerBillingConfigNewParamsStripeCollectionMethod) IsKnown() bool {
 	return false
 }
 
+type CustomerBillingConfigGetParams struct {
+	CustomerID          param.Field[string]                                            `path:"customer_id,required" format:"uuid"`
+	BillingProviderType param.Field[CustomerBillingConfigGetParamsBillingProviderType] `path:"billing_provider_type,required"`
+}
+
 type CustomerBillingConfigGetParamsBillingProviderType string
 
 const (
@@ -316,6 +323,11 @@ func (r CustomerBillingConfigGetParamsBillingProviderType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type CustomerBillingConfigDeleteParams struct {
+	CustomerID          param.Field[string]                                               `path:"customer_id,required" format:"uuid"`
+	BillingProviderType param.Field[CustomerBillingConfigDeleteParamsBillingProviderType] `path:"billing_provider_type,required"`
 }
 
 type CustomerBillingConfigDeleteParamsBillingProviderType string

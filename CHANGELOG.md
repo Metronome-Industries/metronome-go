@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.1.0-beta.4 (2024-10-16)
+
+Full Changelog: [v0.1.0-beta.3...v0.1.0-beta.4](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.3...v0.1.0-beta.4)
+
+### Features
+
+* **api:** api update ([#35](https://github.com/Metronome-Industries/metronome-go/issues/35)) ([10d6376](https://github.com/Metronome-Industries/metronome-go/commit/10d637675b897ac77f592646ac7a4d2dada9da70))
+* **api:** api update ([#36](https://github.com/Metronome-Industries/metronome-go/issues/36)) ([3acd4c0](https://github.com/Metronome-Industries/metronome-go/commit/3acd4c0a30ae31634e50ef237d7a4b80237f6183))
+* **api:** OpenAPI spec update via Stainless API ([#26](https://github.com/Metronome-Industries/metronome-go/issues/26)) ([541211f](https://github.com/Metronome-Industries/metronome-go/commit/541211f4f43fab71ae4dc87ce001e90a7ca2284e))
+* **api:** OpenAPI spec update via Stainless API ([#30](https://github.com/Metronome-Industries/metronome-go/issues/30)) ([f0c2c67](https://github.com/Metronome-Industries/metronome-go/commit/f0c2c6789d1efd54a1b0c1f29c0d89d4c1bbaf28))
+* **api:** OpenAPI spec update via Stainless API ([#33](https://github.com/Metronome-Industries/metronome-go/issues/33)) ([eb465ba](https://github.com/Metronome-Industries/metronome-go/commit/eb465ba57ea0a060927d29d3b3c73143e649b66b))
+
+
+### Chores
+
+* **internal:** codegen related update ([#27](https://github.com/Metronome-Industries/metronome-go/issues/27)) ([e520581](https://github.com/Metronome-Industries/metronome-go/commit/e520581c40181d2b0c0c5d1936b85553bdff8673))
+* **internal:** codegen related update ([#31](https://github.com/Metronome-Industries/metronome-go/issues/31)) ([48db3fc](https://github.com/Metronome-Industries/metronome-go/commit/48db3fc98901fc9fa967fffaa2d891175e5ef6cf))
+* **internal:** codegen related update ([#32](https://github.com/Metronome-Industries/metronome-go/issues/32)) ([799e8c3](https://github.com/Metronome-Industries/metronome-go/commit/799e8c379cfee51a748fd2b1ff6276088ca56413))
+
 ## 0.1.0-beta.3 (2024-09-20)
 
 Full Changelog: [v0.1.0-beta.2...v0.1.0-beta.3](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.2...v0.1.0-beta.3)
