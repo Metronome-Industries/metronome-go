@@ -73,6 +73,7 @@ type Commit struct {
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority         float64              `json:"priority"`
+	RateType         CommitRateType       `json:"rate_type"`
 	RolledOverFrom   CommitRolledOverFrom `json:"rolled_over_from"`
 	RolloverFraction float64              `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
@@ -99,6 +100,7 @@ type commitJSON struct {
 	Name                    apijson.Field
 	NetsuiteSalesOrderID    apijson.Field
 	Priority                apijson.Field
+	RateType                apijson.Field
 	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
@@ -927,6 +929,21 @@ func (r CommitLedgerType) IsKnown() bool {
 	return false
 }
 
+type CommitRateType string
+
+const (
+	CommitRateTypeCommitRate CommitRateType = "COMMIT_RATE"
+	CommitRateTypeListRate   CommitRateType = "LIST_RATE"
+)
+
+func (r CommitRateType) IsKnown() bool {
+	switch r {
+	case CommitRateTypeCommitRate, CommitRateTypeListRate:
+		return true
+	}
+	return false
+}
+
 type CommitRolledOverFrom struct {
 	CommitID   string                   `json:"commit_id,required" format:"uuid"`
 	ContractID string                   `json:"contract_id,required" format:"uuid"`
@@ -1056,16 +1073,19 @@ func (r ContractWithoutAmendmentsTransitionsType) IsKnown() bool {
 }
 
 type ContractWithoutAmendmentsUsageStatementSchedule struct {
-	Frequency ContractWithoutAmendmentsUsageStatementScheduleFrequency `json:"frequency,required"`
-	JSON      contractWithoutAmendmentsUsageStatementScheduleJSON      `json:"-"`
+	// Contract usage statements follow a selected cadence based on this date.
+	BillingAnchorDate time.Time                                                `json:"billing_anchor_date,required" format:"date-time"`
+	Frequency         ContractWithoutAmendmentsUsageStatementScheduleFrequency `json:"frequency,required"`
+	JSON              contractWithoutAmendmentsUsageStatementScheduleJSON      `json:"-"`
 }
 
 // contractWithoutAmendmentsUsageStatementScheduleJSON contains the JSON metadata
 // for the struct [ContractWithoutAmendmentsUsageStatementSchedule]
 type contractWithoutAmendmentsUsageStatementScheduleJSON struct {
-	Frequency   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	BillingAnchorDate apijson.Field
+	Frequency         apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
 func (r *ContractWithoutAmendmentsUsageStatementSchedule) UnmarshalJSON(data []byte) (err error) {
@@ -1081,11 +1101,12 @@ type ContractWithoutAmendmentsUsageStatementScheduleFrequency string
 const (
 	ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly   ContractWithoutAmendmentsUsageStatementScheduleFrequency = "MONTHLY"
 	ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly ContractWithoutAmendmentsUsageStatementScheduleFrequency = "QUARTERLY"
+	ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual    ContractWithoutAmendmentsUsageStatementScheduleFrequency = "ANNUAL"
 )
 
 func (r ContractWithoutAmendmentsUsageStatementScheduleFrequency) IsKnown() bool {
 	switch r {
-	case ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly:
+	case ContractWithoutAmendmentsUsageStatementScheduleFrequencyMonthly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly, ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual:
 		return true
 	}
 	return false
@@ -1690,6 +1711,28 @@ func (r CreditLedgerType) IsKnown() bool {
 	return false
 }
 
+type CreditTypeData struct {
+	ID   string             `json:"id,required" format:"uuid"`
+	Name string             `json:"name,required"`
+	JSON creditTypeDataJSON `json:"-"`
+}
+
+// creditTypeDataJSON contains the JSON metadata for the struct [CreditTypeData]
+type creditTypeDataJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditTypeData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditTypeDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type Discount struct {
 	ID       string              `json:"id,required" format:"uuid"`
 	Product  DiscountProduct     `json:"product,required"`
@@ -1815,12 +1858,12 @@ func (r IDParam) MarshalJSON() (data []byte, err error) {
 }
 
 type Override struct {
-	ID                    string     `json:"id,required" format:"uuid"`
-	StartingAt            time.Time  `json:"starting_at,required" format:"date-time"`
-	ApplicableProductTags []string   `json:"applicable_product_tags"`
-	CreditType            CreditType `json:"credit_type"`
-	EndingBefore          time.Time  `json:"ending_before" format:"date-time"`
-	Entitled              bool       `json:"entitled"`
+	ID                    string         `json:"id,required" format:"uuid"`
+	StartingAt            time.Time      `json:"starting_at,required" format:"date-time"`
+	ApplicableProductTags []string       `json:"applicable_product_tags"`
+	CreditType            CreditTypeData `json:"credit_type"`
+	EndingBefore          time.Time      `json:"ending_before" format:"date-time"`
+	Entitled              bool           `json:"entitled"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated         bool                        `json:"is_prorated"`
 	Multiplier         float64                     `json:"multiplier"`
@@ -1929,7 +1972,7 @@ func (r overrideOverrideTierJSON) RawJSON() string {
 
 type OverrideOverwriteRate struct {
 	RateType   OverrideOverwriteRateRateType `json:"rate_type,required"`
-	CreditType CreditType                    `json:"credit_type"`
+	CreditType CreditTypeData                `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]interface{} `json:"custom_rate"`
@@ -2145,8 +2188,8 @@ func (r proServiceJSON) RawJSON() string {
 }
 
 type Rate struct {
-	RateType   RateRateType `json:"rate_type,required"`
-	CreditType CreditType   `json:"credit_type"`
+	RateType   RateRateType   `json:"rate_type,required"`
+	CreditType CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]interface{} `json:"custom_rate"`
@@ -2267,7 +2310,7 @@ func (r scheduledChargeProductJSON) RawJSON() string {
 
 type ScheduleDuration struct {
 	ScheduleItems []ScheduleDurationScheduleItem `json:"schedule_items,required"`
-	CreditType    CreditType                     `json:"credit_type"`
+	CreditType    CreditTypeData                 `json:"credit_type"`
 	JSON          scheduleDurationJSON           `json:"-"`
 }
 
@@ -2316,7 +2359,7 @@ func (r scheduleDurationScheduleItemJSON) RawJSON() string {
 }
 
 type SchedulePointInTime struct {
-	CreditType    CreditType                        `json:"credit_type"`
+	CreditType    CreditTypeData                    `json:"credit_type"`
 	ScheduleItems []SchedulePointInTimeScheduleItem `json:"schedule_items"`
 	JSON          schedulePointInTimeJSON           `json:"-"`
 }

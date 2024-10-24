@@ -10,10 +10,10 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/pagination"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -36,7 +36,7 @@ func NewContractRateCardRateService(opts ...option.RequestOption) (r *ContractRa
 	return
 }
 
-// Get rate card rates for a specific time.
+// Get all rates for a rate card at a point in time
 func (r *ContractRateCardRateService) List(ctx context.Context, params ContractRateCardRateListParams, opts ...option.RequestOption) (res *pagination.CursorPage[ContractRateCardRateListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -54,7 +54,7 @@ func (r *ContractRateCardRateService) List(ctx context.Context, params ContractR
 	return res, nil
 }
 
-// Get rate card rates for a specific time.
+// Get all rates for a rate card at a point in time
 func (r *ContractRateCardRateService) ListAutoPaging(ctx context.Context, params ContractRateCardRateListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[ContractRateCardRateListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -111,7 +111,7 @@ func (r contractRateCardRateListResponseJSON) RawJSON() string {
 }
 
 type ContractRateCardRateAddResponse struct {
-	Data shared.Rate                         `json:"data,required"`
+	Data ContractRateCardRateAddResponseData `json:"data,required"`
 	JSON contractRateCardRateAddResponseJSON `json:"-"`
 }
 
@@ -129,6 +129,78 @@ func (r *ContractRateCardRateAddResponse) UnmarshalJSON(data []byte) (err error)
 
 func (r contractRateCardRateAddResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type ContractRateCardRateAddResponseData struct {
+	RateType   ContractRateCardRateAddResponseDataRateType `json:"rate_type,required"`
+	CreditType shared.CreditTypeData                       `json:"credit_type"`
+	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+	// processors.
+	CustomRate map[string]interface{} `json:"custom_rate"`
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
+	IsProrated bool `json:"is_prorated"`
+	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+	Price float64 `json:"price"`
+	// if pricing groups are used, this will contain the values used to calculate the
+	// price
+	PricingGroupValues map[string]string `json:"pricing_group_values"`
+	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+	Quantity float64 `json:"quantity"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.Tier `json:"tiers"`
+	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
+	// using list prices rather than the standard rates for this product on the
+	// contract.
+	UseListPrices bool                                    `json:"use_list_prices"`
+	JSON          contractRateCardRateAddResponseDataJSON `json:"-"`
+}
+
+// contractRateCardRateAddResponseDataJSON contains the JSON metadata for the
+// struct [ContractRateCardRateAddResponseData]
+type contractRateCardRateAddResponseDataJSON struct {
+	RateType           apijson.Field
+	CreditType         apijson.Field
+	CustomRate         apijson.Field
+	IsProrated         apijson.Field
+	Price              apijson.Field
+	PricingGroupValues apijson.Field
+	Quantity           apijson.Field
+	Tiers              apijson.Field
+	UseListPrices      apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *ContractRateCardRateAddResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractRateCardRateAddResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractRateCardRateAddResponseDataRateType string
+
+const (
+	ContractRateCardRateAddResponseDataRateTypeFlat         ContractRateCardRateAddResponseDataRateType = "FLAT"
+	ContractRateCardRateAddResponseDataRateTypeFlat         ContractRateCardRateAddResponseDataRateType = "flat"
+	ContractRateCardRateAddResponseDataRateTypePercentage   ContractRateCardRateAddResponseDataRateType = "PERCENTAGE"
+	ContractRateCardRateAddResponseDataRateTypePercentage   ContractRateCardRateAddResponseDataRateType = "percentage"
+	ContractRateCardRateAddResponseDataRateTypeSubscription ContractRateCardRateAddResponseDataRateType = "SUBSCRIPTION"
+	ContractRateCardRateAddResponseDataRateTypeSubscription ContractRateCardRateAddResponseDataRateType = "subscription"
+	ContractRateCardRateAddResponseDataRateTypeCustom       ContractRateCardRateAddResponseDataRateType = "CUSTOM"
+	ContractRateCardRateAddResponseDataRateTypeCustom       ContractRateCardRateAddResponseDataRateType = "custom"
+	ContractRateCardRateAddResponseDataRateTypeTiered       ContractRateCardRateAddResponseDataRateType = "TIERED"
+	ContractRateCardRateAddResponseDataRateTypeTiered       ContractRateCardRateAddResponseDataRateType = "tiered"
+)
+
+func (r ContractRateCardRateAddResponseDataRateType) IsKnown() bool {
+	switch r {
+	case ContractRateCardRateAddResponseDataRateTypeFlat, ContractRateCardRateAddResponseDataRateTypeFlat, ContractRateCardRateAddResponseDataRateTypePercentage, ContractRateCardRateAddResponseDataRateTypePercentage, ContractRateCardRateAddResponseDataRateTypeSubscription, ContractRateCardRateAddResponseDataRateTypeSubscription, ContractRateCardRateAddResponseDataRateTypeCustom, ContractRateCardRateAddResponseDataRateTypeCustom, ContractRateCardRateAddResponseDataRateTypeTiered, ContractRateCardRateAddResponseDataRateTypeTiered:
+		return true
+	}
+	return false
 }
 
 type ContractRateCardRateAddManyResponse struct {
@@ -207,9 +279,9 @@ type ContractRateCardRateAddParams struct {
 	RateType   param.Field[ContractRateCardRateAddParamsRateType] `json:"rate_type,required"`
 	// inclusive effective date
 	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
-	// "The Metronome ID of the credit type to associate with price, defaults to USD
+	// The Metronome ID of the credit type to associate with price, defaults to USD
 	// (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
-	// rates use the credit type of associated rates."
+	// rates use the credit type of associated rates.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
@@ -258,8 +330,8 @@ func (r ContractRateCardRateAddParamsRateType) IsKnown() bool {
 }
 
 type ContractRateCardRateAddManyParams struct {
-	RateCardID param.Field[string]                                  `json:"rate_card_id" format:"uuid"`
-	Rates      param.Field[[]ContractRateCardRateAddManyParamsRate] `json:"rates"`
+	RateCardID param.Field[string]                                  `json:"rate_card_id,required" format:"uuid"`
+	Rates      param.Field[[]ContractRateCardRateAddManyParamsRate] `json:"rates,required"`
 }
 
 func (r ContractRateCardRateAddManyParams) MarshalJSON() (data []byte, err error) {

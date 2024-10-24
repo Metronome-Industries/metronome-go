@@ -41,14 +41,11 @@ func TestDashboardGetEmbeddableURLWithOptionalParams(t *testing.T) {
 			Value: metronome.F("#ff0000"),
 		}}),
 		DashboardOptions: metronome.F([]metronome.DashboardGetEmbeddableURLParamsDashboardOption{{
-			Key:   metronome.F("key"),
-			Value: metronome.F("value"),
+			Key:   metronome.F("show_zero_usage_line_items"),
+			Value: metronome.F("false"),
 		}, {
-			Key:   metronome.F("key"),
-			Value: metronome.F("value"),
-		}, {
-			Key:   metronome.F("key"),
-			Value: metronome.F("value"),
+			Key:   metronome.F("hide_voided_invoices"),
+			Value: metronome.F("true"),
 		}}),
 	})
 	if err != nil {

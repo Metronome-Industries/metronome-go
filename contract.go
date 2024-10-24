@@ -116,7 +116,7 @@ func (r *ContractService) GetRateSchedule(ctx context.Context, params ContractGe
 	return
 }
 
-// Create a new, scheduled invoice for Professional Services terms on a contract.
+// Create a new scheduled invoice for Professional Services terms on a contract.
 // This endpoint's availability is dependent on your client's configuration.
 func (r *ContractService) ScheduleProServicesInvoice(ctx context.Context, body ContractScheduleProServicesInvoiceParams, opts ...option.RequestOption) (res *ContractScheduleProServicesInvoiceResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -715,9 +715,10 @@ type ContractListBalancesResponseData struct {
 	ID string `json:"id,required" format:"uuid"`
 	// This field can have the runtime type of [shared.CommitContract],
 	// [shared.CreditContract].
-	Contract interface{}                          `json:"contract,required"`
-	Type     ContractListBalancesResponseDataType `json:"type,required"`
-	Name     string                               `json:"name"`
+	Contract interface{}                              `json:"contract,required"`
+	Type     ContractListBalancesResponseDataType     `json:"type,required"`
+	RateType ContractListBalancesResponseDataRateType `json:"rate_type"`
+	Name     string                                   `json:"name"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority float64 `json:"priority"`
@@ -762,6 +763,7 @@ type contractListBalancesResponseDataJSON struct {
 	ID                      apijson.Field
 	Contract                apijson.Field
 	Type                    apijson.Field
+	RateType                apijson.Field
 	Name                    apijson.Field
 	Priority                apijson.Field
 	Product                 apijson.Field
@@ -835,6 +837,21 @@ const (
 func (r ContractListBalancesResponseDataType) IsKnown() bool {
 	switch r {
 	case ContractListBalancesResponseDataTypePrepaid, ContractListBalancesResponseDataTypePostpaid, ContractListBalancesResponseDataTypeCredit:
+		return true
+	}
+	return false
+}
+
+type ContractListBalancesResponseDataRateType string
+
+const (
+	ContractListBalancesResponseDataRateTypeCommitRate ContractListBalancesResponseDataRateType = "COMMIT_RATE"
+	ContractListBalancesResponseDataRateTypeListRate   ContractListBalancesResponseDataRateType = "LIST_RATE"
+)
+
+func (r ContractListBalancesResponseDataRateType) IsKnown() bool {
+	switch r {
+	case ContractListBalancesResponseDataRateTypeCommitRate, ContractListBalancesResponseDataRateTypeListRate:
 		return true
 	}
 	return false
@@ -1071,7 +1088,8 @@ type ContractNewParamsCommit struct {
 	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
-	Priority param.Field[float64] `json:"priority"`
+	Priority param.Field[float64]                          `json:"priority"`
+	RateType param.Field[ContractNewParamsCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
 }
@@ -1218,6 +1236,23 @@ type ContractNewParamsCommitsInvoiceScheduleScheduleItem struct {
 
 func (r ContractNewParamsCommitsInvoiceScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsCommitsRateType string
+
+const (
+	ContractNewParamsCommitsRateTypeCommitRate ContractNewParamsCommitsRateType = "COMMIT_RATE"
+	ContractNewParamsCommitsRateTypeCommitRate ContractNewParamsCommitsRateType = "commit_rate"
+	ContractNewParamsCommitsRateTypeListRate   ContractNewParamsCommitsRateType = "LIST_RATE"
+	ContractNewParamsCommitsRateTypeListRate   ContractNewParamsCommitsRateType = "list_rate"
+)
+
+func (r ContractNewParamsCommitsRateType) IsKnown() bool {
+	switch r {
+	case ContractNewParamsCommitsRateTypeCommitRate, ContractNewParamsCommitsRateTypeCommitRate, ContractNewParamsCommitsRateTypeListRate, ContractNewParamsCommitsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type ContractNewParamsCredit struct {
@@ -1759,6 +1794,12 @@ func (r ContractNewParamsTransitionFutureInvoiceBehaviorTrueup) IsKnown() bool {
 
 type ContractNewParamsUsageStatementSchedule struct {
 	Frequency param.Field[ContractNewParamsUsageStatementScheduleFrequency] `json:"frequency,required"`
+	// Required when using CUSTOM_DATE. This option lets you set a historical billing
+	// anchor date, aligning future billing cycles with a chosen cadence. For example,
+	// if a contract starts on 2024-09-15 and you set the anchor date to 2024-09-10
+	// with a MONTHLY frequency, the first usage statement will cover 09-15 to 10-10.
+	// Subsequent statements will follow the 10th of each month.
+	BillingAnchorDate param.Field[time.Time] `json:"billing_anchor_date" format:"date-time"`
 	// If not provided, defaults to the first day of the month.
 	Day param.Field[ContractNewParamsUsageStatementScheduleDay] `json:"day"`
 	// The date Metronome should start generating usage invoices. If unspecified,
@@ -1777,11 +1818,12 @@ type ContractNewParamsUsageStatementScheduleFrequency string
 const (
 	ContractNewParamsUsageStatementScheduleFrequencyMonthly   ContractNewParamsUsageStatementScheduleFrequency = "MONTHLY"
 	ContractNewParamsUsageStatementScheduleFrequencyQuarterly ContractNewParamsUsageStatementScheduleFrequency = "QUARTERLY"
+	ContractNewParamsUsageStatementScheduleFrequencyAnnual    ContractNewParamsUsageStatementScheduleFrequency = "ANNUAL"
 )
 
 func (r ContractNewParamsUsageStatementScheduleFrequency) IsKnown() bool {
 	switch r {
-	case ContractNewParamsUsageStatementScheduleFrequencyMonthly, ContractNewParamsUsageStatementScheduleFrequencyQuarterly:
+	case ContractNewParamsUsageStatementScheduleFrequencyMonthly, ContractNewParamsUsageStatementScheduleFrequencyQuarterly, ContractNewParamsUsageStatementScheduleFrequencyAnnual:
 		return true
 	}
 	return false
@@ -1793,11 +1835,13 @@ type ContractNewParamsUsageStatementScheduleDay string
 const (
 	ContractNewParamsUsageStatementScheduleDayFirstOfMonth  ContractNewParamsUsageStatementScheduleDay = "FIRST_OF_MONTH"
 	ContractNewParamsUsageStatementScheduleDayContractStart ContractNewParamsUsageStatementScheduleDay = "CONTRACT_START"
+	ContractNewParamsUsageStatementScheduleDayCustomDate    ContractNewParamsUsageStatementScheduleDay = "CUSTOM_DATE"
+	ContractNewParamsUsageStatementScheduleDayCustomDate    ContractNewParamsUsageStatementScheduleDay = "custom_date"
 )
 
 func (r ContractNewParamsUsageStatementScheduleDay) IsKnown() bool {
 	switch r {
-	case ContractNewParamsUsageStatementScheduleDayFirstOfMonth, ContractNewParamsUsageStatementScheduleDayContractStart:
+	case ContractNewParamsUsageStatementScheduleDayFirstOfMonth, ContractNewParamsUsageStatementScheduleDayContractStart, ContractNewParamsUsageStatementScheduleDayCustomDate, ContractNewParamsUsageStatementScheduleDayCustomDate:
 		return true
 	}
 	return false
@@ -1917,7 +1961,8 @@ type ContractAmendParamsCommit struct {
 	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
-	Priority param.Field[float64] `json:"priority"`
+	Priority param.Field[float64]                            `json:"priority"`
+	RateType param.Field[ContractAmendParamsCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
 }
@@ -2064,6 +2109,23 @@ type ContractAmendParamsCommitsInvoiceScheduleScheduleItem struct {
 
 func (r ContractAmendParamsCommitsInvoiceScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractAmendParamsCommitsRateType string
+
+const (
+	ContractAmendParamsCommitsRateTypeCommitRate ContractAmendParamsCommitsRateType = "COMMIT_RATE"
+	ContractAmendParamsCommitsRateTypeCommitRate ContractAmendParamsCommitsRateType = "commit_rate"
+	ContractAmendParamsCommitsRateTypeListRate   ContractAmendParamsCommitsRateType = "LIST_RATE"
+	ContractAmendParamsCommitsRateTypeListRate   ContractAmendParamsCommitsRateType = "list_rate"
+)
+
+func (r ContractAmendParamsCommitsRateType) IsKnown() bool {
+	switch r {
+	case ContractAmendParamsCommitsRateTypeCommitRate, ContractAmendParamsCommitsRateTypeCommitRate, ContractAmendParamsCommitsRateTypeListRate, ContractAmendParamsCommitsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type ContractAmendParamsCredit struct {

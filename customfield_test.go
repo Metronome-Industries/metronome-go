@@ -79,7 +79,7 @@ func TestCustomFieldListKeysWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CustomFields.ListKeys(context.TODO(), metronome.CustomFieldListKeysParams{
 		NextPage: metronome.F("next_page"),
-		Entities: metronome.F([]metronome.CustomFieldListKeysParamsEntity{metronome.CustomFieldListKeysParamsEntityAlert, metronome.CustomFieldListKeysParamsEntityBillableMetric}),
+		Entities: metronome.F([]metronome.CustomFieldListKeysParamsEntity{metronome.CustomFieldListKeysParamsEntityAlert}),
 	})
 	if err != nil {
 		var apierr *metronome.Error

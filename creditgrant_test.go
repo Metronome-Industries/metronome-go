@@ -189,7 +189,7 @@ func TestCreditGrantVoidWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.CreditGrants.Void(context.TODO(), metronome.CreditGrantVoidParams{
-		ID:                        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		ID:                        metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
 		ReleaseUniquenessKey:      metronome.F(true),
 		VoidCreditPurchaseInvoice: metronome.F(true),
 	})

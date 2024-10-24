@@ -10,10 +10,10 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/pagination"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -92,7 +92,8 @@ func (r *ContractRateCardService) ListAutoPaging(ctx context.Context, params Con
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Get a specific rate schedule including all rate card entries
+// Get all rates for a rate card from starting_at (either in perpetuity or until
+// ending_before, if provided)
 func (r *ContractRateCardService) GetRateSchedule(ctx context.Context, params ContractRateCardGetRateScheduleParams, opts ...option.RequestOption) (res *ContractRateCardGetRateScheduleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "contract-pricing/rate-cards/getRateSchedule"
@@ -152,7 +153,7 @@ type ContractRateCardGetResponseData struct {
 	CreditTypeConversions []ContractRateCardGetResponseDataCreditTypeConversion   `json:"credit_type_conversions"`
 	CustomFields          map[string]string                                       `json:"custom_fields"`
 	Description           string                                                  `json:"description"`
-	FiatCreditType        shared.CreditType                                       `json:"fiat_credit_type"`
+	FiatCreditType        shared.CreditTypeData                                   `json:"fiat_credit_type"`
 	JSON                  contractRateCardGetResponseDataJSON                     `json:"-"`
 }
 
@@ -208,7 +209,7 @@ type ContractRateCardGetResponseDataRateCardEntriesCurrent struct {
 	ID           string                                                        `json:"id" format:"uuid"`
 	CreatedAt    time.Time                                                     `json:"created_at" format:"date-time"`
 	CreatedBy    string                                                        `json:"created_by"`
-	CreditType   shared.CreditType                                             `json:"credit_type"`
+	CreditType   shared.CreditTypeData                                         `json:"credit_type"`
 	CustomRate   map[string]interface{}                                        `json:"custom_rate"`
 	EndingBefore time.Time                                                     `json:"ending_before" format:"date-time"`
 	Entitled     bool                                                          `json:"entitled"`
@@ -273,7 +274,7 @@ type ContractRateCardGetResponseDataRateCardEntriesUpdate struct {
 	ProductID    string                                                        `json:"product_id,required" format:"uuid"`
 	RateType     ContractRateCardGetResponseDataRateCardEntriesUpdatesRateType `json:"rate_type,required"`
 	StartingAt   time.Time                                                     `json:"starting_at,required" format:"date-time"`
-	CreditType   shared.CreditType                                             `json:"credit_type"`
+	CreditType   shared.CreditTypeData                                         `json:"credit_type"`
 	CustomRate   map[string]interface{}                                        `json:"custom_rate"`
 	EndingBefore time.Time                                                     `json:"ending_before" format:"date-time"`
 	IsProrated   bool                                                          `json:"is_prorated"`
@@ -356,7 +357,7 @@ func (r contractRateCardGetResponseDataAliasJSON) RawJSON() string {
 }
 
 type ContractRateCardGetResponseDataCreditTypeConversion struct {
-	CustomCreditType    shared.CreditType                                       `json:"custom_credit_type,required"`
+	CustomCreditType    shared.CreditTypeData                                   `json:"custom_credit_type,required"`
 	FiatPerCustomCredit string                                                  `json:"fiat_per_custom_credit,required"`
 	JSON                contractRateCardGetResponseDataCreditTypeConversionJSON `json:"-"`
 }
@@ -409,7 +410,7 @@ type ContractRateCardListResponse struct {
 	CreditTypeConversions []ContractRateCardListResponseCreditTypeConversion   `json:"credit_type_conversions"`
 	CustomFields          map[string]string                                    `json:"custom_fields"`
 	Description           string                                               `json:"description"`
-	FiatCreditType        shared.CreditType                                    `json:"fiat_credit_type"`
+	FiatCreditType        shared.CreditTypeData                                `json:"fiat_credit_type"`
 	JSON                  contractRateCardListResponseJSON                     `json:"-"`
 }
 
@@ -465,7 +466,7 @@ type ContractRateCardListResponseRateCardEntriesCurrent struct {
 	ID           string                                                     `json:"id" format:"uuid"`
 	CreatedAt    time.Time                                                  `json:"created_at" format:"date-time"`
 	CreatedBy    string                                                     `json:"created_by"`
-	CreditType   shared.CreditType                                          `json:"credit_type"`
+	CreditType   shared.CreditTypeData                                      `json:"credit_type"`
 	CustomRate   map[string]interface{}                                     `json:"custom_rate"`
 	EndingBefore time.Time                                                  `json:"ending_before" format:"date-time"`
 	Entitled     bool                                                       `json:"entitled"`
@@ -530,7 +531,7 @@ type ContractRateCardListResponseRateCardEntriesUpdate struct {
 	ProductID    string                                                     `json:"product_id,required" format:"uuid"`
 	RateType     ContractRateCardListResponseRateCardEntriesUpdatesRateType `json:"rate_type,required"`
 	StartingAt   time.Time                                                  `json:"starting_at,required" format:"date-time"`
-	CreditType   shared.CreditType                                          `json:"credit_type"`
+	CreditType   shared.CreditTypeData                                      `json:"credit_type"`
 	CustomRate   map[string]interface{}                                     `json:"custom_rate"`
 	EndingBefore time.Time                                                  `json:"ending_before" format:"date-time"`
 	IsProrated   bool                                                       `json:"is_prorated"`
@@ -613,7 +614,7 @@ func (r contractRateCardListResponseAliasJSON) RawJSON() string {
 }
 
 type ContractRateCardListResponseCreditTypeConversion struct {
-	CustomCreditType    shared.CreditType                                    `json:"custom_credit_type,required"`
+	CustomCreditType    shared.CreditTypeData                                `json:"custom_credit_type,required"`
 	FiatPerCustomCredit string                                               `json:"fiat_per_custom_credit,required"`
 	JSON                contractRateCardListResponseCreditTypeConversionJSON `json:"-"`
 }
@@ -704,8 +705,8 @@ type ContractRateCardNewParams struct {
 	CreditTypeConversions param.Field[[]ContractRateCardNewParamsCreditTypeConversion] `json:"credit_type_conversions"`
 	CustomFields          param.Field[map[string]string]                               `json:"custom_fields"`
 	Description           param.Field[string]                                          `json:"description"`
-	// "The Metronome ID of the credit type to associate with the rate card, defaults
-	// to USD (cents) if not passed."
+	// The Metronome ID of the credit type to associate with the rate card, defaults to
+	// USD (cents) if not passed.
 	FiatCreditTypeID param.Field[string] `json:"fiat_credit_type_id" format:"uuid"`
 }
 
