@@ -116,7 +116,7 @@ func (r *ContractService) GetRateSchedule(ctx context.Context, params ContractGe
 	return
 }
 
-// Create a new, scheduled invoice for Professional Services terms on a contract.
+// Create a new scheduled invoice for Professional Services terms on a contract.
 // This endpoint's availability is dependent on your client's configuration.
 func (r *ContractService) ScheduleProServicesInvoice(ctx context.Context, body ContractScheduleProServicesInvoiceParams, opts ...option.RequestOption) (res *ContractScheduleProServicesInvoiceResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -715,9 +715,10 @@ type ContractListBalancesResponseData struct {
 	ID string `json:"id,required" format:"uuid"`
 	// This field can have the runtime type of [shared.CommitContract],
 	// [shared.CreditContract].
-	Contract interface{}                          `json:"contract,required"`
-	Type     ContractListBalancesResponseDataType `json:"type,required"`
-	Name     string                               `json:"name"`
+	Contract interface{}                              `json:"contract,required"`
+	Type     ContractListBalancesResponseDataType     `json:"type,required"`
+	RateType ContractListBalancesResponseDataRateType `json:"rate_type"`
+	Name     string                                   `json:"name"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority float64 `json:"priority"`
@@ -762,6 +763,7 @@ type contractListBalancesResponseDataJSON struct {
 	ID                      apijson.Field
 	Contract                apijson.Field
 	Type                    apijson.Field
+	RateType                apijson.Field
 	Name                    apijson.Field
 	Priority                apijson.Field
 	Product                 apijson.Field
@@ -840,6 +842,21 @@ func (r ContractListBalancesResponseDataType) IsKnown() bool {
 	return false
 }
 
+type ContractListBalancesResponseDataRateType string
+
+const (
+	ContractListBalancesResponseDataRateTypeCommitRate ContractListBalancesResponseDataRateType = "COMMIT_RATE"
+	ContractListBalancesResponseDataRateTypeListRate   ContractListBalancesResponseDataRateType = "LIST_RATE"
+)
+
+func (r ContractListBalancesResponseDataRateType) IsKnown() bool {
+	switch r {
+	case ContractListBalancesResponseDataRateTypeCommitRate, ContractListBalancesResponseDataRateTypeListRate:
+		return true
+	}
+	return false
+}
+
 type ContractGetRateScheduleResponse struct {
 	Data     []ContractGetRateScheduleResponseData `json:"data,required"`
 	NextPage string                                `json:"next_page,nullable"`
@@ -864,22 +881,18 @@ func (r contractGetRateScheduleResponseJSON) RawJSON() string {
 }
 
 type ContractGetRateScheduleResponseData struct {
-	Entitled            bool              `json:"entitled,required"`
-	ListRate            shared.Rate       `json:"list_rate,required"`
-	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
-	ProductID           string            `json:"product_id,required" format:"uuid"`
-	ProductName         string            `json:"product_name,required"`
-	ProductTags         []string          `json:"product_tags,required"`
-	RateCardID          string            `json:"rate_card_id,required" format:"uuid"`
-	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
-	// The rate that will be used to rate a product when it is paid for by a commit.
-	// This feature requires opt-in before it can be used. Please contact Metronome
-	// support to enable this feature.
-	CommitRate         ContractGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
-	EndingBefore       time.Time                                     `json:"ending_before" format:"date-time"`
-	OverrideRate       shared.Rate                                   `json:"override_rate"`
-	PricingGroupValues map[string]string                             `json:"pricing_group_values"`
-	JSON               contractGetRateScheduleResponseDataJSON       `json:"-"`
+	Entitled            bool                                    `json:"entitled,required"`
+	ListRate            shared.Rate                             `json:"list_rate,required"`
+	ProductCustomFields map[string]string                       `json:"product_custom_fields,required"`
+	ProductID           string                                  `json:"product_id,required" format:"uuid"`
+	ProductName         string                                  `json:"product_name,required"`
+	ProductTags         []string                                `json:"product_tags,required"`
+	RateCardID          string                                  `json:"rate_card_id,required" format:"uuid"`
+	StartingAt          time.Time                               `json:"starting_at,required" format:"date-time"`
+	EndingBefore        time.Time                               `json:"ending_before" format:"date-time"`
+	OverrideRate        shared.Rate                             `json:"override_rate"`
+	PricingGroupValues  map[string]string                       `json:"pricing_group_values"`
+	JSON                contractGetRateScheduleResponseDataJSON `json:"-"`
 }
 
 // contractGetRateScheduleResponseDataJSON contains the JSON metadata for the
@@ -893,7 +906,6 @@ type contractGetRateScheduleResponseDataJSON struct {
 	ProductTags         apijson.Field
 	RateCardID          apijson.Field
 	StartingAt          apijson.Field
-	CommitRate          apijson.Field
 	EndingBefore        apijson.Field
 	OverrideRate        apijson.Field
 	PricingGroupValues  apijson.Field
@@ -907,74 +919,6 @@ func (r *ContractGetRateScheduleResponseData) UnmarshalJSON(data []byte) (err er
 
 func (r contractGetRateScheduleResponseDataJSON) RawJSON() string {
 	return r.raw
-}
-
-// The rate that will be used to rate a product when it is paid for by a commit.
-// This feature requires opt-in before it can be used. Please contact Metronome
-// support to enable this feature.
-type ContractGetRateScheduleResponseDataCommitRate struct {
-	RateType   ContractGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
-	CreditType shared.CreditTypeData                                 `json:"credit_type"`
-	// Commit rate proration configuration. Only valid for SUBSCRIPTION rate_type.
-	IsProrated bool `json:"is_prorated"`
-	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
-	// rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0
-	// and <=1.
-	Price float64 `json:"price"`
-	// Commit rate quantity. For SUBSCRIPTION rate_type, this must be >=0.
-	Quantity float64 `json:"quantity"`
-	// Only set for TIERED rate_type.
-	Tiers []shared.Tier `json:"tiers"`
-	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
-	// using list prices rather than the standard rates for this product on the
-	// contract.
-	UseListPrices bool                                              `json:"use_list_prices"`
-	JSON          contractGetRateScheduleResponseDataCommitRateJSON `json:"-"`
-}
-
-// contractGetRateScheduleResponseDataCommitRateJSON contains the JSON metadata for
-// the struct [ContractGetRateScheduleResponseDataCommitRate]
-type contractGetRateScheduleResponseDataCommitRateJSON struct {
-	RateType      apijson.Field
-	CreditType    apijson.Field
-	IsProrated    apijson.Field
-	Price         apijson.Field
-	Quantity      apijson.Field
-	Tiers         apijson.Field
-	UseListPrices apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *ContractGetRateScheduleResponseDataCommitRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractGetRateScheduleResponseDataCommitRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractGetRateScheduleResponseDataCommitRateRateType string
-
-const (
-	ContractGetRateScheduleResponseDataCommitRateRateTypeFlat         ContractGetRateScheduleResponseDataCommitRateRateType = "FLAT"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeFlat         ContractGetRateScheduleResponseDataCommitRateRateType = "flat"
-	ContractGetRateScheduleResponseDataCommitRateRateTypePercentage   ContractGetRateScheduleResponseDataCommitRateRateType = "PERCENTAGE"
-	ContractGetRateScheduleResponseDataCommitRateRateTypePercentage   ContractGetRateScheduleResponseDataCommitRateRateType = "percentage"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription ContractGetRateScheduleResponseDataCommitRateRateType = "SUBSCRIPTION"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription ContractGetRateScheduleResponseDataCommitRateRateType = "subscription"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeTiered       ContractGetRateScheduleResponseDataCommitRateRateType = "TIERED"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeTiered       ContractGetRateScheduleResponseDataCommitRateRateType = "tiered"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeCustom       ContractGetRateScheduleResponseDataCommitRateRateType = "CUSTOM"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeCustom       ContractGetRateScheduleResponseDataCommitRateRateType = "custom"
-)
-
-func (r ContractGetRateScheduleResponseDataCommitRateRateType) IsKnown() bool {
-	switch r {
-	case ContractGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractGetRateScheduleResponseDataCommitRateRateTypeCustom, ContractGetRateScheduleResponseDataCommitRateRateTypeCustom:
-		return true
-	}
-	return false
 }
 
 type ContractScheduleProServicesInvoiceResponse struct {
@@ -1144,7 +1088,8 @@ type ContractNewParamsCommit struct {
 	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
-	Priority param.Field[float64] `json:"priority"`
+	Priority param.Field[float64]                          `json:"priority"`
+	RateType param.Field[ContractNewParamsCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
 }
@@ -1291,6 +1236,23 @@ type ContractNewParamsCommitsInvoiceScheduleScheduleItem struct {
 
 func (r ContractNewParamsCommitsInvoiceScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsCommitsRateType string
+
+const (
+	ContractNewParamsCommitsRateTypeCommitRate ContractNewParamsCommitsRateType = "COMMIT_RATE"
+	ContractNewParamsCommitsRateTypeCommitRate ContractNewParamsCommitsRateType = "commit_rate"
+	ContractNewParamsCommitsRateTypeListRate   ContractNewParamsCommitsRateType = "LIST_RATE"
+	ContractNewParamsCommitsRateTypeListRate   ContractNewParamsCommitsRateType = "list_rate"
+)
+
+func (r ContractNewParamsCommitsRateType) IsKnown() bool {
+	switch r {
+	case ContractNewParamsCommitsRateTypeCommitRate, ContractNewParamsCommitsRateTypeCommitRate, ContractNewParamsCommitsRateTypeListRate, ContractNewParamsCommitsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type ContractNewParamsCredit struct {
@@ -1999,7 +1961,8 @@ type ContractAmendParamsCommit struct {
 	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
-	Priority param.Field[float64] `json:"priority"`
+	Priority param.Field[float64]                            `json:"priority"`
+	RateType param.Field[ContractAmendParamsCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
 }
@@ -2146,6 +2109,23 @@ type ContractAmendParamsCommitsInvoiceScheduleScheduleItem struct {
 
 func (r ContractAmendParamsCommitsInvoiceScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractAmendParamsCommitsRateType string
+
+const (
+	ContractAmendParamsCommitsRateTypeCommitRate ContractAmendParamsCommitsRateType = "COMMIT_RATE"
+	ContractAmendParamsCommitsRateTypeCommitRate ContractAmendParamsCommitsRateType = "commit_rate"
+	ContractAmendParamsCommitsRateTypeListRate   ContractAmendParamsCommitsRateType = "LIST_RATE"
+	ContractAmendParamsCommitsRateTypeListRate   ContractAmendParamsCommitsRateType = "list_rate"
+)
+
+func (r ContractAmendParamsCommitsRateType) IsKnown() bool {
+	switch r {
+	case ContractAmendParamsCommitsRateTypeCommitRate, ContractAmendParamsCommitsRateTypeCommitRate, ContractAmendParamsCommitsRateTypeListRate, ContractAmendParamsCommitsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type ContractAmendParamsCredit struct {

@@ -73,6 +73,7 @@ type Commit struct {
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority         float64              `json:"priority"`
+	RateType         CommitRateType       `json:"rate_type"`
 	RolledOverFrom   CommitRolledOverFrom `json:"rolled_over_from"`
 	RolloverFraction float64              `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
@@ -99,6 +100,7 @@ type commitJSON struct {
 	Name                    apijson.Field
 	NetsuiteSalesOrderID    apijson.Field
 	Priority                apijson.Field
+	RateType                apijson.Field
 	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
@@ -927,6 +929,21 @@ func (r CommitLedgerType) IsKnown() bool {
 	return false
 }
 
+type CommitRateType string
+
+const (
+	CommitRateTypeCommitRate CommitRateType = "COMMIT_RATE"
+	CommitRateTypeListRate   CommitRateType = "LIST_RATE"
+)
+
+func (r CommitRateType) IsKnown() bool {
+	switch r {
+	case CommitRateTypeCommitRate, CommitRateTypeListRate:
+		return true
+	}
+	return false
+}
+
 type CommitRolledOverFrom struct {
 	CommitID   string                   `json:"commit_id,required" format:"uuid"`
 	ContractID string                   `json:"contract_id,required" format:"uuid"`
@@ -1714,15 +1731,6 @@ func (r *CreditTypeData) UnmarshalJSON(data []byte) (err error) {
 
 func (r creditTypeDataJSON) RawJSON() string {
 	return r.raw
-}
-
-type CreditTypeDataParam struct {
-	ID   param.Field[string] `json:"id,required" format:"uuid"`
-	Name param.Field[string] `json:"name,required"`
-}
-
-func (r CreditTypeDataParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type Discount struct {
