@@ -201,6 +201,15 @@ const CommitLedgerTypePostpaidCommitManual = shared.CommitLedgerTypePostpaidComm
 const CommitLedgerTypePostpaidCommitExpiration = shared.CommitLedgerTypePostpaidCommitExpiration
 
 // This is an alias to an internal type.
+type CommitRateType = shared.CommitRateType
+
+// This is an alias to an internal value.
+const CommitRateTypeCommitRate = shared.CommitRateTypeCommitRate
+
+// This is an alias to an internal value.
+const CommitRateTypeListRate = shared.CommitRateTypeListRate
+
+// This is an alias to an internal type.
 type CommitRolledOverFrom = shared.CommitRolledOverFrom
 
 // This is an alias to an internal type.
@@ -352,9 +361,6 @@ const CreditLedgerTypeCreditManual = shared.CreditLedgerTypeCreditManual
 
 // This is an alias to an internal type.
 type CreditTypeData = shared.CreditTypeData
-
-// This is an alias to an internal type.
-type CreditTypeDataParam = shared.CreditTypeDataParam
 
 // This is an alias to an internal type.
 type Discount = shared.Discount

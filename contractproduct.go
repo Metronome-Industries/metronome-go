@@ -620,7 +620,7 @@ type ContractProductNewParams struct {
 	// will not be included when computing composite usage. Defaults to false
 	ExcludeFreeUsage param.Field[bool] `json:"exclude_free_usage"`
 	// This field's availability is dependent on your client's configuration. Defaults
-	// to true
+	// to true.
 	IsRefundable param.Field[bool] `json:"is_refundable"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteInternalItemID param.Field[string] `json:"netsuite_internal_item_id"`

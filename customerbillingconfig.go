@@ -96,19 +96,19 @@ func (r customerBillingConfigGetResponseJSON) RawJSON() string {
 
 type CustomerBillingConfigGetResponseData struct {
 	// Contract expiration date for the customer. The expected format is RFC 3339 and
-	// can be retrieved from AWS's GetEntitlements API. (See
-	// https://docs.aws.amazon.com/marketplaceentitlement/latest/APIReference/API_GetEntitlements.html.)
+	// can be retrieved from
+	// [AWS's GetEntitlements API](https://docs.aws.amazon.com/marketplaceentitlement/latest/APIReference/API_GetEntitlements.html).
 	AwsExpirationDate time.Time                                     `json:"aws_expiration_date" format:"date-time"`
 	AwsProductCode    string                                        `json:"aws_product_code"`
 	AwsRegion         CustomerBillingConfigGetResponseDataAwsRegion `json:"aws_region"`
 	// Subscription term start/end date for the customer. The expected format is RFC
-	// 3339 and can be retrieved from Azure's Get Subscription API. (See
-	// https://learn.microsoft.com/en-us/partner-center/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#get-subscription.)
+	// 3339 and can be retrieved from
+	// [Azure's Get Subscription API](https://learn.microsoft.com/en-us/partner-center/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#get-subscription).
 	AzureExpirationDate time.Time `json:"azure_expiration_date" format:"date-time"`
 	AzurePlanID         string    `json:"azure_plan_id" format:"uuid"`
 	// Subscription term start/end date for the customer. The expected format is RFC
-	// 3339 and can be retrieved from Azure's Get Subscription API. (See
-	// https://learn.microsoft.com/en-us/partner-center/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#get-subscription.)
+	// 3339 and can be retrieved from
+	// [Azure's Get Subscription API](https://learn.microsoft.com/en-us/partner-center/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#get-subscription).
 	AzureStartDate            time.Time                                                   `json:"azure_start_date" format:"date-time"`
 	AzureSubscriptionStatus   CustomerBillingConfigGetResponseDataAzureSubscriptionStatus `json:"azure_subscription_status"`
 	BillingProviderCustomerID string                                                      `json:"billing_provider_customer_id"`
