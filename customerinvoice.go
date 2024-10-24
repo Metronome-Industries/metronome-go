@@ -208,10 +208,11 @@ func (r invoiceJSON) RawJSON() string {
 }
 
 type InvoiceLineItem struct {
-	CreditType         shared.CreditTypeData `json:"credit_type,required"`
-	Name               string                `json:"name,required"`
-	Total              float64               `json:"total,required"`
-	CommitCustomFields map[string]string     `json:"commit_custom_fields"`
+	CreditType shared.CreditTypeData `json:"credit_type,required"`
+	Name       string                `json:"name,required"`
+	Total      float64               `json:"total,required"`
+	// only present for beta contract invoices
+	CommitCustomFields map[string]string `json:"commit_custom_fields"`
 	// only present for beta contract invoices
 	CommitID string `json:"commit_id" format:"uuid"`
 	// only present for beta contract invoices. This field's availability is dependent
@@ -231,7 +232,7 @@ type InvoiceLineItem struct {
 	GroupValue   string    `json:"group_value,nullable"`
 	// only present for beta contract invoices
 	IsProrated bool `json:"is_prorated"`
-	// only present for contract invoices and when the include_list_prices query
+	// Only present for contract invoices and when the include_list_prices query
 	// parameter is set to true. This will include the list rate for the charge if
 	// applicable. Only present for usage and subscription line items.
 	ListPrice shared.Rate `json:"list_price"`
@@ -250,10 +251,11 @@ type InvoiceLineItem struct {
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
 	// if pricing groups are used, this will contain the values used to calculate the
 	// price
-	PricingGroupValues              map[string]string `json:"pricing_group_values"`
-	ProductCustomFields             map[string]string `json:"product_custom_fields"`
-	ProductID                       string            `json:"product_id" format:"uuid"`
-	ProductType                     string            `json:"product_type"`
+	PricingGroupValues  map[string]string `json:"pricing_group_values"`
+	ProductCustomFields map[string]string `json:"product_custom_fields"`
+	ProductID           string            `json:"product_id" format:"uuid"`
+	ProductType         string            `json:"product_type"`
+	// only present for beta contract invoices
 	ProfessionalServiceCustomFields map[string]string `json:"professional_service_custom_fields"`
 	// only present for beta contract invoices
 	ProfessionalServiceID       string                       `json:"professional_service_id" format:"uuid"`

@@ -92,6 +92,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractNewParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
 		}, {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -150,6 +151,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractNewParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
 		}, {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -208,6 +210,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractNewParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
 		}}),
 		Credits: metronome.F([]metronome.ContractNewParamsCredit{{
@@ -972,6 +975,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractAmendParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
 		}, {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -1030,6 +1034,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractAmendParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
 		}, {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -1088,6 +1093,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractAmendParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
 		}}),
 		Credits: metronome.F([]metronome.ContractAmendParamsCredit{{
@@ -1710,241 +1716,23 @@ func TestContractNewHistoricalInvoices(t *testing.T) {
 	)
 	_, err := client.Contracts.NewHistoricalInvoices(context.TODO(), metronome.ContractNewHistoricalInvoicesParams{
 		Invoices: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoice{{
-			ContractID:         metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			CreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			CustomerID:         metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			ContractID:         metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+			CreditTypeID:       metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+			CustomerID:         metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 			ExclusiveEndDate:   metronome.F(time.Now()),
 			InclusiveStartDate: metronome.F(time.Now()),
 			IssueDate:          metronome.F(time.Now()),
 			UsageLineItems: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItem{{
 				ExclusiveEndDate:   metronome.F(time.Now()),
 				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ProductID:          metronome.F("f14d6729-6a44-4b13-9908-9387f1918790"),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
 				PricingGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
-				Quantity: metronome.F(0.000000),
-				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}}),
-			}, {
-				ExclusiveEndDate:   metronome.F(time.Now()),
-				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				PresentationGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				PricingGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				Quantity: metronome.F(0.000000),
-				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}}),
-			}, {
-				ExclusiveEndDate:   metronome.F(time.Now()),
-				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				PresentationGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				PricingGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				Quantity: metronome.F(0.000000),
-				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}}),
-			}}),
-			BillableStatus:       metronome.F(metronome.ContractNewHistoricalInvoicesParamsInvoicesBillableStatusBillable),
-			BreakdownGranularity: metronome.F(metronome.ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityHour),
-			CustomFields: metronome.F(map[string]string{
-				"foo": "string",
-			}),
-		}, {
-			ContractID:         metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			CreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			CustomerID:         metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			ExclusiveEndDate:   metronome.F(time.Now()),
-			InclusiveStartDate: metronome.F(time.Now()),
-			IssueDate:          metronome.F(time.Now()),
-			UsageLineItems: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItem{{
-				ExclusiveEndDate:   metronome.F(time.Now()),
-				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				PresentationGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				PricingGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				Quantity: metronome.F(0.000000),
-				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}}),
-			}, {
-				ExclusiveEndDate:   metronome.F(time.Now()),
-				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				PresentationGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				PricingGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				Quantity: metronome.F(0.000000),
-				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}}),
-			}, {
-				ExclusiveEndDate:   metronome.F(time.Now()),
-				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				PresentationGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				PricingGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				Quantity: metronome.F(0.000000),
-				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}}),
-			}}),
-			BillableStatus:       metronome.F(metronome.ContractNewHistoricalInvoicesParamsInvoicesBillableStatusBillable),
-			BreakdownGranularity: metronome.F(metronome.ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularityHour),
-			CustomFields: metronome.F(map[string]string{
-				"foo": "string",
-			}),
-		}, {
-			ContractID:         metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			CreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			CustomerID:         metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			ExclusiveEndDate:   metronome.F(time.Now()),
-			InclusiveStartDate: metronome.F(time.Now()),
-			IssueDate:          metronome.F(time.Now()),
-			UsageLineItems: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItem{{
-				ExclusiveEndDate:   metronome.F(time.Now()),
-				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				PresentationGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				PricingGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				Quantity: metronome.F(0.000000),
-				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}}),
-			}, {
-				ExclusiveEndDate:   metronome.F(time.Now()),
-				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				PresentationGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				PricingGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				Quantity: metronome.F(0.000000),
-				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}, {
-					ExclusiveEndDate:   metronome.F(time.Now()),
-					InclusiveStartDate: metronome.F(time.Now()),
-					Quantity:           metronome.F(0.000000),
-				}}),
-			}, {
-				ExclusiveEndDate:   metronome.F(time.Now()),
-				InclusiveStartDate: metronome.F(time.Now()),
-				ProductID:          metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				PresentationGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				PricingGroupValues: metronome.F(map[string]string{
-					"foo": "string",
-				}),
-				Quantity: metronome.F(0.000000),
+				Quantity: metronome.F(100.000000),
 				SubtotalsWithQuantity: metronome.F([]metronome.ContractNewHistoricalInvoicesParamsInvoicesUsageLineItemsSubtotalsWithQuantity{{
 					ExclusiveEndDate:   metronome.F(time.Now()),
 					InclusiveStartDate: metronome.F(time.Now()),
@@ -1965,7 +1753,7 @@ func TestContractNewHistoricalInvoices(t *testing.T) {
 				"foo": "string",
 			}),
 		}}),
-		Preview: metronome.F(true),
+		Preview: metronome.F(false),
 	})
 	if err != nil {
 		var apierr *metronome.Error

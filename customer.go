@@ -578,8 +578,8 @@ type CustomerNewParams struct {
 	Name          param.Field[string]                         `json:"name,required"`
 	BillingConfig param.Field[CustomerNewParamsBillingConfig] `json:"billing_config"`
 	CustomFields  param.Field[map[string]string]              `json:"custom_fields"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome ID or ingest
-	// alias) that can be used in usage events
+	// (deprecated, use ingest_aliases instead) an alias that can be used to refer to
+	// this customer in usage events
 	ExternalID param.Field[string] `json:"external_id"`
 	// Aliases that can be used to refer to this customer in usage events
 	IngestAliases param.Field[[]string] `json:"ingest_aliases"`
