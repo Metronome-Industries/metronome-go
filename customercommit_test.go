@@ -60,7 +60,7 @@ func TestCustomerCommitNewWithOptionalParams(t *testing.T) {
 			}),
 			ScheduleItems: metronome.F([]metronome.CustomerCommitNewParamsInvoiceScheduleScheduleItem{{
 				Timestamp: metronome.F(time.Now()),
-				Amount:    metronome.F(10000000.000000),
+				Amount:    metronome.F(0.000000),
 				Quantity:  metronome.F(1.000000),
 				UnitPrice: metronome.F(10000000.000000),
 			}}),
