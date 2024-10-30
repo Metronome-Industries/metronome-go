@@ -47,8 +47,8 @@ func (r *UsageService) List(ctx context.Context, params UsageListParams, opts ..
 // Send usage events to Metronome. The body of this request is expected to be a
 // JSON array of between 1 and 100 usage events. Compressed request bodies are
 // supported with a `Content-Encoding: gzip` header. See
-// [Getting usage into Metronome](https://docs.metronome.com/getting-usage-data-into-metronome/overview)
-// to learn more about usage events.
+// [Getting usage into Metronome](https://docs.metronome.com/connect-metronome/) to
+// learn more about usage events.
 func (r *UsageService) Ingest(ctx context.Context, body UsageIngestParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
