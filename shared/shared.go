@@ -1864,6 +1864,7 @@ type Override struct {
 	CreditType            CreditTypeData `json:"credit_type"`
 	EndingBefore          time.Time      `json:"ending_before" format:"date-time"`
 	Entitled              bool           `json:"entitled"`
+	IsCommitSpecific      bool           `json:"is_commit_specific"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
 	IsProrated         bool                        `json:"is_prorated"`
 	Multiplier         float64                     `json:"multiplier"`
@@ -1878,6 +1879,7 @@ type Override struct {
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity float64          `json:"quantity"`
 	RateType OverrideRateType `json:"rate_type"`
+	Target   OverrideTarget   `json:"target"`
 	// Only set for TIERED rate_type.
 	Tiers []Tier       `json:"tiers"`
 	Type  OverrideType `json:"type"`
@@ -1895,6 +1897,7 @@ type overrideJSON struct {
 	CreditType            apijson.Field
 	EndingBefore          apijson.Field
 	Entitled              apijson.Field
+	IsCommitSpecific      apijson.Field
 	IsProrated            apijson.Field
 	Multiplier            apijson.Field
 	OverrideSpecifiers    apijson.Field
@@ -1905,6 +1908,7 @@ type overrideJSON struct {
 	Product               apijson.Field
 	Quantity              apijson.Field
 	RateType              apijson.Field
+	Target                apijson.Field
 	Tiers                 apijson.Field
 	Type                  apijson.Field
 	Value                 apijson.Field
@@ -1921,6 +1925,7 @@ func (r overrideJSON) RawJSON() string {
 }
 
 type OverrideOverrideSpecifier struct {
+	CommitIDs               []string                      `json:"commit_ids"`
 	PresentationGroupValues map[string]string             `json:"presentation_group_values"`
 	PricingGroupValues      map[string]string             `json:"pricing_group_values"`
 	ProductID               string                        `json:"product_id" format:"uuid"`
@@ -1931,6 +1936,7 @@ type OverrideOverrideSpecifier struct {
 // overrideOverrideSpecifierJSON contains the JSON metadata for the struct
 // [OverrideOverrideSpecifier]
 type overrideOverrideSpecifierJSON struct {
+	CommitIDs               apijson.Field
 	PresentationGroupValues apijson.Field
 	PricingGroupValues      apijson.Field
 	ProductID               apijson.Field
@@ -2063,6 +2069,21 @@ const (
 func (r OverrideRateType) IsKnown() bool {
 	switch r {
 	case OverrideRateTypeFlat, OverrideRateTypePercentage, OverrideRateTypeSubscription, OverrideRateTypeTiered, OverrideRateTypeCustom:
+		return true
+	}
+	return false
+}
+
+type OverrideTarget string
+
+const (
+	OverrideTargetCommitRate OverrideTarget = "COMMIT_RATE"
+	OverrideTargetListRate   OverrideTarget = "LIST_RATE"
+)
+
+func (r OverrideTarget) IsKnown() bool {
+	switch r {
+	case OverrideTargetCommitRate, OverrideTargetListRate:
 		return true
 	}
 	return false

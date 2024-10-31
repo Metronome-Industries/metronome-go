@@ -1092,6 +1092,9 @@ type ContractNewParamsCommit struct {
 	RateType param.Field[ContractNewParamsCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// A temporary ID for the commit that can be used to reference the commit for
+	// commit specific overrides.
+	TemporaryID param.Field[string] `json:"temporary_id"`
 }
 
 func (r ContractNewParamsCommit) MarshalJSON() (data []byte, err error) {
@@ -1442,6 +1445,10 @@ type ContractNewParamsOverride struct {
 	// RFC 3339 timestamp indicating when the override will stop applying (exclusive)
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
 	Entitled     param.Field[bool]      `json:"entitled"`
+	// Indicates whether the override should only apply to commits. Defaults to
+	// `false`. If `true`, you can specify relevant commits in `override_specifiers` by
+	// passing `commit_ids`.
+	IsCommitSpecific param.Field[bool] `json:"is_commit_specific"`
 	// Required for MULTIPLIER type. Must be >=0.
 	Multiplier param.Field[float64] `json:"multiplier"`
 	// Cannot be used in conjunction with product_id or applicable_product_tags. If
@@ -1456,6 +1463,10 @@ type ContractNewParamsOverride struct {
 	Priority param.Field[float64] `json:"priority"`
 	// ID of the product whose rate is being overridden
 	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// Indicates whether the override applies to commit rates or list rates. Can only
+	// be used for overrides that have `is_commit_specific` set to `true`. Defaults to
+	// `"LIST_RATE"`.
+	Target param.Field[ContractNewParamsOverridesTarget] `json:"target"`
 	// Required for TIERED type. Must have at least one tier.
 	Tiers param.Field[[]ContractNewParamsOverridesTier] `json:"tiers"`
 	// Overwrites are prioritized over multipliers and tiered overrides.
@@ -1467,6 +1478,10 @@ func (r ContractNewParamsOverride) MarshalJSON() (data []byte, err error) {
 }
 
 type ContractNewParamsOverridesOverrideSpecifier struct {
+	// If provided, the override will only apply to the specified commits. Can only be
+	// used for commit specific overrides. If not provided, the override will apply to
+	// all commits.
+	CommitIDs param.Field[[]string] `json:"commit_ids"`
 	// A map of group names to values. The override will only apply to line items with
 	// the specified presentation group values. Can only be used for multiplier
 	// overrides.
@@ -1520,6 +1535,26 @@ const (
 func (r ContractNewParamsOverridesOverwriteRateRateType) IsKnown() bool {
 	switch r {
 	case ContractNewParamsOverridesOverwriteRateRateTypeFlat, ContractNewParamsOverridesOverwriteRateRateTypePercentage, ContractNewParamsOverridesOverwriteRateRateTypeSubscription, ContractNewParamsOverridesOverwriteRateRateTypeTiered, ContractNewParamsOverridesOverwriteRateRateTypeCustom:
+		return true
+	}
+	return false
+}
+
+// Indicates whether the override applies to commit rates or list rates. Can only
+// be used for overrides that have `is_commit_specific` set to `true`. Defaults to
+// `"LIST_RATE"`.
+type ContractNewParamsOverridesTarget string
+
+const (
+	ContractNewParamsOverridesTargetCommitRate ContractNewParamsOverridesTarget = "COMMIT_RATE"
+	ContractNewParamsOverridesTargetCommitRate ContractNewParamsOverridesTarget = "commit_rate"
+	ContractNewParamsOverridesTargetListRate   ContractNewParamsOverridesTarget = "LIST_RATE"
+	ContractNewParamsOverridesTargetListRate   ContractNewParamsOverridesTarget = "list_rate"
+)
+
+func (r ContractNewParamsOverridesTarget) IsKnown() bool {
+	switch r {
+	case ContractNewParamsOverridesTargetCommitRate, ContractNewParamsOverridesTargetCommitRate, ContractNewParamsOverridesTargetListRate, ContractNewParamsOverridesTargetListRate:
 		return true
 	}
 	return false
@@ -1965,6 +2000,9 @@ type ContractAmendParamsCommit struct {
 	RateType param.Field[ContractAmendParamsCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// A temporary ID for the commit that can be used to reference the commit for
+	// commit specific overrides.
+	TemporaryID param.Field[string] `json:"temporary_id"`
 }
 
 func (r ContractAmendParamsCommit) MarshalJSON() (data []byte, err error) {
@@ -2296,6 +2334,10 @@ type ContractAmendParamsOverride struct {
 	// RFC 3339 timestamp indicating when the override will stop applying (exclusive)
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
 	Entitled     param.Field[bool]      `json:"entitled"`
+	// Indicates whether the override should only apply to commits. Defaults to
+	// `false`. If `true`, you can specify relevant commits in `override_specifiers` by
+	// passing `commit_ids`.
+	IsCommitSpecific param.Field[bool] `json:"is_commit_specific"`
 	// Required for MULTIPLIER type. Must be >=0.
 	Multiplier param.Field[float64] `json:"multiplier"`
 	// Cannot be used in conjunction with product_id or applicable_product_tags. If
@@ -2310,6 +2352,10 @@ type ContractAmendParamsOverride struct {
 	Priority param.Field[float64] `json:"priority"`
 	// ID of the product whose rate is being overridden
 	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// Indicates whether the override applies to commit rates or list rates. Can only
+	// be used for overrides that have `is_commit_specific` set to `true`. Defaults to
+	// `"LIST_RATE"`.
+	Target param.Field[ContractAmendParamsOverridesTarget] `json:"target"`
 	// Required for TIERED type. Must have at least one tier.
 	Tiers param.Field[[]ContractAmendParamsOverridesTier] `json:"tiers"`
 	// Overwrites are prioritized over multipliers and tiered overrides.
@@ -2321,6 +2367,10 @@ func (r ContractAmendParamsOverride) MarshalJSON() (data []byte, err error) {
 }
 
 type ContractAmendParamsOverridesOverrideSpecifier struct {
+	// If provided, the override will only apply to the specified commits. Can only be
+	// used for commit specific overrides. If not provided, the override will apply to
+	// all commits.
+	CommitIDs param.Field[[]string] `json:"commit_ids"`
 	// A map of group names to values. The override will only apply to line items with
 	// the specified presentation group values. Can only be used for multiplier
 	// overrides.
@@ -2374,6 +2424,26 @@ const (
 func (r ContractAmendParamsOverridesOverwriteRateRateType) IsKnown() bool {
 	switch r {
 	case ContractAmendParamsOverridesOverwriteRateRateTypeFlat, ContractAmendParamsOverridesOverwriteRateRateTypePercentage, ContractAmendParamsOverridesOverwriteRateRateTypeSubscription, ContractAmendParamsOverridesOverwriteRateRateTypeTiered, ContractAmendParamsOverridesOverwriteRateRateTypeCustom:
+		return true
+	}
+	return false
+}
+
+// Indicates whether the override applies to commit rates or list rates. Can only
+// be used for overrides that have `is_commit_specific` set to `true`. Defaults to
+// `"LIST_RATE"`.
+type ContractAmendParamsOverridesTarget string
+
+const (
+	ContractAmendParamsOverridesTargetCommitRate ContractAmendParamsOverridesTarget = "COMMIT_RATE"
+	ContractAmendParamsOverridesTargetCommitRate ContractAmendParamsOverridesTarget = "commit_rate"
+	ContractAmendParamsOverridesTargetListRate   ContractAmendParamsOverridesTarget = "LIST_RATE"
+	ContractAmendParamsOverridesTargetListRate   ContractAmendParamsOverridesTarget = "list_rate"
+)
+
+func (r ContractAmendParamsOverridesTarget) IsKnown() bool {
+	switch r {
+	case ContractAmendParamsOverridesTargetCommitRate, ContractAmendParamsOverridesTargetCommitRate, ContractAmendParamsOverridesTargetListRate, ContractAmendParamsOverridesTargetListRate:
 		return true
 	}
 	return false

@@ -436,6 +436,15 @@ const OverrideRateTypeTiered = shared.OverrideRateTypeTiered
 const OverrideRateTypeCustom = shared.OverrideRateTypeCustom
 
 // This is an alias to an internal type.
+type OverrideTarget = shared.OverrideTarget
+
+// This is an alias to an internal value.
+const OverrideTargetCommitRate = shared.OverrideTargetCommitRate
+
+// This is an alias to an internal value.
+const OverrideTargetListRate = shared.OverrideTargetListRate
+
+// This is an alias to an internal type.
 type OverrideType = shared.OverrideType
 
 // This is an alias to an internal value.
