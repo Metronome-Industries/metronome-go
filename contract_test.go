@@ -92,9 +92,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
-			RateType:             metronome.F(metronome.ContractNewParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
 		}, {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Type:      metronome.F(metronome.ContractNewParamsCommitsTypePrepaid),
@@ -152,9 +150,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
-			RateType:             metronome.F(metronome.ContractNewParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
 		}, {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Type:      metronome.F(metronome.ContractNewParamsCommitsTypePrepaid),
@@ -212,9 +208,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
-			RateType:             metronome.F(metronome.ContractNewParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
 		}}),
 		Credits: metronome.F([]metronome.ContractNewParamsCredit{{
 			AccessSchedule: metronome.F(metronome.ContractNewParamsCreditsAccessSchedule{
@@ -408,10 +402,8 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
 			EndingBefore:          metronome.F(time.Now()),
 			Entitled:              metronome.F(true),
-			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.ContractNewParamsOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -421,7 +413,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -431,7 +422,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -463,7 +453,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Target:    metronome.F(metronome.ContractNewParamsOverridesTargetCommitRate),
 			Tiers: metronome.F([]metronome.ContractNewParamsOverridesTier{{
 				Multiplier: metronome.F(0.000000),
 				Size:       metronome.F(0.000000),
@@ -480,10 +469,8 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
 			EndingBefore:          metronome.F(time.Now()),
 			Entitled:              metronome.F(true),
-			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.ContractNewParamsOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -493,7 +480,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -503,7 +489,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -535,7 +520,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Target:    metronome.F(metronome.ContractNewParamsOverridesTargetCommitRate),
 			Tiers: metronome.F([]metronome.ContractNewParamsOverridesTier{{
 				Multiplier: metronome.F(0.000000),
 				Size:       metronome.F(0.000000),
@@ -552,10 +536,8 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
 			EndingBefore:          metronome.F(time.Now()),
 			Entitled:              metronome.F(true),
-			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.ContractNewParamsOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -565,7 +547,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -575,7 +556,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -607,7 +587,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Target:    metronome.F(metronome.ContractNewParamsOverridesTargetCommitRate),
 			Tiers: metronome.F([]metronome.ContractNewParamsOverridesTier{{
 				Multiplier: metronome.F(0.000000),
 				Size:       metronome.F(0.000000),
@@ -993,9 +972,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
-			RateType:             metronome.F(metronome.ContractAmendParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
 		}, {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Type:      metronome.F(metronome.ContractAmendParamsCommitsTypePrepaid),
@@ -1053,9 +1030,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
-			RateType:             metronome.F(metronome.ContractAmendParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
 		}, {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Type:      metronome.F(metronome.ContractAmendParamsCommitsTypePrepaid),
@@ -1113,9 +1088,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
-			RateType:             metronome.F(metronome.ContractAmendParamsCommitsRateTypeCommitRate),
 			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
 		}}),
 		Credits: metronome.F([]metronome.ContractAmendParamsCredit{{
 			AccessSchedule: metronome.F(metronome.ContractAmendParamsCreditsAccessSchedule{
@@ -1305,10 +1278,8 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
 			EndingBefore:          metronome.F(time.Now()),
 			Entitled:              metronome.F(true),
-			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.ContractAmendParamsOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1318,7 +1289,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1328,7 +1298,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1360,7 +1329,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Target:    metronome.F(metronome.ContractAmendParamsOverridesTargetCommitRate),
 			Tiers: metronome.F([]metronome.ContractAmendParamsOverridesTier{{
 				Multiplier: metronome.F(0.000000),
 				Size:       metronome.F(0.000000),
@@ -1377,10 +1345,8 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
 			EndingBefore:          metronome.F(time.Now()),
 			Entitled:              metronome.F(true),
-			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.ContractAmendParamsOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1390,7 +1356,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1400,7 +1365,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1432,7 +1396,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Target:    metronome.F(metronome.ContractAmendParamsOverridesTargetCommitRate),
 			Tiers: metronome.F([]metronome.ContractAmendParamsOverridesTier{{
 				Multiplier: metronome.F(0.000000),
 				Size:       metronome.F(0.000000),
@@ -1449,10 +1412,8 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
 			EndingBefore:          metronome.F(time.Now()),
 			Entitled:              metronome.F(true),
-			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.ContractAmendParamsOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1462,7 +1423,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1472,7 +1432,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string", "string", "string"}),
 			}, {
-				CommitIDs: metronome.F([]string{"string", "string", "string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -1504,7 +1463,6 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			}),
 			Priority:  metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Target:    metronome.F(metronome.ContractAmendParamsOverridesTargetCommitRate),
 			Tiers: metronome.F([]metronome.ContractAmendParamsOverridesTier{{
 				Multiplier: metronome.F(0.000000),
 				Size:       metronome.F(0.000000),
