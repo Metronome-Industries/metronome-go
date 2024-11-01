@@ -105,10 +105,14 @@ type ProductListItemState struct {
 	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PresentationGroupKey []string `json:"presentation_group_key"`
 	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PricingGroupKey []string `json:"pricing_group_key"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// converted using the provided conversion factor and operation. For example, if
@@ -392,10 +396,14 @@ type ContractProductGetResponseDataUpdate struct {
 	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PresentationGroupKey []string `json:"presentation_group_key"`
 	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PricingGroupKey []string `json:"pricing_group_key"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// converted using the provided conversion factor and operation. For example, if
@@ -531,10 +539,14 @@ type ContractProductListResponseUpdate struct {
 	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PresentationGroupKey []string `json:"presentation_group_key"`
 	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PricingGroupKey []string `json:"pricing_group_key"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// converted using the provided conversion factor and operation. For example, if
@@ -626,10 +638,14 @@ type ContractProductNewParams struct {
 	NetsuiteInternalItemID param.Field[string] `json:"netsuite_internal_item_id"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteOverageItemID param.Field[string] `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PresentationGroupKey param.Field[[]string] `json:"presentation_group_key"`
 	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PricingGroupKey param.Field[[]string] `json:"pricing_group_key"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// converted using the provided conversion factor and operation. For example, if
@@ -708,10 +724,14 @@ type ContractProductUpdateParams struct {
 	// product's current netsuite_overage_item_id. This field's availability is
 	// dependent on your client's configuration.
 	NetsuiteOverageItemID param.Field[string] `json:"netsuite_overage_item_id"`
-	// For USAGE products only. Groups usage line items on invoices.
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PresentationGroupKey param.Field[[]string] `json:"presentation_group_key"`
 	// For USAGE products only. If set, pricing for this product will be determined for
-	// each pricing_group_key value, as opposed to the product as a whole.
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
 	PricingGroupKey param.Field[[]string] `json:"pricing_group_key"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// converted using the provided conversion factor and operation. For example, if
