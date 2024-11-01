@@ -201,15 +201,6 @@ const CommitLedgerTypePostpaidCommitManual = shared.CommitLedgerTypePostpaidComm
 const CommitLedgerTypePostpaidCommitExpiration = shared.CommitLedgerTypePostpaidCommitExpiration
 
 // This is an alias to an internal type.
-type CommitRateType = shared.CommitRateType
-
-// This is an alias to an internal value.
-const CommitRateTypeCommitRate = shared.CommitRateTypeCommitRate
-
-// This is an alias to an internal value.
-const CommitRateTypeListRate = shared.CommitRateTypeListRate
-
-// This is an alias to an internal type.
 type CommitRolledOverFrom = shared.CommitRolledOverFrom
 
 // This is an alias to an internal type.
@@ -434,15 +425,6 @@ const OverrideRateTypeTiered = shared.OverrideRateTypeTiered
 
 // This is an alias to an internal value.
 const OverrideRateTypeCustom = shared.OverrideRateTypeCustom
-
-// This is an alias to an internal type.
-type OverrideTarget = shared.OverrideTarget
-
-// This is an alias to an internal value.
-const OverrideTargetCommitRate = shared.OverrideTargetCommitRate
-
-// This is an alias to an internal value.
-const OverrideTargetListRate = shared.OverrideTargetListRate
 
 // This is an alias to an internal type.
 type OverrideType = shared.OverrideType
