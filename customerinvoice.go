@@ -212,6 +212,8 @@ type InvoiceLineItem struct {
 	Name       string                `json:"name,required"`
 	Total      float64               `json:"total,required"`
 	// only present for beta contract invoices
+	AppliedCommitOrCredit InvoiceLineItemsAppliedCommitOrCredit `json:"applied_commit_or_credit"`
+	// only present for beta contract invoices
 	CommitCustomFields map[string]string `json:"commit_custom_fields"`
 	// only present for beta contract invoices
 	CommitID string `json:"commit_id" format:"uuid"`
@@ -277,6 +279,7 @@ type invoiceLineItemJSON struct {
 	CreditType                      apijson.Field
 	Name                            apijson.Field
 	Total                           apijson.Field
+	AppliedCommitOrCredit           apijson.Field
 	CommitCustomFields              apijson.Field
 	CommitID                        apijson.Field
 	CommitNetsuiteItemID            apijson.Field
@@ -318,6 +321,46 @@ func (r *InvoiceLineItem) UnmarshalJSON(data []byte) (err error) {
 
 func (r invoiceLineItemJSON) RawJSON() string {
 	return r.raw
+}
+
+// only present for beta contract invoices
+type InvoiceLineItemsAppliedCommitOrCredit struct {
+	ID   string                                    `json:"id,required" format:"uuid"`
+	Type InvoiceLineItemsAppliedCommitOrCreditType `json:"type,required"`
+	JSON invoiceLineItemsAppliedCommitOrCreditJSON `json:"-"`
+}
+
+// invoiceLineItemsAppliedCommitOrCreditJSON contains the JSON metadata for the
+// struct [InvoiceLineItemsAppliedCommitOrCredit]
+type invoiceLineItemsAppliedCommitOrCreditJSON struct {
+	ID          apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *InvoiceLineItemsAppliedCommitOrCredit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r invoiceLineItemsAppliedCommitOrCreditJSON) RawJSON() string {
+	return r.raw
+}
+
+type InvoiceLineItemsAppliedCommitOrCreditType string
+
+const (
+	InvoiceLineItemsAppliedCommitOrCreditTypePrepaid  InvoiceLineItemsAppliedCommitOrCreditType = "PREPAID"
+	InvoiceLineItemsAppliedCommitOrCreditTypePostpaid InvoiceLineItemsAppliedCommitOrCreditType = "POSTPAID"
+	InvoiceLineItemsAppliedCommitOrCreditTypeCredit   InvoiceLineItemsAppliedCommitOrCreditType = "CREDIT"
+)
+
+func (r InvoiceLineItemsAppliedCommitOrCreditType) IsKnown() bool {
+	switch r {
+	case InvoiceLineItemsAppliedCommitOrCreditTypePrepaid, InvoiceLineItemsAppliedCommitOrCreditTypePostpaid, InvoiceLineItemsAppliedCommitOrCreditTypeCredit:
+		return true
+	}
+	return false
 }
 
 // only present for beta contract invoices
