@@ -409,7 +409,10 @@ type CustomerListBillableMetricsResponse struct {
 	AggregationKey string `json:"aggregation_key"`
 	// Specifies the type of aggregation performed on matching events.
 	AggregationType CustomerListBillableMetricsResponseAggregationType `json:"aggregation_type"`
-	CustomFields    map[string]string                                  `json:"custom_fields"`
+	// RFC 3339 timestamp indicating when the billable metric was archived. If not
+	// provided, the billable metric is not archived.
+	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// (DEPRECATED) use property_filters & event_type_filter instead
@@ -437,6 +440,7 @@ type customerListBillableMetricsResponseJSON struct {
 	AggregateKeys   apijson.Field
 	AggregationKey  apijson.Field
 	AggregationType apijson.Field
+	ArchivedAt      apijson.Field
 	CustomFields    apijson.Field
 	EventTypeFilter apijson.Field
 	Filter          apijson.Field
@@ -713,6 +717,8 @@ func (r CustomerArchiveParams) MarshalJSON() (data []byte, err error) {
 
 type CustomerListBillableMetricsParams struct {
 	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
+	// If true, the list of returned metrics will include archived metrics
+	IncludeArchived param.Field[bool] `query:"include_archived"`
 	// Max number of results that should be returned
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.

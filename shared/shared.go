@@ -196,26 +196,26 @@ func (r commitInvoiceContractJSON) RawJSON() string {
 }
 
 type CommitLedger struct {
-	Type          CommitLedgerType `json:"type,required"`
-	Timestamp     time.Time        `json:"timestamp,required" format:"date-time"`
 	Amount        float64          `json:"amount,required"`
-	SegmentID     string           `json:"segment_id" format:"uuid"`
+	Timestamp     time.Time        `json:"timestamp,required" format:"date-time"`
+	Type          CommitLedgerType `json:"type,required"`
 	InvoiceID     string           `json:"invoice_id" format:"uuid"`
 	NewContractID string           `json:"new_contract_id" format:"uuid"`
 	Reason        string           `json:"reason"`
+	SegmentID     string           `json:"segment_id" format:"uuid"`
 	JSON          commitLedgerJSON `json:"-"`
 	union         CommitLedgerUnion
 }
 
 // commitLedgerJSON contains the JSON metadata for the struct [CommitLedger]
 type commitLedgerJSON struct {
-	Type          apijson.Field
-	Timestamp     apijson.Field
 	Amount        apijson.Field
-	SegmentID     apijson.Field
+	Timestamp     apijson.Field
+	Type          apijson.Field
 	InvoiceID     apijson.Field
 	NewContractID apijson.Field
 	Reason        apijson.Field
+	SegmentID     apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
@@ -1321,24 +1321,24 @@ func (r creditContractJSON) RawJSON() string {
 }
 
 type CreditLedger struct {
-	Type      CreditLedgerType `json:"type,required"`
-	Timestamp time.Time        `json:"timestamp,required" format:"date-time"`
 	Amount    float64          `json:"amount,required"`
-	SegmentID string           `json:"segment_id" format:"uuid"`
+	Timestamp time.Time        `json:"timestamp,required" format:"date-time"`
+	Type      CreditLedgerType `json:"type,required"`
 	InvoiceID string           `json:"invoice_id" format:"uuid"`
 	Reason    string           `json:"reason"`
+	SegmentID string           `json:"segment_id" format:"uuid"`
 	JSON      creditLedgerJSON `json:"-"`
 	union     CreditLedgerUnion
 }
 
 // creditLedgerJSON contains the JSON metadata for the struct [CreditLedger]
 type creditLedgerJSON struct {
-	Type        apijson.Field
-	Timestamp   apijson.Field
 	Amount      apijson.Field
-	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
 	InvoiceID   apijson.Field
 	Reason      apijson.Field
+	SegmentID   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
