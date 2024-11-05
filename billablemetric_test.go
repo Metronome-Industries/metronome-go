@@ -102,8 +102,9 @@ func TestBillableMetricListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.BillableMetrics.List(context.TODO(), metronome.BillableMetricListParams{
-		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("next_page"),
+		IncludeArchived: metronome.F(true),
+		Limit:           metronome.F(int64(1)),
+		NextPage:        metronome.F("next_page"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
