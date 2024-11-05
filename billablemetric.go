@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
@@ -141,7 +142,10 @@ type BillableMetricGetResponseData struct {
 	AggregationKey string `json:"aggregation_key"`
 	// Specifies the type of aggregation performed on matching events.
 	AggregationType BillableMetricGetResponseDataAggregationType `json:"aggregation_type"`
-	CustomFields    map[string]string                            `json:"custom_fields"`
+	// RFC 3339 timestamp indicating when the billable metric was archived. If not
+	// provided, the billable metric is not archived.
+	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// Property names that are used to group usage costs on an invoice. Each entry
@@ -163,6 +167,7 @@ type billableMetricGetResponseDataJSON struct {
 	Name            apijson.Field
 	AggregationKey  apijson.Field
 	AggregationType apijson.Field
+	ArchivedAt      apijson.Field
 	CustomFields    apijson.Field
 	EventTypeFilter apijson.Field
 	GroupKeys       apijson.Field
@@ -210,7 +215,10 @@ type BillableMetricListResponse struct {
 	AggregationKey string `json:"aggregation_key"`
 	// Specifies the type of aggregation performed on matching events.
 	AggregationType BillableMetricListResponseAggregationType `json:"aggregation_type"`
-	CustomFields    map[string]string                         `json:"custom_fields"`
+	// RFC 3339 timestamp indicating when the billable metric was archived. If not
+	// provided, the billable metric is not archived.
+	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// Property names that are used to group usage costs on an invoice. Each entry
@@ -232,6 +240,7 @@ type billableMetricListResponseJSON struct {
 	Name            apijson.Field
 	AggregationKey  apijson.Field
 	AggregationType apijson.Field
+	ArchivedAt      apijson.Field
 	CustomFields    apijson.Field
 	EventTypeFilter apijson.Field
 	GroupKeys       apijson.Field
@@ -343,6 +352,8 @@ type BillableMetricGetParams struct {
 }
 
 type BillableMetricListParams struct {
+	// If true, the list of returned metrics will include archived metrics
+	IncludeArchived param.Field[bool] `query:"include_archived"`
 	// Max number of results that should be returned
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.

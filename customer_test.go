@@ -143,10 +143,11 @@ func TestCustomerListBillableMetricsWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Customers.ListBillableMetrics(context.TODO(), metronome.CustomerListBillableMetricsParams{
-		CustomerID:    metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Limit:         metronome.F(int64(1)),
-		NextPage:      metronome.F("next_page"),
-		OnCurrentPlan: metronome.F(true),
+		CustomerID:      metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		IncludeArchived: metronome.F(true),
+		Limit:           metronome.F(int64(1)),
+		NextPage:        metronome.F("next_page"),
+		OnCurrentPlan:   metronome.F(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error
