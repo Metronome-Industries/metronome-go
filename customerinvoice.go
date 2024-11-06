@@ -95,7 +95,7 @@ func (r *CustomerInvoiceService) AddCharge(ctx context.Context, params CustomerI
 	return
 }
 
-// List daily or hourly breakdown invoices for a given customer, optionally
+// List daily or hourly invoice breakdowns for a given customer, optionally
 // filtered by status, date range, and/or credit type.
 func (r *CustomerInvoiceService) ListBreakdowns(ctx context.Context, params CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerInvoiceListBreakdownsResponse], err error) {
 	var raw *http.Response
@@ -118,7 +118,7 @@ func (r *CustomerInvoiceService) ListBreakdowns(ctx context.Context, params Cust
 	return res, nil
 }
 
-// List daily or hourly breakdown invoices for a given customer, optionally
+// List daily or hourly invoice breakdowns for a given customer, optionally
 // filtered by status, date range, and/or credit type.
 func (r *CustomerInvoiceService) ListBreakdownsAutoPaging(ctx context.Context, params CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerInvoiceListBreakdownsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListBreakdowns(ctx, params, opts...))
