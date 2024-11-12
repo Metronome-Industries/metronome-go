@@ -713,42 +713,42 @@ func (r contractListBalancesResponseJSON) RawJSON() string {
 
 type ContractListBalancesResponseData struct {
 	ID string `json:"id,required" format:"uuid"`
-	// This field can have the runtime type of [[]string].
-	ApplicableContractIDs interface{} `json:"applicable_contract_ids,required"`
-	// This field can have the runtime type of [[]string].
-	ApplicableProductIDs interface{} `json:"applicable_product_ids,required"`
-	// This field can have the runtime type of [[]string].
-	ApplicableProductTags interface{} `json:"applicable_product_tags,required"`
-	// This field can have the runtime type of [shared.CommitContract],
-	// [shared.CreditContract].
-	Contract interface{} `json:"contract,required"`
-	// This field can have the runtime type of [map[string]string].
-	CustomFields interface{} `json:"custom_fields,required"`
-	// This field can have the runtime type of [shared.CommitInvoiceContract].
-	InvoiceContract interface{} `json:"invoice_contract,required"`
-	// This field can have the runtime type of [[]shared.CommitLedger],
-	// [[]shared.CreditLedger].
-	Ledger interface{} `json:"ledger,required"`
-	// This field can have the runtime type of [shared.CommitRolledOverFrom].
-	RolledOverFrom interface{}                          `json:"rolled_over_from,required"`
-	Type           ContractListBalancesResponseDataType `json:"type,required"`
+	// This field can have the runtime type of [shared.CommitProduct],
+	// [shared.CreditProduct].
+	Product interface{}                          `json:"product,required"`
+	Type    ContractListBalancesResponseDataType `json:"type,required"`
 	// The schedule that the customer will gain access to the credits purposed with
 	// this commit.
 	AccessSchedule shared.ScheduleDuration `json:"access_schedule"`
 	// (DEPRECATED) Use access_schedule + invoice_schedule instead.
-	Amount      float64 `json:"amount"`
-	Description string  `json:"description"`
+	Amount float64 `json:"amount"`
+	// This field can have the runtime type of [[]string].
+	ApplicableContractIDs interface{} `json:"applicable_contract_ids"`
+	// This field can have the runtime type of [[]string].
+	ApplicableProductIDs interface{} `json:"applicable_product_ids"`
+	// This field can have the runtime type of [[]string].
+	ApplicableProductTags interface{} `json:"applicable_product_tags"`
+	// This field can have the runtime type of [shared.CommitContract],
+	// [shared.CreditContract].
+	Contract interface{} `json:"contract"`
+	// This field can have the runtime type of [map[string]string].
+	CustomFields interface{} `json:"custom_fields"`
+	Description  string      `json:"description"`
+	// This field can have the runtime type of [shared.CommitInvoiceContract].
+	InvoiceContract interface{} `json:"invoice_contract"`
 	// The schedule that the customer will be invoiced for this commit.
 	InvoiceSchedule shared.SchedulePointInTime `json:"invoice_schedule"`
-	Name            string                     `json:"name"`
+	// This field can have the runtime type of [[]shared.CommitLedger],
+	// [[]shared.CreditLedger].
+	Ledger interface{} `json:"ledger"`
+	Name   string      `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority float64 `json:"priority"`
-	// This field can have the runtime type of [shared.CommitProduct],
-	// [shared.CreditProduct].
-	Product          interface{} `json:"product"`
+	// This field can have the runtime type of [shared.CommitRolledOverFrom].
+	RolledOverFrom   interface{} `json:"rolled_over_from"`
 	RolloverFraction float64     `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string                               `json:"salesforce_opportunity_id"`
@@ -760,23 +760,23 @@ type ContractListBalancesResponseData struct {
 // [ContractListBalancesResponseData]
 type contractListBalancesResponseDataJSON struct {
 	ID                      apijson.Field
+	Product                 apijson.Field
+	Type                    apijson.Field
+	AccessSchedule          apijson.Field
+	Amount                  apijson.Field
 	ApplicableContractIDs   apijson.Field
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
 	Contract                apijson.Field
 	CustomFields            apijson.Field
-	InvoiceContract         apijson.Field
-	Ledger                  apijson.Field
-	RolledOverFrom          apijson.Field
-	Type                    apijson.Field
-	AccessSchedule          apijson.Field
-	Amount                  apijson.Field
 	Description             apijson.Field
+	InvoiceContract         apijson.Field
 	InvoiceSchedule         apijson.Field
+	Ledger                  apijson.Field
 	Name                    apijson.Field
 	NetsuiteSalesOrderID    apijson.Field
 	Priority                apijson.Field
-	Product                 apijson.Field
+	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
 	raw                     string
