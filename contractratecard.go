@@ -267,21 +267,25 @@ func (r ContractRateCardGetResponseDataRateCardEntriesCurrentRateType) IsKnown()
 }
 
 type ContractRateCardGetResponseDataRateCardEntriesUpdate struct {
-	ID           string                                                        `json:"id,required" format:"uuid"`
-	CreatedAt    time.Time                                                     `json:"created_at,required" format:"date-time"`
-	CreatedBy    string                                                        `json:"created_by,required"`
-	Entitled     bool                                                          `json:"entitled,required"`
-	ProductID    string                                                        `json:"product_id,required" format:"uuid"`
-	RateType     ContractRateCardGetResponseDataRateCardEntriesUpdatesRateType `json:"rate_type,required"`
-	StartingAt   time.Time                                                     `json:"starting_at,required" format:"date-time"`
-	CreditType   shared.CreditTypeData                                         `json:"credit_type"`
-	CustomRate   map[string]interface{}                                        `json:"custom_rate"`
-	EndingBefore time.Time                                                     `json:"ending_before" format:"date-time"`
-	IsProrated   bool                                                          `json:"is_prorated"`
-	Price        float64                                                       `json:"price"`
-	Quantity     float64                                                       `json:"quantity"`
-	Tiers        []shared.Tier                                                 `json:"tiers"`
-	JSON         contractRateCardGetResponseDataRateCardEntriesUpdateJSON      `json:"-"`
+	ID         string                                                        `json:"id,required" format:"uuid"`
+	CreatedAt  time.Time                                                     `json:"created_at,required" format:"date-time"`
+	CreatedBy  string                                                        `json:"created_by,required"`
+	Entitled   bool                                                          `json:"entitled,required"`
+	ProductID  string                                                        `json:"product_id,required" format:"uuid"`
+	RateType   ContractRateCardGetResponseDataRateCardEntriesUpdatesRateType `json:"rate_type,required"`
+	StartingAt time.Time                                                     `json:"starting_at,required" format:"date-time"`
+	// A distinct rate on the rate card. You can choose to use this rate rather than
+	// list rate when consuming a credit or commit. This feature requires opt-in before
+	// it can be used. Please contact Metronome support to enable this feature.
+	CommitRate   ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRate `json:"commit_rate"`
+	CreditType   shared.CreditTypeData                                           `json:"credit_type"`
+	CustomRate   map[string]interface{}                                          `json:"custom_rate"`
+	EndingBefore time.Time                                                       `json:"ending_before" format:"date-time"`
+	IsProrated   bool                                                            `json:"is_prorated"`
+	Price        float64                                                         `json:"price"`
+	Quantity     float64                                                         `json:"quantity"`
+	Tiers        []shared.Tier                                                   `json:"tiers"`
+	JSON         contractRateCardGetResponseDataRateCardEntriesUpdateJSON        `json:"-"`
 }
 
 // contractRateCardGetResponseDataRateCardEntriesUpdateJSON contains the JSON
@@ -294,6 +298,7 @@ type contractRateCardGetResponseDataRateCardEntriesUpdateJSON struct {
 	ProductID    apijson.Field
 	RateType     apijson.Field
 	StartingAt   apijson.Field
+	CommitRate   apijson.Field
 	CreditType   apijson.Field
 	CustomRate   apijson.Field
 	EndingBefore apijson.Field
@@ -326,6 +331,60 @@ const (
 func (r ContractRateCardGetResponseDataRateCardEntriesUpdatesRateType) IsKnown() bool {
 	switch r {
 	case ContractRateCardGetResponseDataRateCardEntriesUpdatesRateTypeFlat, ContractRateCardGetResponseDataRateCardEntriesUpdatesRateTypePercentage, ContractRateCardGetResponseDataRateCardEntriesUpdatesRateTypeSubscription, ContractRateCardGetResponseDataRateCardEntriesUpdatesRateTypeCustom, ContractRateCardGetResponseDataRateCardEntriesUpdatesRateTypeTiered:
+		return true
+	}
+	return false
+}
+
+// A distinct rate on the rate card. You can choose to use this rate rather than
+// list rate when consuming a credit or commit. This feature requires opt-in before
+// it can be used. Please contact Metronome support to enable this feature.
+type ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRate struct {
+	RateType ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType `json:"rate_type,required"`
+	// Commit rate price. For FLAT rate_type, this must be >=0.
+	Price float64 `json:"price"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.Tier                                                       `json:"tiers"`
+	JSON  contractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateJSON `json:"-"`
+}
+
+// contractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateJSON contains the
+// JSON metadata for the struct
+// [ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRate]
+type contractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateJSON struct {
+	RateType    apijson.Field
+	Price       apijson.Field
+	Tiers       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType string
+
+const (
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeFlat         ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "FLAT"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeFlat         ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "flat"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypePercentage   ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "PERCENTAGE"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypePercentage   ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "percentage"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeSubscription ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "SUBSCRIPTION"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeSubscription ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "subscription"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeTiered       ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "TIERED"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeTiered       ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "tiered"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeCustom       ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "CUSTOM"
+	ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeCustom       ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType = "custom"
+)
+
+func (r ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateType) IsKnown() bool {
+	switch r {
+	case ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeFlat, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeFlat, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypePercentage, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypePercentage, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeSubscription, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeSubscription, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeTiered, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeTiered, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeCustom, ContractRateCardGetResponseDataRateCardEntriesUpdatesCommitRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -524,21 +583,25 @@ func (r ContractRateCardListResponseRateCardEntriesCurrentRateType) IsKnown() bo
 }
 
 type ContractRateCardListResponseRateCardEntriesUpdate struct {
-	ID           string                                                     `json:"id,required" format:"uuid"`
-	CreatedAt    time.Time                                                  `json:"created_at,required" format:"date-time"`
-	CreatedBy    string                                                     `json:"created_by,required"`
-	Entitled     bool                                                       `json:"entitled,required"`
-	ProductID    string                                                     `json:"product_id,required" format:"uuid"`
-	RateType     ContractRateCardListResponseRateCardEntriesUpdatesRateType `json:"rate_type,required"`
-	StartingAt   time.Time                                                  `json:"starting_at,required" format:"date-time"`
-	CreditType   shared.CreditTypeData                                      `json:"credit_type"`
-	CustomRate   map[string]interface{}                                     `json:"custom_rate"`
-	EndingBefore time.Time                                                  `json:"ending_before" format:"date-time"`
-	IsProrated   bool                                                       `json:"is_prorated"`
-	Price        float64                                                    `json:"price"`
-	Quantity     float64                                                    `json:"quantity"`
-	Tiers        []shared.Tier                                              `json:"tiers"`
-	JSON         contractRateCardListResponseRateCardEntriesUpdateJSON      `json:"-"`
+	ID         string                                                     `json:"id,required" format:"uuid"`
+	CreatedAt  time.Time                                                  `json:"created_at,required" format:"date-time"`
+	CreatedBy  string                                                     `json:"created_by,required"`
+	Entitled   bool                                                       `json:"entitled,required"`
+	ProductID  string                                                     `json:"product_id,required" format:"uuid"`
+	RateType   ContractRateCardListResponseRateCardEntriesUpdatesRateType `json:"rate_type,required"`
+	StartingAt time.Time                                                  `json:"starting_at,required" format:"date-time"`
+	// A distinct rate on the rate card. You can choose to use this rate rather than
+	// list rate when consuming a credit or commit. This feature requires opt-in before
+	// it can be used. Please contact Metronome support to enable this feature.
+	CommitRate   ContractRateCardListResponseRateCardEntriesUpdatesCommitRate `json:"commit_rate"`
+	CreditType   shared.CreditTypeData                                        `json:"credit_type"`
+	CustomRate   map[string]interface{}                                       `json:"custom_rate"`
+	EndingBefore time.Time                                                    `json:"ending_before" format:"date-time"`
+	IsProrated   bool                                                         `json:"is_prorated"`
+	Price        float64                                                      `json:"price"`
+	Quantity     float64                                                      `json:"quantity"`
+	Tiers        []shared.Tier                                                `json:"tiers"`
+	JSON         contractRateCardListResponseRateCardEntriesUpdateJSON        `json:"-"`
 }
 
 // contractRateCardListResponseRateCardEntriesUpdateJSON contains the JSON metadata
@@ -551,6 +614,7 @@ type contractRateCardListResponseRateCardEntriesUpdateJSON struct {
 	ProductID    apijson.Field
 	RateType     apijson.Field
 	StartingAt   apijson.Field
+	CommitRate   apijson.Field
 	CreditType   apijson.Field
 	CustomRate   apijson.Field
 	EndingBefore apijson.Field
@@ -583,6 +647,60 @@ const (
 func (r ContractRateCardListResponseRateCardEntriesUpdatesRateType) IsKnown() bool {
 	switch r {
 	case ContractRateCardListResponseRateCardEntriesUpdatesRateTypeFlat, ContractRateCardListResponseRateCardEntriesUpdatesRateTypePercentage, ContractRateCardListResponseRateCardEntriesUpdatesRateTypeSubscription, ContractRateCardListResponseRateCardEntriesUpdatesRateTypeCustom, ContractRateCardListResponseRateCardEntriesUpdatesRateTypeTiered:
+		return true
+	}
+	return false
+}
+
+// A distinct rate on the rate card. You can choose to use this rate rather than
+// list rate when consuming a credit or commit. This feature requires opt-in before
+// it can be used. Please contact Metronome support to enable this feature.
+type ContractRateCardListResponseRateCardEntriesUpdatesCommitRate struct {
+	RateType ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType `json:"rate_type,required"`
+	// Commit rate price. For FLAT rate_type, this must be >=0.
+	Price float64 `json:"price"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.Tier                                                    `json:"tiers"`
+	JSON  contractRateCardListResponseRateCardEntriesUpdatesCommitRateJSON `json:"-"`
+}
+
+// contractRateCardListResponseRateCardEntriesUpdatesCommitRateJSON contains the
+// JSON metadata for the struct
+// [ContractRateCardListResponseRateCardEntriesUpdatesCommitRate]
+type contractRateCardListResponseRateCardEntriesUpdatesCommitRateJSON struct {
+	RateType    apijson.Field
+	Price       apijson.Field
+	Tiers       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractRateCardListResponseRateCardEntriesUpdatesCommitRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractRateCardListResponseRateCardEntriesUpdatesCommitRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType string
+
+const (
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeFlat         ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "FLAT"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeFlat         ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "flat"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypePercentage   ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "PERCENTAGE"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypePercentage   ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "percentage"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeSubscription ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "SUBSCRIPTION"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeSubscription ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "subscription"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeTiered       ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "TIERED"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeTiered       ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "tiered"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeCustom       ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "CUSTOM"
+	ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeCustom       ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType = "custom"
+)
+
+func (r ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateType) IsKnown() bool {
+	switch r {
+	case ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeFlat, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeFlat, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypePercentage, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypePercentage, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeSubscription, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeSubscription, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeTiered, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeTiered, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeCustom, ContractRateCardListResponseRateCardEntriesUpdatesCommitRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -660,15 +778,19 @@ func (r contractRateCardGetRateScheduleResponseJSON) RawJSON() string {
 }
 
 type ContractRateCardGetRateScheduleResponseData struct {
-	Entitled           bool                                            `json:"entitled,required"`
-	ProductID          string                                          `json:"product_id,required" format:"uuid"`
-	ProductName        string                                          `json:"product_name,required"`
-	ProductTags        []string                                        `json:"product_tags,required"`
-	Rate               shared.Rate                                     `json:"rate,required"`
-	StartingAt         time.Time                                       `json:"starting_at,required" format:"date-time"`
-	EndingBefore       time.Time                                       `json:"ending_before" format:"date-time"`
-	PricingGroupValues map[string]string                               `json:"pricing_group_values"`
-	JSON               contractRateCardGetRateScheduleResponseDataJSON `json:"-"`
+	Entitled    bool        `json:"entitled,required"`
+	ProductID   string      `json:"product_id,required" format:"uuid"`
+	ProductName string      `json:"product_name,required"`
+	ProductTags []string    `json:"product_tags,required"`
+	Rate        shared.Rate `json:"rate,required"`
+	StartingAt  time.Time   `json:"starting_at,required" format:"date-time"`
+	// A distinct rate on the rate card. You can choose to use this rate rather than
+	// list rate when consuming a credit or commit. This feature requires opt-in before
+	// it can be used. Please contact Metronome support to enable this feature.
+	CommitRate         ContractRateCardGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
+	EndingBefore       time.Time                                             `json:"ending_before" format:"date-time"`
+	PricingGroupValues map[string]string                                     `json:"pricing_group_values"`
+	JSON               contractRateCardGetRateScheduleResponseDataJSON       `json:"-"`
 }
 
 // contractRateCardGetRateScheduleResponseDataJSON contains the JSON metadata for
@@ -680,6 +802,7 @@ type contractRateCardGetRateScheduleResponseDataJSON struct {
 	ProductTags        apijson.Field
 	Rate               apijson.Field
 	StartingAt         apijson.Field
+	CommitRate         apijson.Field
 	EndingBefore       apijson.Field
 	PricingGroupValues apijson.Field
 	raw                string
@@ -692,6 +815,59 @@ func (r *ContractRateCardGetRateScheduleResponseData) UnmarshalJSON(data []byte)
 
 func (r contractRateCardGetRateScheduleResponseDataJSON) RawJSON() string {
 	return r.raw
+}
+
+// A distinct rate on the rate card. You can choose to use this rate rather than
+// list rate when consuming a credit or commit. This feature requires opt-in before
+// it can be used. Please contact Metronome support to enable this feature.
+type ContractRateCardGetRateScheduleResponseDataCommitRate struct {
+	RateType ContractRateCardGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
+	// Commit rate price. For FLAT rate_type, this must be >=0.
+	Price float64 `json:"price"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.Tier                                             `json:"tiers"`
+	JSON  contractRateCardGetRateScheduleResponseDataCommitRateJSON `json:"-"`
+}
+
+// contractRateCardGetRateScheduleResponseDataCommitRateJSON contains the JSON
+// metadata for the struct [ContractRateCardGetRateScheduleResponseDataCommitRate]
+type contractRateCardGetRateScheduleResponseDataCommitRateJSON struct {
+	RateType    apijson.Field
+	Price       apijson.Field
+	Tiers       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractRateCardGetRateScheduleResponseDataCommitRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractRateCardGetRateScheduleResponseDataCommitRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractRateCardGetRateScheduleResponseDataCommitRateRateType string
+
+const (
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeFlat         ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "FLAT"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeFlat         ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "flat"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypePercentage   ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "PERCENTAGE"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypePercentage   ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "percentage"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeSubscription ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "SUBSCRIPTION"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeSubscription ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "subscription"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeTiered       ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "TIERED"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeTiered       ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "tiered"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeCustom       ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "CUSTOM"
+	ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeCustom       ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "custom"
+)
+
+func (r ContractRateCardGetRateScheduleResponseDataCommitRateRateType) IsKnown() bool {
+	switch r {
+	case ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeCustom, ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeCustom:
+		return true
+	}
+	return false
 }
 
 type ContractRateCardNewParams struct {

@@ -156,7 +156,8 @@ type CustomerCommitNewParams struct {
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
+	NetsuiteSalesOrderID param.Field[string]                          `json:"netsuite_sales_order_id"`
+	RateType             param.Field[CustomerCommitNewParamsRateType] `json:"rate_type"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID param.Field[string] `json:"salesforce_opportunity_id"`
 }
@@ -302,6 +303,23 @@ type CustomerCommitNewParamsInvoiceScheduleScheduleItem struct {
 
 func (r CustomerCommitNewParamsInvoiceScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type CustomerCommitNewParamsRateType string
+
+const (
+	CustomerCommitNewParamsRateTypeCommitRate CustomerCommitNewParamsRateType = "COMMIT_RATE"
+	CustomerCommitNewParamsRateTypeCommitRate CustomerCommitNewParamsRateType = "commit_rate"
+	CustomerCommitNewParamsRateTypeListRate   CustomerCommitNewParamsRateType = "LIST_RATE"
+	CustomerCommitNewParamsRateTypeListRate   CustomerCommitNewParamsRateType = "list_rate"
+)
+
+func (r CustomerCommitNewParamsRateType) IsKnown() bool {
+	switch r {
+	case CustomerCommitNewParamsRateTypeCommitRate, CustomerCommitNewParamsRateTypeCommitRate, CustomerCommitNewParamsRateTypeListRate, CustomerCommitNewParamsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type CustomerCommitListParams struct {
