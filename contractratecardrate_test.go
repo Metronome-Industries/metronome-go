@@ -66,11 +66,25 @@ func TestContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Contracts.RateCards.Rates.Add(context.TODO(), metronome.ContractRateCardRateAddParams{
-		Entitled:     metronome.F(true),
-		ProductID:    metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		RateCardID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		RateType:     metronome.F(metronome.ContractRateCardRateAddParamsRateTypeFlat),
-		StartingAt:   metronome.F(time.Now()),
+		Entitled:   metronome.F(true),
+		ProductID:  metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		RateType:   metronome.F(metronome.ContractRateCardRateAddParamsRateTypeFlat),
+		StartingAt: metronome.F(time.Now()),
+		CommitRate: metronome.F(metronome.ContractRateCardRateAddParamsCommitRate{
+			RateType: metronome.F(metronome.ContractRateCardRateAddParamsCommitRateRateTypeFlat),
+			Price:    metronome.F(0.000000),
+			Tiers: metronome.F([]shared.TierParam{{
+				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
+			}, {
+				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
+			}, {
+				Price: metronome.F(0.000000),
+				Size:  metronome.F(0.000000),
+			}}),
+		}),
 		CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 		CustomRate: metronome.F(map[string]interface{}{
 			"foo": "bar",
@@ -118,10 +132,24 @@ func TestContractRateCardRateAddMany(t *testing.T) {
 	_, err := client.Contracts.RateCards.Rates.AddMany(context.TODO(), metronome.ContractRateCardRateAddManyParams{
 		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
 		Rates: metronome.F([]metronome.ContractRateCardRateAddManyParamsRate{{
-			Entitled:     metronome.F(true),
-			ProductID:    metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-			RateType:     metronome.F(metronome.ContractRateCardRateAddManyParamsRatesRateTypeFlat),
-			StartingAt:   metronome.F(time.Now()),
+			Entitled:   metronome.F(true),
+			ProductID:  metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			RateType:   metronome.F(metronome.ContractRateCardRateAddManyParamsRatesRateTypeFlat),
+			StartingAt: metronome.F(time.Now()),
+			CommitRate: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRate{
+				RateType: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
+				Price:    metronome.F(0.000000),
+				Tiers: metronome.F([]shared.TierParam{{
+					Price: metronome.F(0.000000),
+					Size:  metronome.F(0.000000),
+				}, {
+					Price: metronome.F(0.000000),
+					Size:  metronome.F(0.000000),
+				}, {
+					Price: metronome.F(0.000000),
+					Size:  metronome.F(0.000000),
+				}}),
+			}),
 			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 			CustomRate: metronome.F(map[string]interface{}{
 				"foo": "bar",
@@ -146,10 +174,24 @@ func TestContractRateCardRateAddMany(t *testing.T) {
 			}}),
 			UseListPrices: metronome.F(true),
 		}, {
-			Entitled:     metronome.F(true),
-			ProductID:    metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-			RateType:     metronome.F(metronome.ContractRateCardRateAddManyParamsRatesRateTypeFlat),
-			StartingAt:   metronome.F(time.Now()),
+			Entitled:   metronome.F(true),
+			ProductID:  metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			RateType:   metronome.F(metronome.ContractRateCardRateAddManyParamsRatesRateTypeFlat),
+			StartingAt: metronome.F(time.Now()),
+			CommitRate: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRate{
+				RateType: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
+				Price:    metronome.F(0.000000),
+				Tiers: metronome.F([]shared.TierParam{{
+					Price: metronome.F(0.000000),
+					Size:  metronome.F(0.000000),
+				}, {
+					Price: metronome.F(0.000000),
+					Size:  metronome.F(0.000000),
+				}, {
+					Price: metronome.F(0.000000),
+					Size:  metronome.F(0.000000),
+				}}),
+			}),
 			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 			CustomRate: metronome.F(map[string]interface{}{
 				"foo": "bar",
