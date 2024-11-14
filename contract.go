@@ -1335,7 +1335,8 @@ type ContractNewParamsCredit struct {
 	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
-	Priority param.Field[float64] `json:"priority"`
+	Priority param.Field[float64]                          `json:"priority"`
+	RateType param.Field[ContractNewParamsCreditsRateType] `json:"rate_type"`
 }
 
 func (r ContractNewParamsCredit) MarshalJSON() (data []byte, err error) {
@@ -1362,6 +1363,23 @@ type ContractNewParamsCreditsAccessScheduleScheduleItem struct {
 
 func (r ContractNewParamsCreditsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsCreditsRateType string
+
+const (
+	ContractNewParamsCreditsRateTypeCommitRate ContractNewParamsCreditsRateType = "COMMIT_RATE"
+	ContractNewParamsCreditsRateTypeCommitRate ContractNewParamsCreditsRateType = "commit_rate"
+	ContractNewParamsCreditsRateTypeListRate   ContractNewParamsCreditsRateType = "LIST_RATE"
+	ContractNewParamsCreditsRateTypeListRate   ContractNewParamsCreditsRateType = "list_rate"
+)
+
+func (r ContractNewParamsCreditsRateType) IsKnown() bool {
+	switch r {
+	case ContractNewParamsCreditsRateTypeCommitRate, ContractNewParamsCreditsRateTypeCommitRate, ContractNewParamsCreditsRateTypeListRate, ContractNewParamsCreditsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type ContractNewParamsDiscount struct {
@@ -2247,7 +2265,8 @@ type ContractAmendParamsCredit struct {
 	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
-	Priority param.Field[float64] `json:"priority"`
+	Priority param.Field[float64]                            `json:"priority"`
+	RateType param.Field[ContractAmendParamsCreditsRateType] `json:"rate_type"`
 }
 
 func (r ContractAmendParamsCredit) MarshalJSON() (data []byte, err error) {
@@ -2274,6 +2293,23 @@ type ContractAmendParamsCreditsAccessScheduleScheduleItem struct {
 
 func (r ContractAmendParamsCreditsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractAmendParamsCreditsRateType string
+
+const (
+	ContractAmendParamsCreditsRateTypeCommitRate ContractAmendParamsCreditsRateType = "COMMIT_RATE"
+	ContractAmendParamsCreditsRateTypeCommitRate ContractAmendParamsCreditsRateType = "commit_rate"
+	ContractAmendParamsCreditsRateTypeListRate   ContractAmendParamsCreditsRateType = "LIST_RATE"
+	ContractAmendParamsCreditsRateTypeListRate   ContractAmendParamsCreditsRateType = "list_rate"
+)
+
+func (r ContractAmendParamsCreditsRateType) IsKnown() bool {
+	switch r {
+	case ContractAmendParamsCreditsRateTypeCommitRate, ContractAmendParamsCreditsRateTypeCommitRate, ContractAmendParamsCreditsRateTypeListRate, ContractAmendParamsCreditsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type ContractAmendParamsDiscount struct {

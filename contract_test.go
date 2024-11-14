@@ -243,6 +243,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractNewParamsCreditsRateTypeCommitRate),
 		}, {
 			AccessSchedule: metronome.F(metronome.ContractNewParamsCreditsAccessSchedule{
 				ScheduleItems: metronome.F([]metronome.ContractNewParamsCreditsAccessScheduleScheduleItem{{
@@ -270,6 +271,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractNewParamsCreditsRateTypeCommitRate),
 		}, {
 			AccessSchedule: metronome.F(metronome.ContractNewParamsCreditsAccessSchedule{
 				ScheduleItems: metronome.F([]metronome.ContractNewParamsCreditsAccessScheduleScheduleItem{{
@@ -297,6 +299,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractNewParamsCreditsRateTypeCommitRate),
 		}}),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
@@ -1144,6 +1147,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractAmendParamsCreditsRateTypeCommitRate),
 		}, {
 			AccessSchedule: metronome.F(metronome.ContractAmendParamsCreditsAccessSchedule{
 				ScheduleItems: metronome.F([]metronome.ContractAmendParamsCreditsAccessScheduleScheduleItem{{
@@ -1171,6 +1175,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractAmendParamsCreditsRateTypeCommitRate),
 		}, {
 			AccessSchedule: metronome.F(metronome.ContractAmendParamsCreditsAccessSchedule{
 				ScheduleItems: metronome.F([]metronome.ContractAmendParamsCreditsAccessScheduleScheduleItem{{
@@ -1198,6 +1203,7 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
+			RateType:             metronome.F(metronome.ContractAmendParamsCreditsRateTypeCommitRate),
 		}}),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
