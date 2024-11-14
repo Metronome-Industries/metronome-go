@@ -1244,7 +1244,8 @@ type Credit struct {
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
-	Priority float64 `json:"priority"`
+	Priority float64        `json:"priority"`
+	RateType CreditRateType `json:"rate_type"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string     `json:"salesforce_opportunity_id"`
 	JSON                    creditJSON `json:"-"`
@@ -1266,6 +1267,7 @@ type creditJSON struct {
 	Name                    apijson.Field
 	NetsuiteSalesOrderID    apijson.Field
 	Priority                apijson.Field
+	RateType                apijson.Field
 	SalesforceOpportunityID apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
@@ -1706,6 +1708,21 @@ const (
 func (r CreditLedgerType) IsKnown() bool {
 	switch r {
 	case CreditLedgerTypeCreditSegmentStart, CreditLedgerTypeCreditAutomatedInvoiceDeduction, CreditLedgerTypeCreditExpiration, CreditLedgerTypeCreditCanceled, CreditLedgerTypeCreditCredited, CreditLedgerTypeCreditManual:
+		return true
+	}
+	return false
+}
+
+type CreditRateType string
+
+const (
+	CreditRateTypeCommitRate CreditRateType = "COMMIT_RATE"
+	CreditRateTypeListRate   CreditRateType = "LIST_RATE"
+)
+
+func (r CreditRateType) IsKnown() bool {
+	switch r {
+	case CreditRateTypeCommitRate, CreditRateTypeListRate:
 		return true
 	}
 	return false

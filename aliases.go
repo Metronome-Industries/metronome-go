@@ -360,6 +360,15 @@ const CreditLedgerTypeCreditCredited = shared.CreditLedgerTypeCreditCredited
 const CreditLedgerTypeCreditManual = shared.CreditLedgerTypeCreditManual
 
 // This is an alias to an internal type.
+type CreditRateType = shared.CreditRateType
+
+// This is an alias to an internal value.
+const CreditRateTypeCommitRate = shared.CreditRateTypeCommitRate
+
+// This is an alias to an internal value.
+const CreditRateTypeListRate = shared.CreditRateTypeListRate
+
+// This is an alias to an internal type.
 type CreditTypeData = shared.CreditTypeData
 
 // This is an alias to an internal type.
