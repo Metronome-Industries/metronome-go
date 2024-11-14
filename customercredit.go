@@ -145,7 +145,8 @@ type CustomerCreditNewParams struct {
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
+	NetsuiteSalesOrderID param.Field[string]                          `json:"netsuite_sales_order_id"`
+	RateType             param.Field[CustomerCreditNewParamsRateType] `json:"rate_type"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID param.Field[string] `json:"salesforce_opportunity_id"`
 }
@@ -174,6 +175,23 @@ type CustomerCreditNewParamsAccessScheduleScheduleItem struct {
 
 func (r CustomerCreditNewParamsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type CustomerCreditNewParamsRateType string
+
+const (
+	CustomerCreditNewParamsRateTypeCommitRate CustomerCreditNewParamsRateType = "COMMIT_RATE"
+	CustomerCreditNewParamsRateTypeCommitRate CustomerCreditNewParamsRateType = "commit_rate"
+	CustomerCreditNewParamsRateTypeListRate   CustomerCreditNewParamsRateType = "LIST_RATE"
+	CustomerCreditNewParamsRateTypeListRate   CustomerCreditNewParamsRateType = "list_rate"
+)
+
+func (r CustomerCreditNewParamsRateType) IsKnown() bool {
+	switch r {
+	case CustomerCreditNewParamsRateTypeCommitRate, CustomerCreditNewParamsRateTypeCommitRate, CustomerCreditNewParamsRateTypeListRate, CustomerCreditNewParamsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type CustomerCreditListParams struct {
