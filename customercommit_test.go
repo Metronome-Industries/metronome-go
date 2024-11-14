@@ -67,6 +67,7 @@ func TestCustomerCommitNewWithOptionalParams(t *testing.T) {
 		}),
 		Name:                    metronome.F("My Commit"),
 		NetsuiteSalesOrderID:    metronome.F("netsuite_sales_order_id"),
+		RateType:                metronome.F(metronome.CustomerCommitNewParamsRateTypeCommitRate),
 		SalesforceOpportunityID: metronome.F("salesforce_opportunity_id"),
 	})
 	if err != nil {
