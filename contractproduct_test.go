@@ -31,14 +31,14 @@ func TestContractProductNewWithOptionalParams(t *testing.T) {
 		Name:                   metronome.F("My Product"),
 		Type:                   metronome.F(metronome.ContractProductNewParamsTypeFixed),
 		BillableMetricID:       metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		CompositeProductIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		CompositeTags:          metronome.F([]string{"string", "string", "string"}),
+		CompositeProductIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+		CompositeTags:          metronome.F([]string{"string"}),
 		ExcludeFreeUsage:       metronome.F(true),
 		IsRefundable:           metronome.F(true),
 		NetsuiteInternalItemID: metronome.F("netsuite_internal_item_id"),
 		NetsuiteOverageItemID:  metronome.F("netsuite_overage_item_id"),
-		PresentationGroupKey:   metronome.F([]string{"string", "string", "string"}),
-		PricingGroupKey:        metronome.F([]string{"string", "string", "string"}),
+		PresentationGroupKey:   metronome.F([]string{"string"}),
+		PricingGroupKey:        metronome.F([]string{"string"}),
 		QuantityConversion: metronome.F(metronome.QuantityConversionParam{
 			ConversionFactor: metronome.F(0.000000),
 			Operation:        metronome.F(metronome.QuantityConversionOperationMultiply),
@@ -48,7 +48,7 @@ func TestContractProductNewWithOptionalParams(t *testing.T) {
 			DecimalPlaces:  metronome.F(0.000000),
 			RoundingMethod: metronome.F(metronome.QuantityRoundingRoundingMethodRoundUp),
 		}),
-		Tags: metronome.F([]string{"string", "string", "string"}),
+		Tags: metronome.F([]string{"string"}),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -101,15 +101,15 @@ func TestContractProductUpdateWithOptionalParams(t *testing.T) {
 		ProductID:              metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
 		StartingAt:             metronome.F(time.Now()),
 		BillableMetricID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		CompositeProductIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		CompositeTags:          metronome.F([]string{"string", "string", "string"}),
+		CompositeProductIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+		CompositeTags:          metronome.F([]string{"string"}),
 		ExcludeFreeUsage:       metronome.F(true),
 		IsRefundable:           metronome.F(true),
 		Name:                   metronome.F("My Updated Product"),
 		NetsuiteInternalItemID: metronome.F("netsuite_internal_item_id"),
 		NetsuiteOverageItemID:  metronome.F("netsuite_overage_item_id"),
-		PresentationGroupKey:   metronome.F([]string{"string", "string", "string"}),
-		PricingGroupKey:        metronome.F([]string{"string", "string", "string"}),
+		PresentationGroupKey:   metronome.F([]string{"string"}),
+		PricingGroupKey:        metronome.F([]string{"string"}),
 		QuantityConversion: metronome.F(metronome.QuantityConversionParam{
 			ConversionFactor: metronome.F(0.000000),
 			Operation:        metronome.F(metronome.QuantityConversionOperationMultiply),
@@ -119,7 +119,7 @@ func TestContractProductUpdateWithOptionalParams(t *testing.T) {
 			DecimalPlaces:  metronome.F(0.000000),
 			RoundingMethod: metronome.F(metronome.QuantityRoundingRoundingMethodRoundUp),
 		}),
-		Tags: metronome.F([]string{"string", "string", "string"}),
+		Tags: metronome.F([]string{"string"}),
 	})
 	if err != nil {
 		var apierr *metronome.Error

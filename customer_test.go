@@ -88,12 +88,12 @@ func TestCustomerListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Customers.List(context.TODO(), metronome.CustomerListParams{
-		CustomerIDs:          metronome.F([]string{"string", "string", "string"}),
+		CustomerIDs:          metronome.F([]string{"string"}),
 		IngestAlias:          metronome.F("ingest_alias"),
 		Limit:                metronome.F(int64(1)),
 		NextPage:             metronome.F("next_page"),
 		OnlyArchived:         metronome.F(true),
-		SalesforceAccountIDs: metronome.F([]string{"string", "string", "string"}),
+		SalesforceAccountIDs: metronome.F([]string{"string"}),
 	})
 	if err != nil {
 		var apierr *metronome.Error
