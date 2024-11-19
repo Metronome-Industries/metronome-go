@@ -35,24 +35,24 @@ func TestBillableMetricNewWithOptionalParams(t *testing.T) {
 		}),
 		EventTypeFilter: metronome.F(shared.EventTypeFilterParam{
 			InValues:    metronome.F([]string{"cpu_usage"}),
-			NotInValues: metronome.F([]string{"string", "string", "string"}),
+			NotInValues: metronome.F([]string{"string"}),
 		}),
 		GroupKeys: metronome.F([][]string{{"region"}, {"machine_type"}}),
 		PropertyFilters: metronome.F([]shared.PropertyFilterParam{{
 			Name:        metronome.F("cpu_hours"),
 			Exists:      metronome.F(true),
-			InValues:    metronome.F([]string{"string", "string", "string"}),
-			NotInValues: metronome.F([]string{"string", "string", "string"}),
+			InValues:    metronome.F([]string{"string"}),
+			NotInValues: metronome.F([]string{"string"}),
 		}, {
 			Name:        metronome.F("region"),
 			Exists:      metronome.F(true),
 			InValues:    metronome.F([]string{"EU", "NA"}),
-			NotInValues: metronome.F([]string{"string", "string", "string"}),
+			NotInValues: metronome.F([]string{"string"}),
 		}, {
 			Name:        metronome.F("machine_type"),
 			Exists:      metronome.F(true),
 			InValues:    metronome.F([]string{"slow", "fast"}),
-			NotInValues: metronome.F([]string{"string", "string", "string"}),
+			NotInValues: metronome.F([]string{"string"}),
 		}}),
 		Sql: metronome.F("sql"),
 	})

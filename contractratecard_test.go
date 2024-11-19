@@ -97,14 +97,6 @@ func TestContractRateCardUpdateWithOptionalParams(t *testing.T) {
 			Name:         metronome.F("name"),
 			EndingBefore: metronome.F(time.Now()),
 			StartingAt:   metronome.F(time.Now()),
-		}, {
-			Name:         metronome.F("name"),
-			EndingBefore: metronome.F(time.Now()),
-			StartingAt:   metronome.F(time.Now()),
-		}, {
-			Name:         metronome.F("name"),
-			EndingBefore: metronome.F(time.Now()),
-			StartingAt:   metronome.F(time.Now()),
 		}}),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
