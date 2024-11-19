@@ -37,20 +37,8 @@ func TestUsageListWithOptionalParams(t *testing.T) {
 				Key:    metronome.F("key"),
 				Values: metronome.F([]string{"x"}),
 			}),
-		}, {
-			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			GroupBy: metronome.F(metronome.UsageListParamsBillableMetricsGroupBy{
-				Key:    metronome.F("key"),
-				Values: metronome.F([]string{"x"}),
-			}),
-		}, {
-			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			GroupBy: metronome.F(metronome.UsageListParamsBillableMetricsGroupBy{
-				Key:    metronome.F("key"),
-				Values: metronome.F([]string{"x"}),
-			}),
 		}}),
-		CustomerIDs: metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+		CustomerIDs: metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 	})
 	if err != nil {
 		var apierr *metronome.Error

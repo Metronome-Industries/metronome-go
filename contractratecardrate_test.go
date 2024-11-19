@@ -41,7 +41,7 @@ func TestContractRateCardRateListWithOptionalParams(t *testing.T) {
 				"foo": "string",
 			}),
 			ProductID:   metronome.F("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
-			ProductTags: metronome.F([]string{"string", "string", "string"}),
+			ProductTags: metronome.F([]string{"string"}),
 		}}),
 	})
 	if err != nil {
@@ -77,12 +77,6 @@ func TestContractRateCardRateAddWithOptionalParams(t *testing.T) {
 			Tiers: metronome.F([]shared.TierParam{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
-			}, {
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
-			}, {
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
 			}}),
 		}),
 		CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
@@ -97,12 +91,6 @@ func TestContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		}),
 		Quantity: metronome.F(0.000000),
 		Tiers: metronome.F([]shared.TierParam{{
-			Price: metronome.F(0.000000),
-			Size:  metronome.F(0.000000),
-		}, {
-			Price: metronome.F(0.000000),
-			Size:  metronome.F(0.000000),
-		}, {
 			Price: metronome.F(0.000000),
 			Size:  metronome.F(0.000000),
 		}}),
@@ -142,12 +130,6 @@ func TestContractRateCardRateAddMany(t *testing.T) {
 				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
-				}, {
-					Price: metronome.F(0.000000),
-					Size:  metronome.F(0.000000),
-				}, {
-					Price: metronome.F(0.000000),
-					Size:  metronome.F(0.000000),
 				}}),
 			}),
 			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
@@ -165,12 +147,6 @@ func TestContractRateCardRateAddMany(t *testing.T) {
 			Tiers: metronome.F([]shared.TierParam{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
-			}, {
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
-			}, {
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
 			}}),
 			UseListPrices: metronome.F(true),
 		}, {
@@ -182,12 +158,6 @@ func TestContractRateCardRateAddMany(t *testing.T) {
 				RateType: metronome.F(metronome.ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
 				Price:    metronome.F(0.000000),
 				Tiers: metronome.F([]shared.TierParam{{
-					Price: metronome.F(0.000000),
-					Size:  metronome.F(0.000000),
-				}, {
-					Price: metronome.F(0.000000),
-					Size:  metronome.F(0.000000),
-				}, {
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -205,12 +175,6 @@ func TestContractRateCardRateAddMany(t *testing.T) {
 			}),
 			Quantity: metronome.F(0.000000),
 			Tiers: metronome.F([]shared.TierParam{{
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
-			}, {
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
-			}, {
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}}),

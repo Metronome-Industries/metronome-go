@@ -45,7 +45,7 @@ func TestCreditGrantNewWithOptionalParams(t *testing.T) {
 		}),
 		EffectiveAt: metronome.F(time.Now()),
 		InvoiceDate: metronome.F(time.Now()),
-		ProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+		ProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 		Reason:      metronome.F("Incentivize new customer"),
 		RolloverSettings: metronome.F(metronome.CreditGrantNewParamsRolloverSettings{
 			ExpiresAt: metronome.F(time.Now()),
@@ -81,7 +81,7 @@ func TestCreditGrantListWithOptionalParams(t *testing.T) {
 	_, err := client.CreditGrants.List(context.TODO(), metronome.CreditGrantListParams{
 		Limit:             metronome.F(int64(1)),
 		NextPage:          metronome.F("next_page"),
-		CreditGrantIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+		CreditGrantIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 		CreditTypeIDs:     metronome.F([]string{"2714e483-4ff1-48e4-9e25-ac732e8f24f2"}),
 		CustomerIDs:       metronome.F([]string{"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc", "0e5b8609-d901-4992-b394-c3c2e3f37b1c"}),
 		EffectiveBefore:   metronome.F(time.Now()),

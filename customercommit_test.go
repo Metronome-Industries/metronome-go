@@ -39,9 +39,9 @@ func TestCustomerCommitNewWithOptionalParams(t *testing.T) {
 		Priority:              metronome.F(100.000000),
 		ProductID:             metronome.F("f14d6729-6a44-4b13-9908-9387f1918790"),
 		Type:                  metronome.F(metronome.CustomerCommitNewParamsTypePrepaid),
-		ApplicableContractIDs: metronome.F([]string{"string", "string", "string"}),
-		ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		ApplicableProductTags: metronome.F([]string{"string", "string", "string"}),
+		ApplicableContractIDs: metronome.F([]string{"string"}),
+		ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+		ApplicableProductTags: metronome.F([]string{"string"}),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
 		}),

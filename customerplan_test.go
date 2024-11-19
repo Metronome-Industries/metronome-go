@@ -62,30 +62,8 @@ func TestCustomerPlanAddWithOptionalParams(t *testing.T) {
 			CustomCreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			FiatCurrencyCreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			ToFiatConversionFactor:   metronome.F(0.000000),
-		}, {
-			CustomCreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			FiatCurrencyCreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			ToFiatConversionFactor:   metronome.F(0.000000),
-		}, {
-			CustomCreditTypeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			FiatCurrencyCreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			ToFiatConversionFactor:   metronome.F(0.000000),
 		}}),
 		PriceAdjustments: metronome.F([]metronome.CustomerPlanAddParamsPriceAdjustment{{
-			AdjustmentType: metronome.F(metronome.CustomerPlanAddParamsPriceAdjustmentsAdjustmentTypePercentage),
-			ChargeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			StartPeriod:    metronome.F(0.000000),
-			Quantity:       metronome.F(0.000000),
-			Tier:           metronome.F(0.000000),
-			Value:          metronome.F(0.000000),
-		}, {
-			AdjustmentType: metronome.F(metronome.CustomerPlanAddParamsPriceAdjustmentsAdjustmentTypePercentage),
-			ChargeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			StartPeriod:    metronome.F(0.000000),
-			Quantity:       metronome.F(0.000000),
-			Tier:           metronome.F(0.000000),
-			Value:          metronome.F(0.000000),
-		}, {
 			AdjustmentType: metronome.F(metronome.CustomerPlanAddParamsPriceAdjustmentsAdjustmentTypePercentage),
 			ChargeID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			StartPeriod:    metronome.F(0.000000),
