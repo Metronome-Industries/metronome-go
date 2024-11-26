@@ -185,12 +185,15 @@ func (r contractGetResponseJSON) RawJSON() string {
 }
 
 type ContractGetResponseData struct {
-	ID           string                             `json:"id,required" format:"uuid"`
-	Amendments   []ContractGetResponseDataAmendment `json:"amendments,required"`
-	Current      shared.ContractWithoutAmendments   `json:"current,required"`
-	CustomerID   string                             `json:"customer_id,required" format:"uuid"`
-	Initial      shared.ContractWithoutAmendments   `json:"initial,required"`
-	CustomFields map[string]string                  `json:"custom_fields"`
+	ID         string                             `json:"id,required" format:"uuid"`
+	Amendments []ContractGetResponseDataAmendment `json:"amendments,required"`
+	Current    shared.ContractWithoutAmendments   `json:"current,required"`
+	CustomerID string                             `json:"customer_id,required" format:"uuid"`
+	Initial    shared.ContractWithoutAmendments   `json:"initial,required"`
+	// RFC 3339 timestamp indicating when the contract was archived. If not returned,
+	// the contract is not archived.
+	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	CustomFields map[string]string `json:"custom_fields"`
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration ContractGetResponseDataCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	// Prevents the creation of duplicates. If a request to create a record is made
@@ -208,6 +211,7 @@ type contractGetResponseDataJSON struct {
 	Current                              apijson.Field
 	CustomerID                           apijson.Field
 	Initial                              apijson.Field
+	ArchivedAt                           apijson.Field
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
 	UniquenessKey                        apijson.Field
@@ -416,12 +420,15 @@ func (r contractListResponseJSON) RawJSON() string {
 }
 
 type ContractListResponseData struct {
-	ID           string                              `json:"id,required" format:"uuid"`
-	Amendments   []ContractListResponseDataAmendment `json:"amendments,required"`
-	Current      shared.ContractWithoutAmendments    `json:"current,required"`
-	CustomerID   string                              `json:"customer_id,required" format:"uuid"`
-	Initial      shared.ContractWithoutAmendments    `json:"initial,required"`
-	CustomFields map[string]string                   `json:"custom_fields"`
+	ID         string                              `json:"id,required" format:"uuid"`
+	Amendments []ContractListResponseDataAmendment `json:"amendments,required"`
+	Current    shared.ContractWithoutAmendments    `json:"current,required"`
+	CustomerID string                              `json:"customer_id,required" format:"uuid"`
+	Initial    shared.ContractWithoutAmendments    `json:"initial,required"`
+	// RFC 3339 timestamp indicating when the contract was archived. If not returned,
+	// the contract is not archived.
+	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	CustomFields map[string]string `json:"custom_fields"`
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration ContractListResponseDataCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	// Prevents the creation of duplicates. If a request to create a record is made
@@ -439,6 +446,7 @@ type contractListResponseDataJSON struct {
 	Current                              apijson.Field
 	CustomerID                           apijson.Field
 	Initial                              apijson.Field
+	ArchivedAt                           apijson.Field
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
 	UniquenessKey                        apijson.Field
