@@ -66,7 +66,7 @@ func (r *CustomerPlanService) ListAutoPaging(ctx context.Context, params Custome
 }
 
 // Associate an existing customer with a plan for a specified date range. See the
-// [price adjustments documentation](https://docs.metronome.com/pricing/managing-plans/#price-adjustments)
+// [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)
 // for details on the price adjustments.
 func (r *CustomerPlanService) Add(ctx context.Context, params CustomerPlanAddParams, opts ...option.RequestOption) (res *CustomerPlanAddResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -96,7 +96,7 @@ func (r *CustomerPlanService) End(ctx context.Context, params CustomerPlanEndPar
 }
 
 // Lists a customer plans adjustments. See the
-// [price adjustments documentation](https://docs.metronome.com/pricing/managing-plans/#price-adjustments)
+// [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)
 // for details.
 func (r *CustomerPlanService) ListPriceAdjustments(ctx context.Context, params CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerPlanListPriceAdjustmentsResponse], err error) {
 	var raw *http.Response
@@ -124,7 +124,7 @@ func (r *CustomerPlanService) ListPriceAdjustments(ctx context.Context, params C
 }
 
 // Lists a customer plans adjustments. See the
-// [price adjustments documentation](https://docs.metronome.com/pricing/managing-plans/#price-adjustments)
+// [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)
 // for details.
 func (r *CustomerPlanService) ListPriceAdjustmentsAutoPaging(ctx context.Context, params CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerPlanListPriceAdjustmentsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListPriceAdjustments(ctx, params, opts...))
@@ -382,7 +382,7 @@ type CustomerPlanAddParams struct {
 	OverageRateAdjustments param.Field[[]CustomerPlanAddParamsOverageRateAdjustment] `json:"overage_rate_adjustments"`
 	// A list of price adjustments can be applied on top of the pricing in the plans.
 	// See the
-	// [price adjustments documentation](https://docs.metronome.com/pricing/managing-plans/#price-adjustments)
+	// [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)
 	// for details.
 	PriceAdjustments param.Field[[]CustomerPlanAddParamsPriceAdjustment] `json:"price_adjustments"`
 	// A custom trial can be set for the customer's plan. See the
