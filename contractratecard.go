@@ -365,8 +365,7 @@ type ContractRateCardGetRateScheduleResponseData struct {
 	Rate        shared.Rate `json:"rate,required"`
 	StartingAt  time.Time   `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
-	// list rate when consuming a credit or commit. This feature requires opt-in before
-	// it can be used. Please contact Metronome support to enable this feature.
+	// list rate when consuming a credit or commit.
 	CommitRate         ContractRateCardGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
 	EndingBefore       time.Time                                             `json:"ending_before" format:"date-time"`
 	PricingGroupValues map[string]string                                     `json:"pricing_group_values"`
@@ -398,8 +397,7 @@ func (r contractRateCardGetRateScheduleResponseDataJSON) RawJSON() string {
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit. This feature requires opt-in before
-// it can be used. Please contact Metronome support to enable this feature.
+// list rate when consuming a credit or commit.
 type ContractRateCardGetRateScheduleResponseDataCommitRate struct {
 	RateType ContractRateCardGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
