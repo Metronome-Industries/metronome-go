@@ -83,8 +83,7 @@ type ContractRateCardRateListResponse struct {
 	Rate        shared.Rate `json:"rate,required"`
 	StartingAt  time.Time   `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
-	// list rate when consuming a credit or commit. This feature requires opt-in before
-	// it can be used. Please contact Metronome support to enable this feature.
+	// list rate when consuming a credit or commit.
 	CommitRate         ContractRateCardRateListResponseCommitRate `json:"commit_rate"`
 	EndingBefore       time.Time                                  `json:"ending_before" format:"date-time"`
 	PricingGroupValues map[string]string                          `json:"pricing_group_values"`
@@ -116,8 +115,7 @@ func (r contractRateCardRateListResponseJSON) RawJSON() string {
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit. This feature requires opt-in before
-// it can be used. Please contact Metronome support to enable this feature.
+// list rate when consuming a credit or commit.
 type ContractRateCardRateListResponseCommitRate struct {
 	RateType ContractRateCardRateListResponseCommitRateRateType `json:"rate_type,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
@@ -192,8 +190,7 @@ func (r contractRateCardRateAddResponseJSON) RawJSON() string {
 type ContractRateCardRateAddResponseData struct {
 	RateType ContractRateCardRateAddResponseDataRateType `json:"rate_type,required"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
-	// list rate when consuming a credit or commit. This feature requires opt-in before
-	// it can be used. Please contact Metronome support to enable this feature.
+	// list rate when consuming a credit or commit.
 	CommitRate ContractRateCardRateAddResponseDataCommitRate `json:"commit_rate"`
 	CreditType shared.CreditTypeData                         `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -267,8 +264,7 @@ func (r ContractRateCardRateAddResponseDataRateType) IsKnown() bool {
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit. This feature requires opt-in before
-// it can be used. Please contact Metronome support to enable this feature.
+// list rate when consuming a credit or commit.
 type ContractRateCardRateAddResponseDataCommitRate struct {
 	RateType ContractRateCardRateAddResponseDataCommitRateRateType `json:"rate_type,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
@@ -396,8 +392,7 @@ type ContractRateCardRateAddParams struct {
 	// inclusive effective date
 	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
-	// list rate when consuming a credit or commit. This feature requires opt-in before
-	// it can be used. Please contact Metronome support to enable this feature.
+	// list rate when consuming a credit or commit.
 	CommitRate param.Field[ContractRateCardRateAddParamsCommitRate] `json:"commit_rate"`
 	// The Metronome ID of the credit type to associate with price, defaults to USD
 	// (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
@@ -450,8 +445,7 @@ func (r ContractRateCardRateAddParamsRateType) IsKnown() bool {
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit. This feature requires opt-in before
-// it can be used. Please contact Metronome support to enable this feature.
+// list rate when consuming a credit or commit.
 type ContractRateCardRateAddParamsCommitRate struct {
 	RateType param.Field[ContractRateCardRateAddParamsCommitRateRateType] `json:"rate_type,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
@@ -504,8 +498,7 @@ type ContractRateCardRateAddManyParamsRate struct {
 	// inclusive effective date
 	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
-	// list rate when consuming a credit or commit. This feature requires opt-in before
-	// it can be used. Please contact Metronome support to enable this feature.
+	// list rate when consuming a credit or commit.
 	CommitRate param.Field[ContractRateCardRateAddManyParamsRatesCommitRate] `json:"commit_rate"`
 	// "The Metronome ID of the credit type to associate with price, defaults to USD
 	// (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
@@ -558,8 +551,7 @@ func (r ContractRateCardRateAddManyParamsRatesRateType) IsKnown() bool {
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit. This feature requires opt-in before
-// it can be used. Please contact Metronome support to enable this feature.
+// list rate when consuming a credit or commit.
 type ContractRateCardRateAddManyParamsRatesCommitRate struct {
 	RateType param.Field[ContractRateCardRateAddManyParamsRatesCommitRateRateType] `json:"rate_type,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
