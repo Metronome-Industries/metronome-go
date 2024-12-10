@@ -196,7 +196,8 @@ type ContractRateCardRateAddResponseData struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]interface{} `json:"custom_rate"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
 	IsProrated bool `json:"is_prorated"`
 	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
 	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
@@ -403,7 +404,8 @@ type ContractRateCardRateAddParams struct {
 	CustomRate param.Field[map[string]interface{}] `json:"custom_rate"`
 	// exclusive end date
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
 	IsProrated param.Field[bool] `json:"is_prorated"`
 	// Default price. For FLAT and SUBSCRIPTION rate_type, this must be >=0. For
 	// PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this
@@ -509,7 +511,8 @@ type ContractRateCardRateAddManyParamsRate struct {
 	CustomRate param.Field[map[string]interface{}] `json:"custom_rate"`
 	// exclusive end date
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
 	IsProrated param.Field[bool] `json:"is_prorated"`
 	// Default price. For FLAT and SUBSCRIPTION rate_type, this must be >=0. For
 	// PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this

@@ -1593,7 +1593,8 @@ type ContractNewParamsOverridesOverwriteRate struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate param.Field[map[string]interface{}] `json:"custom_rate"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
 	IsProrated param.Field[bool] `json:"is_prorated"`
 	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
 	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
@@ -2504,7 +2505,8 @@ type ContractAmendParamsOverridesOverwriteRate struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate param.Field[map[string]interface{}] `json:"custom_rate"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type.
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
 	IsProrated param.Field[bool] `json:"is_prorated"`
 	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
 	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
