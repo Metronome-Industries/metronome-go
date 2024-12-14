@@ -660,7 +660,7 @@ func (r CreditGrantNewParams) MarshalJSON() (data []byte, err error) {
 // the amount of credits granted
 type CreditGrantNewParamsGrantAmount struct {
 	Amount param.Field[float64] `json:"amount,required"`
-	// the ID of the pricing unit to be used
+	// the ID of the pricing unit to be used. Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id,required" format:"uuid"`
 }
 
@@ -671,7 +671,7 @@ func (r CreditGrantNewParamsGrantAmount) MarshalJSON() (data []byte, err error) 
 // the amount paid for this credit grant
 type CreditGrantNewParamsPaidAmount struct {
 	Amount param.Field[float64] `json:"amount,required"`
-	// the ID of the pricing unit to be used
+	// the ID of the pricing unit to be used. Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id,required" format:"uuid"`
 }
 
