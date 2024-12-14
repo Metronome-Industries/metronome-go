@@ -170,7 +170,8 @@ func (r CustomerCommitNewParams) MarshalJSON() (data []byte, err error) {
 // only one schedule item is allowed and amount must match invoice_schedule total.
 type CustomerCommitNewParamsAccessSchedule struct {
 	ScheduleItems param.Field[[]CustomerCommitNewParamsAccessScheduleScheduleItem] `json:"schedule_items,required"`
-	CreditTypeID  param.Field[string]                                              `json:"credit_type_id" format:"uuid"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 }
 
 func (r CustomerCommitNewParamsAccessSchedule) MarshalJSON() (data []byte, err error) {
@@ -209,7 +210,7 @@ func (r CustomerCommitNewParamsType) IsKnown() bool {
 // accesss_schedule amount. Optional for "PREPAID" commits: if not provided, this
 // will be a "complimentary" commit with no invoice.
 type CustomerCommitNewParamsInvoiceSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and

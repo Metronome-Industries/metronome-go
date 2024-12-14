@@ -158,7 +158,8 @@ func (r CustomerCreditNewParams) MarshalJSON() (data []byte, err error) {
 // Schedule for distributing the credit to the customer.
 type CustomerCreditNewParamsAccessSchedule struct {
 	ScheduleItems param.Field[[]CustomerCreditNewParamsAccessScheduleScheduleItem] `json:"schedule_items,required"`
-	CreditTypeID  param.Field[string]                                              `json:"credit_type_id" format:"uuid"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 }
 
 func (r CustomerCreditNewParamsAccessSchedule) MarshalJSON() (data []byte, err error) {
