@@ -1185,7 +1185,8 @@ func (r ContractNewParamsCommitsType) IsKnown() bool {
 // total.
 type ContractNewParamsCommitsAccessSchedule struct {
 	ScheduleItems param.Field[[]ContractNewParamsCommitsAccessScheduleScheduleItem] `json:"schedule_items,required"`
-	CreditTypeID  param.Field[string]                                               `json:"credit_type_id" format:"uuid"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 }
 
 func (r ContractNewParamsCommitsAccessSchedule) MarshalJSON() (data []byte, err error) {
@@ -1209,7 +1210,7 @@ func (r ContractNewParamsCommitsAccessScheduleScheduleItem) MarshalJSON() (data 
 // amount. Optional for "PREPAID" commits: if not provided, this will be a
 // "complimentary" commit with no invoice.
 type ContractNewParamsCommitsInvoiceSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -1352,7 +1353,8 @@ func (r ContractNewParamsCredit) MarshalJSON() (data []byte, err error) {
 // Schedule for distributing the credit to the customer.
 type ContractNewParamsCreditsAccessSchedule struct {
 	ScheduleItems param.Field[[]ContractNewParamsCreditsAccessScheduleScheduleItem] `json:"schedule_items,required"`
-	CreditTypeID  param.Field[string]                                               `json:"credit_type_id" format:"uuid"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 }
 
 func (r ContractNewParamsCreditsAccessSchedule) MarshalJSON() (data []byte, err error) {
@@ -1404,7 +1406,7 @@ func (r ContractNewParamsDiscount) MarshalJSON() (data []byte, err error) {
 
 // Must provide either schedule_items or recurring_schedule.
 type ContractNewParamsDiscountsSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -1764,7 +1766,7 @@ func (r ContractNewParamsScheduledCharge) MarshalJSON() (data []byte, err error)
 
 // Must provide either schedule_items or recurring_schedule.
 type ContractNewParamsScheduledChargesSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -2116,7 +2118,8 @@ func (r ContractAmendParamsCommitsType) IsKnown() bool {
 // total.
 type ContractAmendParamsCommitsAccessSchedule struct {
 	ScheduleItems param.Field[[]ContractAmendParamsCommitsAccessScheduleScheduleItem] `json:"schedule_items,required"`
-	CreditTypeID  param.Field[string]                                                 `json:"credit_type_id" format:"uuid"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 }
 
 func (r ContractAmendParamsCommitsAccessSchedule) MarshalJSON() (data []byte, err error) {
@@ -2140,7 +2143,7 @@ func (r ContractAmendParamsCommitsAccessScheduleScheduleItem) MarshalJSON() (dat
 // amount. Optional for "PREPAID" commits: if not provided, this will be a
 // "complimentary" commit with no invoice.
 type ContractAmendParamsCommitsInvoiceSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -2283,7 +2286,8 @@ func (r ContractAmendParamsCredit) MarshalJSON() (data []byte, err error) {
 // Schedule for distributing the credit to the customer.
 type ContractAmendParamsCreditsAccessSchedule struct {
 	ScheduleItems param.Field[[]ContractAmendParamsCreditsAccessScheduleScheduleItem] `json:"schedule_items,required"`
-	CreditTypeID  param.Field[string]                                                 `json:"credit_type_id" format:"uuid"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 }
 
 func (r ContractAmendParamsCreditsAccessSchedule) MarshalJSON() (data []byte, err error) {
@@ -2335,7 +2339,7 @@ func (r ContractAmendParamsDiscount) MarshalJSON() (data []byte, err error) {
 
 // Must provide either schedule_items or recurring_schedule.
 type ContractAmendParamsDiscountsSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -2677,7 +2681,7 @@ func (r ContractAmendParamsScheduledCharge) MarshalJSON() (data []byte, err erro
 
 // Must provide either schedule_items or recurring_schedule.
 type ContractAmendParamsScheduledChargesSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
