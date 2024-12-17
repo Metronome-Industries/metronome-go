@@ -76,12 +76,13 @@ func (r *ContractRateCardRateService) AddMany(ctx context.Context, body Contract
 }
 
 type ContractRateCardRateListResponse struct {
-	Entitled    bool        `json:"entitled,required"`
-	ProductID   string      `json:"product_id,required" format:"uuid"`
-	ProductName string      `json:"product_name,required"`
-	ProductTags []string    `json:"product_tags,required"`
-	Rate        shared.Rate `json:"rate,required"`
-	StartingAt  time.Time   `json:"starting_at,required" format:"date-time"`
+	Entitled            bool              `json:"entitled,required"`
+	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
+	ProductID           string            `json:"product_id,required" format:"uuid"`
+	ProductName         string            `json:"product_name,required"`
+	ProductTags         []string          `json:"product_tags,required"`
+	Rate                shared.Rate       `json:"rate,required"`
+	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate         ContractRateCardRateListResponseCommitRate `json:"commit_rate"`
@@ -93,17 +94,18 @@ type ContractRateCardRateListResponse struct {
 // contractRateCardRateListResponseJSON contains the JSON metadata for the struct
 // [ContractRateCardRateListResponse]
 type contractRateCardRateListResponseJSON struct {
-	Entitled           apijson.Field
-	ProductID          apijson.Field
-	ProductName        apijson.Field
-	ProductTags        apijson.Field
-	Rate               apijson.Field
-	StartingAt         apijson.Field
-	CommitRate         apijson.Field
-	EndingBefore       apijson.Field
-	PricingGroupValues apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
+	Entitled            apijson.Field
+	ProductCustomFields apijson.Field
+	ProductID           apijson.Field
+	ProductName         apijson.Field
+	ProductTags         apijson.Field
+	Rate                apijson.Field
+	StartingAt          apijson.Field
+	CommitRate          apijson.Field
+	EndingBefore        apijson.Field
+	PricingGroupValues  apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
 }
 
 func (r *ContractRateCardRateListResponse) UnmarshalJSON(data []byte) (err error) {

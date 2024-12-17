@@ -269,6 +269,7 @@ type InvoiceLineItem struct {
 	// only present for beta contract invoices
 	StartingAt   time.Time                     `json:"starting_at" format:"date-time"`
 	SubLineItems []InvoiceLineItemsSubLineItem `json:"sub_line_items"`
+	Tier         InvoiceLineItemsTier          `json:"tier"`
 	// only present for beta contract invoices
 	UnitPrice float64             `json:"unit_price"`
 	JSON      invoiceLineItemJSON `json:"-"`
@@ -310,6 +311,7 @@ type invoiceLineItemJSON struct {
 	ScheduledChargeID               apijson.Field
 	StartingAt                      apijson.Field
 	SubLineItems                    apijson.Field
+	Tier                            apijson.Field
 	UnitPrice                       apijson.Field
 	raw                             string
 	ExtraFields                     map[string]apijson.Field
@@ -497,6 +499,31 @@ func (r *InvoiceLineItemsSubLineItemsTier) UnmarshalJSON(data []byte) (err error
 }
 
 func (r invoiceLineItemsSubLineItemsTierJSON) RawJSON() string {
+	return r.raw
+}
+
+type InvoiceLineItemsTier struct {
+	Level      float64                  `json:"level,required"`
+	StartingAt string                   `json:"starting_at,required"`
+	Size       string                   `json:"size,nullable"`
+	JSON       invoiceLineItemsTierJSON `json:"-"`
+}
+
+// invoiceLineItemsTierJSON contains the JSON metadata for the struct
+// [InvoiceLineItemsTier]
+type invoiceLineItemsTierJSON struct {
+	Level       apijson.Field
+	StartingAt  apijson.Field
+	Size        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *InvoiceLineItemsTier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r invoiceLineItemsTierJSON) RawJSON() string {
 	return r.raw
 }
 
