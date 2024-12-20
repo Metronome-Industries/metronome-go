@@ -760,9 +760,14 @@ type ContractListBalancesResponseData struct {
 	RolledOverFrom   interface{} `json:"rolled_over_from"`
 	RolloverFraction float64     `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string                               `json:"salesforce_opportunity_id"`
-	JSON                    contractListBalancesResponseDataJSON `json:"-"`
-	union                   ContractListBalancesResponseDataUnion
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// Prevents the creation of duplicates. If a request to create a commit or credit
+	// is made with a uniqueness key that was previously used to create a commit or
+	// credit, a new record will not be created and the request will fail with a 409
+	// error.
+	UniquenessKey string                               `json:"uniqueness_key"`
+	JSON          contractListBalancesResponseDataJSON `json:"-"`
+	union         ContractListBalancesResponseDataUnion
 }
 
 // contractListBalancesResponseDataJSON contains the JSON metadata for the struct
@@ -789,6 +794,7 @@ type contractListBalancesResponseDataJSON struct {
 	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
+	UniquenessKey           apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
