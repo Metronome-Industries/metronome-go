@@ -49,6 +49,7 @@ func TestCustomerCreditNewWithOptionalParams(t *testing.T) {
 		NetsuiteSalesOrderID:    metronome.F("netsuite_sales_order_id"),
 		RateType:                metronome.F(metronome.CustomerCreditNewParamsRateTypeCommitRate),
 		SalesforceOpportunityID: metronome.F("salesforce_opportunity_id"),
+		UniquenessKey:           metronome.F("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
