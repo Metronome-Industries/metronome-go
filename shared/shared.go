@@ -77,8 +77,13 @@ type Commit struct {
 	RolledOverFrom   CommitRolledOverFrom `json:"rolled_over_from"`
 	RolloverFraction float64              `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string     `json:"salesforce_opportunity_id"`
-	JSON                    commitJSON `json:"-"`
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// Prevents the creation of duplicates. If a request to create a commit or credit
+	// is made with a uniqueness key that was previously used to create a commit or
+	// credit, a new record will not be created and the request will fail with a 409
+	// error.
+	UniquenessKey string     `json:"uniqueness_key"`
+	JSON          commitJSON `json:"-"`
 }
 
 // commitJSON contains the JSON metadata for the struct [Commit]
@@ -104,6 +109,7 @@ type commitJSON struct {
 	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
+	UniquenessKey           apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
@@ -1247,8 +1253,13 @@ type Credit struct {
 	Priority float64        `json:"priority"`
 	RateType CreditRateType `json:"rate_type"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string     `json:"salesforce_opportunity_id"`
-	JSON                    creditJSON `json:"-"`
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// Prevents the creation of duplicates. If a request to create a commit or credit
+	// is made with a uniqueness key that was previously used to create a commit or
+	// credit, a new record will not be created and the request will fail with a 409
+	// error.
+	UniquenessKey string     `json:"uniqueness_key"`
+	JSON          creditJSON `json:"-"`
 }
 
 // creditJSON contains the JSON metadata for the struct [Credit]
@@ -1269,6 +1280,7 @@ type creditJSON struct {
 	Priority                apijson.Field
 	RateType                apijson.Field
 	SalesforceOpportunityID apijson.Field
+	UniquenessKey           apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
