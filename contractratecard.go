@@ -503,9 +503,8 @@ type ContractRateCardUpdateParams struct {
 	// Reference this alias when creating a contract. If the same alias is assigned to
 	// multiple rate cards, it will reference the rate card to which it was most
 	// recently assigned. It is not exposed to end customers.
-	Aliases      param.Field[[]ContractRateCardUpdateParamsAlias] `json:"aliases"`
-	CustomFields param.Field[map[string]string]                   `json:"custom_fields"`
-	Description  param.Field[string]                              `json:"description"`
+	Aliases     param.Field[[]ContractRateCardUpdateParamsAlias] `json:"aliases"`
+	Description param.Field[string]                              `json:"description"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Name param.Field[string] `json:"name"`
 }
