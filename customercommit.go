@@ -129,7 +129,9 @@ type CustomerCommitNewParams struct {
 	CustomerID     param.Field[string]                                `json:"customer_id,required" format:"uuid"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
-	Priority  param.Field[float64]                     `json:"priority,required"`
+	Priority param.Field[float64] `json:"priority,required"`
+	// ID of the fixed product associated with the commit. This is required because
+	// products are used to invoice the commit amount.
 	ProductID param.Field[string]                      `json:"product_id,required" format:"uuid"`
 	Type      param.Field[CustomerCommitNewParamsType] `json:"type,required"`
 	// Which contract the commit applies to. If not provided, the commit applies to all
