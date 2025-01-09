@@ -209,6 +209,9 @@ type CustomerCreditListParams struct {
 	EffectiveBefore param.Field[time.Time] `json:"effective_before" format:"date-time"`
 	// Include credits from archived contracts.
 	IncludeArchived param.Field[bool] `json:"include_archived"`
+	// Include the balance in the response. Setting this flag may cause the query to be
+	// slower.
+	IncludeBalance param.Field[bool] `json:"include_balance"`
 	// Include credits on the contract level.
 	IncludeContractCredits param.Field[bool] `json:"include_contract_credits"`
 	// Include credit ledgers in the response. Setting this flag may cause the query to

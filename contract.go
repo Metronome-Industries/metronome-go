@@ -736,6 +736,15 @@ type ContractListBalancesResponseData struct {
 	ApplicableProductIDs interface{} `json:"applicable_product_ids"`
 	// This field can have the runtime type of [[]string].
 	ApplicableProductTags interface{} `json:"applicable_product_tags"`
+	// The current balance of the credit or commit. This balance reflects the amount of
+	// credit or commit that the customer has access to use at this moment - thus,
+	// expired and upcoming credit or commit segments contribute 0 to the balance. The
+	// balance will match the sum of all ledger entries with the exception of the case
+	// where the sum of negative manual ledger entries exceeds the positive amount
+	// remaining on the credit or commit - in that case, the balance will be 0. All
+	// manual ledger entries associated with active credit or commit segments are
+	// included in the balance, including future-dated manual ledger entries.
+	Balance float64 `json:"balance"`
 	// This field can have the runtime type of [shared.CommitContract],
 	// [shared.CreditContract].
 	Contract interface{} `json:"contract"`
@@ -781,6 +790,7 @@ type contractListBalancesResponseDataJSON struct {
 	ApplicableContractIDs   apijson.Field
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
+	Balance                 apijson.Field
 	Contract                apijson.Field
 	CustomFields            apijson.Field
 	Description             apijson.Field
@@ -1980,6 +1990,9 @@ func (r ContractNewParamsUsageStatementScheduleDay) IsKnown() bool {
 type ContractGetParams struct {
 	ContractID param.Field[string] `json:"contract_id,required" format:"uuid"`
 	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+	// Include the balance of credits and commits in the response. Setting this flag
+	// may cause the query to be slower.
+	IncludeBalance param.Field[bool] `json:"include_balance"`
 	// Include commit ledgers in the response. Setting this flag may cause the query to
 	// be slower.
 	IncludeLedgers param.Field[bool] `json:"include_ledgers"`
@@ -1997,6 +2010,9 @@ type ContractListParams struct {
 	CoveringDate param.Field[time.Time] `json:"covering_date" format:"date-time"`
 	// Include archived contracts in the response
 	IncludeArchived param.Field[bool] `json:"include_archived"`
+	// Include the balance of credits and commits in the response. Setting this flag
+	// may cause the query to be slower.
+	IncludeBalance param.Field[bool] `json:"include_balance"`
 	// Include commit ledgers in the response. Setting this flag may cause the query to
 	// be slower.
 	IncludeLedgers param.Field[bool] `json:"include_ledgers"`
@@ -2888,6 +2904,9 @@ type ContractListBalancesParams struct {
 	EffectiveBefore param.Field[time.Time] `json:"effective_before" format:"date-time"`
 	// Include credits from archived contracts.
 	IncludeArchived param.Field[bool] `json:"include_archived"`
+	// Include the balance of credits and commits in the response. Setting this flag
+	// may cause the query to be slower.
+	IncludeBalance param.Field[bool] `json:"include_balance"`
 	// Include balances on the contract level.
 	IncludeContractBalances param.Field[bool] `json:"include_contract_balances"`
 	// Include ledgers in the response. Setting this flag may cause the query to be

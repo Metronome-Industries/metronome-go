@@ -98,6 +98,7 @@ func TestCustomerCommitListWithOptionalParams(t *testing.T) {
 		CoveringDate:           metronome.F(time.Now()),
 		EffectiveBefore:        metronome.F(time.Now()),
 		IncludeArchived:        metronome.F(true),
+		IncludeBalance:         metronome.F(true),
 		IncludeContractCommits: metronome.F(true),
 		IncludeLedgers:         metronome.F(true),
 		NextPage:               metronome.F("next_page"),
