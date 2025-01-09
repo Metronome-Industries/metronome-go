@@ -78,6 +78,7 @@ func TestCustomerCreditListWithOptionalParams(t *testing.T) {
 		CreditID:               metronome.F("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
 		EffectiveBefore:        metronome.F(time.Now()),
 		IncludeArchived:        metronome.F(true),
+		IncludeBalance:         metronome.F(true),
 		IncludeContractCredits: metronome.F(true),
 		IncludeLedgers:         metronome.F(true),
 		NextPage:               metronome.F("next_page"),

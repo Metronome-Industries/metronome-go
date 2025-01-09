@@ -272,6 +272,7 @@ func TestContractGetWithOptionalParams(t *testing.T) {
 	_, err := client.Contracts.Get(context.TODO(), metronome.ContractGetParams{
 		ContractID:     metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
 		CustomerID:     metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		IncludeBalance: metronome.F(true),
 		IncludeLedgers: metronome.F(true),
 	})
 	if err != nil {
@@ -299,6 +300,7 @@ func TestContractListWithOptionalParams(t *testing.T) {
 		CustomerID:      metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
 		CoveringDate:    metronome.F(time.Now()),
 		IncludeArchived: metronome.F(true),
+		IncludeBalance:  metronome.F(true),
 		IncludeLedgers:  metronome.F(true),
 		StartingAt:      metronome.F(time.Now()),
 	})
@@ -652,6 +654,7 @@ func TestContractListBalancesWithOptionalParams(t *testing.T) {
 		CoveringDate:            metronome.F(time.Now()),
 		EffectiveBefore:         metronome.F(time.Now()),
 		IncludeArchived:         metronome.F(true),
+		IncludeBalance:          metronome.F(true),
 		IncludeContractBalances: metronome.F(true),
 		IncludeLedgers:          metronome.F(true),
 		NextPage:                metronome.F("next_page"),
