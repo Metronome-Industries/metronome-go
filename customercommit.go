@@ -339,6 +339,9 @@ type CustomerCommitListParams struct {
 	EffectiveBefore param.Field[time.Time] `json:"effective_before" format:"date-time"`
 	// Include commits from archived contracts.
 	IncludeArchived param.Field[bool] `json:"include_archived"`
+	// Include the balance in the response. Setting this flag may cause the query to be
+	// slower.
+	IncludeBalance param.Field[bool] `json:"include_balance"`
 	// Include commits on the contract level.
 	IncludeContractCommits param.Field[bool] `json:"include_contract_commits"`
 	// Include commit ledgers in the response. Setting this flag may cause the query to

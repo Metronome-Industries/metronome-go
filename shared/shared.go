@@ -53,13 +53,22 @@ type Commit struct {
 	// this commit.
 	AccessSchedule ScheduleDuration `json:"access_schedule"`
 	// (DEPRECATED) Use access_schedule + invoice_schedule instead.
-	Amount                float64           `json:"amount"`
-	ApplicableContractIDs []string          `json:"applicable_contract_ids" format:"uuid"`
-	ApplicableProductIDs  []string          `json:"applicable_product_ids" format:"uuid"`
-	ApplicableProductTags []string          `json:"applicable_product_tags"`
-	Contract              CommitContract    `json:"contract"`
-	CustomFields          map[string]string `json:"custom_fields"`
-	Description           string            `json:"description"`
+	Amount                float64  `json:"amount"`
+	ApplicableContractIDs []string `json:"applicable_contract_ids" format:"uuid"`
+	ApplicableProductIDs  []string `json:"applicable_product_ids" format:"uuid"`
+	ApplicableProductTags []string `json:"applicable_product_tags"`
+	// The current balance of the credit or commit. This balance reflects the amount of
+	// credit or commit that the customer has access to use at this moment - thus,
+	// expired and upcoming credit or commit segments contribute 0 to the balance. The
+	// balance will match the sum of all ledger entries with the exception of the case
+	// where the sum of negative manual ledger entries exceeds the positive amount
+	// remaining on the credit or commit - in that case, the balance will be 0. All
+	// manual ledger entries associated with active credit or commit segments are
+	// included in the balance, including future-dated manual ledger entries.
+	Balance      float64           `json:"balance"`
+	Contract     CommitContract    `json:"contract"`
+	CustomFields map[string]string `json:"custom_fields"`
+	Description  string            `json:"description"`
 	// The contract that this commit will be billed on.
 	InvoiceContract CommitInvoiceContract `json:"invoice_contract"`
 	// The schedule that the customer will be invoiced for this commit.
@@ -96,6 +105,7 @@ type commitJSON struct {
 	ApplicableContractIDs   apijson.Field
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
+	Balance                 apijson.Field
 	Contract                apijson.Field
 	CustomFields            apijson.Field
 	Description             apijson.Field
@@ -1235,13 +1245,22 @@ type Credit struct {
 	Product CreditProduct `json:"product,required"`
 	Type    CreditType    `json:"type,required"`
 	// The schedule that the customer will gain access to the credits.
-	AccessSchedule        ScheduleDuration  `json:"access_schedule"`
-	ApplicableContractIDs []string          `json:"applicable_contract_ids" format:"uuid"`
-	ApplicableProductIDs  []string          `json:"applicable_product_ids" format:"uuid"`
-	ApplicableProductTags []string          `json:"applicable_product_tags"`
-	Contract              CreditContract    `json:"contract"`
-	CustomFields          map[string]string `json:"custom_fields"`
-	Description           string            `json:"description"`
+	AccessSchedule        ScheduleDuration `json:"access_schedule"`
+	ApplicableContractIDs []string         `json:"applicable_contract_ids" format:"uuid"`
+	ApplicableProductIDs  []string         `json:"applicable_product_ids" format:"uuid"`
+	ApplicableProductTags []string         `json:"applicable_product_tags"`
+	// The current balance of the credit or commit. This balance reflects the amount of
+	// credit or commit that the customer has access to use at this moment - thus,
+	// expired and upcoming credit or commit segments contribute 0 to the balance. The
+	// balance will match the sum of all ledger entries with the exception of the case
+	// where the sum of negative manual ledger entries exceeds the positive amount
+	// remaining on the credit or commit - in that case, the balance will be 0. All
+	// manual ledger entries associated with active credit or commit segments are
+	// included in the balance, including future-dated manual ledger entries.
+	Balance      float64           `json:"balance"`
+	Contract     CreditContract    `json:"contract"`
+	CustomFields map[string]string `json:"custom_fields"`
+	Description  string            `json:"description"`
 	// A list of ordered events that impact the balance of a credit. For example, an
 	// invoice deduction or an expiration.
 	Ledger []CreditLedger `json:"ledger"`
@@ -1271,6 +1290,7 @@ type creditJSON struct {
 	ApplicableContractIDs   apijson.Field
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
+	Balance                 apijson.Field
 	Contract                apijson.Field
 	CustomFields            apijson.Field
 	Description             apijson.Field
