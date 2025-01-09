@@ -65,21 +65,23 @@ func (r *AuditLogService) ListAutoPaging(ctx context.Context, query AuditLogList
 }
 
 type AuditLogListResponse struct {
-	ID           string                     `json:"id,required"`
-	Timestamp    time.Time                  `json:"timestamp,required" format:"date-time"`
-	Action       string                     `json:"action"`
-	Actor        AuditLogListResponseActor  `json:"actor"`
-	Description  string                     `json:"description"`
-	ResourceID   string                     `json:"resource_id"`
-	ResourceType string                     `json:"resource_type"`
-	Status       AuditLogListResponseStatus `json:"status"`
-	JSON         auditLogListResponseJSON   `json:"-"`
+	ID           string                      `json:"id,required"`
+	Request      AuditLogListResponseRequest `json:"request,required"`
+	Timestamp    time.Time                   `json:"timestamp,required" format:"date-time"`
+	Action       string                      `json:"action"`
+	Actor        AuditLogListResponseActor   `json:"actor"`
+	Description  string                      `json:"description"`
+	ResourceID   string                      `json:"resource_id"`
+	ResourceType string                      `json:"resource_type"`
+	Status       AuditLogListResponseStatus  `json:"status"`
+	JSON         auditLogListResponseJSON    `json:"-"`
 }
 
 // auditLogListResponseJSON contains the JSON metadata for the struct
 // [AuditLogListResponse]
 type auditLogListResponseJSON struct {
 	ID           apijson.Field
+	Request      apijson.Field
 	Timestamp    apijson.Field
 	Action       apijson.Field
 	Actor        apijson.Field
@@ -96,6 +98,31 @@ func (r *AuditLogListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r auditLogListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AuditLogListResponseRequest struct {
+	ID        string                          `json:"id,required"`
+	IP        string                          `json:"ip"`
+	UserAgent string                          `json:"user_agent"`
+	JSON      auditLogListResponseRequestJSON `json:"-"`
+}
+
+// auditLogListResponseRequestJSON contains the JSON metadata for the struct
+// [AuditLogListResponseRequest]
+type auditLogListResponseRequestJSON struct {
+	ID          apijson.Field
+	IP          apijson.Field
+	UserAgent   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AuditLogListResponseRequest) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r auditLogListResponseRequestJSON) RawJSON() string {
 	return r.raw
 }
 
