@@ -32,6 +32,7 @@ func TestCustomerNewWithOptionalParams(t *testing.T) {
 		BillingConfig: metronome.F(metronome.CustomerNewParamsBillingConfig{
 			BillingProviderCustomerID: metronome.F("billing_provider_customer_id"),
 			BillingProviderType:       metronome.F(metronome.CustomerNewParamsBillingConfigBillingProviderTypeAwsMarketplace),
+			AwsIsSubscriptionProduct:  metronome.F(true),
 			AwsProductCode:            metronome.F("aws_product_code"),
 			AwsRegion:                 metronome.F(metronome.CustomerNewParamsBillingConfigAwsRegionAfSouth1),
 			StripeCollectionMethod:    metronome.F(metronome.CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically),
@@ -39,6 +40,15 @@ func TestCustomerNewWithOptionalParams(t *testing.T) {
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
 		}),
+		CustomerBillingProviderConfigurations: metronome.F([]metronome.CustomerNewParamsCustomerBillingProviderConfiguration{{
+			BillingProvider: metronome.F(metronome.CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAwsMarketplace),
+			Configuration: metronome.F(map[string]interface{}{
+				"stripe_customer_id":       "bar",
+				"stripe_collection_method": "bar",
+			}),
+			DeliveryMethod:   metronome.F(metronome.CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodDirectToBillingProvider),
+			DeliveryMethodID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		}}),
 		ExternalID:    metronome.F("x"),
 		IngestAliases: metronome.F([]string{"team@example.com"}),
 	})
