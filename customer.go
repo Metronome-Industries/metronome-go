@@ -579,9 +579,10 @@ func (r customerSetNameResponseJSON) RawJSON() string {
 
 type CustomerNewParams struct {
 	// This will be truncated to 160 characters if the provided name is longer.
-	Name          param.Field[string]                         `json:"name,required"`
-	BillingConfig param.Field[CustomerNewParamsBillingConfig] `json:"billing_config"`
-	CustomFields  param.Field[map[string]string]              `json:"custom_fields"`
+	Name                                  param.Field[string]                                                  `json:"name,required"`
+	BillingConfig                         param.Field[CustomerNewParamsBillingConfig]                          `json:"billing_config"`
+	CustomFields                          param.Field[map[string]string]                                       `json:"custom_fields"`
+	CustomerBillingProviderConfigurations param.Field[[]CustomerNewParamsCustomerBillingProviderConfiguration] `json:"customer_billing_provider_configurations"`
 	// (deprecated, use ingest_aliases instead) an alias that can be used to refer to
 	// this customer in usage events
 	ExternalID param.Field[string] `json:"external_id"`
@@ -594,11 +595,13 @@ func (r CustomerNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CustomerNewParamsBillingConfig struct {
-	BillingProviderCustomerID param.Field[string]                                               `json:"billing_provider_customer_id,required"`
-	BillingProviderType       param.Field[CustomerNewParamsBillingConfigBillingProviderType]    `json:"billing_provider_type,required"`
-	AwsProductCode            param.Field[string]                                               `json:"aws_product_code"`
-	AwsRegion                 param.Field[CustomerNewParamsBillingConfigAwsRegion]              `json:"aws_region"`
-	StripeCollectionMethod    param.Field[CustomerNewParamsBillingConfigStripeCollectionMethod] `json:"stripe_collection_method"`
+	BillingProviderCustomerID param.Field[string]                                            `json:"billing_provider_customer_id,required"`
+	BillingProviderType       param.Field[CustomerNewParamsBillingConfigBillingProviderType] `json:"billing_provider_type,required"`
+	// True if the aws_product_code is a SAAS subscription product, false otherwise.
+	AwsIsSubscriptionProduct param.Field[bool]                                                 `json:"aws_is_subscription_product"`
+	AwsProductCode           param.Field[string]                                               `json:"aws_product_code"`
+	AwsRegion                param.Field[CustomerNewParamsBillingConfigAwsRegion]              `json:"aws_region"`
+	StripeCollectionMethod   param.Field[CustomerNewParamsBillingConfigStripeCollectionMethod] `json:"stripe_collection_method"`
 }
 
 func (r CustomerNewParamsBillingConfig) MarshalJSON() (data []byte, err error) {
@@ -674,6 +677,64 @@ const (
 func (r CustomerNewParamsBillingConfigStripeCollectionMethod) IsKnown() bool {
 	switch r {
 	case CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically, CustomerNewParamsBillingConfigStripeCollectionMethodSendInvoice:
+		return true
+	}
+	return false
+}
+
+type CustomerNewParamsCustomerBillingProviderConfiguration struct {
+	// The billing provider set for this configuration.
+	BillingProvider param.Field[CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider] `json:"billing_provider,required"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider and delivery provider combination. Defaults to an empty
+	// object, however, for most billing provider + delivery method combinations, it
+	// will not be a valid configuration.
+	Configuration param.Field[map[string]interface{}] `json:"configuration"`
+	// The method to use for delivering invoices to this customer. If not provided, the
+	// `delivery_method_id` must be provided.
+	DeliveryMethod param.Field[CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod] `json:"delivery_method"`
+	// ID of the delivery method to use for this customer. If not provided, the
+	// `delivery_method` must be provided.
+	DeliveryMethodID param.Field[string] `json:"delivery_method_id" format:"uuid"`
+}
+
+func (r CustomerNewParamsCustomerBillingProviderConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The billing provider set for this configuration.
+type CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider string
+
+const (
+	CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAwsMarketplace   CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "aws_marketplace"
+	CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAzureMarketplace CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "azure_marketplace"
+	CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderGcpMarketplace   CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "gcp_marketplace"
+	CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderStripe           CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "stripe"
+	CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderNetsuite         CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "netsuite"
+)
+
+func (r CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider) IsKnown() bool {
+	switch r {
+	case CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAwsMarketplace, CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAzureMarketplace, CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderGcpMarketplace, CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderStripe, CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderNetsuite:
+		return true
+	}
+	return false
+}
+
+// The method to use for delivering invoices to this customer. If not provided, the
+// `delivery_method_id` must be provided.
+type CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod string
+
+const (
+	CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodDirectToBillingProvider CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod = "direct_to_billing_provider"
+	CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodAwsSqs                  CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod = "aws_sqs"
+	CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodTackle                  CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod = "tackle"
+	CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodAwsSns                  CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod = "aws_sns"
+)
+
+func (r CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod) IsKnown() bool {
+	switch r {
+	case CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodDirectToBillingProvider, CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodAwsSqs, CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodTackle, CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodAwsSns:
 		return true
 	}
 	return false
