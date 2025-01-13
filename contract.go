@@ -3029,6 +3029,11 @@ type ContractUpdateEndDateParams struct {
 	ContractID param.Field[string] `json:"contract_id,required" format:"uuid"`
 	// ID of the customer whose contract is to be updated
 	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+	// If true, allows setting the contract end date earlier than the end_timestamp of
+	// existing finalized invoices. Finalized invoices will be unchanged; if you want
+	// to incorporate the new end date, you can void and regenerate finalized usage
+	// invoices. Defaults to false.
+	AllowEndingBeforeFinalizedInvoice param.Field[bool] `json:"allow_ending_before_finalized_invoice"`
 	// RFC 3339 timestamp indicating when the contract will end (exclusive). If not
 	// provided, the contract will be updated to be open-ended.
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`

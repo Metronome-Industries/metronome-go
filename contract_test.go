@@ -787,9 +787,10 @@ func TestContractUpdateEndDateWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Contracts.UpdateEndDate(context.TODO(), metronome.ContractUpdateEndDateParams{
-		ContractID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		CustomerID:   metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		EndingBefore: metronome.F(time.Now()),
+		ContractID:                        metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		CustomerID:                        metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		AllowEndingBeforeFinalizedInvoice: metronome.F(true),
+		EndingBefore:                      metronome.F(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error
