@@ -1007,6 +1007,12 @@ type ContractWithoutAmendments struct {
 	ResellerRoyalties []ContractWithoutAmendmentsResellerRoyalty `json:"reseller_royalties"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// Determines which scheduled and commit charges to consolidate onto the Contract's
+	// usage invoice. The charge's `timestamp` must match the usage invoice's
+	// `ending_before` date for consolidation to occur. This field cannot be modified
+	// after a Contract has been created. If this field is omitted, charges will appear
+	// on a separate invoice from usage charges.
+	ScheduledChargesOnUsageInvoices ContractWithoutAmendmentsScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	// This field's availability is dependent on your client's configuration.
 	TotalContractValue float64                              `json:"total_contract_value"`
 	UsageFilter        ContractWithoutAmendmentsUsageFilter `json:"usage_filter"`
@@ -1016,28 +1022,29 @@ type ContractWithoutAmendments struct {
 // contractWithoutAmendmentsJSON contains the JSON metadata for the struct
 // [ContractWithoutAmendments]
 type contractWithoutAmendmentsJSON struct {
-	Commits                 apijson.Field
-	CreatedAt               apijson.Field
-	CreatedBy               apijson.Field
-	Overrides               apijson.Field
-	ScheduledCharges        apijson.Field
-	StartingAt              apijson.Field
-	Transitions             apijson.Field
-	UsageStatementSchedule  apijson.Field
-	Credits                 apijson.Field
-	Discounts               apijson.Field
-	EndingBefore            apijson.Field
-	Name                    apijson.Field
-	NetPaymentTermsDays     apijson.Field
-	NetsuiteSalesOrderID    apijson.Field
-	ProfessionalServices    apijson.Field
-	RateCardID              apijson.Field
-	ResellerRoyalties       apijson.Field
-	SalesforceOpportunityID apijson.Field
-	TotalContractValue      apijson.Field
-	UsageFilter             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
+	Commits                         apijson.Field
+	CreatedAt                       apijson.Field
+	CreatedBy                       apijson.Field
+	Overrides                       apijson.Field
+	ScheduledCharges                apijson.Field
+	StartingAt                      apijson.Field
+	Transitions                     apijson.Field
+	UsageStatementSchedule          apijson.Field
+	Credits                         apijson.Field
+	Discounts                       apijson.Field
+	EndingBefore                    apijson.Field
+	Name                            apijson.Field
+	NetPaymentTermsDays             apijson.Field
+	NetsuiteSalesOrderID            apijson.Field
+	ProfessionalServices            apijson.Field
+	RateCardID                      apijson.Field
+	ResellerRoyalties               apijson.Field
+	SalesforceOpportunityID         apijson.Field
+	ScheduledChargesOnUsageInvoices apijson.Field
+	TotalContractValue              apijson.Field
+	UsageFilter                     apijson.Field
+	raw                             string
+	ExtraFields                     map[string]apijson.Field
 }
 
 func (r *ContractWithoutAmendments) UnmarshalJSON(data []byte) (err error) {
@@ -1185,6 +1192,25 @@ const (
 func (r ContractWithoutAmendmentsResellerRoyaltiesResellerType) IsKnown() bool {
 	switch r {
 	case ContractWithoutAmendmentsResellerRoyaltiesResellerTypeAws, ContractWithoutAmendmentsResellerRoyaltiesResellerTypeAwsProService, ContractWithoutAmendmentsResellerRoyaltiesResellerTypeGcp, ContractWithoutAmendmentsResellerRoyaltiesResellerTypeGcpProService:
+		return true
+	}
+	return false
+}
+
+// Determines which scheduled and commit charges to consolidate onto the Contract's
+// usage invoice. The charge's `timestamp` must match the usage invoice's
+// `ending_before` date for consolidation to occur. This field cannot be modified
+// after a Contract has been created. If this field is omitted, charges will appear
+// on a separate invoice from usage charges.
+type ContractWithoutAmendmentsScheduledChargesOnUsageInvoices string
+
+const (
+	ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll ContractWithoutAmendmentsScheduledChargesOnUsageInvoices = "ALL"
+)
+
+func (r ContractWithoutAmendmentsScheduledChargesOnUsageInvoices) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll:
 		return true
 	}
 	return false

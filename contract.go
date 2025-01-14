@@ -196,6 +196,12 @@ type ContractGetResponseData struct {
 	CustomFields map[string]string `json:"custom_fields"`
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration ContractGetResponseDataCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
+	// Determines which scheduled and commit charges to consolidate onto the Contract's
+	// usage invoice. The charge's `timestamp` must match the usage invoice's
+	// `ending_before` date for consolidation to occur. This field cannot be modified
+	// after a Contract has been created. If this field is omitted, charges will appear
+	// on a separate invoice from usage charges.
+	ScheduledChargesOnUsageInvoices ContractGetResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -214,6 +220,7 @@ type contractGetResponseDataJSON struct {
 	ArchivedAt                           apijson.Field
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
+	ScheduledChargesOnUsageInvoices      apijson.Field
 	UniquenessKey                        apijson.Field
 	raw                                  string
 	ExtraFields                          map[string]apijson.Field
@@ -398,6 +405,25 @@ func (r ContractGetResponseDataCustomerBillingProviderConfigurationDeliveryMetho
 	return false
 }
 
+// Determines which scheduled and commit charges to consolidate onto the Contract's
+// usage invoice. The charge's `timestamp` must match the usage invoice's
+// `ending_before` date for consolidation to occur. This field cannot be modified
+// after a Contract has been created. If this field is omitted, charges will appear
+// on a separate invoice from usage charges.
+type ContractGetResponseDataScheduledChargesOnUsageInvoices string
+
+const (
+	ContractGetResponseDataScheduledChargesOnUsageInvoicesAll ContractGetResponseDataScheduledChargesOnUsageInvoices = "ALL"
+)
+
+func (r ContractGetResponseDataScheduledChargesOnUsageInvoices) IsKnown() bool {
+	switch r {
+	case ContractGetResponseDataScheduledChargesOnUsageInvoicesAll:
+		return true
+	}
+	return false
+}
+
 type ContractListResponse struct {
 	Data []ContractListResponseData `json:"data,required"`
 	JSON contractListResponseJSON   `json:"-"`
@@ -431,6 +457,12 @@ type ContractListResponseData struct {
 	CustomFields map[string]string `json:"custom_fields"`
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration ContractListResponseDataCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
+	// Determines which scheduled and commit charges to consolidate onto the Contract's
+	// usage invoice. The charge's `timestamp` must match the usage invoice's
+	// `ending_before` date for consolidation to occur. This field cannot be modified
+	// after a Contract has been created. If this field is omitted, charges will appear
+	// on a separate invoice from usage charges.
+	ScheduledChargesOnUsageInvoices ContractListResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -449,6 +481,7 @@ type contractListResponseDataJSON struct {
 	ArchivedAt                           apijson.Field
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
+	ScheduledChargesOnUsageInvoices      apijson.Field
 	UniquenessKey                        apijson.Field
 	raw                                  string
 	ExtraFields                          map[string]apijson.Field
@@ -628,6 +661,25 @@ const (
 func (r ContractListResponseDataCustomerBillingProviderConfigurationDeliveryMethod) IsKnown() bool {
 	switch r {
 	case ContractListResponseDataCustomerBillingProviderConfigurationDeliveryMethodDirectToBillingProvider, ContractListResponseDataCustomerBillingProviderConfigurationDeliveryMethodAwsSqs, ContractListResponseDataCustomerBillingProviderConfigurationDeliveryMethodTackle, ContractListResponseDataCustomerBillingProviderConfigurationDeliveryMethodAwsSns:
+		return true
+	}
+	return false
+}
+
+// Determines which scheduled and commit charges to consolidate onto the Contract's
+// usage invoice. The charge's `timestamp` must match the usage invoice's
+// `ending_before` date for consolidation to occur. This field cannot be modified
+// after a Contract has been created. If this field is omitted, charges will appear
+// on a separate invoice from usage charges.
+type ContractListResponseDataScheduledChargesOnUsageInvoices string
+
+const (
+	ContractListResponseDataScheduledChargesOnUsageInvoicesAll ContractListResponseDataScheduledChargesOnUsageInvoices = "ALL"
+)
+
+func (r ContractListResponseDataScheduledChargesOnUsageInvoices) IsKnown() bool {
+	switch r {
+	case ContractListResponseDataScheduledChargesOnUsageInvoicesAll:
 		return true
 	}
 	return false
@@ -1077,6 +1129,12 @@ type ContractNewParams struct {
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID param.Field[string]                             `json:"salesforce_opportunity_id"`
 	ScheduledCharges        param.Field[[]ContractNewParamsScheduledCharge] `json:"scheduled_charges"`
+	// Determines which scheduled and commit charges to consolidate onto the Contract's
+	// usage invoice. The charge's `timestamp` must match the usage invoice's
+	// `ending_before` date for consolidation to occur. This field cannot be modified
+	// after a Contract has been created. If this field is omitted, charges will appear
+	// on a separate invoice from usage charges.
+	ScheduledChargesOnUsageInvoices param.Field[ContractNewParamsScheduledChargesOnUsageInvoices] `json:"scheduled_charges_on_usage_invoices"`
 	// This field's availability is dependent on your client's configuration.
 	TotalContractValue param.Field[float64]                     `json:"total_contract_value"`
 	Transition         param.Field[ContractNewParamsTransition] `json:"transition"`
@@ -1876,6 +1934,25 @@ type ContractNewParamsScheduledChargesScheduleScheduleItem struct {
 
 func (r ContractNewParamsScheduledChargesScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Determines which scheduled and commit charges to consolidate onto the Contract's
+// usage invoice. The charge's `timestamp` must match the usage invoice's
+// `ending_before` date for consolidation to occur. This field cannot be modified
+// after a Contract has been created. If this field is omitted, charges will appear
+// on a separate invoice from usage charges.
+type ContractNewParamsScheduledChargesOnUsageInvoices string
+
+const (
+	ContractNewParamsScheduledChargesOnUsageInvoicesAll ContractNewParamsScheduledChargesOnUsageInvoices = "ALL"
+)
+
+func (r ContractNewParamsScheduledChargesOnUsageInvoices) IsKnown() bool {
+	switch r {
+	case ContractNewParamsScheduledChargesOnUsageInvoicesAll:
+		return true
+	}
+	return false
 }
 
 type ContractNewParamsTransition struct {
