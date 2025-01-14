@@ -260,6 +260,18 @@ const ContractWithoutAmendmentsResellerRoyaltiesResellerTypeGcp = shared.Contrac
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsResellerRoyaltiesResellerTypeGcpProService = shared.ContractWithoutAmendmentsResellerRoyaltiesResellerTypeGcpProService
 
+// Determines which scheduled and commit charges to consolidate onto the Contract's
+// usage invoice. The charge's `timestamp` must match the usage invoice's
+// `ending_before` date for consolidation to occur. This field cannot be modified
+// after a Contract has been created. If this field is omitted, charges will appear
+// on a separate invoice from usage charges.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsScheduledChargesOnUsageInvoices = shared.ContractWithoutAmendmentsScheduledChargesOnUsageInvoices
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll = shared.ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsUsageFilter = shared.ContractWithoutAmendmentsUsageFilter
 
