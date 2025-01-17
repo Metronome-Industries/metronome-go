@@ -1809,10 +1809,11 @@ func (r creditTypeDataJSON) RawJSON() string {
 }
 
 type Discount struct {
-	ID       string              `json:"id,required" format:"uuid"`
-	Product  DiscountProduct     `json:"product,required"`
-	Schedule SchedulePointInTime `json:"schedule,required"`
-	Name     string              `json:"name"`
+	ID           string              `json:"id,required" format:"uuid"`
+	Product      DiscountProduct     `json:"product,required"`
+	Schedule     SchedulePointInTime `json:"schedule,required"`
+	CustomFields map[string]string   `json:"custom_fields"`
+	Name         string              `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string       `json:"netsuite_sales_order_id"`
 	JSON                 discountJSON `json:"-"`
@@ -1823,6 +1824,7 @@ type discountJSON struct {
 	ID                   apijson.Field
 	Product              apijson.Field
 	Schedule             apijson.Field
+	CustomFields         apijson.Field
 	Name                 apijson.Field
 	NetsuiteSalesOrderID apijson.Field
 	raw                  string

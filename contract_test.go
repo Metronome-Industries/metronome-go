@@ -122,6 +122,9 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 					UnitPrice: metronome.F(0.000000),
 				}}),
 			}),
+			CustomFields: metronome.F(map[string]string{
+				"foo": "string",
+			}),
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
@@ -446,6 +449,9 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 					Quantity:  metronome.F(0.000000),
 					UnitPrice: metronome.F(0.000000),
 				}}),
+			}),
+			CustomFields: metronome.F(map[string]string{
+				"foo": "string",
 			}),
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
