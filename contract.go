@@ -1467,7 +1467,8 @@ func (r ContractNewParamsCreditsRateType) IsKnown() bool {
 type ContractNewParamsDiscount struct {
 	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule param.Field[ContractNewParamsDiscountsSchedule] `json:"schedule,required"`
+	Schedule     param.Field[ContractNewParamsDiscountsSchedule] `json:"schedule,required"`
+	CustomFields param.Field[map[string]string]                  `json:"custom_fields"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -2425,7 +2426,8 @@ func (r ContractAmendParamsCreditsRateType) IsKnown() bool {
 type ContractAmendParamsDiscount struct {
 	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule param.Field[ContractAmendParamsDiscountsSchedule] `json:"schedule,required"`
+	Schedule     param.Field[ContractAmendParamsDiscountsSchedule] `json:"schedule,required"`
+	CustomFields param.Field[map[string]string]                    `json:"custom_fields"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.

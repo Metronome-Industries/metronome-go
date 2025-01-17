@@ -145,6 +145,7 @@ const (
 	CustomFieldListKeysResponseDataEntityCreditGrant         CustomFieldListKeysResponseDataEntity = "credit_grant"
 	CustomFieldListKeysResponseDataEntityCustomerPlan        CustomFieldListKeysResponseDataEntity = "customer_plan"
 	CustomFieldListKeysResponseDataEntityCustomer            CustomFieldListKeysResponseDataEntity = "customer"
+	CustomFieldListKeysResponseDataEntityDiscount            CustomFieldListKeysResponseDataEntity = "discount"
 	CustomFieldListKeysResponseDataEntityInvoice             CustomFieldListKeysResponseDataEntity = "invoice"
 	CustomFieldListKeysResponseDataEntityPlan                CustomFieldListKeysResponseDataEntity = "plan"
 	CustomFieldListKeysResponseDataEntityProfessionalService CustomFieldListKeysResponseDataEntity = "professional_service"
@@ -155,7 +156,7 @@ const (
 
 func (r CustomFieldListKeysResponseDataEntity) IsKnown() bool {
 	switch r {
-	case CustomFieldListKeysResponseDataEntityAlert, CustomFieldListKeysResponseDataEntityBillableMetric, CustomFieldListKeysResponseDataEntityCharge, CustomFieldListKeysResponseDataEntityCommit, CustomFieldListKeysResponseDataEntityContractCredit, CustomFieldListKeysResponseDataEntityContractProduct, CustomFieldListKeysResponseDataEntityContract, CustomFieldListKeysResponseDataEntityCreditGrant, CustomFieldListKeysResponseDataEntityCustomerPlan, CustomFieldListKeysResponseDataEntityCustomer, CustomFieldListKeysResponseDataEntityInvoice, CustomFieldListKeysResponseDataEntityPlan, CustomFieldListKeysResponseDataEntityProfessionalService, CustomFieldListKeysResponseDataEntityProduct, CustomFieldListKeysResponseDataEntityRateCard, CustomFieldListKeysResponseDataEntityScheduledCharge:
+	case CustomFieldListKeysResponseDataEntityAlert, CustomFieldListKeysResponseDataEntityBillableMetric, CustomFieldListKeysResponseDataEntityCharge, CustomFieldListKeysResponseDataEntityCommit, CustomFieldListKeysResponseDataEntityContractCredit, CustomFieldListKeysResponseDataEntityContractProduct, CustomFieldListKeysResponseDataEntityContract, CustomFieldListKeysResponseDataEntityCreditGrant, CustomFieldListKeysResponseDataEntityCustomerPlan, CustomFieldListKeysResponseDataEntityCustomer, CustomFieldListKeysResponseDataEntityDiscount, CustomFieldListKeysResponseDataEntityInvoice, CustomFieldListKeysResponseDataEntityPlan, CustomFieldListKeysResponseDataEntityProfessionalService, CustomFieldListKeysResponseDataEntityProduct, CustomFieldListKeysResponseDataEntityRateCard, CustomFieldListKeysResponseDataEntityScheduledCharge:
 		return true
 	}
 	return false
@@ -184,6 +185,7 @@ const (
 	CustomFieldAddKeyParamsEntityCreditGrant         CustomFieldAddKeyParamsEntity = "credit_grant"
 	CustomFieldAddKeyParamsEntityCustomerPlan        CustomFieldAddKeyParamsEntity = "customer_plan"
 	CustomFieldAddKeyParamsEntityCustomer            CustomFieldAddKeyParamsEntity = "customer"
+	CustomFieldAddKeyParamsEntityDiscount            CustomFieldAddKeyParamsEntity = "discount"
 	CustomFieldAddKeyParamsEntityInvoice             CustomFieldAddKeyParamsEntity = "invoice"
 	CustomFieldAddKeyParamsEntityPlan                CustomFieldAddKeyParamsEntity = "plan"
 	CustomFieldAddKeyParamsEntityProfessionalService CustomFieldAddKeyParamsEntity = "professional_service"
@@ -194,7 +196,7 @@ const (
 
 func (r CustomFieldAddKeyParamsEntity) IsKnown() bool {
 	switch r {
-	case CustomFieldAddKeyParamsEntityAlert, CustomFieldAddKeyParamsEntityBillableMetric, CustomFieldAddKeyParamsEntityCharge, CustomFieldAddKeyParamsEntityCommit, CustomFieldAddKeyParamsEntityContractCredit, CustomFieldAddKeyParamsEntityContractProduct, CustomFieldAddKeyParamsEntityContract, CustomFieldAddKeyParamsEntityCreditGrant, CustomFieldAddKeyParamsEntityCustomerPlan, CustomFieldAddKeyParamsEntityCustomer, CustomFieldAddKeyParamsEntityInvoice, CustomFieldAddKeyParamsEntityPlan, CustomFieldAddKeyParamsEntityProfessionalService, CustomFieldAddKeyParamsEntityProduct, CustomFieldAddKeyParamsEntityRateCard, CustomFieldAddKeyParamsEntityScheduledCharge:
+	case CustomFieldAddKeyParamsEntityAlert, CustomFieldAddKeyParamsEntityBillableMetric, CustomFieldAddKeyParamsEntityCharge, CustomFieldAddKeyParamsEntityCommit, CustomFieldAddKeyParamsEntityContractCredit, CustomFieldAddKeyParamsEntityContractProduct, CustomFieldAddKeyParamsEntityContract, CustomFieldAddKeyParamsEntityCreditGrant, CustomFieldAddKeyParamsEntityCustomerPlan, CustomFieldAddKeyParamsEntityCustomer, CustomFieldAddKeyParamsEntityDiscount, CustomFieldAddKeyParamsEntityInvoice, CustomFieldAddKeyParamsEntityPlan, CustomFieldAddKeyParamsEntityProfessionalService, CustomFieldAddKeyParamsEntityProduct, CustomFieldAddKeyParamsEntityRateCard, CustomFieldAddKeyParamsEntityScheduledCharge:
 		return true
 	}
 	return false
@@ -223,6 +225,7 @@ const (
 	CustomFieldDeleteValuesParamsEntityCreditGrant         CustomFieldDeleteValuesParamsEntity = "credit_grant"
 	CustomFieldDeleteValuesParamsEntityCustomerPlan        CustomFieldDeleteValuesParamsEntity = "customer_plan"
 	CustomFieldDeleteValuesParamsEntityCustomer            CustomFieldDeleteValuesParamsEntity = "customer"
+	CustomFieldDeleteValuesParamsEntityDiscount            CustomFieldDeleteValuesParamsEntity = "discount"
 	CustomFieldDeleteValuesParamsEntityInvoice             CustomFieldDeleteValuesParamsEntity = "invoice"
 	CustomFieldDeleteValuesParamsEntityPlan                CustomFieldDeleteValuesParamsEntity = "plan"
 	CustomFieldDeleteValuesParamsEntityProfessionalService CustomFieldDeleteValuesParamsEntity = "professional_service"
@@ -233,7 +236,7 @@ const (
 
 func (r CustomFieldDeleteValuesParamsEntity) IsKnown() bool {
 	switch r {
-	case CustomFieldDeleteValuesParamsEntityAlert, CustomFieldDeleteValuesParamsEntityBillableMetric, CustomFieldDeleteValuesParamsEntityCharge, CustomFieldDeleteValuesParamsEntityCommit, CustomFieldDeleteValuesParamsEntityContractCredit, CustomFieldDeleteValuesParamsEntityContractProduct, CustomFieldDeleteValuesParamsEntityContract, CustomFieldDeleteValuesParamsEntityCreditGrant, CustomFieldDeleteValuesParamsEntityCustomerPlan, CustomFieldDeleteValuesParamsEntityCustomer, CustomFieldDeleteValuesParamsEntityInvoice, CustomFieldDeleteValuesParamsEntityPlan, CustomFieldDeleteValuesParamsEntityProfessionalService, CustomFieldDeleteValuesParamsEntityProduct, CustomFieldDeleteValuesParamsEntityRateCard, CustomFieldDeleteValuesParamsEntityScheduledCharge:
+	case CustomFieldDeleteValuesParamsEntityAlert, CustomFieldDeleteValuesParamsEntityBillableMetric, CustomFieldDeleteValuesParamsEntityCharge, CustomFieldDeleteValuesParamsEntityCommit, CustomFieldDeleteValuesParamsEntityContractCredit, CustomFieldDeleteValuesParamsEntityContractProduct, CustomFieldDeleteValuesParamsEntityContract, CustomFieldDeleteValuesParamsEntityCreditGrant, CustomFieldDeleteValuesParamsEntityCustomerPlan, CustomFieldDeleteValuesParamsEntityCustomer, CustomFieldDeleteValuesParamsEntityDiscount, CustomFieldDeleteValuesParamsEntityInvoice, CustomFieldDeleteValuesParamsEntityPlan, CustomFieldDeleteValuesParamsEntityProfessionalService, CustomFieldDeleteValuesParamsEntityProduct, CustomFieldDeleteValuesParamsEntityRateCard, CustomFieldDeleteValuesParamsEntityScheduledCharge:
 		return true
 	}
 	return false
@@ -272,6 +275,7 @@ const (
 	CustomFieldListKeysParamsEntityCreditGrant         CustomFieldListKeysParamsEntity = "credit_grant"
 	CustomFieldListKeysParamsEntityCustomerPlan        CustomFieldListKeysParamsEntity = "customer_plan"
 	CustomFieldListKeysParamsEntityCustomer            CustomFieldListKeysParamsEntity = "customer"
+	CustomFieldListKeysParamsEntityDiscount            CustomFieldListKeysParamsEntity = "discount"
 	CustomFieldListKeysParamsEntityInvoice             CustomFieldListKeysParamsEntity = "invoice"
 	CustomFieldListKeysParamsEntityPlan                CustomFieldListKeysParamsEntity = "plan"
 	CustomFieldListKeysParamsEntityProfessionalService CustomFieldListKeysParamsEntity = "professional_service"
@@ -282,7 +286,7 @@ const (
 
 func (r CustomFieldListKeysParamsEntity) IsKnown() bool {
 	switch r {
-	case CustomFieldListKeysParamsEntityAlert, CustomFieldListKeysParamsEntityBillableMetric, CustomFieldListKeysParamsEntityCharge, CustomFieldListKeysParamsEntityCommit, CustomFieldListKeysParamsEntityContractCredit, CustomFieldListKeysParamsEntityContractProduct, CustomFieldListKeysParamsEntityContract, CustomFieldListKeysParamsEntityCreditGrant, CustomFieldListKeysParamsEntityCustomerPlan, CustomFieldListKeysParamsEntityCustomer, CustomFieldListKeysParamsEntityInvoice, CustomFieldListKeysParamsEntityPlan, CustomFieldListKeysParamsEntityProfessionalService, CustomFieldListKeysParamsEntityProduct, CustomFieldListKeysParamsEntityRateCard, CustomFieldListKeysParamsEntityScheduledCharge:
+	case CustomFieldListKeysParamsEntityAlert, CustomFieldListKeysParamsEntityBillableMetric, CustomFieldListKeysParamsEntityCharge, CustomFieldListKeysParamsEntityCommit, CustomFieldListKeysParamsEntityContractCredit, CustomFieldListKeysParamsEntityContractProduct, CustomFieldListKeysParamsEntityContract, CustomFieldListKeysParamsEntityCreditGrant, CustomFieldListKeysParamsEntityCustomerPlan, CustomFieldListKeysParamsEntityCustomer, CustomFieldListKeysParamsEntityDiscount, CustomFieldListKeysParamsEntityInvoice, CustomFieldListKeysParamsEntityPlan, CustomFieldListKeysParamsEntityProfessionalService, CustomFieldListKeysParamsEntityProduct, CustomFieldListKeysParamsEntityRateCard, CustomFieldListKeysParamsEntityScheduledCharge:
 		return true
 	}
 	return false
@@ -310,6 +314,7 @@ const (
 	CustomFieldRemoveKeyParamsEntityCreditGrant         CustomFieldRemoveKeyParamsEntity = "credit_grant"
 	CustomFieldRemoveKeyParamsEntityCustomerPlan        CustomFieldRemoveKeyParamsEntity = "customer_plan"
 	CustomFieldRemoveKeyParamsEntityCustomer            CustomFieldRemoveKeyParamsEntity = "customer"
+	CustomFieldRemoveKeyParamsEntityDiscount            CustomFieldRemoveKeyParamsEntity = "discount"
 	CustomFieldRemoveKeyParamsEntityInvoice             CustomFieldRemoveKeyParamsEntity = "invoice"
 	CustomFieldRemoveKeyParamsEntityPlan                CustomFieldRemoveKeyParamsEntity = "plan"
 	CustomFieldRemoveKeyParamsEntityProfessionalService CustomFieldRemoveKeyParamsEntity = "professional_service"
@@ -320,7 +325,7 @@ const (
 
 func (r CustomFieldRemoveKeyParamsEntity) IsKnown() bool {
 	switch r {
-	case CustomFieldRemoveKeyParamsEntityAlert, CustomFieldRemoveKeyParamsEntityBillableMetric, CustomFieldRemoveKeyParamsEntityCharge, CustomFieldRemoveKeyParamsEntityCommit, CustomFieldRemoveKeyParamsEntityContractCredit, CustomFieldRemoveKeyParamsEntityContractProduct, CustomFieldRemoveKeyParamsEntityContract, CustomFieldRemoveKeyParamsEntityCreditGrant, CustomFieldRemoveKeyParamsEntityCustomerPlan, CustomFieldRemoveKeyParamsEntityCustomer, CustomFieldRemoveKeyParamsEntityInvoice, CustomFieldRemoveKeyParamsEntityPlan, CustomFieldRemoveKeyParamsEntityProfessionalService, CustomFieldRemoveKeyParamsEntityProduct, CustomFieldRemoveKeyParamsEntityRateCard, CustomFieldRemoveKeyParamsEntityScheduledCharge:
+	case CustomFieldRemoveKeyParamsEntityAlert, CustomFieldRemoveKeyParamsEntityBillableMetric, CustomFieldRemoveKeyParamsEntityCharge, CustomFieldRemoveKeyParamsEntityCommit, CustomFieldRemoveKeyParamsEntityContractCredit, CustomFieldRemoveKeyParamsEntityContractProduct, CustomFieldRemoveKeyParamsEntityContract, CustomFieldRemoveKeyParamsEntityCreditGrant, CustomFieldRemoveKeyParamsEntityCustomerPlan, CustomFieldRemoveKeyParamsEntityCustomer, CustomFieldRemoveKeyParamsEntityDiscount, CustomFieldRemoveKeyParamsEntityInvoice, CustomFieldRemoveKeyParamsEntityPlan, CustomFieldRemoveKeyParamsEntityProfessionalService, CustomFieldRemoveKeyParamsEntityProduct, CustomFieldRemoveKeyParamsEntityRateCard, CustomFieldRemoveKeyParamsEntityScheduledCharge:
 		return true
 	}
 	return false
@@ -349,6 +354,7 @@ const (
 	CustomFieldSetValuesParamsEntityCreditGrant         CustomFieldSetValuesParamsEntity = "credit_grant"
 	CustomFieldSetValuesParamsEntityCustomerPlan        CustomFieldSetValuesParamsEntity = "customer_plan"
 	CustomFieldSetValuesParamsEntityCustomer            CustomFieldSetValuesParamsEntity = "customer"
+	CustomFieldSetValuesParamsEntityDiscount            CustomFieldSetValuesParamsEntity = "discount"
 	CustomFieldSetValuesParamsEntityInvoice             CustomFieldSetValuesParamsEntity = "invoice"
 	CustomFieldSetValuesParamsEntityPlan                CustomFieldSetValuesParamsEntity = "plan"
 	CustomFieldSetValuesParamsEntityProfessionalService CustomFieldSetValuesParamsEntity = "professional_service"
@@ -359,7 +365,7 @@ const (
 
 func (r CustomFieldSetValuesParamsEntity) IsKnown() bool {
 	switch r {
-	case CustomFieldSetValuesParamsEntityAlert, CustomFieldSetValuesParamsEntityBillableMetric, CustomFieldSetValuesParamsEntityCharge, CustomFieldSetValuesParamsEntityCommit, CustomFieldSetValuesParamsEntityContractCredit, CustomFieldSetValuesParamsEntityContractProduct, CustomFieldSetValuesParamsEntityContract, CustomFieldSetValuesParamsEntityCreditGrant, CustomFieldSetValuesParamsEntityCustomerPlan, CustomFieldSetValuesParamsEntityCustomer, CustomFieldSetValuesParamsEntityInvoice, CustomFieldSetValuesParamsEntityPlan, CustomFieldSetValuesParamsEntityProfessionalService, CustomFieldSetValuesParamsEntityProduct, CustomFieldSetValuesParamsEntityRateCard, CustomFieldSetValuesParamsEntityScheduledCharge:
+	case CustomFieldSetValuesParamsEntityAlert, CustomFieldSetValuesParamsEntityBillableMetric, CustomFieldSetValuesParamsEntityCharge, CustomFieldSetValuesParamsEntityCommit, CustomFieldSetValuesParamsEntityContractCredit, CustomFieldSetValuesParamsEntityContractProduct, CustomFieldSetValuesParamsEntityContract, CustomFieldSetValuesParamsEntityCreditGrant, CustomFieldSetValuesParamsEntityCustomerPlan, CustomFieldSetValuesParamsEntityCustomer, CustomFieldSetValuesParamsEntityDiscount, CustomFieldSetValuesParamsEntityInvoice, CustomFieldSetValuesParamsEntityPlan, CustomFieldSetValuesParamsEntityProfessionalService, CustomFieldSetValuesParamsEntityProduct, CustomFieldSetValuesParamsEntityRateCard, CustomFieldSetValuesParamsEntityScheduledCharge:
 		return true
 	}
 	return false
