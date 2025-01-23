@@ -1,5 +1,66 @@
 # Changelog
 
+## 0.1.0-beta.4 (2025-01-23)
+
+Full Changelog: [v0.1.0-beta.3...v0.1.0-beta.4](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.3...v0.1.0-beta.4)
+
+### Features
+
+* **api:** api update ([#35](https://github.com/Metronome-Industries/metronome-go/issues/35)) ([10d6376](https://github.com/Metronome-Industries/metronome-go/commit/10d637675b897ac77f592646ac7a4d2dada9da70))
+* **api:** api update ([#36](https://github.com/Metronome-Industries/metronome-go/issues/36)) ([3acd4c0](https://github.com/Metronome-Industries/metronome-go/commit/3acd4c0a30ae31634e50ef237d7a4b80237f6183))
+* **api:** api update ([#37](https://github.com/Metronome-Industries/metronome-go/issues/37)) ([0b966c4](https://github.com/Metronome-Industries/metronome-go/commit/0b966c4dff82ce422020aab5718cbcdfadae2c49))
+* **api:** api update ([#39](https://github.com/Metronome-Industries/metronome-go/issues/39)) ([0e7bec3](https://github.com/Metronome-Industries/metronome-go/commit/0e7bec38766346ec8f7e98d4312f4d778d8ca342))
+* **api:** api update ([#41](https://github.com/Metronome-Industries/metronome-go/issues/41)) ([306626e](https://github.com/Metronome-Industries/metronome-go/commit/306626e7a4181b09ccec699cd75941823d43eff9))
+* **api:** api update ([#43](https://github.com/Metronome-Industries/metronome-go/issues/43)) ([6e0b1a6](https://github.com/Metronome-Industries/metronome-go/commit/6e0b1a6528182d034cc31da1e4d32fec8d9ca48b))
+* **api:** api update ([#45](https://github.com/Metronome-Industries/metronome-go/issues/45)) ([4f67b04](https://github.com/Metronome-Industries/metronome-go/commit/4f67b0413755d9f6d8b639652ed81586b01d2b81))
+* **api:** api update ([#46](https://github.com/Metronome-Industries/metronome-go/issues/46)) ([e3396a6](https://github.com/Metronome-Industries/metronome-go/commit/e3396a6ec8ad361d6dce18270349fe2c8e7b67d8))
+* **api:** api update ([#47](https://github.com/Metronome-Industries/metronome-go/issues/47)) ([b188565](https://github.com/Metronome-Industries/metronome-go/commit/b188565eb98210cfbefc1ea534f007a3e71196a2))
+* **api:** api update ([#49](https://github.com/Metronome-Industries/metronome-go/issues/49)) ([bbbbd49](https://github.com/Metronome-Industries/metronome-go/commit/bbbbd49114607c3fa5d7aecf094b131ebae6921e))
+* **api:** api update ([#51](https://github.com/Metronome-Industries/metronome-go/issues/51)) ([2408198](https://github.com/Metronome-Industries/metronome-go/commit/24081989f54e4dbf69c7ddd0070b841016608f13))
+* **api:** api update ([#52](https://github.com/Metronome-Industries/metronome-go/issues/52)) ([291a96a](https://github.com/Metronome-Industries/metronome-go/commit/291a96a154eab86454437d6bd3f6f748757ba1dd))
+* **api:** api update ([#55](https://github.com/Metronome-Industries/metronome-go/issues/55)) ([ef76201](https://github.com/Metronome-Industries/metronome-go/commit/ef76201f363d5737418358348872810f50245039))
+* **api:** api update ([#56](https://github.com/Metronome-Industries/metronome-go/issues/56)) ([192039d](https://github.com/Metronome-Industries/metronome-go/commit/192039dae7a966eee237033bc55c8cf3c34504f8))
+* **api:** api update ([#57](https://github.com/Metronome-Industries/metronome-go/issues/57)) ([59454cb](https://github.com/Metronome-Industries/metronome-go/commit/59454cb90fd9d6534bda63a08ccae9fcf66065cc))
+* **api:** api update ([#58](https://github.com/Metronome-Industries/metronome-go/issues/58)) ([ca0e98b](https://github.com/Metronome-Industries/metronome-go/commit/ca0e98b86365465625ef1dc9751e800f7fc6bd1e))
+* **api:** api update ([#59](https://github.com/Metronome-Industries/metronome-go/issues/59)) ([f8d9d01](https://github.com/Metronome-Industries/metronome-go/commit/f8d9d012baa2fafa72da54ac9b437568d43b31fb))
+* **api:** api update ([#60](https://github.com/Metronome-Industries/metronome-go/issues/60)) ([68baad4](https://github.com/Metronome-Industries/metronome-go/commit/68baad42fef69291dc2d8a14559e1f4987437c23))
+* **api:** api update ([#62](https://github.com/Metronome-Industries/metronome-go/issues/62)) ([cdad0ef](https://github.com/Metronome-Industries/metronome-go/commit/cdad0ef362cccf52e180013a51605455e2a227f4))
+* **api:** api update ([#64](https://github.com/Metronome-Industries/metronome-go/issues/64)) ([d4be26a](https://github.com/Metronome-Industries/metronome-go/commit/d4be26a32b3e22d0156bb7cd33fc52e8f9d57694))
+* **api:** api update ([#66](https://github.com/Metronome-Industries/metronome-go/issues/66)) ([401e9f3](https://github.com/Metronome-Industries/metronome-go/commit/401e9f365f1e8ea7e5514b06c52dcfbc0df62138))
+* **api:** api update ([#67](https://github.com/Metronome-Industries/metronome-go/issues/67)) ([2ed6aac](https://github.com/Metronome-Industries/metronome-go/commit/2ed6aacee3d731e4f5806cca43151b8edd872b0b))
+* **api:** api update ([#68](https://github.com/Metronome-Industries/metronome-go/issues/68)) ([e8fbde7](https://github.com/Metronome-Industries/metronome-go/commit/e8fbde79b08afeb854ec6694dbd2fa7a63da37b5))
+* **api:** api update ([#69](https://github.com/Metronome-Industries/metronome-go/issues/69)) ([23d8111](https://github.com/Metronome-Industries/metronome-go/commit/23d81115518aa0cb24658c485e307c87a195d88d))
+* **api:** api update ([#70](https://github.com/Metronome-Industries/metronome-go/issues/70)) ([7dfe29e](https://github.com/Metronome-Industries/metronome-go/commit/7dfe29e4993aad57d7cb50d662b4d68bb88412c5))
+* **api:** api update ([#71](https://github.com/Metronome-Industries/metronome-go/issues/71)) ([ee17a91](https://github.com/Metronome-Industries/metronome-go/commit/ee17a9124828da3b0559bf23a74704db1b8d90b4))
+* **api:** api update ([#72](https://github.com/Metronome-Industries/metronome-go/issues/72)) ([cb2cd03](https://github.com/Metronome-Industries/metronome-go/commit/cb2cd034749e27bcf25116c653b1d67571d42ebe))
+* **api:** api update ([#73](https://github.com/Metronome-Industries/metronome-go/issues/73)) ([51e1e44](https://github.com/Metronome-Industries/metronome-go/commit/51e1e4496a510e069f09f45e96af696c8b81ba20))
+* **api:** api update ([#76](https://github.com/Metronome-Industries/metronome-go/issues/76)) ([1483246](https://github.com/Metronome-Industries/metronome-go/commit/148324689958d60f45884ab17a859149402752af))
+* **api:** OpenAPI spec update via Stainless API ([#26](https://github.com/Metronome-Industries/metronome-go/issues/26)) ([541211f](https://github.com/Metronome-Industries/metronome-go/commit/541211f4f43fab71ae4dc87ce001e90a7ca2284e))
+* **api:** OpenAPI spec update via Stainless API ([#30](https://github.com/Metronome-Industries/metronome-go/issues/30)) ([f0c2c67](https://github.com/Metronome-Industries/metronome-go/commit/f0c2c6789d1efd54a1b0c1f29c0d89d4c1bbaf28))
+* **api:** OpenAPI spec update via Stainless API ([#33](https://github.com/Metronome-Industries/metronome-go/issues/33)) ([eb465ba](https://github.com/Metronome-Industries/metronome-go/commit/eb465ba57ea0a060927d29d3b3c73143e649b66b))
+
+
+### Bug Fixes
+
+* fix apijson.Port for embedded structs ([#74](https://github.com/Metronome-Industries/metronome-go/issues/74)) ([8818285](https://github.com/Metronome-Industries/metronome-go/commit/88182853b02c29992ed6b9f408d542b48c77730c))
+* fix apijson.Port for embedded structs ([#75](https://github.com/Metronome-Industries/metronome-go/issues/75)) ([2acbd14](https://github.com/Metronome-Industries/metronome-go/commit/2acbd14d85cc30333c36dd470b95116acfa7f491))
+* prevent niche naming conflicts for string enums with different casing ([#77](https://github.com/Metronome-Industries/metronome-go/issues/77)) ([1cb9dd6](https://github.com/Metronome-Industries/metronome-go/commit/1cb9dd646c7e601a20bc9b10570d63f1fecb3292))
+
+
+### Chores
+
+* **internal:** codegen related update ([#27](https://github.com/Metronome-Industries/metronome-go/issues/27)) ([e520581](https://github.com/Metronome-Industries/metronome-go/commit/e520581c40181d2b0c0c5d1936b85553bdff8673))
+* **internal:** codegen related update ([#31](https://github.com/Metronome-Industries/metronome-go/issues/31)) ([48db3fc](https://github.com/Metronome-Industries/metronome-go/commit/48db3fc98901fc9fa967fffaa2d891175e5ef6cf))
+* **internal:** codegen related update ([#32](https://github.com/Metronome-Industries/metronome-go/issues/32)) ([799e8c3](https://github.com/Metronome-Industries/metronome-go/commit/799e8c379cfee51a748fd2b1ff6276088ca56413))
+* **internal:** codegen related update ([#61](https://github.com/Metronome-Industries/metronome-go/issues/61)) ([3a0ef7c](https://github.com/Metronome-Industries/metronome-go/commit/3a0ef7c5b9270506b643127088639e1412c6af07))
+* **internal:** codegen related update ([#63](https://github.com/Metronome-Industries/metronome-go/issues/63)) ([5a14051](https://github.com/Metronome-Industries/metronome-go/commit/5a14051400fb8688e319abe83d6a1793e76d5328))
+* **internal:** codegen related update ([#65](https://github.com/Metronome-Industries/metronome-go/issues/65)) ([5e23c3a](https://github.com/Metronome-Industries/metronome-go/commit/5e23c3a882e2526515a00c0ae87e3927fa405c50))
+* rebuild project due to codegen change ([#40](https://github.com/Metronome-Industries/metronome-go/issues/40)) ([5ee5774](https://github.com/Metronome-Industries/metronome-go/commit/5ee5774bad7eeaabbbd3f0242f39ac903d47cda0))
+* rebuild project due to codegen change ([#42](https://github.com/Metronome-Industries/metronome-go/issues/42)) ([bf8db73](https://github.com/Metronome-Industries/metronome-go/commit/bf8db7314f7c7eecac4b41d8f46bed17c3f98b76))
+* rebuild project due to codegen change ([#44](https://github.com/Metronome-Industries/metronome-go/issues/44)) ([0b179d8](https://github.com/Metronome-Industries/metronome-go/commit/0b179d84d0b401fef4c5389e45a6ab83b936a631))
+* rebuild project due to codegen change ([#50](https://github.com/Metronome-Industries/metronome-go/issues/50)) ([91315a9](https://github.com/Metronome-Industries/metronome-go/commit/91315a9a1a0d4a00fc6dded1661fab5f5ffe8362))
+* rebuild project due to codegen change ([#53](https://github.com/Metronome-Industries/metronome-go/issues/53)) ([0d48ba6](https://github.com/Metronome-Industries/metronome-go/commit/0d48ba60f0919e73116ff47265893cc08e62b75e))
+
 ## 0.1.0-beta.3 (2024-09-20)
 
 Full Changelog: [v0.1.0-beta.2...v0.1.0-beta.3](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.2...v0.1.0-beta.3)
