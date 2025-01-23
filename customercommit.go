@@ -316,15 +316,15 @@ func (r CustomerCommitNewParamsInvoiceScheduleScheduleItem) MarshalJSON() (data 
 type CustomerCommitNewParamsRateType string
 
 const (
-	CustomerCommitNewParamsRateTypeCommitRate CustomerCommitNewParamsRateType = "COMMIT_RATE"
-	CustomerCommitNewParamsRateTypeCommitRate CustomerCommitNewParamsRateType = "commit_rate"
-	CustomerCommitNewParamsRateTypeListRate   CustomerCommitNewParamsRateType = "LIST_RATE"
-	CustomerCommitNewParamsRateTypeListRate   CustomerCommitNewParamsRateType = "list_rate"
+	CustomerCommitNewParamsRateTypeCommitRateUppercase CustomerCommitNewParamsRateType = "COMMIT_RATE"
+	CustomerCommitNewParamsRateTypeCommitRate          CustomerCommitNewParamsRateType = "commit_rate"
+	CustomerCommitNewParamsRateTypeListRateUppercase   CustomerCommitNewParamsRateType = "LIST_RATE"
+	CustomerCommitNewParamsRateTypeListRate            CustomerCommitNewParamsRateType = "list_rate"
 )
 
 func (r CustomerCommitNewParamsRateType) IsKnown() bool {
 	switch r {
-	case CustomerCommitNewParamsRateTypeCommitRate, CustomerCommitNewParamsRateTypeCommitRate, CustomerCommitNewParamsRateTypeListRate, CustomerCommitNewParamsRateTypeListRate:
+	case CustomerCommitNewParamsRateTypeCommitRateUppercase, CustomerCommitNewParamsRateTypeCommitRate, CustomerCommitNewParamsRateTypeListRateUppercase, CustomerCommitNewParamsRateTypeListRate:
 		return true
 	}
 	return false
