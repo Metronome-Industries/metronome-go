@@ -1033,21 +1033,21 @@ func (r contractGetRateScheduleResponseDataCommitRateJSON) RawJSON() string {
 type ContractGetRateScheduleResponseDataCommitRateRateType string
 
 const (
-	ContractGetRateScheduleResponseDataCommitRateRateTypeFlat         ContractGetRateScheduleResponseDataCommitRateRateType = "FLAT"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeFlat         ContractGetRateScheduleResponseDataCommitRateRateType = "flat"
-	ContractGetRateScheduleResponseDataCommitRateRateTypePercentage   ContractGetRateScheduleResponseDataCommitRateRateType = "PERCENTAGE"
-	ContractGetRateScheduleResponseDataCommitRateRateTypePercentage   ContractGetRateScheduleResponseDataCommitRateRateType = "percentage"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription ContractGetRateScheduleResponseDataCommitRateRateType = "SUBSCRIPTION"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription ContractGetRateScheduleResponseDataCommitRateRateType = "subscription"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeTiered       ContractGetRateScheduleResponseDataCommitRateRateType = "TIERED"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeTiered       ContractGetRateScheduleResponseDataCommitRateRateType = "tiered"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeCustom       ContractGetRateScheduleResponseDataCommitRateRateType = "CUSTOM"
-	ContractGetRateScheduleResponseDataCommitRateRateTypeCustom       ContractGetRateScheduleResponseDataCommitRateRateType = "custom"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeFlatUppercase         ContractGetRateScheduleResponseDataCommitRateRateType = "FLAT"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeFlat                  ContractGetRateScheduleResponseDataCommitRateRateType = "flat"
+	ContractGetRateScheduleResponseDataCommitRateRateTypePercentageUppercase   ContractGetRateScheduleResponseDataCommitRateRateType = "PERCENTAGE"
+	ContractGetRateScheduleResponseDataCommitRateRateTypePercentage            ContractGetRateScheduleResponseDataCommitRateRateType = "percentage"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeSubscriptionUppercase ContractGetRateScheduleResponseDataCommitRateRateType = "SUBSCRIPTION"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription          ContractGetRateScheduleResponseDataCommitRateRateType = "subscription"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeTieredUppercase       ContractGetRateScheduleResponseDataCommitRateRateType = "TIERED"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeTiered                ContractGetRateScheduleResponseDataCommitRateRateType = "tiered"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeCustomUppercase       ContractGetRateScheduleResponseDataCommitRateRateType = "CUSTOM"
+	ContractGetRateScheduleResponseDataCommitRateRateTypeCustom                ContractGetRateScheduleResponseDataCommitRateRateType = "custom"
 )
 
 func (r ContractGetRateScheduleResponseDataCommitRateRateType) IsKnown() bool {
 	switch r {
-	case ContractGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractGetRateScheduleResponseDataCommitRateRateTypeCustom, ContractGetRateScheduleResponseDataCommitRateRateTypeCustom:
+	case ContractGetRateScheduleResponseDataCommitRateRateTypeFlatUppercase, ContractGetRateScheduleResponseDataCommitRateRateTypeFlat, ContractGetRateScheduleResponseDataCommitRateRateTypePercentageUppercase, ContractGetRateScheduleResponseDataCommitRateRateTypePercentage, ContractGetRateScheduleResponseDataCommitRateRateTypeSubscriptionUppercase, ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription, ContractGetRateScheduleResponseDataCommitRateRateTypeTieredUppercase, ContractGetRateScheduleResponseDataCommitRateRateTypeTiered, ContractGetRateScheduleResponseDataCommitRateRateTypeCustomUppercase, ContractGetRateScheduleResponseDataCommitRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -1383,15 +1383,15 @@ func (r ContractNewParamsCommitsInvoiceScheduleScheduleItem) MarshalJSON() (data
 type ContractNewParamsCommitsRateType string
 
 const (
-	ContractNewParamsCommitsRateTypeCommitRate ContractNewParamsCommitsRateType = "COMMIT_RATE"
-	ContractNewParamsCommitsRateTypeCommitRate ContractNewParamsCommitsRateType = "commit_rate"
-	ContractNewParamsCommitsRateTypeListRate   ContractNewParamsCommitsRateType = "LIST_RATE"
-	ContractNewParamsCommitsRateTypeListRate   ContractNewParamsCommitsRateType = "list_rate"
+	ContractNewParamsCommitsRateTypeCommitRateUppercase ContractNewParamsCommitsRateType = "COMMIT_RATE"
+	ContractNewParamsCommitsRateTypeCommitRate          ContractNewParamsCommitsRateType = "commit_rate"
+	ContractNewParamsCommitsRateTypeListRateUppercase   ContractNewParamsCommitsRateType = "LIST_RATE"
+	ContractNewParamsCommitsRateTypeListRate            ContractNewParamsCommitsRateType = "list_rate"
 )
 
 func (r ContractNewParamsCommitsRateType) IsKnown() bool {
 	switch r {
-	case ContractNewParamsCommitsRateTypeCommitRate, ContractNewParamsCommitsRateTypeCommitRate, ContractNewParamsCommitsRateTypeListRate, ContractNewParamsCommitsRateTypeListRate:
+	case ContractNewParamsCommitsRateTypeCommitRateUppercase, ContractNewParamsCommitsRateTypeCommitRate, ContractNewParamsCommitsRateTypeListRateUppercase, ContractNewParamsCommitsRateTypeListRate:
 		return true
 	}
 	return false
@@ -1450,15 +1450,15 @@ func (r ContractNewParamsCreditsAccessScheduleScheduleItem) MarshalJSON() (data 
 type ContractNewParamsCreditsRateType string
 
 const (
-	ContractNewParamsCreditsRateTypeCommitRate ContractNewParamsCreditsRateType = "COMMIT_RATE"
-	ContractNewParamsCreditsRateTypeCommitRate ContractNewParamsCreditsRateType = "commit_rate"
-	ContractNewParamsCreditsRateTypeListRate   ContractNewParamsCreditsRateType = "LIST_RATE"
-	ContractNewParamsCreditsRateTypeListRate   ContractNewParamsCreditsRateType = "list_rate"
+	ContractNewParamsCreditsRateTypeCommitRateUppercase ContractNewParamsCreditsRateType = "COMMIT_RATE"
+	ContractNewParamsCreditsRateTypeCommitRate          ContractNewParamsCreditsRateType = "commit_rate"
+	ContractNewParamsCreditsRateTypeListRateUppercase   ContractNewParamsCreditsRateType = "LIST_RATE"
+	ContractNewParamsCreditsRateTypeListRate            ContractNewParamsCreditsRateType = "list_rate"
 )
 
 func (r ContractNewParamsCreditsRateType) IsKnown() bool {
 	switch r {
-	case ContractNewParamsCreditsRateTypeCommitRate, ContractNewParamsCreditsRateTypeCommitRate, ContractNewParamsCreditsRateTypeListRate, ContractNewParamsCreditsRateTypeListRate:
+	case ContractNewParamsCreditsRateTypeCommitRateUppercase, ContractNewParamsCreditsRateTypeCommitRate, ContractNewParamsCreditsRateTypeListRateUppercase, ContractNewParamsCreditsRateTypeListRate:
 		return true
 	}
 	return false
@@ -1710,15 +1710,15 @@ func (r ContractNewParamsOverridesOverwriteRateRateType) IsKnown() bool {
 type ContractNewParamsOverridesTarget string
 
 const (
-	ContractNewParamsOverridesTargetCommitRate ContractNewParamsOverridesTarget = "COMMIT_RATE"
-	ContractNewParamsOverridesTargetCommitRate ContractNewParamsOverridesTarget = "commit_rate"
-	ContractNewParamsOverridesTargetListRate   ContractNewParamsOverridesTarget = "LIST_RATE"
-	ContractNewParamsOverridesTargetListRate   ContractNewParamsOverridesTarget = "list_rate"
+	ContractNewParamsOverridesTargetCommitRateUppercase ContractNewParamsOverridesTarget = "COMMIT_RATE"
+	ContractNewParamsOverridesTargetCommitRate          ContractNewParamsOverridesTarget = "commit_rate"
+	ContractNewParamsOverridesTargetListRateUppercase   ContractNewParamsOverridesTarget = "LIST_RATE"
+	ContractNewParamsOverridesTargetListRate            ContractNewParamsOverridesTarget = "list_rate"
 )
 
 func (r ContractNewParamsOverridesTarget) IsKnown() bool {
 	switch r {
-	case ContractNewParamsOverridesTargetCommitRate, ContractNewParamsOverridesTargetCommitRate, ContractNewParamsOverridesTargetListRate, ContractNewParamsOverridesTargetListRate:
+	case ContractNewParamsOverridesTargetCommitRateUppercase, ContractNewParamsOverridesTargetCommitRate, ContractNewParamsOverridesTargetListRateUppercase, ContractNewParamsOverridesTargetListRate:
 		return true
 	}
 	return false
@@ -2051,15 +2051,15 @@ func (r ContractNewParamsUsageStatementScheduleFrequency) IsKnown() bool {
 type ContractNewParamsUsageStatementScheduleDay string
 
 const (
-	ContractNewParamsUsageStatementScheduleDayFirstOfMonth  ContractNewParamsUsageStatementScheduleDay = "FIRST_OF_MONTH"
-	ContractNewParamsUsageStatementScheduleDayContractStart ContractNewParamsUsageStatementScheduleDay = "CONTRACT_START"
-	ContractNewParamsUsageStatementScheduleDayCustomDate    ContractNewParamsUsageStatementScheduleDay = "CUSTOM_DATE"
-	ContractNewParamsUsageStatementScheduleDayCustomDate    ContractNewParamsUsageStatementScheduleDay = "custom_date"
+	ContractNewParamsUsageStatementScheduleDayFirstOfMonth        ContractNewParamsUsageStatementScheduleDay = "FIRST_OF_MONTH"
+	ContractNewParamsUsageStatementScheduleDayContractStart       ContractNewParamsUsageStatementScheduleDay = "CONTRACT_START"
+	ContractNewParamsUsageStatementScheduleDayCustomDateUppercase ContractNewParamsUsageStatementScheduleDay = "CUSTOM_DATE"
+	ContractNewParamsUsageStatementScheduleDayCustomDate          ContractNewParamsUsageStatementScheduleDay = "custom_date"
 )
 
 func (r ContractNewParamsUsageStatementScheduleDay) IsKnown() bool {
 	switch r {
-	case ContractNewParamsUsageStatementScheduleDayFirstOfMonth, ContractNewParamsUsageStatementScheduleDayContractStart, ContractNewParamsUsageStatementScheduleDayCustomDate, ContractNewParamsUsageStatementScheduleDayCustomDate:
+	case ContractNewParamsUsageStatementScheduleDayFirstOfMonth, ContractNewParamsUsageStatementScheduleDayContractStart, ContractNewParamsUsageStatementScheduleDayCustomDateUppercase, ContractNewParamsUsageStatementScheduleDayCustomDate:
 		return true
 	}
 	return false
@@ -2342,15 +2342,15 @@ func (r ContractAmendParamsCommitsInvoiceScheduleScheduleItem) MarshalJSON() (da
 type ContractAmendParamsCommitsRateType string
 
 const (
-	ContractAmendParamsCommitsRateTypeCommitRate ContractAmendParamsCommitsRateType = "COMMIT_RATE"
-	ContractAmendParamsCommitsRateTypeCommitRate ContractAmendParamsCommitsRateType = "commit_rate"
-	ContractAmendParamsCommitsRateTypeListRate   ContractAmendParamsCommitsRateType = "LIST_RATE"
-	ContractAmendParamsCommitsRateTypeListRate   ContractAmendParamsCommitsRateType = "list_rate"
+	ContractAmendParamsCommitsRateTypeCommitRateUppercase ContractAmendParamsCommitsRateType = "COMMIT_RATE"
+	ContractAmendParamsCommitsRateTypeCommitRate          ContractAmendParamsCommitsRateType = "commit_rate"
+	ContractAmendParamsCommitsRateTypeListRateUppercase   ContractAmendParamsCommitsRateType = "LIST_RATE"
+	ContractAmendParamsCommitsRateTypeListRate            ContractAmendParamsCommitsRateType = "list_rate"
 )
 
 func (r ContractAmendParamsCommitsRateType) IsKnown() bool {
 	switch r {
-	case ContractAmendParamsCommitsRateTypeCommitRate, ContractAmendParamsCommitsRateTypeCommitRate, ContractAmendParamsCommitsRateTypeListRate, ContractAmendParamsCommitsRateTypeListRate:
+	case ContractAmendParamsCommitsRateTypeCommitRateUppercase, ContractAmendParamsCommitsRateTypeCommitRate, ContractAmendParamsCommitsRateTypeListRateUppercase, ContractAmendParamsCommitsRateTypeListRate:
 		return true
 	}
 	return false
@@ -2409,15 +2409,15 @@ func (r ContractAmendParamsCreditsAccessScheduleScheduleItem) MarshalJSON() (dat
 type ContractAmendParamsCreditsRateType string
 
 const (
-	ContractAmendParamsCreditsRateTypeCommitRate ContractAmendParamsCreditsRateType = "COMMIT_RATE"
-	ContractAmendParamsCreditsRateTypeCommitRate ContractAmendParamsCreditsRateType = "commit_rate"
-	ContractAmendParamsCreditsRateTypeListRate   ContractAmendParamsCreditsRateType = "LIST_RATE"
-	ContractAmendParamsCreditsRateTypeListRate   ContractAmendParamsCreditsRateType = "list_rate"
+	ContractAmendParamsCreditsRateTypeCommitRateUppercase ContractAmendParamsCreditsRateType = "COMMIT_RATE"
+	ContractAmendParamsCreditsRateTypeCommitRate          ContractAmendParamsCreditsRateType = "commit_rate"
+	ContractAmendParamsCreditsRateTypeListRateUppercase   ContractAmendParamsCreditsRateType = "LIST_RATE"
+	ContractAmendParamsCreditsRateTypeListRate            ContractAmendParamsCreditsRateType = "list_rate"
 )
 
 func (r ContractAmendParamsCreditsRateType) IsKnown() bool {
 	switch r {
-	case ContractAmendParamsCreditsRateTypeCommitRate, ContractAmendParamsCreditsRateTypeCommitRate, ContractAmendParamsCreditsRateTypeListRate, ContractAmendParamsCreditsRateTypeListRate:
+	case ContractAmendParamsCreditsRateTypeCommitRateUppercase, ContractAmendParamsCreditsRateTypeCommitRate, ContractAmendParamsCreditsRateTypeListRateUppercase, ContractAmendParamsCreditsRateTypeListRate:
 		return true
 	}
 	return false
@@ -2650,15 +2650,15 @@ func (r ContractAmendParamsOverridesOverwriteRateRateType) IsKnown() bool {
 type ContractAmendParamsOverridesTarget string
 
 const (
-	ContractAmendParamsOverridesTargetCommitRate ContractAmendParamsOverridesTarget = "COMMIT_RATE"
-	ContractAmendParamsOverridesTargetCommitRate ContractAmendParamsOverridesTarget = "commit_rate"
-	ContractAmendParamsOverridesTargetListRate   ContractAmendParamsOverridesTarget = "LIST_RATE"
-	ContractAmendParamsOverridesTargetListRate   ContractAmendParamsOverridesTarget = "list_rate"
+	ContractAmendParamsOverridesTargetCommitRateUppercase ContractAmendParamsOverridesTarget = "COMMIT_RATE"
+	ContractAmendParamsOverridesTargetCommitRate          ContractAmendParamsOverridesTarget = "commit_rate"
+	ContractAmendParamsOverridesTargetListRateUppercase   ContractAmendParamsOverridesTarget = "LIST_RATE"
+	ContractAmendParamsOverridesTargetListRate            ContractAmendParamsOverridesTarget = "list_rate"
 )
 
 func (r ContractAmendParamsOverridesTarget) IsKnown() bool {
 	switch r {
-	case ContractAmendParamsOverridesTargetCommitRate, ContractAmendParamsOverridesTargetCommitRate, ContractAmendParamsOverridesTargetListRate, ContractAmendParamsOverridesTargetListRate:
+	case ContractAmendParamsOverridesTargetCommitRateUppercase, ContractAmendParamsOverridesTargetCommitRate, ContractAmendParamsOverridesTargetListRateUppercase, ContractAmendParamsOverridesTargetListRate:
 		return true
 	}
 	return false
