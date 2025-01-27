@@ -75,29 +75,6 @@ func (r *CreditGrantService) Edit(ctx context.Context, body CreditGrantEditParam
 	return
 }
 
-// List all pricing units (known in the API by the legacy term "credit types").
-func (r *CreditGrantService) ListCreditTypes(ctx context.Context, query CreditGrantListCreditTypesParams, opts ...option.RequestOption) (res *pagination.CursorPage[CreditGrantListCreditTypesResponse], err error) {
-	var raw *http.Response
-	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "credit-types/list"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all pricing units (known in the API by the legacy term "credit types").
-func (r *CreditGrantService) ListCreditTypesAutoPaging(ctx context.Context, query CreditGrantListCreditTypesParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CreditGrantListCreditTypesResponse] {
-	return pagination.NewCursorPageAutoPager(r.ListCreditTypes(ctx, query, opts...))
-}
-
 // Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
 // Ledger entries are returned in chronological order. Ledger entries associated
 // with voided credit grants are not included.
@@ -430,31 +407,6 @@ func (r creditGrantEditResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type CreditGrantListCreditTypesResponse struct {
-	ID         string                                 `json:"id" format:"uuid"`
-	IsCurrency bool                                   `json:"is_currency"`
-	Name       string                                 `json:"name"`
-	JSON       creditGrantListCreditTypesResponseJSON `json:"-"`
-}
-
-// creditGrantListCreditTypesResponseJSON contains the JSON metadata for the struct
-// [CreditGrantListCreditTypesResponse]
-type creditGrantListCreditTypesResponseJSON struct {
-	ID          apijson.Field
-	IsCurrency  apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditGrantListCreditTypesResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditGrantListCreditTypesResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type CreditGrantListEntriesResponse struct {
 	Data     []CreditGrantListEntriesResponseData `json:"data,required"`
 	NextPage string                               `json:"next_page,required,nullable"`
@@ -780,22 +732,6 @@ type CreditGrantEditParams struct {
 
 func (r CreditGrantEditParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type CreditGrantListCreditTypesParams struct {
-	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
-	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
-}
-
-// URLQuery serializes [CreditGrantListCreditTypesParams]'s query parameters as
-// `url.Values`.
-func (r CreditGrantListCreditTypesParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
 }
 
 type CreditGrantListEntriesParams struct {
