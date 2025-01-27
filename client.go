@@ -19,6 +19,7 @@ type Client struct {
 	Alerts          *AlertService
 	Plans           *PlanService
 	CreditGrants    *CreditGrantService
+	PricingUnits    *PricingUnitService
 	Customers       *CustomerService
 	Dashboards      *DashboardService
 	Usage           *UsageService
@@ -49,6 +50,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Alerts = NewAlertService(opts...)
 	r.Plans = NewPlanService(opts...)
 	r.CreditGrants = NewCreditGrantService(opts...)
+	r.PricingUnits = NewPricingUnitService(opts...)
 	r.Customers = NewCustomerService(opts...)
 	r.Dashboards = NewDashboardService(opts...)
 	r.Usage = NewUsageService(opts...)
