@@ -286,7 +286,7 @@ func (r CommitLedger) AsUnion() CommitLedgerUnion {
 // [shared.CommitLedgerPostpaidCommitManualLedgerEntry] or
 // [shared.CommitLedgerPostpaidCommitExpirationLedgerEntry].
 type CommitLedgerUnion interface {
-	implementsSharedCommitLedger()
+	implementsCommitLedger()
 }
 
 func init() {
@@ -375,7 +375,7 @@ func (r commitLedgerPrepaidCommitSegmentStartLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPrepaidCommitSegmentStartLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPrepaidCommitSegmentStartLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPrepaidCommitSegmentStartLedgerEntryType string
 
@@ -421,8 +421,7 @@ func (r commitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntryJSON) RawJS
 	return r.raw
 }
 
-func (r CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry) implementsSharedCommitLedger() {
-}
+func (r CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntryType string
 
@@ -467,7 +466,7 @@ func (r commitLedgerPrepaidCommitRolloverLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPrepaidCommitRolloverLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPrepaidCommitRolloverLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPrepaidCommitRolloverLedgerEntryType string
 
@@ -510,7 +509,7 @@ func (r commitLedgerPrepaidCommitExpirationLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPrepaidCommitExpirationLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPrepaidCommitExpirationLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPrepaidCommitExpirationLedgerEntryType string
 
@@ -555,7 +554,7 @@ func (r commitLedgerPrepaidCommitCanceledLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPrepaidCommitCanceledLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPrepaidCommitCanceledLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPrepaidCommitCanceledLedgerEntryType string
 
@@ -600,7 +599,7 @@ func (r commitLedgerPrepaidCommitCreditedLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPrepaidCommitCreditedLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPrepaidCommitCreditedLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPrepaidCommitCreditedLedgerEntryType string
 
@@ -641,7 +640,7 @@ func (r commitLedgerPostpaidCommitInitialBalanceLedgerEntryJSON) RawJSON() strin
 	return r.raw
 }
 
-func (r CommitLedgerPostpaidCommitInitialBalanceLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPostpaidCommitInitialBalanceLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPostpaidCommitInitialBalanceLedgerEntryType string
 
@@ -687,8 +686,7 @@ func (r commitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntryJSON) RawJ
 	return r.raw
 }
 
-func (r CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry) implementsSharedCommitLedger() {
-}
+func (r CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntryType string
 
@@ -733,7 +731,7 @@ func (r commitLedgerPostpaidCommitRolloverLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPostpaidCommitRolloverLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPostpaidCommitRolloverLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPostpaidCommitRolloverLedgerEntryType string
 
@@ -776,7 +774,7 @@ func (r commitLedgerPostpaidCommitTrueupLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPostpaidCommitTrueupLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPostpaidCommitTrueupLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPostpaidCommitTrueupLedgerEntryType string
 
@@ -819,7 +817,7 @@ func (r commitLedgerPrepaidCommitManualLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPrepaidCommitManualLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPrepaidCommitManualLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPrepaidCommitManualLedgerEntryType string
 
@@ -862,7 +860,7 @@ func (r commitLedgerPostpaidCommitManualLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPostpaidCommitManualLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPostpaidCommitManualLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPostpaidCommitManualLedgerEntryType string
 
@@ -903,7 +901,7 @@ func (r commitLedgerPostpaidCommitExpirationLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CommitLedgerPostpaidCommitExpirationLedgerEntry) implementsSharedCommitLedger() {}
+func (r CommitLedgerPostpaidCommitExpirationLedgerEntry) implementsCommitLedger() {}
 
 type CommitLedgerPostpaidCommitExpirationLedgerEntryType string
 
@@ -1454,7 +1452,7 @@ func (r CreditLedger) AsUnion() CreditLedgerUnion {
 // [shared.CreditLedgerCreditCreditedLedgerEntry] or
 // [shared.CreditLedgerCreditManualLedgerEntry].
 type CreditLedgerUnion interface {
-	implementsSharedCreditLedger()
+	implementsCreditLedger()
 }
 
 func init() {
@@ -1515,7 +1513,7 @@ func (r creditLedgerCreditSegmentStartLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CreditLedgerCreditSegmentStartLedgerEntry) implementsSharedCreditLedger() {}
+func (r CreditLedgerCreditSegmentStartLedgerEntry) implementsCreditLedger() {}
 
 type CreditLedgerCreditSegmentStartLedgerEntryType string
 
@@ -1560,7 +1558,7 @@ func (r creditLedgerCreditAutomatedInvoiceDeductionLedgerEntryJSON) RawJSON() st
 	return r.raw
 }
 
-func (r CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry) implementsSharedCreditLedger() {}
+func (r CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry) implementsCreditLedger() {}
 
 type CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntryType string
 
@@ -1603,7 +1601,7 @@ func (r creditLedgerCreditExpirationLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CreditLedgerCreditExpirationLedgerEntry) implementsSharedCreditLedger() {}
+func (r CreditLedgerCreditExpirationLedgerEntry) implementsCreditLedger() {}
 
 type CreditLedgerCreditExpirationLedgerEntryType string
 
@@ -1648,7 +1646,7 @@ func (r creditLedgerCreditCanceledLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CreditLedgerCreditCanceledLedgerEntry) implementsSharedCreditLedger() {}
+func (r CreditLedgerCreditCanceledLedgerEntry) implementsCreditLedger() {}
 
 type CreditLedgerCreditCanceledLedgerEntryType string
 
@@ -1693,7 +1691,7 @@ func (r creditLedgerCreditCreditedLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CreditLedgerCreditCreditedLedgerEntry) implementsSharedCreditLedger() {}
+func (r CreditLedgerCreditCreditedLedgerEntry) implementsCreditLedger() {}
 
 type CreditLedgerCreditCreditedLedgerEntryType string
 
@@ -1736,7 +1734,7 @@ func (r creditLedgerCreditManualLedgerEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r CreditLedgerCreditManualLedgerEntry) implementsSharedCreditLedger() {}
+func (r CreditLedgerCreditManualLedgerEntry) implementsCreditLedger() {}
 
 type CreditLedgerCreditManualLedgerEntryType string
 
