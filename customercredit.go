@@ -186,15 +186,13 @@ func (r CustomerCreditNewParamsAccessScheduleScheduleItem) MarshalJSON() (data [
 type CustomerCreditNewParamsRateType string
 
 const (
-	CustomerCreditNewParamsRateTypeCommitRateUppercase CustomerCreditNewParamsRateType = "COMMIT_RATE"
-	CustomerCreditNewParamsRateTypeCommitRate          CustomerCreditNewParamsRateType = "commit_rate"
-	CustomerCreditNewParamsRateTypeListRateUppercase   CustomerCreditNewParamsRateType = "LIST_RATE"
-	CustomerCreditNewParamsRateTypeListRate            CustomerCreditNewParamsRateType = "list_rate"
+	CustomerCreditNewParamsRateTypeCommitRate CustomerCreditNewParamsRateType = "COMMIT_RATE"
+	CustomerCreditNewParamsRateTypeListRate   CustomerCreditNewParamsRateType = "LIST_RATE"
 )
 
 func (r CustomerCreditNewParamsRateType) IsKnown() bool {
 	switch r {
-	case CustomerCreditNewParamsRateTypeCommitRateUppercase, CustomerCreditNewParamsRateTypeCommitRate, CustomerCreditNewParamsRateTypeListRateUppercase, CustomerCreditNewParamsRateTypeListRate:
+	case CustomerCreditNewParamsRateTypeCommitRate, CustomerCreditNewParamsRateTypeListRate:
 		return true
 	}
 	return false
