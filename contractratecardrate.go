@@ -148,21 +148,16 @@ func (r contractRateCardRateListResponseCommitRateJSON) RawJSON() string {
 type ContractRateCardRateListResponseCommitRateRateType string
 
 const (
-	ContractRateCardRateListResponseCommitRateRateTypeFlatUppercase         ContractRateCardRateListResponseCommitRateRateType = "FLAT"
-	ContractRateCardRateListResponseCommitRateRateTypeFlat                  ContractRateCardRateListResponseCommitRateRateType = "flat"
-	ContractRateCardRateListResponseCommitRateRateTypePercentageUppercase   ContractRateCardRateListResponseCommitRateRateType = "PERCENTAGE"
-	ContractRateCardRateListResponseCommitRateRateTypePercentage            ContractRateCardRateListResponseCommitRateRateType = "percentage"
-	ContractRateCardRateListResponseCommitRateRateTypeSubscriptionUppercase ContractRateCardRateListResponseCommitRateRateType = "SUBSCRIPTION"
-	ContractRateCardRateListResponseCommitRateRateTypeSubscription          ContractRateCardRateListResponseCommitRateRateType = "subscription"
-	ContractRateCardRateListResponseCommitRateRateTypeTieredUppercase       ContractRateCardRateListResponseCommitRateRateType = "TIERED"
-	ContractRateCardRateListResponseCommitRateRateTypeTiered                ContractRateCardRateListResponseCommitRateRateType = "tiered"
-	ContractRateCardRateListResponseCommitRateRateTypeCustomUppercase       ContractRateCardRateListResponseCommitRateRateType = "CUSTOM"
-	ContractRateCardRateListResponseCommitRateRateTypeCustom                ContractRateCardRateListResponseCommitRateRateType = "custom"
+	ContractRateCardRateListResponseCommitRateRateTypeFlat         ContractRateCardRateListResponseCommitRateRateType = "FLAT"
+	ContractRateCardRateListResponseCommitRateRateTypePercentage   ContractRateCardRateListResponseCommitRateRateType = "PERCENTAGE"
+	ContractRateCardRateListResponseCommitRateRateTypeSubscription ContractRateCardRateListResponseCommitRateRateType = "SUBSCRIPTION"
+	ContractRateCardRateListResponseCommitRateRateTypeTiered       ContractRateCardRateListResponseCommitRateRateType = "TIERED"
+	ContractRateCardRateListResponseCommitRateRateTypeCustom       ContractRateCardRateListResponseCommitRateRateType = "CUSTOM"
 )
 
 func (r ContractRateCardRateListResponseCommitRateRateType) IsKnown() bool {
 	switch r {
-	case ContractRateCardRateListResponseCommitRateRateTypeFlatUppercase, ContractRateCardRateListResponseCommitRateRateTypeFlat, ContractRateCardRateListResponseCommitRateRateTypePercentageUppercase, ContractRateCardRateListResponseCommitRateRateTypePercentage, ContractRateCardRateListResponseCommitRateRateTypeSubscriptionUppercase, ContractRateCardRateListResponseCommitRateRateTypeSubscription, ContractRateCardRateListResponseCommitRateRateTypeTieredUppercase, ContractRateCardRateListResponseCommitRateRateTypeTiered, ContractRateCardRateListResponseCommitRateRateTypeCustomUppercase, ContractRateCardRateListResponseCommitRateRateTypeCustom:
+	case ContractRateCardRateListResponseCommitRateRateTypeFlat, ContractRateCardRateListResponseCommitRateRateTypePercentage, ContractRateCardRateListResponseCommitRateRateTypeSubscription, ContractRateCardRateListResponseCommitRateRateTypeTiered, ContractRateCardRateListResponseCommitRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -246,21 +241,16 @@ func (r contractRateCardRateAddResponseDataJSON) RawJSON() string {
 type ContractRateCardRateAddResponseDataRateType string
 
 const (
-	ContractRateCardRateAddResponseDataRateTypeFlatUppercase         ContractRateCardRateAddResponseDataRateType = "FLAT"
-	ContractRateCardRateAddResponseDataRateTypeFlat                  ContractRateCardRateAddResponseDataRateType = "flat"
-	ContractRateCardRateAddResponseDataRateTypePercentageUppercase   ContractRateCardRateAddResponseDataRateType = "PERCENTAGE"
-	ContractRateCardRateAddResponseDataRateTypePercentage            ContractRateCardRateAddResponseDataRateType = "percentage"
-	ContractRateCardRateAddResponseDataRateTypeSubscriptionUppercase ContractRateCardRateAddResponseDataRateType = "SUBSCRIPTION"
-	ContractRateCardRateAddResponseDataRateTypeSubscription          ContractRateCardRateAddResponseDataRateType = "subscription"
-	ContractRateCardRateAddResponseDataRateTypeCustomUppercase       ContractRateCardRateAddResponseDataRateType = "CUSTOM"
-	ContractRateCardRateAddResponseDataRateTypeCustom                ContractRateCardRateAddResponseDataRateType = "custom"
-	ContractRateCardRateAddResponseDataRateTypeTieredUppercase       ContractRateCardRateAddResponseDataRateType = "TIERED"
-	ContractRateCardRateAddResponseDataRateTypeTiered                ContractRateCardRateAddResponseDataRateType = "tiered"
+	ContractRateCardRateAddResponseDataRateTypeFlat         ContractRateCardRateAddResponseDataRateType = "FLAT"
+	ContractRateCardRateAddResponseDataRateTypePercentage   ContractRateCardRateAddResponseDataRateType = "PERCENTAGE"
+	ContractRateCardRateAddResponseDataRateTypeSubscription ContractRateCardRateAddResponseDataRateType = "SUBSCRIPTION"
+	ContractRateCardRateAddResponseDataRateTypeCustom       ContractRateCardRateAddResponseDataRateType = "CUSTOM"
+	ContractRateCardRateAddResponseDataRateTypeTiered       ContractRateCardRateAddResponseDataRateType = "TIERED"
 )
 
 func (r ContractRateCardRateAddResponseDataRateType) IsKnown() bool {
 	switch r {
-	case ContractRateCardRateAddResponseDataRateTypeFlatUppercase, ContractRateCardRateAddResponseDataRateTypeFlat, ContractRateCardRateAddResponseDataRateTypePercentageUppercase, ContractRateCardRateAddResponseDataRateTypePercentage, ContractRateCardRateAddResponseDataRateTypeSubscriptionUppercase, ContractRateCardRateAddResponseDataRateTypeSubscription, ContractRateCardRateAddResponseDataRateTypeCustomUppercase, ContractRateCardRateAddResponseDataRateTypeCustom, ContractRateCardRateAddResponseDataRateTypeTieredUppercase, ContractRateCardRateAddResponseDataRateTypeTiered:
+	case ContractRateCardRateAddResponseDataRateTypeFlat, ContractRateCardRateAddResponseDataRateTypePercentage, ContractRateCardRateAddResponseDataRateTypeSubscription, ContractRateCardRateAddResponseDataRateTypeCustom, ContractRateCardRateAddResponseDataRateTypeTiered:
 		return true
 	}
 	return false
@@ -298,21 +288,16 @@ func (r contractRateCardRateAddResponseDataCommitRateJSON) RawJSON() string {
 type ContractRateCardRateAddResponseDataCommitRateRateType string
 
 const (
-	ContractRateCardRateAddResponseDataCommitRateRateTypeFlatUppercase         ContractRateCardRateAddResponseDataCommitRateRateType = "FLAT"
-	ContractRateCardRateAddResponseDataCommitRateRateTypeFlat                  ContractRateCardRateAddResponseDataCommitRateRateType = "flat"
-	ContractRateCardRateAddResponseDataCommitRateRateTypePercentageUppercase   ContractRateCardRateAddResponseDataCommitRateRateType = "PERCENTAGE"
-	ContractRateCardRateAddResponseDataCommitRateRateTypePercentage            ContractRateCardRateAddResponseDataCommitRateRateType = "percentage"
-	ContractRateCardRateAddResponseDataCommitRateRateTypeSubscriptionUppercase ContractRateCardRateAddResponseDataCommitRateRateType = "SUBSCRIPTION"
-	ContractRateCardRateAddResponseDataCommitRateRateTypeSubscription          ContractRateCardRateAddResponseDataCommitRateRateType = "subscription"
-	ContractRateCardRateAddResponseDataCommitRateRateTypeTieredUppercase       ContractRateCardRateAddResponseDataCommitRateRateType = "TIERED"
-	ContractRateCardRateAddResponseDataCommitRateRateTypeTiered                ContractRateCardRateAddResponseDataCommitRateRateType = "tiered"
-	ContractRateCardRateAddResponseDataCommitRateRateTypeCustomUppercase       ContractRateCardRateAddResponseDataCommitRateRateType = "CUSTOM"
-	ContractRateCardRateAddResponseDataCommitRateRateTypeCustom                ContractRateCardRateAddResponseDataCommitRateRateType = "custom"
+	ContractRateCardRateAddResponseDataCommitRateRateTypeFlat         ContractRateCardRateAddResponseDataCommitRateRateType = "FLAT"
+	ContractRateCardRateAddResponseDataCommitRateRateTypePercentage   ContractRateCardRateAddResponseDataCommitRateRateType = "PERCENTAGE"
+	ContractRateCardRateAddResponseDataCommitRateRateTypeSubscription ContractRateCardRateAddResponseDataCommitRateRateType = "SUBSCRIPTION"
+	ContractRateCardRateAddResponseDataCommitRateRateTypeTiered       ContractRateCardRateAddResponseDataCommitRateRateType = "TIERED"
+	ContractRateCardRateAddResponseDataCommitRateRateTypeCustom       ContractRateCardRateAddResponseDataCommitRateRateType = "CUSTOM"
 )
 
 func (r ContractRateCardRateAddResponseDataCommitRateRateType) IsKnown() bool {
 	switch r {
-	case ContractRateCardRateAddResponseDataCommitRateRateTypeFlatUppercase, ContractRateCardRateAddResponseDataCommitRateRateTypeFlat, ContractRateCardRateAddResponseDataCommitRateRateTypePercentageUppercase, ContractRateCardRateAddResponseDataCommitRateRateTypePercentage, ContractRateCardRateAddResponseDataCommitRateRateTypeSubscriptionUppercase, ContractRateCardRateAddResponseDataCommitRateRateTypeSubscription, ContractRateCardRateAddResponseDataCommitRateRateTypeTieredUppercase, ContractRateCardRateAddResponseDataCommitRateRateTypeTiered, ContractRateCardRateAddResponseDataCommitRateRateTypeCustomUppercase, ContractRateCardRateAddResponseDataCommitRateRateTypeCustom:
+	case ContractRateCardRateAddResponseDataCommitRateRateTypeFlat, ContractRateCardRateAddResponseDataCommitRateRateTypePercentage, ContractRateCardRateAddResponseDataCommitRateRateTypeSubscription, ContractRateCardRateAddResponseDataCommitRateRateTypeTiered, ContractRateCardRateAddResponseDataCommitRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -465,21 +450,16 @@ func (r ContractRateCardRateAddParamsCommitRate) MarshalJSON() (data []byte, err
 type ContractRateCardRateAddParamsCommitRateRateType string
 
 const (
-	ContractRateCardRateAddParamsCommitRateRateTypeFlatUppercase         ContractRateCardRateAddParamsCommitRateRateType = "FLAT"
-	ContractRateCardRateAddParamsCommitRateRateTypeFlat                  ContractRateCardRateAddParamsCommitRateRateType = "flat"
-	ContractRateCardRateAddParamsCommitRateRateTypePercentageUppercase   ContractRateCardRateAddParamsCommitRateRateType = "PERCENTAGE"
-	ContractRateCardRateAddParamsCommitRateRateTypePercentage            ContractRateCardRateAddParamsCommitRateRateType = "percentage"
-	ContractRateCardRateAddParamsCommitRateRateTypeSubscriptionUppercase ContractRateCardRateAddParamsCommitRateRateType = "SUBSCRIPTION"
-	ContractRateCardRateAddParamsCommitRateRateTypeSubscription          ContractRateCardRateAddParamsCommitRateRateType = "subscription"
-	ContractRateCardRateAddParamsCommitRateRateTypeTieredUppercase       ContractRateCardRateAddParamsCommitRateRateType = "TIERED"
-	ContractRateCardRateAddParamsCommitRateRateTypeTiered                ContractRateCardRateAddParamsCommitRateRateType = "tiered"
-	ContractRateCardRateAddParamsCommitRateRateTypeCustomUppercase       ContractRateCardRateAddParamsCommitRateRateType = "CUSTOM"
-	ContractRateCardRateAddParamsCommitRateRateTypeCustom                ContractRateCardRateAddParamsCommitRateRateType = "custom"
+	ContractRateCardRateAddParamsCommitRateRateTypeFlat         ContractRateCardRateAddParamsCommitRateRateType = "FLAT"
+	ContractRateCardRateAddParamsCommitRateRateTypePercentage   ContractRateCardRateAddParamsCommitRateRateType = "PERCENTAGE"
+	ContractRateCardRateAddParamsCommitRateRateTypeSubscription ContractRateCardRateAddParamsCommitRateRateType = "SUBSCRIPTION"
+	ContractRateCardRateAddParamsCommitRateRateTypeTiered       ContractRateCardRateAddParamsCommitRateRateType = "TIERED"
+	ContractRateCardRateAddParamsCommitRateRateTypeCustom       ContractRateCardRateAddParamsCommitRateRateType = "CUSTOM"
 )
 
 func (r ContractRateCardRateAddParamsCommitRateRateType) IsKnown() bool {
 	switch r {
-	case ContractRateCardRateAddParamsCommitRateRateTypeFlatUppercase, ContractRateCardRateAddParamsCommitRateRateTypeFlat, ContractRateCardRateAddParamsCommitRateRateTypePercentageUppercase, ContractRateCardRateAddParamsCommitRateRateTypePercentage, ContractRateCardRateAddParamsCommitRateRateTypeSubscriptionUppercase, ContractRateCardRateAddParamsCommitRateRateTypeSubscription, ContractRateCardRateAddParamsCommitRateRateTypeTieredUppercase, ContractRateCardRateAddParamsCommitRateRateTypeTiered, ContractRateCardRateAddParamsCommitRateRateTypeCustomUppercase, ContractRateCardRateAddParamsCommitRateRateTypeCustom:
+	case ContractRateCardRateAddParamsCommitRateRateTypeFlat, ContractRateCardRateAddParamsCommitRateRateTypePercentage, ContractRateCardRateAddParamsCommitRateRateTypeSubscription, ContractRateCardRateAddParamsCommitRateRateTypeTiered, ContractRateCardRateAddParamsCommitRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -572,21 +552,16 @@ func (r ContractRateCardRateAddManyParamsRatesCommitRate) MarshalJSON() (data []
 type ContractRateCardRateAddManyParamsRatesCommitRateRateType string
 
 const (
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlatUppercase         ContractRateCardRateAddManyParamsRatesCommitRateRateType = "FLAT"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat                  ContractRateCardRateAddManyParamsRatesCommitRateRateType = "flat"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypePercentageUppercase   ContractRateCardRateAddManyParamsRatesCommitRateRateType = "PERCENTAGE"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypePercentage            ContractRateCardRateAddManyParamsRatesCommitRateRateType = "percentage"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeSubscriptionUppercase ContractRateCardRateAddManyParamsRatesCommitRateRateType = "SUBSCRIPTION"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeSubscription          ContractRateCardRateAddManyParamsRatesCommitRateRateType = "subscription"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeTieredUppercase       ContractRateCardRateAddManyParamsRatesCommitRateRateType = "TIERED"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeTiered                ContractRateCardRateAddManyParamsRatesCommitRateRateType = "tiered"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeCustomUppercase       ContractRateCardRateAddManyParamsRatesCommitRateRateType = "CUSTOM"
-	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeCustom                ContractRateCardRateAddManyParamsRatesCommitRateRateType = "custom"
+	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat         ContractRateCardRateAddManyParamsRatesCommitRateRateType = "FLAT"
+	ContractRateCardRateAddManyParamsRatesCommitRateRateTypePercentage   ContractRateCardRateAddManyParamsRatesCommitRateRateType = "PERCENTAGE"
+	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeSubscription ContractRateCardRateAddManyParamsRatesCommitRateRateType = "SUBSCRIPTION"
+	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeTiered       ContractRateCardRateAddManyParamsRatesCommitRateRateType = "TIERED"
+	ContractRateCardRateAddManyParamsRatesCommitRateRateTypeCustom       ContractRateCardRateAddManyParamsRatesCommitRateRateType = "CUSTOM"
 )
 
 func (r ContractRateCardRateAddManyParamsRatesCommitRateRateType) IsKnown() bool {
 	switch r {
-	case ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlatUppercase, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat, ContractRateCardRateAddManyParamsRatesCommitRateRateTypePercentageUppercase, ContractRateCardRateAddManyParamsRatesCommitRateRateTypePercentage, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeSubscriptionUppercase, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeSubscription, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeTieredUppercase, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeTiered, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeCustomUppercase, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeCustom:
+	case ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat, ContractRateCardRateAddManyParamsRatesCommitRateRateTypePercentage, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeSubscription, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeTiered, ContractRateCardRateAddManyParamsRatesCommitRateRateTypeCustom:
 		return true
 	}
 	return false
