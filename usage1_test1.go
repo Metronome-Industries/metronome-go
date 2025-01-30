@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
+	err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
 		Usage: []metronome.UsageIngestParamsUsage{{
 			CustomerID:    metronome.F("team@example.com"),
 			EventType:     metronome.F("heartbeat"),
