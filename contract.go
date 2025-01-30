@@ -1117,8 +1117,10 @@ type ContractNewParams struct {
 	ProfessionalServices param.Field[[]ContractNewParamsProfessionalService] `json:"professional_services"`
 	// Selects the rate card linked to the specified alias as of the contract's start
 	// date.
-	RateCardAlias param.Field[string] `json:"rate_card_alias"`
-	RateCardID    param.Field[string] `json:"rate_card_id" format:"uuid"`
+	RateCardAlias    param.Field[string]                             `json:"rate_card_alias"`
+	RateCardID       param.Field[string]                             `json:"rate_card_id" format:"uuid"`
+	RecurringCommits param.Field[[]ContractNewParamsRecurringCommit] `json:"recurring_commits"`
+	RecurringCredits param.Field[[]ContractNewParamsRecurringCredit] `json:"recurring_credits"`
 	// This field's availability is dependent on your client's configuration.
 	ResellerRoyalties param.Field[[]ContractNewParamsResellerRoyalty] `json:"reseller_royalties"`
 	// This field's availability is dependent on your client's configuration.
@@ -1648,6 +1650,16 @@ type ContractNewParamsOverridesOverrideSpecifier struct {
 	// If provided, the override will only apply to products with all the specified
 	// tags.
 	ProductTags param.Field[[]string] `json:"product_tags"`
+	// Can only be used for commit specific overrides. Must be used in conjunction with
+	// one of product_id, product_tags, pricing_group_values, or
+	// presentation_group_values. If provided, the override will only apply to commits
+	// created by the specified recurring commit ids.
+	RecurringCommitIDs param.Field[[]string] `json:"recurring_commit_ids"`
+	// Can only be used for commit specific overrides. Must be used in conjunction with
+	// one of product_id, product_tags, pricing_group_values, or
+	// presentation_group_values. If provided, the override will only apply to credits
+	// created by the specified recurring credit ids.
+	RecurringCreditIDs param.Field[[]string] `json:"recurring_credit_ids"`
 }
 
 func (r ContractNewParamsOverridesOverrideSpecifier) MarshalJSON() (data []byte, err error) {
@@ -1757,6 +1769,206 @@ type ContractNewParamsProfessionalService struct {
 
 func (r ContractNewParamsProfessionalService) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsRecurringCommit struct {
+	// The amount of commit to grant.
+	AccessAmount param.Field[ContractNewParamsRecurringCommitsAccessAmount] `json:"access_amount,required"`
+	// The amount of time the created commits will be valid for.
+	CommitDuration param.Field[ContractNewParamsRecurringCommitsCommitDuration] `json:"commit_duration,required"`
+	// Will be passed down to the individual commits
+	Priority  param.Field[float64] `json:"priority,required"`
+	ProductID param.Field[string]  `json:"product_id,required" format:"uuid"`
+	// determines the start time for the first commit
+	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
+	// Will be passed down to the individual commits
+	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
+	// Will be passed down to the individual commits
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	// Will be passed down to the individual commits
+	Description param.Field[string] `json:"description"`
+	// determines when the contract will stop creating recurring commits. optional
+	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
+	// The amount the customer should be billed for the commit. Not required.
+	InvoiceAmount param.Field[ContractNewParamsRecurringCommitsInvoiceAmount] `json:"invoice_amount"`
+	// displayed on invoices. will be passed through to the individual commits
+	Name param.Field[string] `json:"name"`
+	// Will be passed down to the individual commits
+	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
+	// Whether the created commits will use the commit rate or list rate
+	RateType param.Field[ContractNewParamsRecurringCommitsRateType] `json:"rate_type"`
+	// Will be passed down to the individual commits. This controls how much of an
+	// individual unexpired commit will roll over upon contract transition
+	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// A temporary ID that can be used to reference the recurring commit for commit
+	// specific overrides.
+	TemporaryID param.Field[string] `json:"temporary_id"`
+}
+
+func (r ContractNewParamsRecurringCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The amount of commit to grant.
+type ContractNewParamsRecurringCommitsAccessAmount struct {
+	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
+	Quantity     param.Field[float64] `json:"quantity,required"`
+	UnitPrice    param.Field[float64] `json:"unit_price,required"`
+}
+
+func (r ContractNewParamsRecurringCommitsAccessAmount) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The amount of time the created commits will be valid for.
+type ContractNewParamsRecurringCommitsCommitDuration struct {
+	Unit  param.Field[ContractNewParamsRecurringCommitsCommitDurationUnit] `json:"unit,required"`
+	Value param.Field[float64]                                             `json:"value,required"`
+}
+
+func (r ContractNewParamsRecurringCommitsCommitDuration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsRecurringCommitsCommitDurationUnit string
+
+const (
+	ContractNewParamsRecurringCommitsCommitDurationUnitPeriods ContractNewParamsRecurringCommitsCommitDurationUnit = "PERIODS"
+)
+
+func (r ContractNewParamsRecurringCommitsCommitDurationUnit) IsKnown() bool {
+	switch r {
+	case ContractNewParamsRecurringCommitsCommitDurationUnitPeriods:
+		return true
+	}
+	return false
+}
+
+// The amount the customer should be billed for the commit. Not required.
+type ContractNewParamsRecurringCommitsInvoiceAmount struct {
+	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
+	Quantity     param.Field[float64] `json:"quantity,required"`
+	UnitPrice    param.Field[float64] `json:"unit_price,required"`
+}
+
+func (r ContractNewParamsRecurringCommitsInvoiceAmount) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Whether the created commits will use the commit rate or list rate
+type ContractNewParamsRecurringCommitsRateType string
+
+const (
+	ContractNewParamsRecurringCommitsRateTypeCommitRate ContractNewParamsRecurringCommitsRateType = "COMMIT_RATE"
+	ContractNewParamsRecurringCommitsRateTypeListRate   ContractNewParamsRecurringCommitsRateType = "LIST_RATE"
+)
+
+func (r ContractNewParamsRecurringCommitsRateType) IsKnown() bool {
+	switch r {
+	case ContractNewParamsRecurringCommitsRateTypeCommitRate, ContractNewParamsRecurringCommitsRateTypeListRate:
+		return true
+	}
+	return false
+}
+
+type ContractNewParamsRecurringCredit struct {
+	// The amount of commit to grant.
+	AccessAmount param.Field[ContractNewParamsRecurringCreditsAccessAmount] `json:"access_amount,required"`
+	// The amount of time the created commits will be valid for.
+	CommitDuration param.Field[ContractNewParamsRecurringCreditsCommitDuration] `json:"commit_duration,required"`
+	// Will be passed down to the individual commits
+	Priority  param.Field[float64] `json:"priority,required"`
+	ProductID param.Field[string]  `json:"product_id,required" format:"uuid"`
+	// determines the start time for the first commit
+	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
+	// Will be passed down to the individual commits
+	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
+	// Will be passed down to the individual commits
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	// Will be passed down to the individual commits
+	Description param.Field[string] `json:"description"`
+	// determines when the contract will stop creating recurring commits. optional
+	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
+	// The amount the customer should be billed for the commit. Not required.
+	InvoiceAmount param.Field[ContractNewParamsRecurringCreditsInvoiceAmount] `json:"invoice_amount"`
+	// displayed on invoices. will be passed through to the individual commits
+	Name param.Field[string] `json:"name"`
+	// Will be passed down to the individual commits
+	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
+	// Whether the created commits will use the commit rate or list rate
+	RateType param.Field[ContractNewParamsRecurringCreditsRateType] `json:"rate_type"`
+	// Will be passed down to the individual commits. This controls how much of an
+	// individual unexpired commit will roll over upon contract transition
+	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// A temporary ID that can be used to reference the recurring commit for commit
+	// specific overrides.
+	TemporaryID param.Field[string] `json:"temporary_id"`
+}
+
+func (r ContractNewParamsRecurringCredit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The amount of commit to grant.
+type ContractNewParamsRecurringCreditsAccessAmount struct {
+	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
+	Quantity     param.Field[float64] `json:"quantity,required"`
+	UnitPrice    param.Field[float64] `json:"unit_price,required"`
+}
+
+func (r ContractNewParamsRecurringCreditsAccessAmount) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The amount of time the created commits will be valid for.
+type ContractNewParamsRecurringCreditsCommitDuration struct {
+	Unit  param.Field[ContractNewParamsRecurringCreditsCommitDurationUnit] `json:"unit,required"`
+	Value param.Field[float64]                                             `json:"value,required"`
+}
+
+func (r ContractNewParamsRecurringCreditsCommitDuration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsRecurringCreditsCommitDurationUnit string
+
+const (
+	ContractNewParamsRecurringCreditsCommitDurationUnitPeriods ContractNewParamsRecurringCreditsCommitDurationUnit = "PERIODS"
+)
+
+func (r ContractNewParamsRecurringCreditsCommitDurationUnit) IsKnown() bool {
+	switch r {
+	case ContractNewParamsRecurringCreditsCommitDurationUnitPeriods:
+		return true
+	}
+	return false
+}
+
+// The amount the customer should be billed for the commit. Not required.
+type ContractNewParamsRecurringCreditsInvoiceAmount struct {
+	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
+	Quantity     param.Field[float64] `json:"quantity,required"`
+	UnitPrice    param.Field[float64] `json:"unit_price,required"`
+}
+
+func (r ContractNewParamsRecurringCreditsInvoiceAmount) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Whether the created commits will use the commit rate or list rate
+type ContractNewParamsRecurringCreditsRateType string
+
+const (
+	ContractNewParamsRecurringCreditsRateTypeCommitRate ContractNewParamsRecurringCreditsRateType = "COMMIT_RATE"
+	ContractNewParamsRecurringCreditsRateTypeListRate   ContractNewParamsRecurringCreditsRateType = "LIST_RATE"
+)
+
+func (r ContractNewParamsRecurringCreditsRateType) IsKnown() bool {
+	switch r {
+	case ContractNewParamsRecurringCreditsRateTypeCommitRate, ContractNewParamsRecurringCreditsRateTypeListRate:
+		return true
+	}
+	return false
 }
 
 type ContractNewParamsResellerRoyalty struct {
@@ -2581,6 +2793,16 @@ type ContractAmendParamsOverridesOverrideSpecifier struct {
 	// If provided, the override will only apply to products with all the specified
 	// tags.
 	ProductTags param.Field[[]string] `json:"product_tags"`
+	// Can only be used for commit specific overrides. Must be used in conjunction with
+	// one of product_id, product_tags, pricing_group_values, or
+	// presentation_group_values. If provided, the override will only apply to commits
+	// created by the specified recurring commit ids.
+	RecurringCommitIDs param.Field[[]string] `json:"recurring_commit_ids"`
+	// Can only be used for commit specific overrides. Must be used in conjunction with
+	// one of product_id, product_tags, pricing_group_values, or
+	// presentation_group_values. If provided, the override will only apply to credits
+	// created by the specified recurring credit ids.
+	RecurringCreditIDs param.Field[[]string] `json:"recurring_credit_ids"`
 }
 
 func (r ContractAmendParamsOverridesOverrideSpecifier) MarshalJSON() (data []byte, err error) {
