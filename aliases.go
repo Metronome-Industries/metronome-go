@@ -243,6 +243,88 @@ const ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly = shared
 const ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual
 
 // This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommit = shared.ContractWithoutAmendmentsRecurringCommit
+
+// The amount of commit to grant.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsAccessAmount = shared.ContractWithoutAmendmentsRecurringCommitsAccessAmount
+
+// The amount of time the created commits will be valid for
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsCommitDuration = shared.ContractWithoutAmendmentsRecurringCommitsCommitDuration
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsCommitDurationUnit = shared.ContractWithoutAmendmentsRecurringCommitsCommitDurationUnit
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsCommitDurationUnitPeriods = shared.ContractWithoutAmendmentsRecurringCommitsCommitDurationUnitPeriods
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsProduct = shared.ContractWithoutAmendmentsRecurringCommitsProduct
+
+// Whether the created commits will use the commit rate or list rate
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsRateType = shared.ContractWithoutAmendmentsRecurringCommitsRateType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsRateTypeCommitRate = shared.ContractWithoutAmendmentsRecurringCommitsRateTypeCommitRate
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsRateTypeListRate = shared.ContractWithoutAmendmentsRecurringCommitsRateTypeListRate
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsContract = shared.ContractWithoutAmendmentsRecurringCommitsContract
+
+// The amount the customer should be billed for the commit. Not required.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsInvoiceAmount = shared.ContractWithoutAmendmentsRecurringCommitsInvoiceAmount
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCredit = shared.ContractWithoutAmendmentsRecurringCredit
+
+// The amount of commit to grant.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsAccessAmount = shared.ContractWithoutAmendmentsRecurringCreditsAccessAmount
+
+// The amount of time the created commits will be valid for
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsCommitDuration = shared.ContractWithoutAmendmentsRecurringCreditsCommitDuration
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsCommitDurationUnit = shared.ContractWithoutAmendmentsRecurringCreditsCommitDurationUnit
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsCommitDurationUnitPeriods = shared.ContractWithoutAmendmentsRecurringCreditsCommitDurationUnitPeriods
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsProduct = shared.ContractWithoutAmendmentsRecurringCreditsProduct
+
+// Whether the created commits will use the commit rate or list rate
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsRateType = shared.ContractWithoutAmendmentsRecurringCreditsRateType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsRateTypeCommitRate = shared.ContractWithoutAmendmentsRecurringCreditsRateTypeCommitRate
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsRateTypeListRate = shared.ContractWithoutAmendmentsRecurringCreditsRateTypeListRate
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsContract = shared.ContractWithoutAmendmentsRecurringCreditsContract
+
+// The amount the customer should be billed for the commit. Not required.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsInvoiceAmount = shared.ContractWithoutAmendmentsRecurringCreditsInvoiceAmount
+
+// This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
 
 // This is an alias to an internal type.
