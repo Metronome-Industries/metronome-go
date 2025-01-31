@@ -51,7 +51,7 @@ func main() {
 	client := metronome.NewClient(
 		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("METRONOME_BEARER_TOKEN")
 	)
-	client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
+	err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
 		Usage: []metronome.UsageIngestParamsUsage{{
 			CustomerID:    metronome.F("team@example.com"),
 			EventType:     metronome.F("heartbeat"),
@@ -279,6 +279,31 @@ client.Contracts.New(
 	},
 	option.WithMaxRetries(5),
 )
+```
+
+### Accessing raw response data (e.g. response headers)
+
+You can access the raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when
+you need to examine response headers, status codes, or other details.
+
+```go
+// Create a variable to store the HTTP response
+var response *http.Response
+contract, err := client.Contracts.New(
+	context.TODO(),
+	metronome.ContractNewParams{
+		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		StartingAt: metronome.F(time.Now()),
+	},
+	option.WithResponseInto(&response),
+)
+if err != nil {
+	// handle error
+}
+fmt.Printf("%+v\n", contract)
+
+fmt.Printf("Status Code: %d\n", response.StatusCode)
+fmt.Printf("Headers: %+#v\n", response.Header)
 ```
 
 ### Making custom/undocumented requests
