@@ -106,9 +106,8 @@ type AlertNewParams struct {
 	// field is only defined for CreditPercentage and CreditBalance alerts
 	CreditGrantTypeFilters param.Field[[]string] `json:"credit_grant_type_filters"`
 	CreditTypeID           param.Field[string]   `json:"credit_type_id" format:"uuid"`
-	// Only present for beta contract invoices. This field's availability is dependent
-	// on your client's configuration. A list of custom field filters for alert types
-	// that support advanced filtering
+	// A list of custom field filters for alert types that support advanced filtering.
+	// Only present for contract invoices.
 	CustomFieldFilters param.Field[[]AlertNewParamsCustomFieldFilter] `json:"custom_field_filters"`
 	// If provided, will create this alert for this specific customer. To create an
 	// alert for all customers, do not specify `customer_id` or `plan_id`.
