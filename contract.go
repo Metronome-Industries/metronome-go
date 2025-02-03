@@ -1639,8 +1639,7 @@ type ContractNewParamsOverridesOverrideSpecifier struct {
 	// specified commits. If not provided, the override will apply to all commits.
 	CommitIDs param.Field[[]string] `json:"commit_ids"`
 	// A map of group names to values. The override will only apply to line items with
-	// the specified presentation group values. Can only be used for multiplier
-	// overrides.
+	// the specified presentation group values.
 	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
 	// A map of pricing group names to values. The override will only apply to products
 	// with the specified pricing group values.
@@ -2782,8 +2781,7 @@ type ContractAmendParamsOverridesOverrideSpecifier struct {
 	// specified commits. If not provided, the override will apply to all commits.
 	CommitIDs param.Field[[]string] `json:"commit_ids"`
 	// A map of group names to values. The override will only apply to line items with
-	// the specified presentation group values. Can only be used for multiplier
-	// overrides.
+	// the specified presentation group values.
 	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
 	// A map of pricing group names to values. The override will only apply to products
 	// with the specified pricing group values.
