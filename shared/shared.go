@@ -1166,7 +1166,8 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	// Will be passed down to the individual commits
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// Will be passed down to the individual commits. This controls how much of an
-	// individual unexpired commit will roll over upon contract transition
+	// individual unexpired commit will roll over upon contract transition. Must be
+	// between 0 and 1.
 	RolloverFraction float64                                      `json:"rollover_fraction"`
 	JSON             contractWithoutAmendmentsRecurringCommitJSON `json:"-"`
 }
@@ -1382,7 +1383,8 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	// Will be passed down to the individual commits
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// Will be passed down to the individual commits. This controls how much of an
-	// individual unexpired commit will roll over upon contract transition
+	// individual unexpired commit will roll over upon contract transition. Must be
+	// between 0 and 1.
 	RolloverFraction float64                                      `json:"rollover_fraction"`
 	JSON             contractWithoutAmendmentsRecurringCreditJSON `json:"-"`
 }
