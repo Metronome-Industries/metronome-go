@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.1.0-beta.6 (2025-02-07)
+
+Full Changelog: [v0.1.0-beta.5...v0.1.0-beta.6](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.5...v0.1.0-beta.6)
+
+### Features
+
+* **api:** api update ([#82](https://github.com/Metronome-Industries/metronome-go/issues/82)) ([e595dba](https://github.com/Metronome-Industries/metronome-go/commit/e595dba88231c9d1ad1c2b58c738c9a622244ae6))
+* **api:** api update ([#86](https://github.com/Metronome-Industries/metronome-go/issues/86)) ([828fa6d](https://github.com/Metronome-Industries/metronome-go/commit/828fa6d228275a6f0005cf518ec21782ca7703d0))
+* **api:** api update ([#91](https://github.com/Metronome-Industries/metronome-go/issues/91)) ([b39ccb5](https://github.com/Metronome-Industries/metronome-go/commit/b39ccb5b5fb34dbb7892a6b8a404cd4bca55774b))
+* **api:** api update ([#94](https://github.com/Metronome-Industries/metronome-go/issues/94)) ([98bbde2](https://github.com/Metronome-Industries/metronome-go/commit/98bbde2443092f178f7645641f17ecee381a7384))
+* **api:** api update ([#95](https://github.com/Metronome-Industries/metronome-go/issues/95)) ([caa1afc](https://github.com/Metronome-Industries/metronome-go/commit/caa1afc3fdb245a7963ba18cc895e1c1df5d2b23))
+* **api:** api update ([#96](https://github.com/Metronome-Industries/metronome-go/issues/96)) ([49136e0](https://github.com/Metronome-Industries/metronome-go/commit/49136e0ca20df8e7cdeeb1c1b0ad102f3e00b327))
+* **client:** send `X-Stainless-Timeout` header ([#92](https://github.com/Metronome-Industries/metronome-go/issues/92)) ([2a829ce](https://github.com/Metronome-Industries/metronome-go/commit/2a829ce54058c0321f334e6c384662cf7b0d63c2))
+
+
+### Bug Fixes
+
+* fix early cancel when RequestTimeout is provided for streaming requests ([#97](https://github.com/Metronome-Industries/metronome-go/issues/97)) ([a6f23da](https://github.com/Metronome-Industries/metronome-go/commit/a6f23da9199737dcddeb991555bb05beec6b8241))
+* fix interface implementation stub names for unions ([#84](https://github.com/Metronome-Industries/metronome-go/issues/84)) ([c6124ab](https://github.com/Metronome-Industries/metronome-go/commit/c6124ab96197bc00d6014a381406bbb07a0eedb4))
+* fix unicode encoding for json ([#89](https://github.com/Metronome-Industries/metronome-go/issues/89)) ([655c9d5](https://github.com/Metronome-Industries/metronome-go/commit/655c9d51ce948b06fadacb255ca54ee98e2a8192))
+
+
+### Chores
+
+* add UnionUnmarshaler for responses that are interfaces ([#93](https://github.com/Metronome-Industries/metronome-go/issues/93)) ([6f9193d](https://github.com/Metronome-Industries/metronome-go/commit/6f9193db34ad3858fbfe2e857adfce4648b1aa8e))
+* **internal:** codegen related update ([#85](https://github.com/Metronome-Industries/metronome-go/issues/85)) ([1c9cd5e](https://github.com/Metronome-Industries/metronome-go/commit/1c9cd5eddb7d6cd8e9634fb2ea4fadf6f5a119de))
+* **internal:** codegen related update ([#87](https://github.com/Metronome-Industries/metronome-go/issues/87)) ([bda1654](https://github.com/Metronome-Industries/metronome-go/commit/bda16540ec2dd5395563efebb1c2d555562267a6))
+* **internal:** codegen related update ([#88](https://github.com/Metronome-Industries/metronome-go/issues/88)) ([09a4fe2](https://github.com/Metronome-Industries/metronome-go/commit/09a4fe21ea8fbfd2503c63125c9bf1012543328f))
+
+
+### Documentation
+
+* document raw responses ([#90](https://github.com/Metronome-Industries/metronome-go/issues/90)) ([7422f4f](https://github.com/Metronome-Industries/metronome-go/commit/7422f4fce6db256370dca28aa6b9c6bf46516c33))
+
 ## 0.1.0-beta.5 (2025-01-27)
 
 Full Changelog: [v0.1.0-beta.4...v0.1.0-beta.5](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.4...v0.1.0-beta.5)
