@@ -1786,7 +1786,7 @@ type ContractNewParamsRecurringCommit struct {
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
 	// Will be passed down to the individual commits
 	Description param.Field[string] `json:"description"`
-	// determines when the contract will stop creating recurring commits. optional
+	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount param.Field[ContractNewParamsRecurringCommitsInvoiceAmount] `json:"invoice_amount"`
@@ -1797,7 +1797,8 @@ type ContractNewParamsRecurringCommit struct {
 	// Whether the created commits will use the commit rate or list rate
 	RateType param.Field[ContractNewParamsRecurringCommitsRateType] `json:"rate_type"`
 	// Will be passed down to the individual commits. This controls how much of an
-	// individual unexpired commit will roll over upon contract transition
+	// individual unexpired commit will roll over upon contract transition. Must be
+	// between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
@@ -1886,7 +1887,7 @@ type ContractNewParamsRecurringCredit struct {
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
 	// Will be passed down to the individual commits
 	Description param.Field[string] `json:"description"`
-	// determines when the contract will stop creating recurring commits. optional
+	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount param.Field[ContractNewParamsRecurringCreditsInvoiceAmount] `json:"invoice_amount"`
@@ -1897,7 +1898,8 @@ type ContractNewParamsRecurringCredit struct {
 	// Whether the created commits will use the commit rate or list rate
 	RateType param.Field[ContractNewParamsRecurringCreditsRateType] `json:"rate_type"`
 	// Will be passed down to the individual commits. This controls how much of an
-	// individual unexpired commit will roll over upon contract transition
+	// individual unexpired commit will roll over upon contract transition. Must be
+	// between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
