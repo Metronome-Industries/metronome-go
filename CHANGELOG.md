@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.1.0-beta.7 (2025-02-24)
+
+Full Changelog: [v0.1.0-beta.6...v0.1.0-beta.7](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.6...v0.1.0-beta.7)
+
+### Features
+
+* **api:** api update ([#102](https://github.com/Metronome-Industries/metronome-go/issues/102)) ([3e8e693](https://github.com/Metronome-Industries/metronome-go/commit/3e8e6932c3e7fb7e2cd50c9f0567f3a1a162d928))
+* **api:** api update ([#106](https://github.com/Metronome-Industries/metronome-go/issues/106)) ([9a11e13](https://github.com/Metronome-Industries/metronome-go/commit/9a11e13212095a391ee9725b482a489271288b6c))
+* **api:** api update ([#99](https://github.com/Metronome-Industries/metronome-go/issues/99)) ([77501b9](https://github.com/Metronome-Industries/metronome-go/commit/77501b9fae5c10b234484cff2b386caa23412bdb))
+
+
+### Bug Fixes
+
+* **client:** mark some request bodies as optional ([#104](https://github.com/Metronome-Industries/metronome-go/issues/104)) ([d3f0fb7](https://github.com/Metronome-Industries/metronome-go/commit/d3f0fb782965ec42ef8839ea07ad0544053d5f39))
+* do not call path.Base on ContentType ([#101](https://github.com/Metronome-Industries/metronome-go/issues/101)) ([3d3080a](https://github.com/Metronome-Industries/metronome-go/commit/3d3080adb6dcdebc3711c4a7ac0391f6cecf372f))
+
+
+### Chores
+
+* **internal:** codegen related update ([#103](https://github.com/Metronome-Industries/metronome-go/issues/103)) ([c526ef0](https://github.com/Metronome-Industries/metronome-go/commit/c526ef0b24c18bb04538bd97bce15a98d90ad4e0))
+* **internal:** fix devcontainers setup ([#105](https://github.com/Metronome-Industries/metronome-go/issues/105)) ([ccb394d](https://github.com/Metronome-Industries/metronome-go/commit/ccb394db66a3ebec8d9831c6998521e67454db0b))
+
 ## 0.1.0-beta.6 (2025-02-07)
 
 Full Changelog: [v0.1.0-beta.5...v0.1.0-beta.6](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.5...v0.1.0-beta.6)
