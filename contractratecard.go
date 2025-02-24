@@ -519,11 +519,11 @@ func (r ContractRateCardUpdateParamsAlias) MarshalJSON() (data []byte, err error
 }
 
 type ContractRateCardListParams struct {
-	Body interface{} `json:"body,required"`
 	// Max number of results that should be returned
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.
 	NextPage param.Field[string] `query:"next_page"`
+	Body     interface{}         `json:"body"`
 }
 
 func (r ContractRateCardListParams) MarshalJSON() (data []byte, err error) {

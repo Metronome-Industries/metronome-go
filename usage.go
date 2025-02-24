@@ -239,7 +239,7 @@ func (r UsageListParamsBillableMetricsGroupBy) MarshalJSON() (data []byte, err e
 }
 
 type UsageIngestParams struct {
-	Usage []UsageIngestParamsUsage `json:"usage,required"`
+	Usage []UsageIngestParamsUsage `json:"usage"`
 }
 
 func (r UsageIngestParams) MarshalJSON() (data []byte, err error) {

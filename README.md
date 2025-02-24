@@ -26,7 +26,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Metronome-Industries/metronome-go@v0.1.0-beta.6'
+go get -u 'github.com/Metronome-Industries/metronome-go@v0.1.0-beta.7'
 ```
 
 <!-- x-release-please-end -->
@@ -53,14 +53,7 @@ func main() {
 	client := metronome.NewClient(
 		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("METRONOME_BEARER_TOKEN")
 	)
-	err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
-		Usage: []metronome.UsageIngestParamsUsage{{
-			CustomerID:    metronome.F("team@example.com"),
-			EventType:     metronome.F("heartbeat"),
-			Timestamp:     metronome.F("2021-01-01T00:00:00Z"),
-			TransactionID: metronome.F("2021-01-01T00:00:00Z_cluster42"),
-		}},
-	})
+	err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{})
 	if err != nil {
 		panic(err.Error())
 	}

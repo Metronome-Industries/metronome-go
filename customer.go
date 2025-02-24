@@ -246,6 +246,9 @@ type CustomerDetail struct {
 	// in usage events
 	IngestAliases []string `json:"ingest_aliases,required"`
 	Name          string   `json:"name,required"`
+	// RFC 3339 timestamp indicating when the customer was archived. Null if the
+	// customer is active.
+	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
 	// This field's availability is dependent on your client's configuration.
 	CurrentBillableStatus CustomerDetailCurrentBillableStatus `json:"current_billable_status"`
 	JSON                  customerDetailJSON                  `json:"-"`
@@ -259,6 +262,7 @@ type customerDetailJSON struct {
 	ExternalID            apijson.Field
 	IngestAliases         apijson.Field
 	Name                  apijson.Field
+	ArchivedAt            apijson.Field
 	CurrentBillableStatus apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
@@ -753,7 +757,8 @@ type CustomerListParams struct {
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.
 	NextPage param.Field[string] `query:"next_page"`
-	// Filter the customer list by only archived customers.
+	// Filter the customer list to only return archived customers. By default, only
+	// active customers are returned.
 	OnlyArchived param.Field[bool] `query:"only_archived"`
 	// Filter the customer list by salesforce_account_id. Up to 100 ids can be
 	// provided.

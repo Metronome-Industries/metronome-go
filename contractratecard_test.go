@@ -123,9 +123,9 @@ func TestContractRateCardListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Contracts.RateCards.List(context.TODO(), metronome.ContractRateCardListParams{
-		Body:     map[string]interface{}{},
 		Limit:    metronome.F(int64(1)),
 		NextPage: metronome.F("next_page"),
+		Body:     map[string]interface{}{},
 	})
 	if err != nil {
 		var apierr *metronome.Error
