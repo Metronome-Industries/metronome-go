@@ -1376,8 +1376,6 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// The amount the customer should be billed for the commit. Not required.
-	InvoiceAmount ContractWithoutAmendmentsRecurringCreditsInvoiceAmount `json:"invoice_amount"`
 	// Displayed on invoices. Will be passed through to the individual commits
 	Name string `json:"name"`
 	// Will be passed down to the individual commits
@@ -1404,7 +1402,6 @@ type contractWithoutAmendmentsRecurringCreditJSON struct {
 	Contract              apijson.Field
 	Description           apijson.Field
 	EndingBefore          apijson.Field
-	InvoiceAmount         apijson.Field
 	Name                  apijson.Field
 	NetsuiteSalesOrderID  apijson.Field
 	RolloverFraction      apijson.Field
@@ -1542,32 +1539,6 @@ func (r *ContractWithoutAmendmentsRecurringCreditsContract) UnmarshalJSON(data [
 }
 
 func (r contractWithoutAmendmentsRecurringCreditsContractJSON) RawJSON() string {
-	return r.raw
-}
-
-// The amount the customer should be billed for the commit. Not required.
-type ContractWithoutAmendmentsRecurringCreditsInvoiceAmount struct {
-	CreditTypeID string                                                     `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                    `json:"quantity,required"`
-	UnitPrice    float64                                                    `json:"unit_price,required"`
-	JSON         contractWithoutAmendmentsRecurringCreditsInvoiceAmountJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsInvoiceAmountJSON contains the JSON
-// metadata for the struct [ContractWithoutAmendmentsRecurringCreditsInvoiceAmount]
-type contractWithoutAmendmentsRecurringCreditsInvoiceAmountJSON struct {
-	CreditTypeID apijson.Field
-	Quantity     apijson.Field
-	UnitPrice    apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsInvoiceAmount) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsInvoiceAmountJSON) RawJSON() string {
 	return r.raw
 }
 

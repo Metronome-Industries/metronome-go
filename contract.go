@@ -1889,8 +1889,6 @@ type ContractNewParamsRecurringCredit struct {
 	Description param.Field[string] `json:"description"`
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	// The amount the customer should be billed for the commit. Not required.
-	InvoiceAmount param.Field[ContractNewParamsRecurringCreditsInvoiceAmount] `json:"invoice_amount"`
 	// displayed on invoices. will be passed through to the individual commits
 	Name param.Field[string] `json:"name"`
 	// Will be passed down to the individual commits
@@ -1943,17 +1941,6 @@ func (r ContractNewParamsRecurringCreditsCommitDurationUnit) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// The amount the customer should be billed for the commit. Not required.
-type ContractNewParamsRecurringCreditsInvoiceAmount struct {
-	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     param.Field[float64] `json:"quantity,required"`
-	UnitPrice    param.Field[float64] `json:"unit_price,required"`
-}
-
-func (r ContractNewParamsRecurringCreditsInvoiceAmount) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 // Whether the created commits will use the commit rate or list rate

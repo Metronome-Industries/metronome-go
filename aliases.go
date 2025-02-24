@@ -319,11 +319,6 @@ const ContractWithoutAmendmentsRecurringCreditsRateTypeListRate = shared.Contrac
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCreditsContract = shared.ContractWithoutAmendmentsRecurringCreditsContract
 
-// The amount the customer should be billed for the commit. Not required.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsInvoiceAmount = shared.ContractWithoutAmendmentsRecurringCreditsInvoiceAmount
-
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
 
