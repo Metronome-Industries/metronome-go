@@ -51,14 +51,7 @@ func main() {
 	client := metronome.NewClient(
 		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("METRONOME_BEARER_TOKEN")
 	)
-	err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{
-		Usage: []metronome.UsageIngestParamsUsage{{
-			CustomerID:    metronome.F("team@example.com"),
-			EventType:     metronome.F("heartbeat"),
-			Timestamp:     metronome.F("2021-01-01T00:00:00Z"),
-			TransactionID: metronome.F("2021-01-01T00:00:00Z_cluster42"),
-		}},
-	})
+	err := client.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{})
 	if err != nil {
 		panic(err.Error())
 	}
