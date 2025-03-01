@@ -379,6 +379,9 @@ type ContractRateCardRateAddParams struct {
 	RateType   param.Field[ContractRateCardRateAddParamsRateType] `json:"rate_type,required"`
 	// inclusive effective date
 	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
+	// Optional. Frequency to bill subscriptions with. Required for subscription type
+	// products with Flat rate.
+	BillingFrequency param.Field[ContractRateCardRateAddParamsBillingFrequency] `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate param.Field[ContractRateCardRateAddParamsCommitRate] `json:"commit_rate"`
@@ -433,6 +436,24 @@ func (r ContractRateCardRateAddParamsRateType) IsKnown() bool {
 	return false
 }
 
+// Optional. Frequency to bill subscriptions with. Required for subscription type
+// products with Flat rate.
+type ContractRateCardRateAddParamsBillingFrequency string
+
+const (
+	ContractRateCardRateAddParamsBillingFrequencyMonthly   ContractRateCardRateAddParamsBillingFrequency = "MONTHLY"
+	ContractRateCardRateAddParamsBillingFrequencyQuarterly ContractRateCardRateAddParamsBillingFrequency = "QUARTERLY"
+	ContractRateCardRateAddParamsBillingFrequencyAnnual    ContractRateCardRateAddParamsBillingFrequency = "ANNUAL"
+)
+
+func (r ContractRateCardRateAddParamsBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractRateCardRateAddParamsBillingFrequencyMonthly, ContractRateCardRateAddParamsBillingFrequencyQuarterly, ContractRateCardRateAddParamsBillingFrequencyAnnual:
+		return true
+	}
+	return false
+}
+
 // A distinct rate on the rate card. You can choose to use this rate rather than
 // list rate when consuming a credit or commit.
 type ContractRateCardRateAddParamsCommitRate struct {
@@ -481,6 +502,9 @@ type ContractRateCardRateAddManyParamsRate struct {
 	RateType  param.Field[ContractRateCardRateAddManyParamsRatesRateType] `json:"rate_type,required"`
 	// inclusive effective date
 	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
+	// Optional. Frequency to bill subscriptions with. Required for subscription type
+	// products with Flat rate.
+	BillingFrequency param.Field[ContractRateCardRateAddManyParamsRatesBillingFrequency] `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate param.Field[ContractRateCardRateAddManyParamsRatesCommitRate] `json:"commit_rate"`
@@ -530,6 +554,24 @@ const (
 func (r ContractRateCardRateAddManyParamsRatesRateType) IsKnown() bool {
 	switch r {
 	case ContractRateCardRateAddManyParamsRatesRateTypeFlat, ContractRateCardRateAddManyParamsRatesRateTypePercentage, ContractRateCardRateAddManyParamsRatesRateTypeSubscription, ContractRateCardRateAddManyParamsRatesRateTypeTiered, ContractRateCardRateAddManyParamsRatesRateTypeCustom:
+		return true
+	}
+	return false
+}
+
+// Optional. Frequency to bill subscriptions with. Required for subscription type
+// products with Flat rate.
+type ContractRateCardRateAddManyParamsRatesBillingFrequency string
+
+const (
+	ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly   ContractRateCardRateAddManyParamsRatesBillingFrequency = "MONTHLY"
+	ContractRateCardRateAddManyParamsRatesBillingFrequencyQuarterly ContractRateCardRateAddManyParamsRatesBillingFrequency = "QUARTERLY"
+	ContractRateCardRateAddManyParamsRatesBillingFrequencyAnnual    ContractRateCardRateAddManyParamsRatesBillingFrequency = "ANNUAL"
+)
+
+func (r ContractRateCardRateAddManyParamsRatesBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly, ContractRateCardRateAddManyParamsRatesBillingFrequencyQuarterly, ContractRateCardRateAddManyParamsRatesBillingFrequencyAnnual:
 		return true
 	}
 	return false
