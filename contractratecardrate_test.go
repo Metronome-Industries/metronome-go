@@ -33,6 +33,7 @@ func TestContractRateCardRateListWithOptionalParams(t *testing.T) {
 		Limit:      metronome.F(int64(1)),
 		NextPage:   metronome.F("next_page"),
 		Selectors: metronome.F([]metronome.ContractRateCardRateListParamsSelector{{
+			BillingFrequency: metronome.F(metronome.ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",

@@ -76,13 +76,14 @@ func (r *ContractRateCardRateService) AddMany(ctx context.Context, body Contract
 }
 
 type ContractRateCardRateListResponse struct {
-	Entitled            bool              `json:"entitled,required"`
-	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
-	ProductID           string            `json:"product_id,required" format:"uuid"`
-	ProductName         string            `json:"product_name,required"`
-	ProductTags         []string          `json:"product_tags,required"`
-	Rate                shared.Rate       `json:"rate,required"`
-	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
+	Entitled            bool                                             `json:"entitled,required"`
+	ProductCustomFields map[string]string                                `json:"product_custom_fields,required"`
+	ProductID           string                                           `json:"product_id,required" format:"uuid"`
+	ProductName         string                                           `json:"product_name,required"`
+	ProductTags         []string                                         `json:"product_tags,required"`
+	Rate                shared.Rate                                      `json:"rate,required"`
+	StartingAt          time.Time                                        `json:"starting_at,required" format:"date-time"`
+	BillingFrequency    ContractRateCardRateListResponseBillingFrequency `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate         ContractRateCardRateListResponseCommitRate `json:"commit_rate"`
@@ -101,6 +102,7 @@ type contractRateCardRateListResponseJSON struct {
 	ProductTags         apijson.Field
 	Rate                apijson.Field
 	StartingAt          apijson.Field
+	BillingFrequency    apijson.Field
 	CommitRate          apijson.Field
 	EndingBefore        apijson.Field
 	PricingGroupValues  apijson.Field
@@ -114,6 +116,22 @@ func (r *ContractRateCardRateListResponse) UnmarshalJSON(data []byte) (err error
 
 func (r contractRateCardRateListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type ContractRateCardRateListResponseBillingFrequency string
+
+const (
+	ContractRateCardRateListResponseBillingFrequencyMonthly   ContractRateCardRateListResponseBillingFrequency = "MONTHLY"
+	ContractRateCardRateListResponseBillingFrequencyQuarterly ContractRateCardRateListResponseBillingFrequency = "QUARTERLY"
+	ContractRateCardRateListResponseBillingFrequencyAnnual    ContractRateCardRateListResponseBillingFrequency = "ANNUAL"
+)
+
+func (r ContractRateCardRateListResponseBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractRateCardRateListResponseBillingFrequencyMonthly, ContractRateCardRateListResponseBillingFrequencyQuarterly, ContractRateCardRateListResponseBillingFrequencyAnnual:
+		return true
+	}
+	return false
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
@@ -353,6 +371,9 @@ func (r ContractRateCardRateListParams) URLQuery() (v url.Values) {
 }
 
 type ContractRateCardRateListParamsSelector struct {
+	// Subscription rates matching the billing frequency will be included in the
+	// response.
+	BillingFrequency param.Field[ContractRateCardRateListParamsSelectorsBillingFrequency] `json:"billing_frequency"`
 	// List of pricing group key value pairs, rates containing the matching key / value
 	// pairs will be included in the response.
 	PartialPricingGroupValues param.Field[map[string]string] `json:"partial_pricing_group_values"`
@@ -368,6 +389,24 @@ type ContractRateCardRateListParamsSelector struct {
 
 func (r ContractRateCardRateListParamsSelector) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Subscription rates matching the billing frequency will be included in the
+// response.
+type ContractRateCardRateListParamsSelectorsBillingFrequency string
+
+const (
+	ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly   ContractRateCardRateListParamsSelectorsBillingFrequency = "MONTHLY"
+	ContractRateCardRateListParamsSelectorsBillingFrequencyQuarterly ContractRateCardRateListParamsSelectorsBillingFrequency = "QUARTERLY"
+	ContractRateCardRateListParamsSelectorsBillingFrequencyAnnual    ContractRateCardRateListParamsSelectorsBillingFrequency = "ANNUAL"
+)
+
+func (r ContractRateCardRateListParamsSelectorsBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly, ContractRateCardRateListParamsSelectorsBillingFrequencyQuarterly, ContractRateCardRateListParamsSelectorsBillingFrequencyAnnual:
+		return true
+	}
+	return false
 }
 
 type ContractRateCardRateAddParams struct {

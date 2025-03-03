@@ -750,6 +750,7 @@ func TestContractGetRateScheduleWithOptionalParams(t *testing.T) {
 		NextPage:   metronome.F("next_page"),
 		At:         metronome.F(time.Now()),
 		Selectors: metronome.F([]metronome.ContractGetRateScheduleParamsSelector{{
+			BillingFrequency: metronome.F(metronome.ContractGetRateScheduleParamsSelectorsBillingFrequencyMonthly),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
