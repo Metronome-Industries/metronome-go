@@ -284,7 +284,18 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
 		ScheduledChargesOnUsageInvoices: metronome.F(metronome.ContractNewParamsScheduledChargesOnUsageInvoicesAll),
-		TotalContractValue:              metronome.F(0.000000),
+		ThresholdBillingConfiguration: metronome.F(metronome.ContractNewParamsThresholdBillingConfiguration{
+			Commit: metronome.F(metronome.ContractNewParamsThresholdBillingConfigurationCommit{
+				ProductID:             metronome.F("product_id"),
+				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+				ApplicableProductTags: metronome.F([]string{"string"}),
+				Description:           metronome.F("description"),
+				Name:                  metronome.F("name"),
+			}),
+			IsEnabled:       metronome.F(true),
+			ThresholdAmount: metronome.F(0.000000),
+		}),
+		TotalContractValue: metronome.F(0.000000),
 		Transition: metronome.F(metronome.ContractNewParamsTransition{
 			FromContractID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Type:           metronome.F(metronome.ContractNewParamsTransitionTypeSupersede),
