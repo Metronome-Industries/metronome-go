@@ -1150,6 +1150,7 @@ type ContractNewParams struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices param.Field[ContractNewParamsScheduledChargesOnUsageInvoices] `json:"scheduled_charges_on_usage_invoices"`
+	ThresholdBillingConfiguration   param.Field[ContractNewParamsThresholdBillingConfiguration]   `json:"threshold_billing_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	TotalContractValue param.Field[float64]                     `json:"total_contract_value"`
 	Transition         param.Field[ContractNewParamsTransition] `json:"transition"`
@@ -2161,6 +2162,40 @@ func (r ContractNewParamsScheduledChargesOnUsageInvoices) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type ContractNewParamsThresholdBillingConfiguration struct {
+	Commit param.Field[ContractNewParamsThresholdBillingConfigurationCommit] `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled param.Field[bool] `json:"is_enabled,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+}
+
+func (r ContractNewParamsThresholdBillingConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsThresholdBillingConfigurationCommit struct {
+	ProductID param.Field[string] `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	Description           param.Field[string]   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r ContractNewParamsThresholdBillingConfigurationCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type ContractNewParamsTransition struct {

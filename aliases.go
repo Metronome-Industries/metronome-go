@@ -350,6 +350,12 @@ type ContractWithoutAmendmentsScheduledChargesOnUsageInvoices = shared.ContractW
 const ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll = shared.ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll
 
 // This is an alias to an internal type.
+type ContractWithoutAmendmentsThresholdBillingConfiguration = shared.ContractWithoutAmendmentsThresholdBillingConfiguration
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsThresholdBillingConfigurationCommit = shared.ContractWithoutAmendmentsThresholdBillingConfigurationCommit
+
+// This is an alias to an internal type.
 type ContractWithoutAmendmentsUsageFilter = shared.ContractWithoutAmendmentsUsageFilter
 
 // This is an alias to an internal type.
