@@ -1167,6 +1167,15 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	Name string `json:"name"`
 	// Will be passed down to the individual commits
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// Determines whether the first and last commit will be prorated. If not provided,
+	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	Proration ContractWithoutAmendmentsRecurringCommitsProration `json:"proration"`
+	// The frequency at which the recurring commits will be created. If not provided: -
+	// The commits will be created on the usage invoice frequency. If provided: - The
+	// period defined in the duration will correspond to this frequency. - Commits will
+	// be created aligned with the recurring commit's start_date rather than the usage
+	// invoice dates.
+	RecurrenceFrequency ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequency `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
@@ -1192,6 +1201,8 @@ type contractWithoutAmendmentsRecurringCommitJSON struct {
 	InvoiceAmount         apijson.Field
 	Name                  apijson.Field
 	NetsuiteSalesOrderID  apijson.Field
+	Proration             apijson.Field
+	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
@@ -1356,6 +1367,46 @@ func (r contractWithoutAmendmentsRecurringCommitsInvoiceAmountJSON) RawJSON() st
 	return r.raw
 }
 
+// Determines whether the first and last commit will be prorated. If not provided,
+// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+type ContractWithoutAmendmentsRecurringCommitsProration string
+
+const (
+	ContractWithoutAmendmentsRecurringCommitsProrationNone         ContractWithoutAmendmentsRecurringCommitsProration = "NONE"
+	ContractWithoutAmendmentsRecurringCommitsProrationFirst        ContractWithoutAmendmentsRecurringCommitsProration = "FIRST"
+	ContractWithoutAmendmentsRecurringCommitsProrationLast         ContractWithoutAmendmentsRecurringCommitsProration = "LAST"
+	ContractWithoutAmendmentsRecurringCommitsProrationFirstAndLast ContractWithoutAmendmentsRecurringCommitsProration = "FIRST_AND_LAST"
+)
+
+func (r ContractWithoutAmendmentsRecurringCommitsProration) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsRecurringCommitsProrationNone, ContractWithoutAmendmentsRecurringCommitsProrationFirst, ContractWithoutAmendmentsRecurringCommitsProrationLast, ContractWithoutAmendmentsRecurringCommitsProrationFirstAndLast:
+		return true
+	}
+	return false
+}
+
+// The frequency at which the recurring commits will be created. If not provided: -
+// The commits will be created on the usage invoice frequency. If provided: - The
+// period defined in the duration will correspond to this frequency. - Commits will
+// be created aligned with the recurring commit's start_date rather than the usage
+// invoice dates.
+type ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequency string
+
+const (
+	ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyMonthly   ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequency = "MONTHLY"
+	ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyQuarterly ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequency = "QUARTERLY"
+	ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual    ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequency = "ANNUAL"
+)
+
+func (r ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequency) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyMonthly, ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyQuarterly, ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual:
+		return true
+	}
+	return false
+}
+
 type ContractWithoutAmendmentsRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -1382,6 +1433,15 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	Name string `json:"name"`
 	// Will be passed down to the individual commits
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// Determines whether the first and last commit will be prorated. If not provided,
+	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	Proration ContractWithoutAmendmentsRecurringCreditsProration `json:"proration"`
+	// The frequency at which the recurring commits will be created. If not provided: -
+	// The commits will be created on the usage invoice frequency. If provided: - The
+	// period defined in the duration will correspond to this frequency. - Commits will
+	// be created aligned with the recurring commit's start_date rather than the usage
+	// invoice dates.
+	RecurrenceFrequency ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequency `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
@@ -1406,6 +1466,8 @@ type contractWithoutAmendmentsRecurringCreditJSON struct {
 	EndingBefore          apijson.Field
 	Name                  apijson.Field
 	NetsuiteSalesOrderID  apijson.Field
+	Proration             apijson.Field
+	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
@@ -1542,6 +1604,46 @@ func (r *ContractWithoutAmendmentsRecurringCreditsContract) UnmarshalJSON(data [
 
 func (r contractWithoutAmendmentsRecurringCreditsContractJSON) RawJSON() string {
 	return r.raw
+}
+
+// Determines whether the first and last commit will be prorated. If not provided,
+// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+type ContractWithoutAmendmentsRecurringCreditsProration string
+
+const (
+	ContractWithoutAmendmentsRecurringCreditsProrationNone         ContractWithoutAmendmentsRecurringCreditsProration = "NONE"
+	ContractWithoutAmendmentsRecurringCreditsProrationFirst        ContractWithoutAmendmentsRecurringCreditsProration = "FIRST"
+	ContractWithoutAmendmentsRecurringCreditsProrationLast         ContractWithoutAmendmentsRecurringCreditsProration = "LAST"
+	ContractWithoutAmendmentsRecurringCreditsProrationFirstAndLast ContractWithoutAmendmentsRecurringCreditsProration = "FIRST_AND_LAST"
+)
+
+func (r ContractWithoutAmendmentsRecurringCreditsProration) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsRecurringCreditsProrationNone, ContractWithoutAmendmentsRecurringCreditsProrationFirst, ContractWithoutAmendmentsRecurringCreditsProrationLast, ContractWithoutAmendmentsRecurringCreditsProrationFirstAndLast:
+		return true
+	}
+	return false
+}
+
+// The frequency at which the recurring commits will be created. If not provided: -
+// The commits will be created on the usage invoice frequency. If provided: - The
+// period defined in the duration will correspond to this frequency. - Commits will
+// be created aligned with the recurring commit's start_date rather than the usage
+// invoice dates.
+type ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequency string
+
+const (
+	ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyMonthly   ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequency = "MONTHLY"
+	ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyQuarterly ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequency = "QUARTERLY"
+	ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual    ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequency = "ANNUAL"
+)
+
+func (r ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequency) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyMonthly, ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyQuarterly, ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual:
+		return true
+	}
+	return false
 }
 
 type ContractWithoutAmendmentsResellerRoyalty struct {

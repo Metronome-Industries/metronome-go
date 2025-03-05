@@ -1813,8 +1813,17 @@ type ContractNewParamsRecurringCommit struct {
 	Name param.Field[string] `json:"name"`
 	// Will be passed down to the individual commits
 	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
+	// Determines whether the first and last commit will be prorated. If not provided,
+	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	Proration param.Field[ContractNewParamsRecurringCommitsProration] `json:"proration"`
 	// Whether the created commits will use the commit rate or list rate
 	RateType param.Field[ContractNewParamsRecurringCommitsRateType] `json:"rate_type"`
+	// The frequency at which the recurring commits will be created. If not provided: -
+	// The commits will be created on the usage invoice frequency. If provided: - The
+	// period defined in the duration will correspond to this frequency. - Commits will
+	// be created aligned with the recurring commit's start_date rather than the usage
+	// invoice dates.
+	RecurrenceFrequency param.Field[ContractNewParamsRecurringCommitsRecurrenceFrequency] `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
@@ -1874,6 +1883,25 @@ func (r ContractNewParamsRecurringCommitsInvoiceAmount) MarshalJSON() (data []by
 	return apijson.MarshalRoot(r)
 }
 
+// Determines whether the first and last commit will be prorated. If not provided,
+// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+type ContractNewParamsRecurringCommitsProration string
+
+const (
+	ContractNewParamsRecurringCommitsProrationNone         ContractNewParamsRecurringCommitsProration = "NONE"
+	ContractNewParamsRecurringCommitsProrationFirst        ContractNewParamsRecurringCommitsProration = "FIRST"
+	ContractNewParamsRecurringCommitsProrationLast         ContractNewParamsRecurringCommitsProration = "LAST"
+	ContractNewParamsRecurringCommitsProrationFirstAndLast ContractNewParamsRecurringCommitsProration = "FIRST_AND_LAST"
+)
+
+func (r ContractNewParamsRecurringCommitsProration) IsKnown() bool {
+	switch r {
+	case ContractNewParamsRecurringCommitsProrationNone, ContractNewParamsRecurringCommitsProrationFirst, ContractNewParamsRecurringCommitsProrationLast, ContractNewParamsRecurringCommitsProrationFirstAndLast:
+		return true
+	}
+	return false
+}
+
 // Whether the created commits will use the commit rate or list rate
 type ContractNewParamsRecurringCommitsRateType string
 
@@ -1885,6 +1913,27 @@ const (
 func (r ContractNewParamsRecurringCommitsRateType) IsKnown() bool {
 	switch r {
 	case ContractNewParamsRecurringCommitsRateTypeCommitRate, ContractNewParamsRecurringCommitsRateTypeListRate:
+		return true
+	}
+	return false
+}
+
+// The frequency at which the recurring commits will be created. If not provided: -
+// The commits will be created on the usage invoice frequency. If provided: - The
+// period defined in the duration will correspond to this frequency. - Commits will
+// be created aligned with the recurring commit's start_date rather than the usage
+// invoice dates.
+type ContractNewParamsRecurringCommitsRecurrenceFrequency string
+
+const (
+	ContractNewParamsRecurringCommitsRecurrenceFrequencyMonthly   ContractNewParamsRecurringCommitsRecurrenceFrequency = "MONTHLY"
+	ContractNewParamsRecurringCommitsRecurrenceFrequencyQuarterly ContractNewParamsRecurringCommitsRecurrenceFrequency = "QUARTERLY"
+	ContractNewParamsRecurringCommitsRecurrenceFrequencyAnnual    ContractNewParamsRecurringCommitsRecurrenceFrequency = "ANNUAL"
+)
+
+func (r ContractNewParamsRecurringCommitsRecurrenceFrequency) IsKnown() bool {
+	switch r {
+	case ContractNewParamsRecurringCommitsRecurrenceFrequencyMonthly, ContractNewParamsRecurringCommitsRecurrenceFrequencyQuarterly, ContractNewParamsRecurringCommitsRecurrenceFrequencyAnnual:
 		return true
 	}
 	return false
@@ -1912,8 +1961,17 @@ type ContractNewParamsRecurringCredit struct {
 	Name param.Field[string] `json:"name"`
 	// Will be passed down to the individual commits
 	NetsuiteSalesOrderID param.Field[string] `json:"netsuite_sales_order_id"`
+	// Determines whether the first and last commit will be prorated. If not provided,
+	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	Proration param.Field[ContractNewParamsRecurringCreditsProration] `json:"proration"`
 	// Whether the created commits will use the commit rate or list rate
 	RateType param.Field[ContractNewParamsRecurringCreditsRateType] `json:"rate_type"`
+	// The frequency at which the recurring commits will be created. If not provided: -
+	// The commits will be created on the usage invoice frequency. If provided: - The
+	// period defined in the duration will correspond to this frequency. - Commits will
+	// be created aligned with the recurring commit's start_date rather than the usage
+	// invoice dates.
+	RecurrenceFrequency param.Field[ContractNewParamsRecurringCreditsRecurrenceFrequency] `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
@@ -1962,6 +2020,25 @@ func (r ContractNewParamsRecurringCreditsCommitDurationUnit) IsKnown() bool {
 	return false
 }
 
+// Determines whether the first and last commit will be prorated. If not provided,
+// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+type ContractNewParamsRecurringCreditsProration string
+
+const (
+	ContractNewParamsRecurringCreditsProrationNone         ContractNewParamsRecurringCreditsProration = "NONE"
+	ContractNewParamsRecurringCreditsProrationFirst        ContractNewParamsRecurringCreditsProration = "FIRST"
+	ContractNewParamsRecurringCreditsProrationLast         ContractNewParamsRecurringCreditsProration = "LAST"
+	ContractNewParamsRecurringCreditsProrationFirstAndLast ContractNewParamsRecurringCreditsProration = "FIRST_AND_LAST"
+)
+
+func (r ContractNewParamsRecurringCreditsProration) IsKnown() bool {
+	switch r {
+	case ContractNewParamsRecurringCreditsProrationNone, ContractNewParamsRecurringCreditsProrationFirst, ContractNewParamsRecurringCreditsProrationLast, ContractNewParamsRecurringCreditsProrationFirstAndLast:
+		return true
+	}
+	return false
+}
+
 // Whether the created commits will use the commit rate or list rate
 type ContractNewParamsRecurringCreditsRateType string
 
@@ -1973,6 +2050,27 @@ const (
 func (r ContractNewParamsRecurringCreditsRateType) IsKnown() bool {
 	switch r {
 	case ContractNewParamsRecurringCreditsRateTypeCommitRate, ContractNewParamsRecurringCreditsRateTypeListRate:
+		return true
+	}
+	return false
+}
+
+// The frequency at which the recurring commits will be created. If not provided: -
+// The commits will be created on the usage invoice frequency. If provided: - The
+// period defined in the duration will correspond to this frequency. - Commits will
+// be created aligned with the recurring commit's start_date rather than the usage
+// invoice dates.
+type ContractNewParamsRecurringCreditsRecurrenceFrequency string
+
+const (
+	ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly   ContractNewParamsRecurringCreditsRecurrenceFrequency = "MONTHLY"
+	ContractNewParamsRecurringCreditsRecurrenceFrequencyQuarterly ContractNewParamsRecurringCreditsRecurrenceFrequency = "QUARTERLY"
+	ContractNewParamsRecurringCreditsRecurrenceFrequencyAnnual    ContractNewParamsRecurringCreditsRecurrenceFrequency = "ANNUAL"
+)
+
+func (r ContractNewParamsRecurringCreditsRecurrenceFrequency) IsKnown() bool {
+	switch r {
+	case ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly, ContractNewParamsRecurringCreditsRecurrenceFrequencyQuarterly, ContractNewParamsRecurringCreditsRecurrenceFrequencyAnnual:
 		return true
 	}
 	return false
