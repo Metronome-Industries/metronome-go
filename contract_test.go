@@ -141,7 +141,8 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.ContractNewParamsOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string"}),
+				BillingFrequency: metronome.F(metronome.ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyMonthly),
+				CommitIDs:        metronome.F([]string{"string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -533,7 +534,8 @@ func TestContractAmendWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.ContractAmendParamsOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string"}),
+				BillingFrequency: metronome.F(metronome.ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyMonthly),
+				CommitIDs:        metronome.F([]string{"string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
