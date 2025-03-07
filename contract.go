@@ -1652,6 +1652,7 @@ func (r ContractNewParamsOverride) MarshalJSON() (data []byte, err error) {
 }
 
 type ContractNewParamsOverridesOverrideSpecifier struct {
+	BillingFrequency param.Field[ContractNewParamsOverridesOverrideSpecifiersBillingFrequency] `json:"billing_frequency"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
 	// one of product_id, product_tags, pricing_group_values, or
 	// presentation_group_values. If provided, the override will only apply to the
@@ -1682,6 +1683,22 @@ type ContractNewParamsOverridesOverrideSpecifier struct {
 
 func (r ContractNewParamsOverridesOverrideSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsOverridesOverrideSpecifiersBillingFrequency string
+
+const (
+	ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyMonthly   ContractNewParamsOverridesOverrideSpecifiersBillingFrequency = "MONTHLY"
+	ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyQuarterly ContractNewParamsOverridesOverrideSpecifiersBillingFrequency = "QUARTERLY"
+	ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyAnnual    ContractNewParamsOverridesOverrideSpecifiersBillingFrequency = "ANNUAL"
+)
+
+func (r ContractNewParamsOverridesOverrideSpecifiersBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyMonthly, ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyQuarterly, ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyAnnual:
+		return true
+	}
+	return false
 }
 
 // Required for OVERWRITE type.
@@ -2915,6 +2932,7 @@ func (r ContractAmendParamsOverride) MarshalJSON() (data []byte, err error) {
 }
 
 type ContractAmendParamsOverridesOverrideSpecifier struct {
+	BillingFrequency param.Field[ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency] `json:"billing_frequency"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
 	// one of product_id, product_tags, pricing_group_values, or
 	// presentation_group_values. If provided, the override will only apply to the
@@ -2945,6 +2963,22 @@ type ContractAmendParamsOverridesOverrideSpecifier struct {
 
 func (r ContractAmendParamsOverridesOverrideSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency string
+
+const (
+	ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyMonthly   ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency = "MONTHLY"
+	ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyQuarterly ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency = "QUARTERLY"
+	ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyAnnual    ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency = "ANNUAL"
+)
+
+func (r ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyMonthly, ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyQuarterly, ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyAnnual:
+		return true
+	}
+	return false
 }
 
 // Required for OVERWRITE type.
