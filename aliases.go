@@ -567,6 +567,18 @@ type Override = shared.Override
 type OverrideOverrideSpecifier = shared.OverrideOverrideSpecifier
 
 // This is an alias to an internal type.
+type OverrideOverrideSpecifiersBillingFrequency = shared.OverrideOverrideSpecifiersBillingFrequency
+
+// This is an alias to an internal value.
+const OverrideOverrideSpecifiersBillingFrequencyMonthly = shared.OverrideOverrideSpecifiersBillingFrequencyMonthly
+
+// This is an alias to an internal value.
+const OverrideOverrideSpecifiersBillingFrequencyQuarterly = shared.OverrideOverrideSpecifiersBillingFrequencyQuarterly
+
+// This is an alias to an internal value.
+const OverrideOverrideSpecifiersBillingFrequencyAnnual = shared.OverrideOverrideSpecifiersBillingFrequencyAnnual
+
+// This is an alias to an internal type.
 type OverrideOverrideTier = shared.OverrideOverrideTier
 
 // This is an alias to an internal type.
