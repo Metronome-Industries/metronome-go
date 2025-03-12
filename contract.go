@@ -1150,6 +1150,7 @@ type ContractNewParams struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices param.Field[ContractNewParamsScheduledChargesOnUsageInvoices] `json:"scheduled_charges_on_usage_invoices"`
+	Subscriptions                   param.Field[[]ContractNewParamsSubscription]                  `json:"subscriptions"`
 	ThresholdBillingConfiguration   param.Field[ContractNewParamsThresholdBillingConfiguration]   `json:"threshold_billing_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	TotalContractValue param.Field[float64]                     `json:"total_contract_value"`
@@ -2274,6 +2275,103 @@ const (
 func (r ContractNewParamsScheduledChargesOnUsageInvoices) IsKnown() bool {
 	switch r {
 	case ContractNewParamsScheduledChargesOnUsageInvoicesAll:
+		return true
+	}
+	return false
+}
+
+type ContractNewParamsSubscription struct {
+	CollectionSchedule param.Field[ContractNewParamsSubscriptionsCollectionSchedule] `json:"collection_schedule,required"`
+	InitialQuantity    param.Field[float64]                                          `json:"initial_quantity,required"`
+	Proration          param.Field[ContractNewParamsSubscriptionsProration]          `json:"proration,required"`
+	SubscriptionRate   param.Field[ContractNewParamsSubscriptionsSubscriptionRate]   `json:"subscription_rate,required"`
+	Description        param.Field[string]                                           `json:"description"`
+	// Exclusive end time for the subscription. If not provided, subscription inherits
+	// contract end date.
+	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
+	Name         param.Field[string]    `json:"name"`
+	// Inclusive start time for the subscription. If not provided, defaults to contract
+	// start date
+	StartingAt param.Field[time.Time] `json:"starting_at" format:"date-time"`
+}
+
+func (r ContractNewParamsSubscription) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsSubscriptionsCollectionSchedule string
+
+const (
+	ContractNewParamsSubscriptionsCollectionScheduleAdvance ContractNewParamsSubscriptionsCollectionSchedule = "ADVANCE"
+	ContractNewParamsSubscriptionsCollectionScheduleArrears ContractNewParamsSubscriptionsCollectionSchedule = "ARREARS"
+)
+
+func (r ContractNewParamsSubscriptionsCollectionSchedule) IsKnown() bool {
+	switch r {
+	case ContractNewParamsSubscriptionsCollectionScheduleAdvance, ContractNewParamsSubscriptionsCollectionScheduleArrears:
+		return true
+	}
+	return false
+}
+
+type ContractNewParamsSubscriptionsProration struct {
+	// Indicates how mid-period quantity adjustments are invoiced. If BILL_IMMEDIATELY
+	// is selected, the quantity increase will be billed on the scheduled date. If
+	// BILL_ON_NEXT_COLLECTION_DATE is selected, the quantity increase will be billed
+	// for in-arrears at the end of the period.
+	InvoiceBehavior param.Field[ContractNewParamsSubscriptionsProrationInvoiceBehavior] `json:"invoice_behavior"`
+	// Indicates if the partial period will be prorated or charged a full amount.
+	IsProrated param.Field[bool] `json:"is_prorated"`
+}
+
+func (r ContractNewParamsSubscriptionsProration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Indicates how mid-period quantity adjustments are invoiced. If BILL_IMMEDIATELY
+// is selected, the quantity increase will be billed on the scheduled date. If
+// BILL_ON_NEXT_COLLECTION_DATE is selected, the quantity increase will be billed
+// for in-arrears at the end of the period.
+type ContractNewParamsSubscriptionsProrationInvoiceBehavior string
+
+const (
+	ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillImmediately          ContractNewParamsSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
+	ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate ContractNewParamsSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
+)
+
+func (r ContractNewParamsSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
+	switch r {
+	case ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillImmediately, ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
+		return true
+	}
+	return false
+}
+
+type ContractNewParamsSubscriptionsSubscriptionRate struct {
+	// Frequency to bill subscription with. Together with product_id, must match
+	// existing rate on the rate card.
+	BillingFrequency param.Field[ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency] `json:"billing_frequency,required"`
+	// Must be subscription type product
+	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
+}
+
+func (r ContractNewParamsSubscriptionsSubscriptionRate) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Frequency to bill subscription with. Together with product_id, must match
+// existing rate on the rate card.
+type ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency string
+
+const (
+	ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyMonthly   ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
+	ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyQuarterly ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
+	ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyAnnual    ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
+)
+
+func (r ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyMonthly, ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyQuarterly, ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyAnnual:
 		return true
 	}
 	return false

@@ -289,6 +289,22 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
 		ScheduledChargesOnUsageInvoices: metronome.F(metronome.ContractNewParamsScheduledChargesOnUsageInvoicesAll),
+		Subscriptions: metronome.F([]metronome.ContractNewParamsSubscription{{
+			CollectionSchedule: metronome.F(metronome.ContractNewParamsSubscriptionsCollectionScheduleAdvance),
+			InitialQuantity:    metronome.F(0.000000),
+			Proration: metronome.F(metronome.ContractNewParamsSubscriptionsProration{
+				InvoiceBehavior: metronome.F(metronome.ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillImmediately),
+				IsProrated:      metronome.F(true),
+			}),
+			SubscriptionRate: metronome.F(metronome.ContractNewParamsSubscriptionsSubscriptionRate{
+				BillingFrequency: metronome.F(metronome.ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyMonthly),
+				ProductID:        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			}),
+			Description:  metronome.F("description"),
+			EndingBefore: metronome.F(time.Now()),
+			Name:         metronome.F("name"),
+			StartingAt:   metronome.F(time.Now()),
+		}}),
 		ThresholdBillingConfiguration: metronome.F(metronome.ContractNewParamsThresholdBillingConfiguration{
 			Commit: metronome.F(metronome.ContractNewParamsThresholdBillingConfigurationCommit{
 				ProductID:             metronome.F("product_id"),
