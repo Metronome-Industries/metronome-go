@@ -202,6 +202,7 @@ type ContractGetResponseData struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices ContractGetResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
+	Subscriptions                   []ContractGetResponseDataSubscription                  `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -221,6 +222,7 @@ type contractGetResponseDataJSON struct {
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
 	ScheduledChargesOnUsageInvoices      apijson.Field
+	Subscriptions                        apijson.Field
 	UniquenessKey                        apijson.Field
 	raw                                  string
 	ExtraFields                          map[string]apijson.Field
@@ -424,6 +426,182 @@ func (r ContractGetResponseDataScheduledChargesOnUsageInvoices) IsKnown() bool {
 	return false
 }
 
+type ContractGetResponseDataSubscription struct {
+	CollectionSchedule ContractGetResponseDataSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
+	Proration          ContractGetResponseDataSubscriptionsProration          `json:"proration,required"`
+	QuantitySchedule   []ContractGetResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt         time.Time                                              `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate   ContractGetResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
+	Description        string                                                 `json:"description"`
+	EndingBefore       time.Time                                              `json:"ending_before" format:"date-time"`
+	Name               string                                                 `json:"name"`
+	JSON               contractGetResponseDataSubscriptionJSON                `json:"-"`
+}
+
+// contractGetResponseDataSubscriptionJSON contains the JSON metadata for the
+// struct [ContractGetResponseDataSubscription]
+type contractGetResponseDataSubscriptionJSON struct {
+	CollectionSchedule apijson.Field
+	Proration          apijson.Field
+	QuantitySchedule   apijson.Field
+	StartingAt         apijson.Field
+	SubscriptionRate   apijson.Field
+	Description        apijson.Field
+	EndingBefore       apijson.Field
+	Name               apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *ContractGetResponseDataSubscription) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractGetResponseDataSubscriptionJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractGetResponseDataSubscriptionsCollectionSchedule string
+
+const (
+	ContractGetResponseDataSubscriptionsCollectionScheduleAdvance ContractGetResponseDataSubscriptionsCollectionSchedule = "ADVANCE"
+	ContractGetResponseDataSubscriptionsCollectionScheduleArrears ContractGetResponseDataSubscriptionsCollectionSchedule = "ARREARS"
+)
+
+func (r ContractGetResponseDataSubscriptionsCollectionSchedule) IsKnown() bool {
+	switch r {
+	case ContractGetResponseDataSubscriptionsCollectionScheduleAdvance, ContractGetResponseDataSubscriptionsCollectionScheduleArrears:
+		return true
+	}
+	return false
+}
+
+type ContractGetResponseDataSubscriptionsProration struct {
+	InvoiceBehavior ContractGetResponseDataSubscriptionsProrationInvoiceBehavior `json:"invoice_behavior,required"`
+	IsProrated      bool                                                         `json:"is_prorated,required"`
+	JSON            contractGetResponseDataSubscriptionsProrationJSON            `json:"-"`
+}
+
+// contractGetResponseDataSubscriptionsProrationJSON contains the JSON metadata for
+// the struct [ContractGetResponseDataSubscriptionsProration]
+type contractGetResponseDataSubscriptionsProrationJSON struct {
+	InvoiceBehavior apijson.Field
+	IsProrated      apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *ContractGetResponseDataSubscriptionsProration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractGetResponseDataSubscriptionsProrationJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractGetResponseDataSubscriptionsProrationInvoiceBehavior string
+
+const (
+	ContractGetResponseDataSubscriptionsProrationInvoiceBehaviorBillImmediately          ContractGetResponseDataSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
+	ContractGetResponseDataSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate ContractGetResponseDataSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
+)
+
+func (r ContractGetResponseDataSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
+	switch r {
+	case ContractGetResponseDataSubscriptionsProrationInvoiceBehaviorBillImmediately, ContractGetResponseDataSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
+		return true
+	}
+	return false
+}
+
+type ContractGetResponseDataSubscriptionsQuantitySchedule struct {
+	Quantity     float64                                                  `json:"quantity,required"`
+	StartingAt   time.Time                                                `json:"starting_at,required" format:"date-time"`
+	EndingBefore time.Time                                                `json:"ending_before" format:"date-time"`
+	JSON         contractGetResponseDataSubscriptionsQuantityScheduleJSON `json:"-"`
+}
+
+// contractGetResponseDataSubscriptionsQuantityScheduleJSON contains the JSON
+// metadata for the struct [ContractGetResponseDataSubscriptionsQuantitySchedule]
+type contractGetResponseDataSubscriptionsQuantityScheduleJSON struct {
+	Quantity     apijson.Field
+	StartingAt   apijson.Field
+	EndingBefore apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *ContractGetResponseDataSubscriptionsQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractGetResponseDataSubscriptionsQuantityScheduleJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractGetResponseDataSubscriptionsSubscriptionRate struct {
+	BillingFrequency ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
+	Product          ContractGetResponseDataSubscriptionsSubscriptionRateProduct          `json:"product,required"`
+	JSON             contractGetResponseDataSubscriptionsSubscriptionRateJSON             `json:"-"`
+}
+
+// contractGetResponseDataSubscriptionsSubscriptionRateJSON contains the JSON
+// metadata for the struct [ContractGetResponseDataSubscriptionsSubscriptionRate]
+type contractGetResponseDataSubscriptionsSubscriptionRateJSON struct {
+	BillingFrequency apijson.Field
+	Product          apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ContractGetResponseDataSubscriptionsSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractGetResponseDataSubscriptionsSubscriptionRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency string
+
+const (
+	ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyMonthly   ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
+	ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyQuarterly ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
+	ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyAnnual    ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
+)
+
+func (r ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyMonthly, ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyQuarterly, ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyAnnual:
+		return true
+	}
+	return false
+}
+
+type ContractGetResponseDataSubscriptionsSubscriptionRateProduct struct {
+	ID   string                                                          `json:"id,required" format:"uuid"`
+	Name string                                                          `json:"name,required"`
+	JSON contractGetResponseDataSubscriptionsSubscriptionRateProductJSON `json:"-"`
+}
+
+// contractGetResponseDataSubscriptionsSubscriptionRateProductJSON contains the
+// JSON metadata for the struct
+// [ContractGetResponseDataSubscriptionsSubscriptionRateProduct]
+type contractGetResponseDataSubscriptionsSubscriptionRateProductJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractGetResponseDataSubscriptionsSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractGetResponseDataSubscriptionsSubscriptionRateProductJSON) RawJSON() string {
+	return r.raw
+}
+
 type ContractListResponse struct {
 	Data []ContractListResponseData `json:"data,required"`
 	JSON contractListResponseJSON   `json:"-"`
@@ -463,6 +641,7 @@ type ContractListResponseData struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices ContractListResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
+	Subscriptions                   []ContractListResponseDataSubscription                  `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -482,6 +661,7 @@ type contractListResponseDataJSON struct {
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
 	ScheduledChargesOnUsageInvoices      apijson.Field
+	Subscriptions                        apijson.Field
 	UniquenessKey                        apijson.Field
 	raw                                  string
 	ExtraFields                          map[string]apijson.Field
@@ -683,6 +863,182 @@ func (r ContractListResponseDataScheduledChargesOnUsageInvoices) IsKnown() bool 
 		return true
 	}
 	return false
+}
+
+type ContractListResponseDataSubscription struct {
+	CollectionSchedule ContractListResponseDataSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
+	Proration          ContractListResponseDataSubscriptionsProration          `json:"proration,required"`
+	QuantitySchedule   []ContractListResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt         time.Time                                               `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate   ContractListResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
+	Description        string                                                  `json:"description"`
+	EndingBefore       time.Time                                               `json:"ending_before" format:"date-time"`
+	Name               string                                                  `json:"name"`
+	JSON               contractListResponseDataSubscriptionJSON                `json:"-"`
+}
+
+// contractListResponseDataSubscriptionJSON contains the JSON metadata for the
+// struct [ContractListResponseDataSubscription]
+type contractListResponseDataSubscriptionJSON struct {
+	CollectionSchedule apijson.Field
+	Proration          apijson.Field
+	QuantitySchedule   apijson.Field
+	StartingAt         apijson.Field
+	SubscriptionRate   apijson.Field
+	Description        apijson.Field
+	EndingBefore       apijson.Field
+	Name               apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *ContractListResponseDataSubscription) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractListResponseDataSubscriptionJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractListResponseDataSubscriptionsCollectionSchedule string
+
+const (
+	ContractListResponseDataSubscriptionsCollectionScheduleAdvance ContractListResponseDataSubscriptionsCollectionSchedule = "ADVANCE"
+	ContractListResponseDataSubscriptionsCollectionScheduleArrears ContractListResponseDataSubscriptionsCollectionSchedule = "ARREARS"
+)
+
+func (r ContractListResponseDataSubscriptionsCollectionSchedule) IsKnown() bool {
+	switch r {
+	case ContractListResponseDataSubscriptionsCollectionScheduleAdvance, ContractListResponseDataSubscriptionsCollectionScheduleArrears:
+		return true
+	}
+	return false
+}
+
+type ContractListResponseDataSubscriptionsProration struct {
+	InvoiceBehavior ContractListResponseDataSubscriptionsProrationInvoiceBehavior `json:"invoice_behavior,required"`
+	IsProrated      bool                                                          `json:"is_prorated,required"`
+	JSON            contractListResponseDataSubscriptionsProrationJSON            `json:"-"`
+}
+
+// contractListResponseDataSubscriptionsProrationJSON contains the JSON metadata
+// for the struct [ContractListResponseDataSubscriptionsProration]
+type contractListResponseDataSubscriptionsProrationJSON struct {
+	InvoiceBehavior apijson.Field
+	IsProrated      apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *ContractListResponseDataSubscriptionsProration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractListResponseDataSubscriptionsProrationJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractListResponseDataSubscriptionsProrationInvoiceBehavior string
+
+const (
+	ContractListResponseDataSubscriptionsProrationInvoiceBehaviorBillImmediately          ContractListResponseDataSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
+	ContractListResponseDataSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate ContractListResponseDataSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
+)
+
+func (r ContractListResponseDataSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
+	switch r {
+	case ContractListResponseDataSubscriptionsProrationInvoiceBehaviorBillImmediately, ContractListResponseDataSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
+		return true
+	}
+	return false
+}
+
+type ContractListResponseDataSubscriptionsQuantitySchedule struct {
+	Quantity     float64                                                   `json:"quantity,required"`
+	StartingAt   time.Time                                                 `json:"starting_at,required" format:"date-time"`
+	EndingBefore time.Time                                                 `json:"ending_before" format:"date-time"`
+	JSON         contractListResponseDataSubscriptionsQuantityScheduleJSON `json:"-"`
+}
+
+// contractListResponseDataSubscriptionsQuantityScheduleJSON contains the JSON
+// metadata for the struct [ContractListResponseDataSubscriptionsQuantitySchedule]
+type contractListResponseDataSubscriptionsQuantityScheduleJSON struct {
+	Quantity     apijson.Field
+	StartingAt   apijson.Field
+	EndingBefore apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *ContractListResponseDataSubscriptionsQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractListResponseDataSubscriptionsQuantityScheduleJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractListResponseDataSubscriptionsSubscriptionRate struct {
+	BillingFrequency ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
+	Product          ContractListResponseDataSubscriptionsSubscriptionRateProduct          `json:"product,required"`
+	JSON             contractListResponseDataSubscriptionsSubscriptionRateJSON             `json:"-"`
+}
+
+// contractListResponseDataSubscriptionsSubscriptionRateJSON contains the JSON
+// metadata for the struct [ContractListResponseDataSubscriptionsSubscriptionRate]
+type contractListResponseDataSubscriptionsSubscriptionRateJSON struct {
+	BillingFrequency apijson.Field
+	Product          apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ContractListResponseDataSubscriptionsSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractListResponseDataSubscriptionsSubscriptionRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency string
+
+const (
+	ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyMonthly   ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
+	ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyQuarterly ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
+	ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyAnnual    ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
+)
+
+func (r ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
+	switch r {
+	case ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyMonthly, ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyQuarterly, ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyAnnual:
+		return true
+	}
+	return false
+}
+
+type ContractListResponseDataSubscriptionsSubscriptionRateProduct struct {
+	ID   string                                                           `json:"id,required" format:"uuid"`
+	Name string                                                           `json:"name,required"`
+	JSON contractListResponseDataSubscriptionsSubscriptionRateProductJSON `json:"-"`
+}
+
+// contractListResponseDataSubscriptionsSubscriptionRateProductJSON contains the
+// JSON metadata for the struct
+// [ContractListResponseDataSubscriptionsSubscriptionRateProduct]
+type contractListResponseDataSubscriptionsSubscriptionRateProductJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractListResponseDataSubscriptionsSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractListResponseDataSubscriptionsSubscriptionRateProductJSON) RawJSON() string {
+	return r.raw
 }
 
 type ContractAmendResponse struct {
