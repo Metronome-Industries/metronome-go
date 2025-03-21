@@ -36,7 +36,7 @@ func NewDashboardService(opts ...option.RequestOption) (r *DashboardService) {
 // data and customer invoices.
 func (r *DashboardService) GetEmbeddableURL(ctx context.Context, body DashboardGetEmbeddableURLParams, opts ...option.RequestOption) (res *DashboardGetEmbeddableURLResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "dashboards/getEmbeddableUrl"
+	path := "v1/dashboards/getEmbeddableUrl"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

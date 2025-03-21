@@ -46,7 +46,7 @@ func NewContractService(opts ...option.RequestOption) (r *ContractService) {
 // Create a new contract
 func (r *ContractService) New(ctx context.Context, body ContractNewParams, opts ...option.RequestOption) (res *ContractNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/create"
+	path := "v1/contracts/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -54,7 +54,7 @@ func (r *ContractService) New(ctx context.Context, body ContractNewParams, opts 
 // Get a specific contract
 func (r *ContractService) Get(ctx context.Context, body ContractGetParams, opts ...option.RequestOption) (res *ContractGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/get"
+	path := "v1/contracts/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -62,7 +62,7 @@ func (r *ContractService) Get(ctx context.Context, body ContractGetParams, opts 
 // List all contracts for a customer
 func (r *ContractService) List(ctx context.Context, body ContractListParams, opts ...option.RequestOption) (res *ContractListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/list"
+	path := "v1/contracts/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -71,7 +71,7 @@ func (r *ContractService) List(ctx context.Context, body ContractListParams, opt
 func (r *ContractService) AddManualBalanceEntry(ctx context.Context, body ContractAddManualBalanceEntryParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "contracts/addManualBalanceLedgerEntry"
+	path := "v1/contracts/addManualBalanceLedgerEntry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
@@ -79,7 +79,7 @@ func (r *ContractService) AddManualBalanceEntry(ctx context.Context, body Contra
 // Amend a contract
 func (r *ContractService) Amend(ctx context.Context, body ContractAmendParams, opts ...option.RequestOption) (res *ContractAmendResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/amend"
+	path := "v1/contracts/amend"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -87,7 +87,7 @@ func (r *ContractService) Amend(ctx context.Context, body ContractAmendParams, o
 // Archive a contract
 func (r *ContractService) Archive(ctx context.Context, body ContractArchiveParams, opts ...option.RequestOption) (res *ContractArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/archive"
+	path := "v1/contracts/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -95,7 +95,7 @@ func (r *ContractService) Archive(ctx context.Context, body ContractArchiveParam
 // Creates historical usage invoices for a contract
 func (r *ContractService) NewHistoricalInvoices(ctx context.Context, body ContractNewHistoricalInvoicesParams, opts ...option.RequestOption) (res *ContractNewHistoricalInvoicesResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/createHistoricalInvoices"
+	path := "v1/contracts/createHistoricalInvoices"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -103,7 +103,7 @@ func (r *ContractService) NewHistoricalInvoices(ctx context.Context, body Contra
 // List balances (commits and credits).
 func (r *ContractService) ListBalances(ctx context.Context, body ContractListBalancesParams, opts ...option.RequestOption) (res *ContractListBalancesResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/customerBalances/list"
+	path := "v1/contracts/customerBalances/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -111,7 +111,7 @@ func (r *ContractService) ListBalances(ctx context.Context, body ContractListBal
 // Get the rate schedule for the rate card on a given contract.
 func (r *ContractService) GetRateSchedule(ctx context.Context, params ContractGetRateScheduleParams, opts ...option.RequestOption) (res *ContractGetRateScheduleResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/getContractRateSchedule"
+	path := "v1/contracts/getContractRateSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -120,7 +120,7 @@ func (r *ContractService) GetRateSchedule(ctx context.Context, params ContractGe
 // This endpoint's availability is dependent on your client's configuration.
 func (r *ContractService) ScheduleProServicesInvoice(ctx context.Context, body ContractScheduleProServicesInvoiceParams, opts ...option.RequestOption) (res *ContractScheduleProServicesInvoiceResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/scheduleProServicesInvoice"
+	path := "v1/contracts/scheduleProServicesInvoice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -129,7 +129,7 @@ func (r *ContractService) ScheduleProServicesInvoice(ctx context.Context, body C
 func (r *ContractService) SetUsageFilter(ctx context.Context, body ContractSetUsageFilterParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "contracts/setUsageFilter"
+	path := "v1/contracts/setUsageFilter"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
@@ -137,7 +137,7 @@ func (r *ContractService) SetUsageFilter(ctx context.Context, body ContractSetUs
 // Update the end date of a contract
 func (r *ContractService) UpdateEndDate(ctx context.Context, body ContractUpdateEndDateParams, opts ...option.RequestOption) (res *ContractUpdateEndDateResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/updateEndDate"
+	path := "v1/contracts/updateEndDate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

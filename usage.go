@@ -39,7 +39,7 @@ func NewUsageService(opts ...option.RequestOption) (r *UsageService) {
 // into intervals of the specified length.
 func (r *UsageService) List(ctx context.Context, params UsageListParams, opts ...option.RequestOption) (res *UsageListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "usage"
+	path := "v1/usage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -52,7 +52,7 @@ func (r *UsageService) List(ctx context.Context, params UsageListParams, opts ..
 func (r *UsageService) Ingest(ctx context.Context, body UsageIngestParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "ingest"
+	path := "v1/ingest"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
@@ -63,7 +63,7 @@ func (r *UsageService) ListWithGroups(ctx context.Context, params UsageListWithG
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "usage/groups"
+	path := "v1/usage/groups"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
 	if err != nil {
 		return nil, err

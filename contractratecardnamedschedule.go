@@ -36,7 +36,7 @@ func NewContractRateCardNamedScheduleService(opts ...option.RequestOption) (r *C
 // dependent on your client's configuration.
 func (r *ContractRateCardNamedScheduleService) Get(ctx context.Context, body ContractRateCardNamedScheduleGetParams, opts ...option.RequestOption) (res *ContractRateCardNamedScheduleGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/getNamedSchedule"
+	path := "v1/contracts/getNamedSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -46,7 +46,7 @@ func (r *ContractRateCardNamedScheduleService) Get(ctx context.Context, body Con
 func (r *ContractRateCardNamedScheduleService) Update(ctx context.Context, body ContractRateCardNamedScheduleUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "contracts/updateNamedSchedule"
+	path := "v1/contracts/updateNamedSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }

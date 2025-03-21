@@ -39,7 +39,7 @@ func NewCreditGrantService(opts ...option.RequestOption) (r *CreditGrantService)
 // Create a new credit grant
 func (r *CreditGrantService) New(ctx context.Context, body CreditGrantNewParams, opts ...option.RequestOption) (res *CreditGrantNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "credits/createGrant"
+	path := "v1/credits/createGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -49,7 +49,7 @@ func (r *CreditGrantService) List(ctx context.Context, params CreditGrantListPar
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "credits/listGrants"
+	path := "v1/credits/listGrants"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (r *CreditGrantService) ListAutoPaging(ctx context.Context, params CreditGr
 // Edit an existing credit grant
 func (r *CreditGrantService) Edit(ctx context.Context, body CreditGrantEditParams, opts ...option.RequestOption) (res *CreditGrantEditResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "credits/editGrant"
+	path := "v1/credits/editGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -80,7 +80,7 @@ func (r *CreditGrantService) Edit(ctx context.Context, body CreditGrantEditParam
 // with voided credit grants are not included.
 func (r *CreditGrantService) ListEntries(ctx context.Context, params CreditGrantListEntriesParams, opts ...option.RequestOption) (res *CreditGrantListEntriesResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "credits/listEntries"
+	path := "v1/credits/listEntries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -88,7 +88,7 @@ func (r *CreditGrantService) ListEntries(ctx context.Context, params CreditGrant
 // Void a credit grant
 func (r *CreditGrantService) Void(ctx context.Context, body CreditGrantVoidParams, opts ...option.RequestOption) (res *CreditGrantVoidResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "credits/voidGrant"
+	path := "v1/credits/voidGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

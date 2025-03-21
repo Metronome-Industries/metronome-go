@@ -35,7 +35,7 @@ func NewAlertService(opts ...option.RequestOption) (r *AlertService) {
 // Create a new alert
 func (r *AlertService) New(ctx context.Context, body AlertNewParams, opts ...option.RequestOption) (res *AlertNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "alerts/create"
+	path := "v1/alerts/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -43,7 +43,7 @@ func (r *AlertService) New(ctx context.Context, body AlertNewParams, opts ...opt
 // Archive an existing alert
 func (r *AlertService) Archive(ctx context.Context, body AlertArchiveParams, opts ...option.RequestOption) (res *AlertArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "alerts/archive"
+	path := "v1/alerts/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
