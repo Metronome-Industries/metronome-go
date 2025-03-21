@@ -132,7 +132,7 @@ func (r commitJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r Commit) ImplementsContractListBalancesResponseData() {}
+func (r Commit) ImplementsV1ContractListBalancesResponseData() {}
 
 type CommitProduct struct {
 	ID   string            `json:"id,required" format:"uuid"`
@@ -1917,7 +1917,7 @@ func (r creditJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r Credit) ImplementsContractListBalancesResponseData() {}
+func (r Credit) ImplementsV1ContractListBalancesResponseData() {}
 
 type CreditProduct struct {
 	ID   string            `json:"id,required" format:"uuid"`

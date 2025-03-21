@@ -15,20 +15,9 @@ import (
 // interacting with the metronome API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options         []option.RequestOption
-	Alerts          *AlertService
-	Plans           *PlanService
-	CreditGrants    *CreditGrantService
-	PricingUnits    *PricingUnitService
-	Customers       *CustomerService
-	Dashboards      *DashboardService
-	Usage           *UsageService
-	AuditLogs       *AuditLogService
-	CustomFields    *CustomFieldService
-	BillableMetrics *BillableMetricService
-	Services        *ServiceService
-	Invoices        *InvoiceService
-	Contracts       *ContractService
+	Options []option.RequestOption
+	V2      *V2Service
+	V1      *V1Service
 }
 
 // DefaultClientOptions read from the environment (METRONOME_BEARER_TOKEN,
@@ -53,19 +42,8 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 
 	r = &Client{Options: opts}
 
-	r.Alerts = NewAlertService(opts...)
-	r.Plans = NewPlanService(opts...)
-	r.CreditGrants = NewCreditGrantService(opts...)
-	r.PricingUnits = NewPricingUnitService(opts...)
-	r.Customers = NewCustomerService(opts...)
-	r.Dashboards = NewDashboardService(opts...)
-	r.Usage = NewUsageService(opts...)
-	r.AuditLogs = NewAuditLogService(opts...)
-	r.CustomFields = NewCustomFieldService(opts...)
-	r.BillableMetrics = NewBillableMetricService(opts...)
-	r.Services = NewServiceService(opts...)
-	r.Invoices = NewInvoiceService(opts...)
-	r.Contracts = NewContractService(opts...)
+	r.V2 = NewV2Service(opts...)
+	r.V1 = NewV1Service(opts...)
 
 	return
 }
