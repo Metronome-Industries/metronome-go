@@ -348,7 +348,11 @@ func (r ContractGetResponseDataAmendmentsResellerRoyaltiesResellerType) IsKnown(
 type ContractGetResponseDataCustomerBillingProviderConfiguration struct {
 	BillingProvider ContractGetResponseDataCustomerBillingProviderConfigurationBillingProvider `json:"billing_provider,required"`
 	DeliveryMethod  ContractGetResponseDataCustomerBillingProviderConfigurationDeliveryMethod  `json:"delivery_method,required"`
-	JSON            contractGetResponseDataCustomerBillingProviderConfigurationJSON            `json:"-"`
+	ID              string                                                                     `json:"id" format:"uuid"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider.
+	Configuration map[string]interface{}                                          `json:"configuration"`
+	JSON          contractGetResponseDataCustomerBillingProviderConfigurationJSON `json:"-"`
 }
 
 // contractGetResponseDataCustomerBillingProviderConfigurationJSON contains the
@@ -357,6 +361,8 @@ type ContractGetResponseDataCustomerBillingProviderConfiguration struct {
 type contractGetResponseDataCustomerBillingProviderConfigurationJSON struct {
 	BillingProvider apijson.Field
 	DeliveryMethod  apijson.Field
+	ID              apijson.Field
+	Configuration   apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
@@ -787,7 +793,11 @@ func (r ContractListResponseDataAmendmentsResellerRoyaltiesResellerType) IsKnown
 type ContractListResponseDataCustomerBillingProviderConfiguration struct {
 	BillingProvider ContractListResponseDataCustomerBillingProviderConfigurationBillingProvider `json:"billing_provider,required"`
 	DeliveryMethod  ContractListResponseDataCustomerBillingProviderConfigurationDeliveryMethod  `json:"delivery_method,required"`
-	JSON            contractListResponseDataCustomerBillingProviderConfigurationJSON            `json:"-"`
+	ID              string                                                                      `json:"id" format:"uuid"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider.
+	Configuration map[string]interface{}                                           `json:"configuration"`
+	JSON          contractListResponseDataCustomerBillingProviderConfigurationJSON `json:"-"`
 }
 
 // contractListResponseDataCustomerBillingProviderConfigurationJSON contains the
@@ -796,6 +806,8 @@ type ContractListResponseDataCustomerBillingProviderConfiguration struct {
 type contractListResponseDataCustomerBillingProviderConfigurationJSON struct {
 	BillingProvider apijson.Field
 	DeliveryMethod  apijson.Field
+	ID              apijson.Field
+	Configuration   apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
