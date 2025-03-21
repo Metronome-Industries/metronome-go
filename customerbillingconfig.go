@@ -46,7 +46,7 @@ func (r *CustomerBillingConfigService) New(ctx context.Context, params CustomerB
 		err = errors.New("missing required billing_provider_type parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/billing-config/%v", params.CustomerID, params.BillingProviderType)
+	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", params.CustomerID, params.BillingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return
 }
@@ -62,7 +62,7 @@ func (r *CustomerBillingConfigService) Get(ctx context.Context, query CustomerBi
 		err = errors.New("missing required billing_provider_type parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/billing-config/%v", query.CustomerID, query.BillingProviderType)
+	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", query.CustomerID, query.BillingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -80,7 +80,7 @@ func (r *CustomerBillingConfigService) Delete(ctx context.Context, body Customer
 		err = errors.New("missing required billing_provider_type parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/billing-config/%v", body.CustomerID, body.BillingProviderType)
+	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", body.CustomerID, body.BillingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }

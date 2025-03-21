@@ -55,7 +55,7 @@ func NewCustomerService(opts ...option.RequestOption) (r *CustomerService) {
 // Create a new customer
 func (r *CustomerService) New(ctx context.Context, body CustomerNewParams, opts ...option.RequestOption) (res *CustomerNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "customers"
+	path := "v1/customers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -67,7 +67,7 @@ func (r *CustomerService) Get(ctx context.Context, query CustomerGetParams, opts
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s", query.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s", query.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -77,7 +77,7 @@ func (r *CustomerService) List(ctx context.Context, query CustomerListParams, op
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "customers"
+	path := "v1/customers"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (r *CustomerService) ListAutoPaging(ctx context.Context, query CustomerList
 // Archive a customer
 func (r *CustomerService) Archive(ctx context.Context, body CustomerArchiveParams, opts ...option.RequestOption) (res *CustomerArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "customers/archive"
+	path := "v1/customers/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -112,7 +112,7 @@ func (r *CustomerService) ListBillableMetrics(ctx context.Context, params Custom
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/billable-metrics", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/billable-metrics", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -141,7 +141,7 @@ func (r *CustomerService) ListCosts(ctx context.Context, params CustomerListCost
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/costs", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/costs", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -171,7 +171,7 @@ func (r *CustomerService) SetIngestAliases(ctx context.Context, params CustomerS
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/setIngestAliases", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/setIngestAliases", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return
 }
@@ -183,7 +183,7 @@ func (r *CustomerService) SetName(ctx context.Context, params CustomerSetNamePar
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/setName", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/setName", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -196,7 +196,7 @@ func (r *CustomerService) UpdateConfig(ctx context.Context, params CustomerUpdat
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/updateConfig", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/updateConfig", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return
 }

@@ -34,7 +34,7 @@ func NewInvoiceService(opts ...option.RequestOption) (r *InvoiceService) {
 // Regenerate a voided contract invoice
 func (r *InvoiceService) Regenerate(ctx context.Context, body InvoiceRegenerateParams, opts ...option.RequestOption) (res *InvoiceRegenerateResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "invoices/regenerate"
+	path := "v1/invoices/regenerate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -42,7 +42,7 @@ func (r *InvoiceService) Regenerate(ctx context.Context, body InvoiceRegenerateP
 // Void an invoice
 func (r *InvoiceService) Void(ctx context.Context, body InvoiceVoidParams, opts ...option.RequestOption) (res *InvoiceVoidResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "invoices/void"
+	path := "v1/invoices/void"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

@@ -43,7 +43,7 @@ func (r *PlanService) List(ctx context.Context, query PlanListParams, opts ...op
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "plans"
+	path := "v1/plans"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (r *PlanService) GetDetails(ctx context.Context, query PlanGetDetailsParams
 		err = errors.New("missing required plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("planDetails/%s", query.PlanID)
+	path := fmt.Sprintf("v1/planDetails/%s", query.PlanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -82,7 +82,7 @@ func (r *PlanService) ListCharges(ctx context.Context, params PlanListChargesPar
 		err = errors.New("missing required plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("planDetails/%s/charges", params.PlanID)
+	path := fmt.Sprintf("v1/planDetails/%s/charges", params.PlanID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (r *PlanService) ListCustomers(ctx context.Context, params PlanListCustomer
 		err = errors.New("missing required plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("planDetails/%s/customers", params.PlanID)
+	path := fmt.Sprintf("v1/planDetails/%s/customers", params.PlanID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err

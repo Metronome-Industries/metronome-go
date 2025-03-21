@@ -45,7 +45,7 @@ func NewContractRateCardService(opts ...option.RequestOption) (r *ContractRateCa
 // Create a new rate card
 func (r *ContractRateCardService) New(ctx context.Context, body ContractRateCardNewParams, opts ...option.RequestOption) (res *ContractRateCardNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/rate-cards/create"
+	path := "v1/contract-pricing/rate-cards/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -54,7 +54,7 @@ func (r *ContractRateCardService) New(ctx context.Context, body ContractRateCard
 // retrieve rate card rates.
 func (r *ContractRateCardService) Get(ctx context.Context, body ContractRateCardGetParams, opts ...option.RequestOption) (res *ContractRateCardGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/rate-cards/get"
+	path := "v1/contract-pricing/rate-cards/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -62,7 +62,7 @@ func (r *ContractRateCardService) Get(ctx context.Context, body ContractRateCard
 // Update a rate card
 func (r *ContractRateCardService) Update(ctx context.Context, body ContractRateCardUpdateParams, opts ...option.RequestOption) (res *ContractRateCardUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/rate-cards/update"
+	path := "v1/contract-pricing/rate-cards/update"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -73,7 +73,7 @@ func (r *ContractRateCardService) List(ctx context.Context, params ContractRateC
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "contract-pricing/rate-cards/list"
+	path := "v1/contract-pricing/rate-cards/list"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (r *ContractRateCardService) ListAutoPaging(ctx context.Context, params Con
 // ending_before, if provided)
 func (r *ContractRateCardService) GetRateSchedule(ctx context.Context, params ContractRateCardGetRateScheduleParams, opts ...option.RequestOption) (res *ContractRateCardGetRateScheduleResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/rate-cards/getRateSchedule"
+	path := "v1/contract-pricing/rate-cards/getRateSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }

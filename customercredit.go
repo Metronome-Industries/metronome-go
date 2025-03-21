@@ -36,7 +36,7 @@ func NewCustomerCreditService(opts ...option.RequestOption) (r *CustomerCreditSe
 // Create a new credit at the customer level.
 func (r *CustomerCreditService) New(ctx context.Context, body CustomerCreditNewParams, opts ...option.RequestOption) (res *CustomerCreditNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/customerCredits/create"
+	path := "v1/contracts/customerCredits/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -44,7 +44,7 @@ func (r *CustomerCreditService) New(ctx context.Context, body CustomerCreditNewP
 // List credits.
 func (r *CustomerCreditService) List(ctx context.Context, body CustomerCreditListParams, opts ...option.RequestOption) (res *CustomerCreditListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/customerCredits/list"
+	path := "v1/contracts/customerCredits/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -52,7 +52,7 @@ func (r *CustomerCreditService) List(ctx context.Context, body CustomerCreditLis
 // Update the end date of a credit
 func (r *CustomerCreditService) UpdateEndDate(ctx context.Context, body CustomerCreditUpdateEndDateParams, opts ...option.RequestOption) (res *CustomerCreditUpdateEndDateResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/customerCredits/updateEndDate"
+	path := "v1/contracts/customerCredits/updateEndDate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

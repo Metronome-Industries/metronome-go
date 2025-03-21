@@ -47,7 +47,7 @@ func (r *CustomerPlanService) List(ctx context.Context, params CustomerPlanListP
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/plans", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/plans", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (r *CustomerPlanService) Add(ctx context.Context, params CustomerPlanAddPar
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/plans/add", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/plans/add", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -90,7 +90,7 @@ func (r *CustomerPlanService) End(ctx context.Context, params CustomerPlanEndPar
 		err = errors.New("missing required customer_plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/plans/%s/end", params.CustomerID, params.CustomerPlanID)
+	path := fmt.Sprintf("v1/customers/%s/plans/%s/end", params.CustomerID, params.CustomerPlanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -110,7 +110,7 @@ func (r *CustomerPlanService) ListPriceAdjustments(ctx context.Context, params C
 		err = errors.New("missing required customer_plan_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/plans/%s/priceAdjustments", params.CustomerID, params.CustomerPlanID)
+	path := fmt.Sprintf("v1/customers/%s/plans/%s/priceAdjustments", params.CustomerID, params.CustomerPlanID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err

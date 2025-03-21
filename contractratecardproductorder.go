@@ -35,7 +35,7 @@ func NewContractRateCardProductOrderService(opts ...option.RequestOption) (r *Co
 // Updates ordering of specified products
 func (r *ContractRateCardProductOrderService) Update(ctx context.Context, body ContractRateCardProductOrderUpdateParams, opts ...option.RequestOption) (res *ContractRateCardProductOrderUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/rate-cards/moveRateCardProducts"
+	path := "v1/contract-pricing/rate-cards/moveRateCardProducts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -43,7 +43,7 @@ func (r *ContractRateCardProductOrderService) Update(ctx context.Context, body C
 // Sets the ordering of products within a rate card
 func (r *ContractRateCardProductOrderService) Set(ctx context.Context, body ContractRateCardProductOrderSetParams, opts ...option.RequestOption) (res *ContractRateCardProductOrderSetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/rate-cards/setRateCardProductsOrder"
+	path := "v1/contract-pricing/rate-cards/setRateCardProductsOrder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

@@ -209,7 +209,7 @@ if err != nil {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/contracts/create": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/v1/contracts/create": 400 Bad Request { ... }
 }
 ```
 
