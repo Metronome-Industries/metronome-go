@@ -37,7 +37,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Contracts.New(context.Background(), metronome.ContractNewParams{
+	client.V1.Contracts.New(context.Background(), metronome.V1ContractNewParams{
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 	})
@@ -63,7 +63,7 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Contracts.New(context.Background(), metronome.ContractNewParams{
+	_, err := client.V1.Contracts.New(context.Background(), metronome.V1ContractNewParams{
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 	})
@@ -100,7 +100,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Contracts.New(context.Background(), metronome.ContractNewParams{
+	_, err := client.V1.Contracts.New(context.Background(), metronome.V1ContractNewParams{
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 	})
@@ -132,7 +132,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Contracts.New(context.Background(), metronome.ContractNewParams{
+	_, err := client.V1.Contracts.New(context.Background(), metronome.V1ContractNewParams{
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 	})
@@ -163,7 +163,7 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Contracts.New(context.Background(), metronome.ContractNewParams{
+	_, err := client.V1.Contracts.New(context.Background(), metronome.V1ContractNewParams{
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 	})
@@ -188,7 +188,7 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Contracts.New(cancelCtx, metronome.ContractNewParams{
+	_, err := client.V1.Contracts.New(cancelCtx, metronome.V1ContractNewParams{
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 	})
@@ -210,7 +210,7 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Contracts.New(cancelCtx, metronome.ContractNewParams{
+	_, err := client.V1.Contracts.New(cancelCtx, metronome.V1ContractNewParams{
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 	})
@@ -238,7 +238,7 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Contracts.New(deadlineCtx, metronome.ContractNewParams{
+		_, err := client.V1.Contracts.New(deadlineCtx, metronome.V1ContractNewParams{
 			CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 			StartingAt: metronome.F(time.Now()),
 		})
