@@ -41,7 +41,7 @@ func (r *ContractRateCardRateService) List(ctx context.Context, params ContractR
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "contract-pricing/rate-cards/getRates"
+	path := "v1/contract-pricing/rate-cards/getRates"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func (r *ContractRateCardRateService) ListAutoPaging(ctx context.Context, params
 // Add a new rate
 func (r *ContractRateCardRateService) Add(ctx context.Context, body ContractRateCardRateAddParams, opts ...option.RequestOption) (res *ContractRateCardRateAddResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/rate-cards/addRate"
+	path := "v1/contract-pricing/rate-cards/addRate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -70,7 +70,7 @@ func (r *ContractRateCardRateService) Add(ctx context.Context, body ContractRate
 // Add new rates
 func (r *ContractRateCardRateService) AddMany(ctx context.Context, body ContractRateCardRateAddManyParams, opts ...option.RequestOption) (res *ContractRateCardRateAddManyResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/rate-cards/addRates"
+	path := "v1/contract-pricing/rate-cards/addRates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

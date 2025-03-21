@@ -41,7 +41,7 @@ func NewBillableMetricService(opts ...option.RequestOption) (r *BillableMetricSe
 // Creates a new Billable Metric.
 func (r *BillableMetricService) New(ctx context.Context, body BillableMetricNewParams, opts ...option.RequestOption) (res *BillableMetricNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "billable-metrics/create"
+	path := "v1/billable-metrics/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -53,7 +53,7 @@ func (r *BillableMetricService) Get(ctx context.Context, query BillableMetricGet
 		err = errors.New("missing required billable_metric_id parameter")
 		return
 	}
-	path := fmt.Sprintf("billable-metrics/%s", query.BillableMetricID)
+	path := fmt.Sprintf("v1/billable-metrics/%s", query.BillableMetricID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -63,7 +63,7 @@ func (r *BillableMetricService) List(ctx context.Context, query BillableMetricLi
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "billable-metrics"
+	path := "v1/billable-metrics"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func (r *BillableMetricService) ListAutoPaging(ctx context.Context, query Billab
 // Archive an existing billable metric.
 func (r *BillableMetricService) Archive(ctx context.Context, body BillableMetricArchiveParams, opts ...option.RequestOption) (res *BillableMetricArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "billable-metrics/archive"
+	path := "v1/billable-metrics/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

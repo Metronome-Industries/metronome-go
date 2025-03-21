@@ -38,7 +38,7 @@ func NewCustomFieldService(opts ...option.RequestOption) (r *CustomFieldService)
 func (r *CustomFieldService) AddKey(ctx context.Context, body CustomFieldAddKeyParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "customFields/addKey"
+	path := "v1/customFields/addKey"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
@@ -47,7 +47,7 @@ func (r *CustomFieldService) AddKey(ctx context.Context, body CustomFieldAddKeyP
 func (r *CustomFieldService) DeleteValues(ctx context.Context, body CustomFieldDeleteValuesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "customFields/deleteValues"
+	path := "v1/customFields/deleteValues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
@@ -55,7 +55,7 @@ func (r *CustomFieldService) DeleteValues(ctx context.Context, body CustomFieldD
 // List all active custom field keys, optionally filtered by entity type.
 func (r *CustomFieldService) ListKeys(ctx context.Context, params CustomFieldListKeysParams, opts ...option.RequestOption) (res *CustomFieldListKeysResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "customFields/listKeys"
+	path := "v1/customFields/listKeys"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -64,7 +64,7 @@ func (r *CustomFieldService) ListKeys(ctx context.Context, params CustomFieldLis
 func (r *CustomFieldService) RemoveKey(ctx context.Context, body CustomFieldRemoveKeyParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "customFields/removeKey"
+	path := "v1/customFields/removeKey"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
@@ -79,7 +79,7 @@ func (r *CustomFieldService) RemoveKey(ctx context.Context, body CustomFieldRemo
 func (r *CustomFieldService) SetValues(ctx context.Context, body CustomFieldSetValuesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "customFields/setValues"
+	path := "v1/customFields/setValues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }

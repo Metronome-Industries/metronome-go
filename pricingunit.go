@@ -39,7 +39,7 @@ func (r *PricingUnitService) List(ctx context.Context, query PricingUnitListPara
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "credit-types/list"
+	path := "v1/credit-types/list"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err

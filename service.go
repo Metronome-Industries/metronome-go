@@ -36,7 +36,7 @@ func NewServiceService(opts ...option.RequestOption) (r *ServiceService) {
 // first time.
 func (r *ServiceService) List(ctx context.Context, opts ...option.RequestOption) (res *ServiceListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "services"
+	path := "v1/services"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

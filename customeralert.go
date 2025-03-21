@@ -39,7 +39,7 @@ func NewCustomerAlertService(opts ...option.RequestOption) (r *CustomerAlertServ
 // and alert
 func (r *CustomerAlertService) Get(ctx context.Context, body CustomerAlertGetParams, opts ...option.RequestOption) (res *CustomerAlertGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "customer-alerts/get"
+	path := "v1/customer-alerts/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -47,7 +47,7 @@ func (r *CustomerAlertService) Get(ctx context.Context, body CustomerAlertGetPar
 // Fetch all customer alert statuses and alert information for a customer
 func (r *CustomerAlertService) List(ctx context.Context, params CustomerAlertListParams, opts ...option.RequestOption) (res *CustomerAlertListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "customer-alerts/list"
+	path := "v1/customer-alerts/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -56,7 +56,7 @@ func (r *CustomerAlertService) List(ctx context.Context, params CustomerAlertLis
 func (r *CustomerAlertService) Reset(ctx context.Context, body CustomerAlertResetParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "customer-alerts/reset"
+	path := "v1/customer-alerts/reset"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }

@@ -49,7 +49,7 @@ func (r *CustomerInvoiceService) Get(ctx context.Context, params CustomerInvoice
 		err = errors.New("missing required invoice_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/invoices/%s", params.CustomerID, params.InvoiceID)
+	path := fmt.Sprintf("v1/customers/%s/invoices/%s", params.CustomerID, params.InvoiceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
@@ -64,7 +64,7 @@ func (r *CustomerInvoiceService) List(ctx context.Context, params CustomerInvoic
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/invoices", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/invoices", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (r *CustomerInvoiceService) AddCharge(ctx context.Context, params CustomerI
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/addCharge", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/addCharge", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -108,7 +108,7 @@ func (r *CustomerInvoiceService) ListBreakdowns(ctx context.Context, params Cust
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
-	path := fmt.Sprintf("customers/%s/invoices/breakdowns", params.CustomerID)
+	path := fmt.Sprintf("v1/customers/%s/invoices/breakdowns", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err

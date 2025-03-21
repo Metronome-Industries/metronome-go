@@ -229,7 +229,7 @@ func WithRequestTimeout(dur time.Duration) RequestOption {
 // environment to be the "production" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentProduction() RequestOption {
-	return WithBaseURL("https://api.metronome.com/v1/")
+	return WithBaseURL("https://api.metronome.com/")
 }
 
 // WithBearerToken returns a RequestOption that sets the client setting "bearer_token".

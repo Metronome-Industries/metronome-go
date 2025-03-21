@@ -39,7 +39,7 @@ func NewContractProductService(opts ...option.RequestOption) (r *ContractProduct
 // Create a new product
 func (r *ContractProductService) New(ctx context.Context, body ContractProductNewParams, opts ...option.RequestOption) (res *ContractProductNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/products/create"
+	path := "v1/contract-pricing/products/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -47,7 +47,7 @@ func (r *ContractProductService) New(ctx context.Context, body ContractProductNe
 // Get a specific product
 func (r *ContractProductService) Get(ctx context.Context, body ContractProductGetParams, opts ...option.RequestOption) (res *ContractProductGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/products/get"
+	path := "v1/contract-pricing/products/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -55,7 +55,7 @@ func (r *ContractProductService) Get(ctx context.Context, body ContractProductGe
 // Update a product
 func (r *ContractProductService) Update(ctx context.Context, body ContractProductUpdateParams, opts ...option.RequestOption) (res *ContractProductUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/products/update"
+	path := "v1/contract-pricing/products/update"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -65,7 +65,7 @@ func (r *ContractProductService) List(ctx context.Context, params ContractProduc
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "contract-pricing/products/list"
+	path := "v1/contract-pricing/products/list"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func (r *ContractProductService) ListAutoPaging(ctx context.Context, params Cont
 // Archive a product
 func (r *ContractProductService) Archive(ctx context.Context, body ContractProductArchiveParams, opts ...option.RequestOption) (res *ContractProductArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contract-pricing/products/archive"
+	path := "v1/contract-pricing/products/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

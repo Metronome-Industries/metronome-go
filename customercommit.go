@@ -36,7 +36,7 @@ func NewCustomerCommitService(opts ...option.RequestOption) (r *CustomerCommitSe
 // Create a new commit at the customer level.
 func (r *CustomerCommitService) New(ctx context.Context, body CustomerCommitNewParams, opts ...option.RequestOption) (res *CustomerCommitNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/customerCommits/create"
+	path := "v1/contracts/customerCommits/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -44,7 +44,7 @@ func (r *CustomerCommitService) New(ctx context.Context, body CustomerCommitNewP
 // List commits.
 func (r *CustomerCommitService) List(ctx context.Context, body CustomerCommitListParams, opts ...option.RequestOption) (res *CustomerCommitListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/customerCommits/list"
+	path := "v1/contracts/customerCommits/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -52,7 +52,7 @@ func (r *CustomerCommitService) List(ctx context.Context, body CustomerCommitLis
 // Update the end date of a PREPAID commit
 func (r *CustomerCommitService) UpdateEndDate(ctx context.Context, body CustomerCommitUpdateEndDateParams, opts ...option.RequestOption) (res *CustomerCommitUpdateEndDateResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "contracts/customerCommits/updateEndDate"
+	path := "v1/contracts/customerCommits/updateEndDate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
