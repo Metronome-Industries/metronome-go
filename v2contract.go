@@ -35,7 +35,8 @@ func NewV2ContractService(opts ...option.RequestOption) (r *V2ContractService) {
 	return
 }
 
-// Get a specific contract
+// Get a specific contract. New clients should use this endpoint rather than the v1
+// endpoint.
 func (r *V2ContractService) Get(ctx context.Context, body V2ContractGetParams, opts ...option.RequestOption) (res *V2ContractGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/get"
@@ -51,7 +52,7 @@ func (r *V2ContractService) List(ctx context.Context, body V2ContractListParams,
 	return
 }
 
-// Edit a contract. Contracts can only be edited if contract editing is enabled.
+// Edit a contract. Contract editing must be enabled to use this endpoint.
 func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams, opts ...option.RequestOption) (res *V2ContractEditResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/edit"
@@ -59,8 +60,8 @@ func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams,
 	return
 }
 
-// Edit a customer or contract commit. Contract commits can only be edited if
-// contract editing is enabled.
+// Edit a customer or contract commit. Contract commits can only be edited using
+// this endpoint if contract editing is enabled.
 func (r *V2ContractService) EditCommit(ctx context.Context, body V2ContractEditCommitParams, opts ...option.RequestOption) (res *V2ContractEditCommitResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/commits/edit"
@@ -68,8 +69,8 @@ func (r *V2ContractService) EditCommit(ctx context.Context, body V2ContractEditC
 	return
 }
 
-// Edit a customer or contract credit. Contract credits can only be edited if
-// contract editing is enabled.
+// Edit a customer or contract credit. Contract credits can only be edited using
+// this endpoint if contract editing is enabled.
 func (r *V2ContractService) EditCredit(ctx context.Context, body V2ContractEditCreditParams, opts ...option.RequestOption) (res *V2ContractEditCreditResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/credits/edit"
