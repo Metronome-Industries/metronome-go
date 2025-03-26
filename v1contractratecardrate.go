@@ -76,14 +76,13 @@ func (r *V1ContractRateCardRateService) AddMany(ctx context.Context, body V1Cont
 }
 
 type V1ContractRateCardRateListResponse struct {
-	Entitled            bool                                               `json:"entitled,required"`
-	ProductCustomFields map[string]string                                  `json:"product_custom_fields,required"`
-	ProductID           string                                             `json:"product_id,required" format:"uuid"`
-	ProductName         string                                             `json:"product_name,required"`
-	ProductTags         []string                                           `json:"product_tags,required"`
-	Rate                shared.Rate                                        `json:"rate,required"`
-	StartingAt          time.Time                                          `json:"starting_at,required" format:"date-time"`
-	BillingFrequency    V1ContractRateCardRateListResponseBillingFrequency `json:"billing_frequency"`
+	Entitled            bool              `json:"entitled,required"`
+	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
+	ProductID           string            `json:"product_id,required" format:"uuid"`
+	ProductName         string            `json:"product_name,required"`
+	ProductTags         []string          `json:"product_tags,required"`
+	Rate                shared.Rate       `json:"rate,required"`
+	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate         V1ContractRateCardRateListResponseCommitRate `json:"commit_rate"`
@@ -102,7 +101,6 @@ type v1ContractRateCardRateListResponseJSON struct {
 	ProductTags         apijson.Field
 	Rate                apijson.Field
 	StartingAt          apijson.Field
-	BillingFrequency    apijson.Field
 	CommitRate          apijson.Field
 	EndingBefore        apijson.Field
 	PricingGroupValues  apijson.Field
@@ -116,22 +114,6 @@ func (r *V1ContractRateCardRateListResponse) UnmarshalJSON(data []byte) (err err
 
 func (r v1ContractRateCardRateListResponseJSON) RawJSON() string {
 	return r.raw
-}
-
-type V1ContractRateCardRateListResponseBillingFrequency string
-
-const (
-	V1ContractRateCardRateListResponseBillingFrequencyMonthly   V1ContractRateCardRateListResponseBillingFrequency = "MONTHLY"
-	V1ContractRateCardRateListResponseBillingFrequencyQuarterly V1ContractRateCardRateListResponseBillingFrequency = "QUARTERLY"
-	V1ContractRateCardRateListResponseBillingFrequencyAnnual    V1ContractRateCardRateListResponseBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractRateCardRateListResponseBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateListResponseBillingFrequencyMonthly, V1ContractRateCardRateListResponseBillingFrequencyQuarterly, V1ContractRateCardRateListResponseBillingFrequencyAnnual:
-		return true
-	}
-	return false
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
@@ -371,9 +353,6 @@ func (r V1ContractRateCardRateListParams) URLQuery() (v url.Values) {
 }
 
 type V1ContractRateCardRateListParamsSelector struct {
-	// Subscription rates matching the billing frequency will be included in the
-	// response.
-	BillingFrequency param.Field[V1ContractRateCardRateListParamsSelectorsBillingFrequency] `json:"billing_frequency"`
 	// List of pricing group key value pairs, rates containing the matching key / value
 	// pairs will be included in the response.
 	PartialPricingGroupValues param.Field[map[string]string] `json:"partial_pricing_group_values"`
@@ -391,24 +370,6 @@ func (r V1ContractRateCardRateListParamsSelector) MarshalJSON() (data []byte, er
 	return apijson.MarshalRoot(r)
 }
 
-// Subscription rates matching the billing frequency will be included in the
-// response.
-type V1ContractRateCardRateListParamsSelectorsBillingFrequency string
-
-const (
-	V1ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly   V1ContractRateCardRateListParamsSelectorsBillingFrequency = "MONTHLY"
-	V1ContractRateCardRateListParamsSelectorsBillingFrequencyQuarterly V1ContractRateCardRateListParamsSelectorsBillingFrequency = "QUARTERLY"
-	V1ContractRateCardRateListParamsSelectorsBillingFrequencyAnnual    V1ContractRateCardRateListParamsSelectorsBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractRateCardRateListParamsSelectorsBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly, V1ContractRateCardRateListParamsSelectorsBillingFrequencyQuarterly, V1ContractRateCardRateListParamsSelectorsBillingFrequencyAnnual:
-		return true
-	}
-	return false
-}
-
 type V1ContractRateCardRateAddParams struct {
 	Entitled param.Field[bool] `json:"entitled,required"`
 	// ID of the product to add a rate for
@@ -418,9 +379,6 @@ type V1ContractRateCardRateAddParams struct {
 	RateType   param.Field[V1ContractRateCardRateAddParamsRateType] `json:"rate_type,required"`
 	// inclusive effective date
 	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
-	// Optional. Frequency to bill subscriptions with. Required for subscription type
-	// products with Flat rate.
-	BillingFrequency param.Field[V1ContractRateCardRateAddParamsBillingFrequency] `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate param.Field[V1ContractRateCardRateAddParamsCommitRate] `json:"commit_rate"`
@@ -475,24 +433,6 @@ func (r V1ContractRateCardRateAddParamsRateType) IsKnown() bool {
 	return false
 }
 
-// Optional. Frequency to bill subscriptions with. Required for subscription type
-// products with Flat rate.
-type V1ContractRateCardRateAddParamsBillingFrequency string
-
-const (
-	V1ContractRateCardRateAddParamsBillingFrequencyMonthly   V1ContractRateCardRateAddParamsBillingFrequency = "MONTHLY"
-	V1ContractRateCardRateAddParamsBillingFrequencyQuarterly V1ContractRateCardRateAddParamsBillingFrequency = "QUARTERLY"
-	V1ContractRateCardRateAddParamsBillingFrequencyAnnual    V1ContractRateCardRateAddParamsBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractRateCardRateAddParamsBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddParamsBillingFrequencyMonthly, V1ContractRateCardRateAddParamsBillingFrequencyQuarterly, V1ContractRateCardRateAddParamsBillingFrequencyAnnual:
-		return true
-	}
-	return false
-}
-
 // A distinct rate on the rate card. You can choose to use this rate rather than
 // list rate when consuming a credit or commit.
 type V1ContractRateCardRateAddParamsCommitRate struct {
@@ -541,9 +481,6 @@ type V1ContractRateCardRateAddManyParamsRate struct {
 	RateType  param.Field[V1ContractRateCardRateAddManyParamsRatesRateType] `json:"rate_type,required"`
 	// inclusive effective date
 	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
-	// Optional. Frequency to bill subscriptions with. Required for subscription type
-	// products with Flat rate.
-	BillingFrequency param.Field[V1ContractRateCardRateAddManyParamsRatesBillingFrequency] `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate param.Field[V1ContractRateCardRateAddManyParamsRatesCommitRate] `json:"commit_rate"`
@@ -593,24 +530,6 @@ const (
 func (r V1ContractRateCardRateAddManyParamsRatesRateType) IsKnown() bool {
 	switch r {
 	case V1ContractRateCardRateAddManyParamsRatesRateTypeFlat, V1ContractRateCardRateAddManyParamsRatesRateTypePercentage, V1ContractRateCardRateAddManyParamsRatesRateTypeSubscription, V1ContractRateCardRateAddManyParamsRatesRateTypeTiered, V1ContractRateCardRateAddManyParamsRatesRateTypeCustom:
-		return true
-	}
-	return false
-}
-
-// Optional. Frequency to bill subscriptions with. Required for subscription type
-// products with Flat rate.
-type V1ContractRateCardRateAddManyParamsRatesBillingFrequency string
-
-const (
-	V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly   V1ContractRateCardRateAddManyParamsRatesBillingFrequency = "MONTHLY"
-	V1ContractRateCardRateAddManyParamsRatesBillingFrequencyQuarterly V1ContractRateCardRateAddManyParamsRatesBillingFrequency = "QUARTERLY"
-	V1ContractRateCardRateAddManyParamsRatesBillingFrequencyAnnual    V1ContractRateCardRateAddManyParamsRatesBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractRateCardRateAddManyParamsRatesBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly, V1ContractRateCardRateAddManyParamsRatesBillingFrequencyQuarterly, V1ContractRateCardRateAddManyParamsRatesBillingFrequencyAnnual:
 		return true
 	}
 	return false

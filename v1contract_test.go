@@ -141,8 +141,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.V1ContractNewParamsOverridesOverrideSpecifier{{
-				BillingFrequency: metronome.F(metronome.V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyMonthly),
-				CommitIDs:        metronome.F([]string{"string"}),
+				CommitIDs: metronome.F([]string{"string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -289,22 +288,6 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
 		ScheduledChargesOnUsageInvoices: metronome.F(metronome.V1ContractNewParamsScheduledChargesOnUsageInvoicesAll),
-		Subscriptions: metronome.F([]metronome.V1ContractNewParamsSubscription{{
-			CollectionSchedule: metronome.F(metronome.V1ContractNewParamsSubscriptionsCollectionScheduleAdvance),
-			InitialQuantity:    metronome.F(0.000000),
-			Proration: metronome.F(metronome.V1ContractNewParamsSubscriptionsProration{
-				InvoiceBehavior: metronome.F(metronome.V1ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillImmediately),
-				IsProrated:      metronome.F(true),
-			}),
-			SubscriptionRate: metronome.F(metronome.V1ContractNewParamsSubscriptionsSubscriptionRate{
-				BillingFrequency: metronome.F(metronome.V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyMonthly),
-				ProductID:        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			}),
-			Description:  metronome.F("description"),
-			EndingBefore: metronome.F(time.Now()),
-			Name:         metronome.F("name"),
-			StartingAt:   metronome.F(time.Now()),
-		}}),
 		ThresholdBillingConfiguration: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfiguration{
 			Commit: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfigurationCommit{
 				ProductID:             metronome.F("product_id"),
@@ -550,8 +533,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.V1ContractAmendParamsOverridesOverrideSpecifier{{
-				BillingFrequency: metronome.F(metronome.V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyMonthly),
-				CommitIDs:        metronome.F([]string{"string"}),
+				CommitIDs: metronome.F([]string{"string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -783,7 +765,6 @@ func TestV1ContractGetRateScheduleWithOptionalParams(t *testing.T) {
 		NextPage:   metronome.F("next_page"),
 		At:         metronome.F(time.Now()),
 		Selectors: metronome.F([]metronome.V1ContractGetRateScheduleParamsSelector{{
-			BillingFrequency: metronome.F(metronome.V1ContractGetRateScheduleParamsSelectorsBillingFrequencyMonthly),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
