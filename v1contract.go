@@ -51,7 +51,8 @@ func (r *V1ContractService) New(ctx context.Context, body V1ContractNewParams, o
 	return
 }
 
-// Get a specific contract
+// This is the v1 endpoint to get a contract. New clients should implement using
+// the v2 endpoint.
 func (r *V1ContractService) Get(ctx context.Context, body V1ContractGetParams, opts ...option.RequestOption) (res *V1ContractGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/get"
@@ -59,7 +60,8 @@ func (r *V1ContractService) Get(ctx context.Context, body V1ContractGetParams, o
 	return
 }
 
-// List all contracts for a customer
+// This is the v1 endpoint to list all contracts for a customer. New clients should
+// implement using the v2 endpoint.
 func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams, opts ...option.RequestOption) (res *V1ContractListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/list"
@@ -76,7 +78,11 @@ func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1Co
 	return
 }
 
-// Amend a contract
+// Amendments will be replaced by Contract editing. New clients should implement
+// using the editContract endpoint. Read more about the migration to contract
+// editing [here](https://docs.metronome.com/migrate-amendments-to-edits/) and
+// reach out to your Metronome representative for more details. Once contract
+// editing is enabled, access to this endpoint will be removed.
 func (r *V1ContractService) Amend(ctx context.Context, body V1ContractAmendParams, opts ...option.RequestOption) (res *V1ContractAmendResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/amend"
