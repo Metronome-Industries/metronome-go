@@ -49,7 +49,9 @@ func (r *V1CustomerCommitService) List(ctx context.Context, body V1CustomerCommi
 	return
 }
 
-// Update the end date of a PREPAID commit
+// Pull forward the end date of a prepaid commit. Use the "edit a commit" endpoint
+// to extend the end date of a prepaid commit, or to make other edits to the
+// commit.
 func (r *V1CustomerCommitService) UpdateEndDate(ctx context.Context, body V1CustomerCommitUpdateEndDateParams, opts ...option.RequestOption) (res *V1CustomerCommitUpdateEndDateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/customerCommits/updateEndDate"

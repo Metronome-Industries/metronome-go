@@ -49,7 +49,8 @@ func (r *V1CustomerCreditService) List(ctx context.Context, body V1CustomerCredi
 	return
 }
 
-// Update the end date of a credit
+// Pull forward the end date of a credit. Use the "edit a credit" endpoint to
+// extend the end date of a credit, or to make other edits to the credit.
 func (r *V1CustomerCreditService) UpdateEndDate(ctx context.Context, body V1CustomerCreditUpdateEndDateParams, opts ...option.RequestOption) (res *V1CustomerCreditUpdateEndDateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/customerCredits/updateEndDate"
