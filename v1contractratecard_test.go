@@ -155,7 +155,6 @@ func TestV1ContractRateCardGetRateScheduleWithOptionalParams(t *testing.T) {
 		NextPage:     metronome.F("next_page"),
 		EndingBefore: metronome.F(time.Now()),
 		Selectors: metronome.F([]metronome.V1ContractRateCardGetRateScheduleParamsSelector{{
-			BillingFrequency: metronome.F(metronome.V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyMonthly),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",

@@ -202,7 +202,6 @@ type V1ContractGetResponseData struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices V1ContractGetResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
-	Subscriptions                   []V1ContractGetResponseDataSubscription                  `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -222,7 +221,6 @@ type v1ContractGetResponseDataJSON struct {
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
 	ScheduledChargesOnUsageInvoices      apijson.Field
-	Subscriptions                        apijson.Field
 	UniquenessKey                        apijson.Field
 	raw                                  string
 	ExtraFields                          map[string]apijson.Field
@@ -432,182 +430,6 @@ func (r V1ContractGetResponseDataScheduledChargesOnUsageInvoices) IsKnown() bool
 	return false
 }
 
-type V1ContractGetResponseDataSubscription struct {
-	CollectionSchedule V1ContractGetResponseDataSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
-	Proration          V1ContractGetResponseDataSubscriptionsProration          `json:"proration,required"`
-	QuantitySchedule   []V1ContractGetResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt         time.Time                                                `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate   V1ContractGetResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	Description        string                                                   `json:"description"`
-	EndingBefore       time.Time                                                `json:"ending_before" format:"date-time"`
-	Name               string                                                   `json:"name"`
-	JSON               v1ContractGetResponseDataSubscriptionJSON                `json:"-"`
-}
-
-// v1ContractGetResponseDataSubscriptionJSON contains the JSON metadata for the
-// struct [V1ContractGetResponseDataSubscription]
-type v1ContractGetResponseDataSubscriptionJSON struct {
-	CollectionSchedule apijson.Field
-	Proration          apijson.Field
-	QuantitySchedule   apijson.Field
-	StartingAt         apijson.Field
-	SubscriptionRate   apijson.Field
-	Description        apijson.Field
-	EndingBefore       apijson.Field
-	Name               apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V1ContractGetResponseDataSubscription) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractGetResponseDataSubscriptionJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractGetResponseDataSubscriptionsCollectionSchedule string
-
-const (
-	V1ContractGetResponseDataSubscriptionsCollectionScheduleAdvance V1ContractGetResponseDataSubscriptionsCollectionSchedule = "ADVANCE"
-	V1ContractGetResponseDataSubscriptionsCollectionScheduleArrears V1ContractGetResponseDataSubscriptionsCollectionSchedule = "ARREARS"
-)
-
-func (r V1ContractGetResponseDataSubscriptionsCollectionSchedule) IsKnown() bool {
-	switch r {
-	case V1ContractGetResponseDataSubscriptionsCollectionScheduleAdvance, V1ContractGetResponseDataSubscriptionsCollectionScheduleArrears:
-		return true
-	}
-	return false
-}
-
-type V1ContractGetResponseDataSubscriptionsProration struct {
-	InvoiceBehavior V1ContractGetResponseDataSubscriptionsProrationInvoiceBehavior `json:"invoice_behavior,required"`
-	IsProrated      bool                                                           `json:"is_prorated,required"`
-	JSON            v1ContractGetResponseDataSubscriptionsProrationJSON            `json:"-"`
-}
-
-// v1ContractGetResponseDataSubscriptionsProrationJSON contains the JSON metadata
-// for the struct [V1ContractGetResponseDataSubscriptionsProration]
-type v1ContractGetResponseDataSubscriptionsProrationJSON struct {
-	InvoiceBehavior apijson.Field
-	IsProrated      apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V1ContractGetResponseDataSubscriptionsProration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractGetResponseDataSubscriptionsProrationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractGetResponseDataSubscriptionsProrationInvoiceBehavior string
-
-const (
-	V1ContractGetResponseDataSubscriptionsProrationInvoiceBehaviorBillImmediately          V1ContractGetResponseDataSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
-	V1ContractGetResponseDataSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate V1ContractGetResponseDataSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
-)
-
-func (r V1ContractGetResponseDataSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
-	switch r {
-	case V1ContractGetResponseDataSubscriptionsProrationInvoiceBehaviorBillImmediately, V1ContractGetResponseDataSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
-		return true
-	}
-	return false
-}
-
-type V1ContractGetResponseDataSubscriptionsQuantitySchedule struct {
-	Quantity     float64                                                    `json:"quantity,required"`
-	StartingAt   time.Time                                                  `json:"starting_at,required" format:"date-time"`
-	EndingBefore time.Time                                                  `json:"ending_before" format:"date-time"`
-	JSON         v1ContractGetResponseDataSubscriptionsQuantityScheduleJSON `json:"-"`
-}
-
-// v1ContractGetResponseDataSubscriptionsQuantityScheduleJSON contains the JSON
-// metadata for the struct [V1ContractGetResponseDataSubscriptionsQuantitySchedule]
-type v1ContractGetResponseDataSubscriptionsQuantityScheduleJSON struct {
-	Quantity     apijson.Field
-	StartingAt   apijson.Field
-	EndingBefore apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1ContractGetResponseDataSubscriptionsQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractGetResponseDataSubscriptionsQuantityScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractGetResponseDataSubscriptionsSubscriptionRate struct {
-	BillingFrequency V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
-	Product          V1ContractGetResponseDataSubscriptionsSubscriptionRateProduct          `json:"product,required"`
-	JSON             v1ContractGetResponseDataSubscriptionsSubscriptionRateJSON             `json:"-"`
-}
-
-// v1ContractGetResponseDataSubscriptionsSubscriptionRateJSON contains the JSON
-// metadata for the struct [V1ContractGetResponseDataSubscriptionsSubscriptionRate]
-type v1ContractGetResponseDataSubscriptionsSubscriptionRateJSON struct {
-	BillingFrequency apijson.Field
-	Product          apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *V1ContractGetResponseDataSubscriptionsSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractGetResponseDataSubscriptionsSubscriptionRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency string
-
-const (
-	V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyMonthly   V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
-	V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyQuarterly V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
-	V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyAnnual    V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyMonthly, V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyQuarterly, V1ContractGetResponseDataSubscriptionsSubscriptionRateBillingFrequencyAnnual:
-		return true
-	}
-	return false
-}
-
-type V1ContractGetResponseDataSubscriptionsSubscriptionRateProduct struct {
-	ID   string                                                            `json:"id,required" format:"uuid"`
-	Name string                                                            `json:"name,required"`
-	JSON v1ContractGetResponseDataSubscriptionsSubscriptionRateProductJSON `json:"-"`
-}
-
-// v1ContractGetResponseDataSubscriptionsSubscriptionRateProductJSON contains the
-// JSON metadata for the struct
-// [V1ContractGetResponseDataSubscriptionsSubscriptionRateProduct]
-type v1ContractGetResponseDataSubscriptionsSubscriptionRateProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractGetResponseDataSubscriptionsSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractGetResponseDataSubscriptionsSubscriptionRateProductJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1ContractListResponse struct {
 	Data []V1ContractListResponseData `json:"data,required"`
 	JSON v1ContractListResponseJSON   `json:"-"`
@@ -647,7 +469,6 @@ type V1ContractListResponseData struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices V1ContractListResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
-	Subscriptions                   []V1ContractListResponseDataSubscription                  `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -667,7 +488,6 @@ type v1ContractListResponseDataJSON struct {
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
 	ScheduledChargesOnUsageInvoices      apijson.Field
-	Subscriptions                        apijson.Field
 	UniquenessKey                        apijson.Field
 	raw                                  string
 	ExtraFields                          map[string]apijson.Field
@@ -875,184 +695,6 @@ func (r V1ContractListResponseDataScheduledChargesOnUsageInvoices) IsKnown() boo
 		return true
 	}
 	return false
-}
-
-type V1ContractListResponseDataSubscription struct {
-	CollectionSchedule V1ContractListResponseDataSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
-	Proration          V1ContractListResponseDataSubscriptionsProration          `json:"proration,required"`
-	QuantitySchedule   []V1ContractListResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt         time.Time                                                 `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate   V1ContractListResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	Description        string                                                    `json:"description"`
-	EndingBefore       time.Time                                                 `json:"ending_before" format:"date-time"`
-	Name               string                                                    `json:"name"`
-	JSON               v1ContractListResponseDataSubscriptionJSON                `json:"-"`
-}
-
-// v1ContractListResponseDataSubscriptionJSON contains the JSON metadata for the
-// struct [V1ContractListResponseDataSubscription]
-type v1ContractListResponseDataSubscriptionJSON struct {
-	CollectionSchedule apijson.Field
-	Proration          apijson.Field
-	QuantitySchedule   apijson.Field
-	StartingAt         apijson.Field
-	SubscriptionRate   apijson.Field
-	Description        apijson.Field
-	EndingBefore       apijson.Field
-	Name               apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V1ContractListResponseDataSubscription) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractListResponseDataSubscriptionJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractListResponseDataSubscriptionsCollectionSchedule string
-
-const (
-	V1ContractListResponseDataSubscriptionsCollectionScheduleAdvance V1ContractListResponseDataSubscriptionsCollectionSchedule = "ADVANCE"
-	V1ContractListResponseDataSubscriptionsCollectionScheduleArrears V1ContractListResponseDataSubscriptionsCollectionSchedule = "ARREARS"
-)
-
-func (r V1ContractListResponseDataSubscriptionsCollectionSchedule) IsKnown() bool {
-	switch r {
-	case V1ContractListResponseDataSubscriptionsCollectionScheduleAdvance, V1ContractListResponseDataSubscriptionsCollectionScheduleArrears:
-		return true
-	}
-	return false
-}
-
-type V1ContractListResponseDataSubscriptionsProration struct {
-	InvoiceBehavior V1ContractListResponseDataSubscriptionsProrationInvoiceBehavior `json:"invoice_behavior,required"`
-	IsProrated      bool                                                            `json:"is_prorated,required"`
-	JSON            v1ContractListResponseDataSubscriptionsProrationJSON            `json:"-"`
-}
-
-// v1ContractListResponseDataSubscriptionsProrationJSON contains the JSON metadata
-// for the struct [V1ContractListResponseDataSubscriptionsProration]
-type v1ContractListResponseDataSubscriptionsProrationJSON struct {
-	InvoiceBehavior apijson.Field
-	IsProrated      apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V1ContractListResponseDataSubscriptionsProration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractListResponseDataSubscriptionsProrationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractListResponseDataSubscriptionsProrationInvoiceBehavior string
-
-const (
-	V1ContractListResponseDataSubscriptionsProrationInvoiceBehaviorBillImmediately          V1ContractListResponseDataSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
-	V1ContractListResponseDataSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate V1ContractListResponseDataSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
-)
-
-func (r V1ContractListResponseDataSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
-	switch r {
-	case V1ContractListResponseDataSubscriptionsProrationInvoiceBehaviorBillImmediately, V1ContractListResponseDataSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
-		return true
-	}
-	return false
-}
-
-type V1ContractListResponseDataSubscriptionsQuantitySchedule struct {
-	Quantity     float64                                                     `json:"quantity,required"`
-	StartingAt   time.Time                                                   `json:"starting_at,required" format:"date-time"`
-	EndingBefore time.Time                                                   `json:"ending_before" format:"date-time"`
-	JSON         v1ContractListResponseDataSubscriptionsQuantityScheduleJSON `json:"-"`
-}
-
-// v1ContractListResponseDataSubscriptionsQuantityScheduleJSON contains the JSON
-// metadata for the struct
-// [V1ContractListResponseDataSubscriptionsQuantitySchedule]
-type v1ContractListResponseDataSubscriptionsQuantityScheduleJSON struct {
-	Quantity     apijson.Field
-	StartingAt   apijson.Field
-	EndingBefore apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1ContractListResponseDataSubscriptionsQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractListResponseDataSubscriptionsQuantityScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractListResponseDataSubscriptionsSubscriptionRate struct {
-	BillingFrequency V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
-	Product          V1ContractListResponseDataSubscriptionsSubscriptionRateProduct          `json:"product,required"`
-	JSON             v1ContractListResponseDataSubscriptionsSubscriptionRateJSON             `json:"-"`
-}
-
-// v1ContractListResponseDataSubscriptionsSubscriptionRateJSON contains the JSON
-// metadata for the struct
-// [V1ContractListResponseDataSubscriptionsSubscriptionRate]
-type v1ContractListResponseDataSubscriptionsSubscriptionRateJSON struct {
-	BillingFrequency apijson.Field
-	Product          apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *V1ContractListResponseDataSubscriptionsSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractListResponseDataSubscriptionsSubscriptionRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency string
-
-const (
-	V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyMonthly   V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
-	V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyQuarterly V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
-	V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyAnnual    V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyMonthly, V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyQuarterly, V1ContractListResponseDataSubscriptionsSubscriptionRateBillingFrequencyAnnual:
-		return true
-	}
-	return false
-}
-
-type V1ContractListResponseDataSubscriptionsSubscriptionRateProduct struct {
-	ID   string                                                             `json:"id,required" format:"uuid"`
-	Name string                                                             `json:"name,required"`
-	JSON v1ContractListResponseDataSubscriptionsSubscriptionRateProductJSON `json:"-"`
-}
-
-// v1ContractListResponseDataSubscriptionsSubscriptionRateProductJSON contains the
-// JSON metadata for the struct
-// [V1ContractListResponseDataSubscriptionsSubscriptionRateProduct]
-type v1ContractListResponseDataSubscriptionsSubscriptionRateProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractListResponseDataSubscriptionsSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractListResponseDataSubscriptionsSubscriptionRateProductJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractAmendResponse struct {
@@ -1327,15 +969,14 @@ func (r v1ContractGetRateScheduleResponseJSON) RawJSON() string {
 }
 
 type V1ContractGetRateScheduleResponseData struct {
-	Entitled            bool                                                  `json:"entitled,required"`
-	ListRate            shared.Rate                                           `json:"list_rate,required"`
-	ProductCustomFields map[string]string                                     `json:"product_custom_fields,required"`
-	ProductID           string                                                `json:"product_id,required" format:"uuid"`
-	ProductName         string                                                `json:"product_name,required"`
-	ProductTags         []string                                              `json:"product_tags,required"`
-	RateCardID          string                                                `json:"rate_card_id,required" format:"uuid"`
-	StartingAt          time.Time                                             `json:"starting_at,required" format:"date-time"`
-	BillingFrequency    V1ContractGetRateScheduleResponseDataBillingFrequency `json:"billing_frequency"`
+	Entitled            bool              `json:"entitled,required"`
+	ListRate            shared.Rate       `json:"list_rate,required"`
+	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
+	ProductID           string            `json:"product_id,required" format:"uuid"`
+	ProductName         string            `json:"product_name,required"`
+	ProductTags         []string          `json:"product_tags,required"`
+	RateCardID          string            `json:"rate_card_id,required" format:"uuid"`
+	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate         V1ContractGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
@@ -1356,7 +997,6 @@ type v1ContractGetRateScheduleResponseDataJSON struct {
 	ProductTags         apijson.Field
 	RateCardID          apijson.Field
 	StartingAt          apijson.Field
-	BillingFrequency    apijson.Field
 	CommitRate          apijson.Field
 	EndingBefore        apijson.Field
 	OverrideRate        apijson.Field
@@ -1371,22 +1011,6 @@ func (r *V1ContractGetRateScheduleResponseData) UnmarshalJSON(data []byte) (err 
 
 func (r v1ContractGetRateScheduleResponseDataJSON) RawJSON() string {
 	return r.raw
-}
-
-type V1ContractGetRateScheduleResponseDataBillingFrequency string
-
-const (
-	V1ContractGetRateScheduleResponseDataBillingFrequencyMonthly   V1ContractGetRateScheduleResponseDataBillingFrequency = "MONTHLY"
-	V1ContractGetRateScheduleResponseDataBillingFrequencyQuarterly V1ContractGetRateScheduleResponseDataBillingFrequency = "QUARTERLY"
-	V1ContractGetRateScheduleResponseDataBillingFrequencyAnnual    V1ContractGetRateScheduleResponseDataBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractGetRateScheduleResponseDataBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractGetRateScheduleResponseDataBillingFrequencyMonthly, V1ContractGetRateScheduleResponseDataBillingFrequencyQuarterly, V1ContractGetRateScheduleResponseDataBillingFrequencyAnnual:
-		return true
-	}
-	return false
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
@@ -1520,7 +1144,6 @@ type V1ContractNewParams struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices param.Field[V1ContractNewParamsScheduledChargesOnUsageInvoices] `json:"scheduled_charges_on_usage_invoices"`
-	Subscriptions                   param.Field[[]V1ContractNewParamsSubscription]                  `json:"subscriptions"`
 	ThresholdBillingConfiguration   param.Field[V1ContractNewParamsThresholdBillingConfiguration]   `json:"threshold_billing_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	TotalContractValue param.Field[float64]                       `json:"total_contract_value"`
@@ -2023,7 +1646,6 @@ func (r V1ContractNewParamsOverride) MarshalJSON() (data []byte, err error) {
 }
 
 type V1ContractNewParamsOverridesOverrideSpecifier struct {
-	BillingFrequency param.Field[V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequency] `json:"billing_frequency"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
 	// one of product_id, product_tags, pricing_group_values, or
 	// presentation_group_values. If provided, the override will only apply to the
@@ -2054,22 +1676,6 @@ type V1ContractNewParamsOverridesOverrideSpecifier struct {
 
 func (r V1ContractNewParamsOverridesOverrideSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequency string
-
-const (
-	V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyMonthly   V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequency = "MONTHLY"
-	V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyQuarterly V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequency = "QUARTERLY"
-	V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyAnnual    V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyMonthly, V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyQuarterly, V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyAnnual:
-		return true
-	}
-	return false
 }
 
 // Required for OVERWRITE type.
@@ -2645,103 +2251,6 @@ const (
 func (r V1ContractNewParamsScheduledChargesOnUsageInvoices) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsScheduledChargesOnUsageInvoicesAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsSubscription struct {
-	CollectionSchedule param.Field[V1ContractNewParamsSubscriptionsCollectionSchedule] `json:"collection_schedule,required"`
-	InitialQuantity    param.Field[float64]                                            `json:"initial_quantity,required"`
-	Proration          param.Field[V1ContractNewParamsSubscriptionsProration]          `json:"proration,required"`
-	SubscriptionRate   param.Field[V1ContractNewParamsSubscriptionsSubscriptionRate]   `json:"subscription_rate,required"`
-	Description        param.Field[string]                                             `json:"description"`
-	// Exclusive end time for the subscription. If not provided, subscription inherits
-	// contract end date.
-	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	Name         param.Field[string]    `json:"name"`
-	// Inclusive start time for the subscription. If not provided, defaults to contract
-	// start date
-	StartingAt param.Field[time.Time] `json:"starting_at" format:"date-time"`
-}
-
-func (r V1ContractNewParamsSubscription) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsSubscriptionsCollectionSchedule string
-
-const (
-	V1ContractNewParamsSubscriptionsCollectionScheduleAdvance V1ContractNewParamsSubscriptionsCollectionSchedule = "ADVANCE"
-	V1ContractNewParamsSubscriptionsCollectionScheduleArrears V1ContractNewParamsSubscriptionsCollectionSchedule = "ARREARS"
-)
-
-func (r V1ContractNewParamsSubscriptionsCollectionSchedule) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsSubscriptionsCollectionScheduleAdvance, V1ContractNewParamsSubscriptionsCollectionScheduleArrears:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsSubscriptionsProration struct {
-	// Indicates how mid-period quantity adjustments are invoiced. If BILL_IMMEDIATELY
-	// is selected, the quantity increase will be billed on the scheduled date. If
-	// BILL_ON_NEXT_COLLECTION_DATE is selected, the quantity increase will be billed
-	// for in-arrears at the end of the period.
-	InvoiceBehavior param.Field[V1ContractNewParamsSubscriptionsProrationInvoiceBehavior] `json:"invoice_behavior"`
-	// Indicates if the partial period will be prorated or charged a full amount.
-	IsProrated param.Field[bool] `json:"is_prorated"`
-}
-
-func (r V1ContractNewParamsSubscriptionsProration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Indicates how mid-period quantity adjustments are invoiced. If BILL_IMMEDIATELY
-// is selected, the quantity increase will be billed on the scheduled date. If
-// BILL_ON_NEXT_COLLECTION_DATE is selected, the quantity increase will be billed
-// for in-arrears at the end of the period.
-type V1ContractNewParamsSubscriptionsProrationInvoiceBehavior string
-
-const (
-	V1ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillImmediately          V1ContractNewParamsSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
-	V1ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate V1ContractNewParamsSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
-)
-
-func (r V1ContractNewParamsSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillImmediately, V1ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsSubscriptionsSubscriptionRate struct {
-	// Frequency to bill subscription with. Together with product_id, must match
-	// existing rate on the rate card.
-	BillingFrequency param.Field[V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency] `json:"billing_frequency,required"`
-	// Must be subscription type product
-	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
-}
-
-func (r V1ContractNewParamsSubscriptionsSubscriptionRate) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Frequency to bill subscription with. Together with product_id, must match
-// existing rate on the rate card.
-type V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency string
-
-const (
-	V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyMonthly   V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
-	V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyQuarterly V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
-	V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyAnnual    V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyMonthly, V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyQuarterly, V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyAnnual:
 		return true
 	}
 	return false
@@ -3400,7 +2909,6 @@ func (r V1ContractAmendParamsOverride) MarshalJSON() (data []byte, err error) {
 }
 
 type V1ContractAmendParamsOverridesOverrideSpecifier struct {
-	BillingFrequency param.Field[V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency] `json:"billing_frequency"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
 	// one of product_id, product_tags, pricing_group_values, or
 	// presentation_group_values. If provided, the override will only apply to the
@@ -3431,22 +2939,6 @@ type V1ContractAmendParamsOverridesOverrideSpecifier struct {
 
 func (r V1ContractAmendParamsOverridesOverrideSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency string
-
-const (
-	V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyMonthly   V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency = "MONTHLY"
-	V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyQuarterly V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency = "QUARTERLY"
-	V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyAnnual    V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyMonthly, V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyQuarterly, V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyAnnual:
-		return true
-	}
-	return false
 }
 
 // Required for OVERWRITE type.
@@ -3876,9 +3368,6 @@ func (r V1ContractGetRateScheduleParams) URLQuery() (v url.Values) {
 }
 
 type V1ContractGetRateScheduleParamsSelector struct {
-	// Subscription rates matching the billing frequency will be included in the
-	// response.
-	BillingFrequency param.Field[V1ContractGetRateScheduleParamsSelectorsBillingFrequency] `json:"billing_frequency"`
 	// List of pricing group key value pairs, rates containing the matching key / value
 	// pairs will be included in the response.
 	PartialPricingGroupValues param.Field[map[string]string] `json:"partial_pricing_group_values"`
@@ -3894,24 +3383,6 @@ type V1ContractGetRateScheduleParamsSelector struct {
 
 func (r V1ContractGetRateScheduleParamsSelector) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Subscription rates matching the billing frequency will be included in the
-// response.
-type V1ContractGetRateScheduleParamsSelectorsBillingFrequency string
-
-const (
-	V1ContractGetRateScheduleParamsSelectorsBillingFrequencyMonthly   V1ContractGetRateScheduleParamsSelectorsBillingFrequency = "MONTHLY"
-	V1ContractGetRateScheduleParamsSelectorsBillingFrequencyQuarterly V1ContractGetRateScheduleParamsSelectorsBillingFrequency = "QUARTERLY"
-	V1ContractGetRateScheduleParamsSelectorsBillingFrequencyAnnual    V1ContractGetRateScheduleParamsSelectorsBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractGetRateScheduleParamsSelectorsBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractGetRateScheduleParamsSelectorsBillingFrequencyMonthly, V1ContractGetRateScheduleParamsSelectorsBillingFrequencyQuarterly, V1ContractGetRateScheduleParamsSelectorsBillingFrequencyAnnual:
-		return true
-	}
-	return false
 }
 
 type V1ContractScheduleProServicesInvoiceParams struct {
