@@ -358,14 +358,13 @@ func (r v1ContractRateCardGetRateScheduleResponseJSON) RawJSON() string {
 }
 
 type V1ContractRateCardGetRateScheduleResponseData struct {
-	Entitled            bool                                                          `json:"entitled,required"`
-	ProductCustomFields map[string]string                                             `json:"product_custom_fields,required"`
-	ProductID           string                                                        `json:"product_id,required" format:"uuid"`
-	ProductName         string                                                        `json:"product_name,required"`
-	ProductTags         []string                                                      `json:"product_tags,required"`
-	Rate                shared.Rate                                                   `json:"rate,required"`
-	StartingAt          time.Time                                                     `json:"starting_at,required" format:"date-time"`
-	BillingFrequency    V1ContractRateCardGetRateScheduleResponseDataBillingFrequency `json:"billing_frequency"`
+	Entitled            bool              `json:"entitled,required"`
+	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
+	ProductID           string            `json:"product_id,required" format:"uuid"`
+	ProductName         string            `json:"product_name,required"`
+	ProductTags         []string          `json:"product_tags,required"`
+	Rate                shared.Rate       `json:"rate,required"`
+	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate         V1ContractRateCardGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
@@ -384,7 +383,6 @@ type v1ContractRateCardGetRateScheduleResponseDataJSON struct {
 	ProductTags         apijson.Field
 	Rate                apijson.Field
 	StartingAt          apijson.Field
-	BillingFrequency    apijson.Field
 	CommitRate          apijson.Field
 	EndingBefore        apijson.Field
 	PricingGroupValues  apijson.Field
@@ -398,22 +396,6 @@ func (r *V1ContractRateCardGetRateScheduleResponseData) UnmarshalJSON(data []byt
 
 func (r v1ContractRateCardGetRateScheduleResponseDataJSON) RawJSON() string {
 	return r.raw
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataBillingFrequency string
-
-const (
-	V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyMonthly   V1ContractRateCardGetRateScheduleResponseDataBillingFrequency = "MONTHLY"
-	V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyQuarterly V1ContractRateCardGetRateScheduleResponseDataBillingFrequency = "QUARTERLY"
-	V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyAnnual    V1ContractRateCardGetRateScheduleResponseDataBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractRateCardGetRateScheduleResponseDataBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyMonthly, V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyQuarterly, V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyAnnual:
-		return true
-	}
-	return false
 }
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
@@ -589,9 +571,6 @@ func (r V1ContractRateCardGetRateScheduleParams) URLQuery() (v url.Values) {
 }
 
 type V1ContractRateCardGetRateScheduleParamsSelector struct {
-	// Subscription rates matching the billing frequency will be included in the
-	// response.
-	BillingFrequency param.Field[V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency] `json:"billing_frequency"`
 	// List of pricing group key value pairs, rates containing the matching key / value
 	// pairs will be included in the response.
 	PartialPricingGroupValues param.Field[map[string]string] `json:"partial_pricing_group_values"`
@@ -604,22 +583,4 @@ type V1ContractRateCardGetRateScheduleParamsSelector struct {
 
 func (r V1ContractRateCardGetRateScheduleParamsSelector) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Subscription rates matching the billing frequency will be included in the
-// response.
-type V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency string
-
-const (
-	V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyMonthly   V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency = "MONTHLY"
-	V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyQuarterly V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency = "QUARTERLY"
-	V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyAnnual    V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency = "ANNUAL"
-)
-
-func (r V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyMonthly, V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyQuarterly, V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyAnnual:
-		return true
-	}
-	return false
 }

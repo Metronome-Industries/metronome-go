@@ -2581,21 +2581,19 @@ func (r overrideJSON) RawJSON() string {
 }
 
 type OverrideOverrideSpecifier struct {
-	BillingFrequency        OverrideOverrideSpecifiersBillingFrequency `json:"billing_frequency"`
-	CommitIDs               []string                                   `json:"commit_ids"`
-	PresentationGroupValues map[string]string                          `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string                          `json:"pricing_group_values"`
-	ProductID               string                                     `json:"product_id" format:"uuid"`
-	ProductTags             []string                                   `json:"product_tags"`
-	RecurringCommitIDs      []string                                   `json:"recurring_commit_ids"`
-	RecurringCreditIDs      []string                                   `json:"recurring_credit_ids"`
-	JSON                    overrideOverrideSpecifierJSON              `json:"-"`
+	CommitIDs               []string                      `json:"commit_ids"`
+	PresentationGroupValues map[string]string             `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string             `json:"pricing_group_values"`
+	ProductID               string                        `json:"product_id" format:"uuid"`
+	ProductTags             []string                      `json:"product_tags"`
+	RecurringCommitIDs      []string                      `json:"recurring_commit_ids"`
+	RecurringCreditIDs      []string                      `json:"recurring_credit_ids"`
+	JSON                    overrideOverrideSpecifierJSON `json:"-"`
 }
 
 // overrideOverrideSpecifierJSON contains the JSON metadata for the struct
 // [OverrideOverrideSpecifier]
 type overrideOverrideSpecifierJSON struct {
-	BillingFrequency        apijson.Field
 	CommitIDs               apijson.Field
 	PresentationGroupValues apijson.Field
 	PricingGroupValues      apijson.Field
@@ -2613,22 +2611,6 @@ func (r *OverrideOverrideSpecifier) UnmarshalJSON(data []byte) (err error) {
 
 func (r overrideOverrideSpecifierJSON) RawJSON() string {
 	return r.raw
-}
-
-type OverrideOverrideSpecifiersBillingFrequency string
-
-const (
-	OverrideOverrideSpecifiersBillingFrequencyMonthly   OverrideOverrideSpecifiersBillingFrequency = "MONTHLY"
-	OverrideOverrideSpecifiersBillingFrequencyQuarterly OverrideOverrideSpecifiersBillingFrequency = "QUARTERLY"
-	OverrideOverrideSpecifiersBillingFrequencyAnnual    OverrideOverrideSpecifiersBillingFrequency = "ANNUAL"
-)
-
-func (r OverrideOverrideSpecifiersBillingFrequency) IsKnown() bool {
-	switch r {
-	case OverrideOverrideSpecifiersBillingFrequencyMonthly, OverrideOverrideSpecifiersBillingFrequencyQuarterly, OverrideOverrideSpecifiersBillingFrequencyAnnual:
-		return true
-	}
-	return false
 }
 
 type OverrideOverrideTier struct {
