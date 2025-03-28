@@ -1929,11 +1929,12 @@ const (
 	V1ContractNewParamsRecurringCommitsRecurrenceFrequencyMonthly   V1ContractNewParamsRecurringCommitsRecurrenceFrequency = "MONTHLY"
 	V1ContractNewParamsRecurringCommitsRecurrenceFrequencyQuarterly V1ContractNewParamsRecurringCommitsRecurrenceFrequency = "QUARTERLY"
 	V1ContractNewParamsRecurringCommitsRecurrenceFrequencyAnnual    V1ContractNewParamsRecurringCommitsRecurrenceFrequency = "ANNUAL"
+	V1ContractNewParamsRecurringCommitsRecurrenceFrequencyWeekly    V1ContractNewParamsRecurringCommitsRecurrenceFrequency = "WEEKLY"
 )
 
 func (r V1ContractNewParamsRecurringCommitsRecurrenceFrequency) IsKnown() bool {
 	switch r {
-	case V1ContractNewParamsRecurringCommitsRecurrenceFrequencyMonthly, V1ContractNewParamsRecurringCommitsRecurrenceFrequencyQuarterly, V1ContractNewParamsRecurringCommitsRecurrenceFrequencyAnnual:
+	case V1ContractNewParamsRecurringCommitsRecurrenceFrequencyMonthly, V1ContractNewParamsRecurringCommitsRecurrenceFrequencyQuarterly, V1ContractNewParamsRecurringCommitsRecurrenceFrequencyAnnual, V1ContractNewParamsRecurringCommitsRecurrenceFrequencyWeekly:
 		return true
 	}
 	return false
@@ -2066,11 +2067,12 @@ const (
 	V1ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly   V1ContractNewParamsRecurringCreditsRecurrenceFrequency = "MONTHLY"
 	V1ContractNewParamsRecurringCreditsRecurrenceFrequencyQuarterly V1ContractNewParamsRecurringCreditsRecurrenceFrequency = "QUARTERLY"
 	V1ContractNewParamsRecurringCreditsRecurrenceFrequencyAnnual    V1ContractNewParamsRecurringCreditsRecurrenceFrequency = "ANNUAL"
+	V1ContractNewParamsRecurringCreditsRecurrenceFrequencyWeekly    V1ContractNewParamsRecurringCreditsRecurrenceFrequency = "WEEKLY"
 )
 
 func (r V1ContractNewParamsRecurringCreditsRecurrenceFrequency) IsKnown() bool {
 	switch r {
-	case V1ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly, V1ContractNewParamsRecurringCreditsRecurrenceFrequencyQuarterly, V1ContractNewParamsRecurringCreditsRecurrenceFrequencyAnnual:
+	case V1ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly, V1ContractNewParamsRecurringCreditsRecurrenceFrequencyQuarterly, V1ContractNewParamsRecurringCreditsRecurrenceFrequencyAnnual, V1ContractNewParamsRecurringCreditsRecurrenceFrequencyWeekly:
 		return true
 	}
 	return false
@@ -2377,11 +2379,12 @@ const (
 	V1ContractNewParamsUsageStatementScheduleFrequencyMonthly   V1ContractNewParamsUsageStatementScheduleFrequency = "MONTHLY"
 	V1ContractNewParamsUsageStatementScheduleFrequencyQuarterly V1ContractNewParamsUsageStatementScheduleFrequency = "QUARTERLY"
 	V1ContractNewParamsUsageStatementScheduleFrequencyAnnual    V1ContractNewParamsUsageStatementScheduleFrequency = "ANNUAL"
+	V1ContractNewParamsUsageStatementScheduleFrequencyWeekly    V1ContractNewParamsUsageStatementScheduleFrequency = "WEEKLY"
 )
 
 func (r V1ContractNewParamsUsageStatementScheduleFrequency) IsKnown() bool {
 	switch r {
-	case V1ContractNewParamsUsageStatementScheduleFrequencyMonthly, V1ContractNewParamsUsageStatementScheduleFrequencyQuarterly, V1ContractNewParamsUsageStatementScheduleFrequencyAnnual:
+	case V1ContractNewParamsUsageStatementScheduleFrequencyMonthly, V1ContractNewParamsUsageStatementScheduleFrequencyQuarterly, V1ContractNewParamsUsageStatementScheduleFrequencyAnnual, V1ContractNewParamsUsageStatementScheduleFrequencyWeekly:
 		return true
 	}
 	return false

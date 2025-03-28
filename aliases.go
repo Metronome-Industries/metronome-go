@@ -242,6 +242,9 @@ const ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly = shared
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual
 
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsUsageStatementScheduleFrequencyWeekly = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyWeekly
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCommit = shared.ContractWithoutAmendmentsRecurringCommit
 
@@ -319,6 +322,9 @@ const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyQuarterly = sh
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual = shared.ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual
 
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCredit = shared.ContractWithoutAmendmentsRecurringCredit
 
@@ -390,6 +396,9 @@ const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyQuarterly = sh
 
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual = shared.ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
