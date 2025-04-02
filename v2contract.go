@@ -7529,9 +7529,17 @@ type V2ContractEditParams struct {
 	AddRecurringCredits     param.Field[[]V2ContractEditParamsAddRecurringCredit]     `json:"add_recurring_credits"`
 	AddResellerRoyalties    param.Field[[]V2ContractEditParamsAddResellerRoyalty]     `json:"add_reseller_royalties"`
 	AddScheduledCharges     param.Field[[]V2ContractEditParamsAddScheduledCharge]     `json:"add_scheduled_charges"`
-	UpdateCommits           param.Field[[]V2ContractEditParamsUpdateCommit]           `json:"update_commits"`
-	UpdateCredits           param.Field[[]V2ContractEditParamsUpdateCredit]           `json:"update_credits"`
-	UpdateScheduledCharges  param.Field[[]V2ContractEditParamsUpdateScheduledCharge]  `json:"update_scheduled_charges"`
+	// IDs of commits to archive
+	ArchiveCommits param.Field[[]string] `json:"archive_commits" format:"uuid"`
+	// IDs of credits to archive
+	ArchiveCredits param.Field[[]string] `json:"archive_credits" format:"uuid"`
+	// IDs of scheduled charges to archive
+	ArchiveScheduledCharges param.Field[[]string] `json:"archive_scheduled_charges" format:"uuid"`
+	// IDs of overrides to remove
+	RemoveOverrides        param.Field[[]string]                                    `json:"remove_overrides" format:"uuid"`
+	UpdateCommits          param.Field[[]V2ContractEditParamsUpdateCommit]          `json:"update_commits"`
+	UpdateCredits          param.Field[[]V2ContractEditParamsUpdateCredit]          `json:"update_credits"`
+	UpdateScheduledCharges param.Field[[]V2ContractEditParamsUpdateScheduledCharge] `json:"update_scheduled_charges"`
 }
 
 func (r V2ContractEditParams) MarshalJSON() (data []byte, err error) {
