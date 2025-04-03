@@ -16,6 +16,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1CustomerService contains methods and other services that help with interacting
@@ -72,7 +73,7 @@ func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, 
 }
 
 // List all customers.
-func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerListResponse], err error) {
+func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerDetail], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -90,7 +91,7 @@ func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams
 }
 
 // List all customers.
-func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerListResponse] {
+func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerDetail] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -200,8 +201,144 @@ func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerU
 	return
 }
 
+type Customer struct {
+	// the Metronome ID of the customer
+	ID string `json:"id,required" format:"uuid"`
+	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
+	// alias) that can be used in usage events
+	ExternalID string `json:"external_id,required"`
+	// aliases for this customer that can be used instead of the Metronome customer ID
+	// in usage events
+	IngestAliases []string          `json:"ingest_aliases,required"`
+	Name          string            `json:"name,required"`
+	CustomFields  map[string]string `json:"custom_fields"`
+	JSON          customerJSON      `json:"-"`
+}
+
+// customerJSON contains the JSON metadata for the struct [Customer]
+type customerJSON struct {
+	ID            apijson.Field
+	ExternalID    apijson.Field
+	IngestAliases apijson.Field
+	Name          apijson.Field
+	CustomFields  apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *Customer) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerDetail struct {
+	// the Metronome ID of the customer
+	ID             string                       `json:"id,required" format:"uuid"`
+	CustomFields   map[string]string            `json:"custom_fields,required"`
+	CustomerConfig CustomerDetailCustomerConfig `json:"customer_config,required"`
+	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
+	// alias) that can be used in usage events
+	ExternalID string `json:"external_id,required"`
+	// aliases for this customer that can be used instead of the Metronome customer ID
+	// in usage events
+	IngestAliases []string `json:"ingest_aliases,required"`
+	Name          string   `json:"name,required"`
+	// RFC 3339 timestamp indicating when the customer was archived. Null if the
+	// customer is active.
+	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
+	// This field's availability is dependent on your client's configuration.
+	CurrentBillableStatus CustomerDetailCurrentBillableStatus `json:"current_billable_status"`
+	JSON                  customerDetailJSON                  `json:"-"`
+}
+
+// customerDetailJSON contains the JSON metadata for the struct [CustomerDetail]
+type customerDetailJSON struct {
+	ID                    apijson.Field
+	CustomFields          apijson.Field
+	CustomerConfig        apijson.Field
+	ExternalID            apijson.Field
+	IngestAliases         apijson.Field
+	Name                  apijson.Field
+	ArchivedAt            apijson.Field
+	CurrentBillableStatus apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *CustomerDetail) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerDetailJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerDetailCustomerConfig struct {
+	// The Salesforce account ID for the customer
+	SalesforceAccountID string                           `json:"salesforce_account_id,required,nullable"`
+	JSON                customerDetailCustomerConfigJSON `json:"-"`
+}
+
+// customerDetailCustomerConfigJSON contains the JSON metadata for the struct
+// [CustomerDetailCustomerConfig]
+type customerDetailCustomerConfigJSON struct {
+	SalesforceAccountID apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *CustomerDetailCustomerConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerDetailCustomerConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// This field's availability is dependent on your client's configuration.
+type CustomerDetailCurrentBillableStatus struct {
+	Value       CustomerDetailCurrentBillableStatusValue `json:"value,required"`
+	EffectiveAt time.Time                                `json:"effective_at,nullable" format:"date-time"`
+	JSON        customerDetailCurrentBillableStatusJSON  `json:"-"`
+}
+
+// customerDetailCurrentBillableStatusJSON contains the JSON metadata for the
+// struct [CustomerDetailCurrentBillableStatus]
+type customerDetailCurrentBillableStatusJSON struct {
+	Value       apijson.Field
+	EffectiveAt apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerDetailCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerDetailCurrentBillableStatusJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerDetailCurrentBillableStatusValue string
+
+const (
+	CustomerDetailCurrentBillableStatusValueBillable   CustomerDetailCurrentBillableStatusValue = "billable"
+	CustomerDetailCurrentBillableStatusValueUnbillable CustomerDetailCurrentBillableStatusValue = "unbillable"
+)
+
+func (r CustomerDetailCurrentBillableStatusValue) IsKnown() bool {
+	switch r {
+	case CustomerDetailCurrentBillableStatusValueBillable, CustomerDetailCurrentBillableStatusValueUnbillable:
+		return true
+	}
+	return false
+}
+
 type V1CustomerNewResponse struct {
-	Data V1CustomerNewResponseData `json:"data,required"`
+	Data Customer                  `json:"data,required"`
 	JSON v1CustomerNewResponseJSON `json:"-"`
 }
 
@@ -221,42 +358,8 @@ func (r v1CustomerNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CustomerNewResponseData struct {
-	// the Metronome ID of the customer
-	ID string `json:"id,required" format:"uuid"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string                      `json:"ingest_aliases,required"`
-	Name          string                        `json:"name,required"`
-	CustomFields  map[string]string             `json:"custom_fields"`
-	JSON          v1CustomerNewResponseDataJSON `json:"-"`
-}
-
-// v1CustomerNewResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerNewResponseData]
-type v1CustomerNewResponseDataJSON struct {
-	ID            apijson.Field
-	ExternalID    apijson.Field
-	IngestAliases apijson.Field
-	Name          apijson.Field
-	CustomFields  apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *V1CustomerNewResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerNewResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1CustomerGetResponse struct {
-	Data V1CustomerGetResponseData `json:"data,required"`
+	Data CustomerDetail            `json:"data,required"`
 	JSON v1CustomerGetResponseJSON `json:"-"`
 }
 
@@ -276,216 +379,8 @@ func (r v1CustomerGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CustomerGetResponseData struct {
-	// the Metronome ID of the customer
-	ID             string                                  `json:"id,required" format:"uuid"`
-	CustomFields   map[string]string                       `json:"custom_fields,required"`
-	CustomerConfig V1CustomerGetResponseDataCustomerConfig `json:"customer_config,required"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string `json:"ingest_aliases,required"`
-	Name          string   `json:"name,required"`
-	// RFC 3339 timestamp indicating when the customer was archived. Null if the
-	// customer is active.
-	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
-	// This field's availability is dependent on your client's configuration.
-	CurrentBillableStatus V1CustomerGetResponseDataCurrentBillableStatus `json:"current_billable_status"`
-	JSON                  v1CustomerGetResponseDataJSON                  `json:"-"`
-}
-
-// v1CustomerGetResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerGetResponseData]
-type v1CustomerGetResponseDataJSON struct {
-	ID                    apijson.Field
-	CustomFields          apijson.Field
-	CustomerConfig        apijson.Field
-	ExternalID            apijson.Field
-	IngestAliases         apijson.Field
-	Name                  apijson.Field
-	ArchivedAt            apijson.Field
-	CurrentBillableStatus apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V1CustomerGetResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerGetResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerGetResponseDataCustomerConfig struct {
-	// The Salesforce account ID for the customer
-	SalesforceAccountID string                                      `json:"salesforce_account_id,required,nullable"`
-	JSON                v1CustomerGetResponseDataCustomerConfigJSON `json:"-"`
-}
-
-// v1CustomerGetResponseDataCustomerConfigJSON contains the JSON metadata for the
-// struct [V1CustomerGetResponseDataCustomerConfig]
-type v1CustomerGetResponseDataCustomerConfigJSON struct {
-	SalesforceAccountID apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1CustomerGetResponseDataCustomerConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerGetResponseDataCustomerConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// This field's availability is dependent on your client's configuration.
-type V1CustomerGetResponseDataCurrentBillableStatus struct {
-	Value       V1CustomerGetResponseDataCurrentBillableStatusValue `json:"value,required"`
-	EffectiveAt time.Time                                           `json:"effective_at,nullable" format:"date-time"`
-	JSON        v1CustomerGetResponseDataCurrentBillableStatusJSON  `json:"-"`
-}
-
-// v1CustomerGetResponseDataCurrentBillableStatusJSON contains the JSON metadata
-// for the struct [V1CustomerGetResponseDataCurrentBillableStatus]
-type v1CustomerGetResponseDataCurrentBillableStatusJSON struct {
-	Value       apijson.Field
-	EffectiveAt apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerGetResponseDataCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerGetResponseDataCurrentBillableStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerGetResponseDataCurrentBillableStatusValue string
-
-const (
-	V1CustomerGetResponseDataCurrentBillableStatusValueBillable   V1CustomerGetResponseDataCurrentBillableStatusValue = "billable"
-	V1CustomerGetResponseDataCurrentBillableStatusValueUnbillable V1CustomerGetResponseDataCurrentBillableStatusValue = "unbillable"
-)
-
-func (r V1CustomerGetResponseDataCurrentBillableStatusValue) IsKnown() bool {
-	switch r {
-	case V1CustomerGetResponseDataCurrentBillableStatusValueBillable, V1CustomerGetResponseDataCurrentBillableStatusValueUnbillable:
-		return true
-	}
-	return false
-}
-
-type V1CustomerListResponse struct {
-	// the Metronome ID of the customer
-	ID             string                               `json:"id,required" format:"uuid"`
-	CustomFields   map[string]string                    `json:"custom_fields,required"`
-	CustomerConfig V1CustomerListResponseCustomerConfig `json:"customer_config,required"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string `json:"ingest_aliases,required"`
-	Name          string   `json:"name,required"`
-	// RFC 3339 timestamp indicating when the customer was archived. Null if the
-	// customer is active.
-	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
-	// This field's availability is dependent on your client's configuration.
-	CurrentBillableStatus V1CustomerListResponseCurrentBillableStatus `json:"current_billable_status"`
-	JSON                  v1CustomerListResponseJSON                  `json:"-"`
-}
-
-// v1CustomerListResponseJSON contains the JSON metadata for the struct
-// [V1CustomerListResponse]
-type v1CustomerListResponseJSON struct {
-	ID                    apijson.Field
-	CustomFields          apijson.Field
-	CustomerConfig        apijson.Field
-	ExternalID            apijson.Field
-	IngestAliases         apijson.Field
-	Name                  apijson.Field
-	ArchivedAt            apijson.Field
-	CurrentBillableStatus apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V1CustomerListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerListResponseCustomerConfig struct {
-	// The Salesforce account ID for the customer
-	SalesforceAccountID string                                   `json:"salesforce_account_id,required,nullable"`
-	JSON                v1CustomerListResponseCustomerConfigJSON `json:"-"`
-}
-
-// v1CustomerListResponseCustomerConfigJSON contains the JSON metadata for the
-// struct [V1CustomerListResponseCustomerConfig]
-type v1CustomerListResponseCustomerConfigJSON struct {
-	SalesforceAccountID apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1CustomerListResponseCustomerConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListResponseCustomerConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// This field's availability is dependent on your client's configuration.
-type V1CustomerListResponseCurrentBillableStatus struct {
-	Value       V1CustomerListResponseCurrentBillableStatusValue `json:"value,required"`
-	EffectiveAt time.Time                                        `json:"effective_at,nullable" format:"date-time"`
-	JSON        v1CustomerListResponseCurrentBillableStatusJSON  `json:"-"`
-}
-
-// v1CustomerListResponseCurrentBillableStatusJSON contains the JSON metadata for
-// the struct [V1CustomerListResponseCurrentBillableStatus]
-type v1CustomerListResponseCurrentBillableStatusJSON struct {
-	Value       apijson.Field
-	EffectiveAt apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerListResponseCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListResponseCurrentBillableStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerListResponseCurrentBillableStatusValue string
-
-const (
-	V1CustomerListResponseCurrentBillableStatusValueBillable   V1CustomerListResponseCurrentBillableStatusValue = "billable"
-	V1CustomerListResponseCurrentBillableStatusValueUnbillable V1CustomerListResponseCurrentBillableStatusValue = "unbillable"
-)
-
-func (r V1CustomerListResponseCurrentBillableStatusValue) IsKnown() bool {
-	switch r {
-	case V1CustomerListResponseCurrentBillableStatusValueBillable, V1CustomerListResponseCurrentBillableStatusValueUnbillable:
-		return true
-	}
-	return false
-}
-
 type V1CustomerArchiveResponse struct {
-	Data V1CustomerArchiveResponseData `json:"data,required"`
+	Data shared.ID                     `json:"data,required"`
 	JSON v1CustomerArchiveResponseJSON `json:"-"`
 }
 
@@ -502,27 +397,6 @@ func (r *V1CustomerArchiveResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerArchiveResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerArchiveResponseData struct {
-	ID   string                            `json:"id,required" format:"uuid"`
-	JSON v1CustomerArchiveResponseDataJSON `json:"-"`
-}
-
-// v1CustomerArchiveResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerArchiveResponseData]
-type v1CustomerArchiveResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerArchiveResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerArchiveResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -544,7 +418,7 @@ type V1CustomerListBillableMetricsResponse struct {
 	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
 	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
-	EventTypeFilter V1CustomerListBillableMetricsResponseEventTypeFilter `json:"event_type_filter"`
+	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// (DEPRECATED) use property_filters & event_type_filter instead
 	Filter map[string]interface{} `json:"filter"`
 	// (DEPRECATED) use group_keys instead
@@ -555,7 +429,7 @@ type V1CustomerListBillableMetricsResponse struct {
 	// A list of filters to match events to this billable metric. Each filter defines a
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
-	PropertyFilters []V1CustomerListBillableMetricsResponsePropertyFilter `json:"property_filters"`
+	PropertyFilters []shared.PropertyFilter `json:"property_filters"`
 	// The SQL query associated with the billable metric
 	Sql  string                                    `json:"sql"`
 	JSON v1CustomerListBillableMetricsResponseJSON `json:"-"`
@@ -607,76 +481,6 @@ func (r V1CustomerListBillableMetricsResponseAggregationType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// An optional filtering rule to match the 'event_type' property of an event.
-type V1CustomerListBillableMetricsResponseEventTypeFilter struct {
-	// A list of event types that are explicitly included in the billable metric. If
-	// specified, only events of these types will match the billable metric. Must be
-	// non-empty if present.
-	InValues []string `json:"in_values"`
-	// A list of event types that are explicitly excluded from the billable metric. If
-	// specified, events of these types will not match the billable metric. Must be
-	// non-empty if present.
-	NotInValues []string                                                 `json:"not_in_values"`
-	JSON        v1CustomerListBillableMetricsResponseEventTypeFilterJSON `json:"-"`
-}
-
-// v1CustomerListBillableMetricsResponseEventTypeFilterJSON contains the JSON
-// metadata for the struct [V1CustomerListBillableMetricsResponseEventTypeFilter]
-type v1CustomerListBillableMetricsResponseEventTypeFilterJSON struct {
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerListBillableMetricsResponseEventTypeFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListBillableMetricsResponseEventTypeFilterJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerListBillableMetricsResponsePropertyFilter struct {
-	// The name of the event property.
-	Name string `json:"name,required"`
-	// Determines whether the property must exist in the event. If true, only events
-	// with this property will pass the filter. If false, only events without this
-	// property will pass the filter. If null or omitted, the existence of the property
-	// is optional.
-	Exists bool `json:"exists"`
-	// Specifies the allowed values for the property to match an event. An event will
-	// pass the filter only if its property value is included in this list. If
-	// undefined, all property values will pass the filter. Must be non-empty if
-	// present.
-	InValues []string `json:"in_values"`
-	// Specifies the values that prevent an event from matching the filter. An event
-	// will not pass the filter if its property value is included in this list. If null
-	// or empty, all property values will pass the filter. Must be non-empty if
-	// present.
-	NotInValues []string                                                `json:"not_in_values"`
-	JSON        v1CustomerListBillableMetricsResponsePropertyFilterJSON `json:"-"`
-}
-
-// v1CustomerListBillableMetricsResponsePropertyFilterJSON contains the JSON
-// metadata for the struct [V1CustomerListBillableMetricsResponsePropertyFilter]
-type v1CustomerListBillableMetricsResponsePropertyFilterJSON struct {
-	Name        apijson.Field
-	Exists      apijson.Field
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerListBillableMetricsResponsePropertyFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListBillableMetricsResponsePropertyFilterJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerListCostsResponse struct {
@@ -758,7 +562,7 @@ func (r v1CustomerListCostsResponseCreditTypesLineItemBreakdownJSON) RawJSON() s
 }
 
 type V1CustomerSetNameResponse struct {
-	Data V1CustomerSetNameResponseData `json:"data,required"`
+	Data Customer                      `json:"data,required"`
 	JSON v1CustomerSetNameResponseJSON `json:"-"`
 }
 
@@ -775,40 +579,6 @@ func (r *V1CustomerSetNameResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerSetNameResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerSetNameResponseData struct {
-	// the Metronome ID of the customer
-	ID string `json:"id,required" format:"uuid"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string                          `json:"ingest_aliases,required"`
-	Name          string                            `json:"name,required"`
-	CustomFields  map[string]string                 `json:"custom_fields"`
-	JSON          v1CustomerSetNameResponseDataJSON `json:"-"`
-}
-
-// v1CustomerSetNameResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerSetNameResponseData]
-type v1CustomerSetNameResponseDataJSON struct {
-	ID            apijson.Field
-	ExternalID    apijson.Field
-	IngestAliases apijson.Field
-	Name          apijson.Field
-	CustomFields  apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *V1CustomerSetNameResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerSetNameResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1005,11 +775,11 @@ func (r V1CustomerListParams) URLQuery() (v url.Values) {
 }
 
 type V1CustomerArchiveParams struct {
-	ID param.Field[string] `json:"id,required" format:"uuid"`
+	ID shared.IDParam `json:"id,required"`
 }
 
 func (r V1CustomerArchiveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.ID)
 }
 
 type V1CustomerListBillableMetricsParams struct {

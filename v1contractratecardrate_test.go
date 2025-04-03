@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1ContractRateCardRateListWithOptionalParams(t *testing.T) {
@@ -73,7 +74,7 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		CommitRate: metronome.F(metronome.V1ContractRateCardRateAddParamsCommitRate{
 			RateType: metronome.F(metronome.V1ContractRateCardRateAddParamsCommitRateRateTypeFlat),
 			Price:    metronome.F(0.000000),
-			Tiers: metronome.F([]metronome.V1ContractRateCardRateAddParamsCommitRateTier{{
+			Tiers: metronome.F([]shared.TierParam{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}}),
@@ -89,7 +90,7 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 			"foo": "string",
 		}),
 		Quantity: metronome.F(0.000000),
-		Tiers: metronome.F([]metronome.V1ContractRateCardRateAddParamsTier{{
+		Tiers: metronome.F([]shared.TierParam{{
 			Price: metronome.F(0.000000),
 			Size:  metronome.F(0.000000),
 		}}),
@@ -126,7 +127,7 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 			CommitRate: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRate{
 				RateType: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
 				Price:    metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -143,7 +144,7 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 				"cloud":  "aws",
 			}),
 			Quantity: metronome.F(0.000000),
-			Tiers: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRatesTier{{
+			Tiers: metronome.F([]shared.TierParam{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}}),
@@ -156,7 +157,7 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 			CommitRate: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRate{
 				RateType: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
 				Price:    metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -173,7 +174,7 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 				"cloud":  "aws",
 			}),
 			Quantity: metronome.F(0.000000),
-			Tiers: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRatesTier{{
+			Tiers: metronome.F([]shared.TierParam{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}}),
