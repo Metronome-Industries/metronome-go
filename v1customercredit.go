@@ -206,7 +206,7 @@ type V1CustomerCreditListParams struct {
 	CreditID     param.Field[string]    `json:"credit_id" format:"uuid"`
 	// Include only credits that have any access before the provided date (exclusive)
 	EffectiveBefore param.Field[time.Time] `json:"effective_before" format:"date-time"`
-	// Include credits from archived contracts.
+	// Include archived credits and credits from archived contracts.
 	IncludeArchived param.Field[bool] `json:"include_archived"`
 	// Include the balance in the response. Setting this flag may cause the query to be
 	// slower.

@@ -337,7 +337,7 @@ type V1CustomerCommitListParams struct {
 	CoveringDate param.Field[time.Time] `json:"covering_date" format:"date-time"`
 	// Include only commits that have any access before the provided date (exclusive)
 	EffectiveBefore param.Field[time.Time] `json:"effective_before" format:"date-time"`
-	// Include commits from archived contracts.
+	// Include archived commits and commits from archived contracts.
 	IncludeArchived param.Field[bool] `json:"include_archived"`
 	// Include the balance in the response. Setting this flag may cause the query to be
 	// slower.

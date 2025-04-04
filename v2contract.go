@@ -218,6 +218,7 @@ type V2ContractGetResponseDataCommit struct {
 	ApplicableContractIDs []string                `json:"applicable_contract_ids" format:"uuid"`
 	ApplicableProductIDs  []string                `json:"applicable_product_ids" format:"uuid"`
 	ApplicableProductTags []string                `json:"applicable_product_tags"`
+	ArchivedAt            time.Time               `json:"archived_at" format:"date-time"`
 	// The current balance of the credit or commit. This balance reflects the amount of
 	// credit or commit that the customer has access to use at this moment - thus,
 	// expired and upcoming credit or commit segments contribute 0 to the balance. The
@@ -261,6 +262,7 @@ type v2ContractGetResponseDataCommitJSON struct {
 	ApplicableContractIDs   apijson.Field
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
+	ArchivedAt              apijson.Field
 	Balance                 apijson.Field
 	Contract                apijson.Field
 	CustomFields            apijson.Field
@@ -2930,6 +2932,7 @@ type V2ContractListResponseDataCommit struct {
 	ApplicableContractIDs []string                `json:"applicable_contract_ids" format:"uuid"`
 	ApplicableProductIDs  []string                `json:"applicable_product_ids" format:"uuid"`
 	ApplicableProductTags []string                `json:"applicable_product_tags"`
+	ArchivedAt            time.Time               `json:"archived_at" format:"date-time"`
 	// The current balance of the credit or commit. This balance reflects the amount of
 	// credit or commit that the customer has access to use at this moment - thus,
 	// expired and upcoming credit or commit segments contribute 0 to the balance. The
@@ -2973,6 +2976,7 @@ type v2ContractListResponseDataCommitJSON struct {
 	ApplicableContractIDs   apijson.Field
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
+	ArchivedAt              apijson.Field
 	Balance                 apijson.Field
 	Contract                apijson.Field
 	CustomFields            apijson.Field
@@ -5599,50 +5603,58 @@ func (r v2ContractGetEditHistoryResponseJSON) RawJSON() string {
 }
 
 type V2ContractGetEditHistoryResponseData struct {
-	ID                     string                                                      `json:"id,required" format:"uuid"`
-	AddCommits             []V2ContractGetEditHistoryResponseDataAddCommit             `json:"add_commits"`
-	AddCredits             []V2ContractGetEditHistoryResponseDataAddCredit             `json:"add_credits"`
-	AddDiscounts           []shared.Discount                                           `json:"add_discounts"`
-	AddOverrides           []V2ContractGetEditHistoryResponseDataAddOverride           `json:"add_overrides"`
-	AddProServices         []shared.ProService                                         `json:"add_pro_services"`
-	AddRecurringCommits    []V2ContractGetEditHistoryResponseDataAddRecurringCommit    `json:"add_recurring_commits"`
-	AddRecurringCredits    []V2ContractGetEditHistoryResponseDataAddRecurringCredit    `json:"add_recurring_credits"`
-	AddResellerRoyalties   []V2ContractGetEditHistoryResponseDataAddResellerRoyalty    `json:"add_reseller_royalties"`
-	AddScheduledCharges    []V2ContractGetEditHistoryResponseDataAddScheduledCharge    `json:"add_scheduled_charges"`
-	AddUsageFilters        []V2ContractGetEditHistoryResponseDataAddUsageFilter        `json:"add_usage_filters"`
-	Timestamp              time.Time                                                   `json:"timestamp" format:"date-time"`
-	UpdateCommits          []V2ContractGetEditHistoryResponseDataUpdateCommit          `json:"update_commits"`
-	UpdateContractEndDate  time.Time                                                   `json:"update_contract_end_date" format:"date-time"`
-	UpdateCredits          []V2ContractGetEditHistoryResponseDataUpdateCredit          `json:"update_credits"`
-	UpdateDiscounts        []V2ContractGetEditHistoryResponseDataUpdateDiscount        `json:"update_discounts"`
-	UpdateRefundInvoices   []V2ContractGetEditHistoryResponseDataUpdateRefundInvoice   `json:"update_refund_invoices"`
-	UpdateScheduledCharges []V2ContractGetEditHistoryResponseDataUpdateScheduledCharge `json:"update_scheduled_charges"`
-	JSON                   v2ContractGetEditHistoryResponseDataJSON                    `json:"-"`
+	ID                      string                                                       `json:"id,required" format:"uuid"`
+	AddCommits              []V2ContractGetEditHistoryResponseDataAddCommit              `json:"add_commits"`
+	AddCredits              []V2ContractGetEditHistoryResponseDataAddCredit              `json:"add_credits"`
+	AddDiscounts            []shared.Discount                                            `json:"add_discounts"`
+	AddOverrides            []V2ContractGetEditHistoryResponseDataAddOverride            `json:"add_overrides"`
+	AddProServices          []shared.ProService                                          `json:"add_pro_services"`
+	AddRecurringCommits     []V2ContractGetEditHistoryResponseDataAddRecurringCommit     `json:"add_recurring_commits"`
+	AddRecurringCredits     []V2ContractGetEditHistoryResponseDataAddRecurringCredit     `json:"add_recurring_credits"`
+	AddResellerRoyalties    []V2ContractGetEditHistoryResponseDataAddResellerRoyalty     `json:"add_reseller_royalties"`
+	AddScheduledCharges     []V2ContractGetEditHistoryResponseDataAddScheduledCharge     `json:"add_scheduled_charges"`
+	AddUsageFilters         []V2ContractGetEditHistoryResponseDataAddUsageFilter         `json:"add_usage_filters"`
+	ArchiveCommits          []V2ContractGetEditHistoryResponseDataArchiveCommit          `json:"archive_commits"`
+	ArchiveCredits          []V2ContractGetEditHistoryResponseDataArchiveCredit          `json:"archive_credits"`
+	ArchiveScheduledCharges []V2ContractGetEditHistoryResponseDataArchiveScheduledCharge `json:"archive_scheduled_charges"`
+	RemoveOverrides         []V2ContractGetEditHistoryResponseDataRemoveOverride         `json:"remove_overrides"`
+	Timestamp               time.Time                                                    `json:"timestamp" format:"date-time"`
+	UpdateCommits           []V2ContractGetEditHistoryResponseDataUpdateCommit           `json:"update_commits"`
+	UpdateContractEndDate   time.Time                                                    `json:"update_contract_end_date" format:"date-time"`
+	UpdateCredits           []V2ContractGetEditHistoryResponseDataUpdateCredit           `json:"update_credits"`
+	UpdateDiscounts         []V2ContractGetEditHistoryResponseDataUpdateDiscount         `json:"update_discounts"`
+	UpdateRefundInvoices    []V2ContractGetEditHistoryResponseDataUpdateRefundInvoice    `json:"update_refund_invoices"`
+	UpdateScheduledCharges  []V2ContractGetEditHistoryResponseDataUpdateScheduledCharge  `json:"update_scheduled_charges"`
+	JSON                    v2ContractGetEditHistoryResponseDataJSON                     `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataJSON contains the JSON metadata for the
 // struct [V2ContractGetEditHistoryResponseData]
 type v2ContractGetEditHistoryResponseDataJSON struct {
-	ID                     apijson.Field
-	AddCommits             apijson.Field
-	AddCredits             apijson.Field
-	AddDiscounts           apijson.Field
-	AddOverrides           apijson.Field
-	AddProServices         apijson.Field
-	AddRecurringCommits    apijson.Field
-	AddRecurringCredits    apijson.Field
-	AddResellerRoyalties   apijson.Field
-	AddScheduledCharges    apijson.Field
-	AddUsageFilters        apijson.Field
-	Timestamp              apijson.Field
-	UpdateCommits          apijson.Field
-	UpdateContractEndDate  apijson.Field
-	UpdateCredits          apijson.Field
-	UpdateDiscounts        apijson.Field
-	UpdateRefundInvoices   apijson.Field
-	UpdateScheduledCharges apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
+	ID                      apijson.Field
+	AddCommits              apijson.Field
+	AddCredits              apijson.Field
+	AddDiscounts            apijson.Field
+	AddOverrides            apijson.Field
+	AddProServices          apijson.Field
+	AddRecurringCommits     apijson.Field
+	AddRecurringCredits     apijson.Field
+	AddResellerRoyalties    apijson.Field
+	AddScheduledCharges     apijson.Field
+	AddUsageFilters         apijson.Field
+	ArchiveCommits          apijson.Field
+	ArchiveCredits          apijson.Field
+	ArchiveScheduledCharges apijson.Field
+	RemoveOverrides         apijson.Field
+	Timestamp               apijson.Field
+	UpdateCommits           apijson.Field
+	UpdateContractEndDate   apijson.Field
+	UpdateCredits           apijson.Field
+	UpdateDiscounts         apijson.Field
+	UpdateRefundInvoices    apijson.Field
+	UpdateScheduledCharges  apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
 }
 
 func (r *V2ContractGetEditHistoryResponseData) UnmarshalJSON(data []byte) (err error) {
@@ -6746,6 +6758,91 @@ func (r v2ContractGetEditHistoryResponseDataAddUsageFilterJSON) RawJSON() string
 	return r.raw
 }
 
+type V2ContractGetEditHistoryResponseDataArchiveCommit struct {
+	ID   string                                                `json:"id,required" format:"uuid"`
+	JSON v2ContractGetEditHistoryResponseDataArchiveCommitJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataArchiveCommitJSON contains the JSON metadata
+// for the struct [V2ContractGetEditHistoryResponseDataArchiveCommit]
+type v2ContractGetEditHistoryResponseDataArchiveCommitJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataArchiveCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataArchiveCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataArchiveCredit struct {
+	ID   string                                                `json:"id,required" format:"uuid"`
+	JSON v2ContractGetEditHistoryResponseDataArchiveCreditJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataArchiveCreditJSON contains the JSON metadata
+// for the struct [V2ContractGetEditHistoryResponseDataArchiveCredit]
+type v2ContractGetEditHistoryResponseDataArchiveCreditJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataArchiveCredit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataArchiveCreditJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataArchiveScheduledCharge struct {
+	ID   string                                                         `json:"id,required" format:"uuid"`
+	JSON v2ContractGetEditHistoryResponseDataArchiveScheduledChargeJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataArchiveScheduledChargeJSON contains the JSON
+// metadata for the struct
+// [V2ContractGetEditHistoryResponseDataArchiveScheduledCharge]
+type v2ContractGetEditHistoryResponseDataArchiveScheduledChargeJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataArchiveScheduledCharge) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataArchiveScheduledChargeJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataRemoveOverride struct {
+	ID   string                                                 `json:"id,required" format:"uuid"`
+	JSON v2ContractGetEditHistoryResponseDataRemoveOverrideJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataRemoveOverrideJSON contains the JSON
+// metadata for the struct [V2ContractGetEditHistoryResponseDataRemoveOverride]
+type v2ContractGetEditHistoryResponseDataRemoveOverrideJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataRemoveOverride) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataRemoveOverrideJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	ID             string                                                          `json:"id,required" format:"uuid"`
 	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCommitsAccessSchedule `json:"access_schedule"`
@@ -7530,13 +7627,13 @@ type V2ContractEditParams struct {
 	AddResellerRoyalties    param.Field[[]V2ContractEditParamsAddResellerRoyalty]     `json:"add_reseller_royalties"`
 	AddScheduledCharges     param.Field[[]V2ContractEditParamsAddScheduledCharge]     `json:"add_scheduled_charges"`
 	// IDs of commits to archive
-	ArchiveCommits param.Field[[]string] `json:"archive_commits" format:"uuid"`
+	ArchiveCommits param.Field[[]V2ContractEditParamsArchiveCommit] `json:"archive_commits"`
 	// IDs of credits to archive
-	ArchiveCredits param.Field[[]string] `json:"archive_credits" format:"uuid"`
+	ArchiveCredits param.Field[[]V2ContractEditParamsArchiveCredit] `json:"archive_credits"`
 	// IDs of scheduled charges to archive
-	ArchiveScheduledCharges param.Field[[]string] `json:"archive_scheduled_charges" format:"uuid"`
+	ArchiveScheduledCharges param.Field[[]V2ContractEditParamsArchiveScheduledCharge] `json:"archive_scheduled_charges"`
 	// IDs of overrides to remove
-	RemoveOverrides        param.Field[[]string]                                    `json:"remove_overrides" format:"uuid"`
+	RemoveOverrides        param.Field[[]V2ContractEditParamsRemoveOverride]        `json:"remove_overrides"`
 	UpdateCommits          param.Field[[]V2ContractEditParamsUpdateCommit]          `json:"update_commits"`
 	UpdateCredits          param.Field[[]V2ContractEditParamsUpdateCredit]          `json:"update_credits"`
 	UpdateScheduledCharges param.Field[[]V2ContractEditParamsUpdateScheduledCharge] `json:"update_scheduled_charges"`
@@ -8555,6 +8652,38 @@ type V2ContractEditParamsAddScheduledChargesScheduleScheduleItem struct {
 }
 
 func (r V2ContractEditParamsAddScheduledChargesScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsArchiveCommit struct {
+	ID param.Field[string] `json:"id,required" format:"uuid"`
+}
+
+func (r V2ContractEditParamsArchiveCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsArchiveCredit struct {
+	ID param.Field[string] `json:"id,required" format:"uuid"`
+}
+
+func (r V2ContractEditParamsArchiveCredit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsArchiveScheduledCharge struct {
+	ID param.Field[string] `json:"id,required" format:"uuid"`
+}
+
+func (r V2ContractEditParamsArchiveScheduledCharge) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsRemoveOverride struct {
+	ID param.Field[string] `json:"id,required" format:"uuid"`
+}
+
+func (r V2ContractEditParamsRemoveOverride) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
