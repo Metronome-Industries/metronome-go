@@ -806,6 +806,9 @@ type V1ContractListBalancesResponseData struct {
 	ApplicableProductIDs interface{} `json:"applicable_product_ids"`
 	// This field can have the runtime type of [[]string].
 	ApplicableProductTags interface{} `json:"applicable_product_tags"`
+	// RFC 3339 timestamp indicating when the commit was archived. If not provided, the
+	// commit is not archived.
+	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
 	// The current balance of the credit or commit. This balance reflects the amount of
 	// credit or commit that the customer has access to use at this moment - thus,
 	// expired and upcoming credit or commit segments contribute 0 to the balance. The
@@ -860,6 +863,7 @@ type v1ContractListBalancesResponseDataJSON struct {
 	ApplicableContractIDs   apijson.Field
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
+	ArchivedAt              apijson.Field
 	Balance                 apijson.Field
 	Contract                apijson.Field
 	CustomFields            apijson.Field
@@ -3326,7 +3330,7 @@ type V1ContractListBalancesParams struct {
 	CoveringDate param.Field[time.Time] `json:"covering_date" format:"date-time"`
 	// Include only balances that have any access before the provided date (exclusive)
 	EffectiveBefore param.Field[time.Time] `json:"effective_before" format:"date-time"`
-	// Include credits from archived contracts.
+	// Include archived credits and credits from archived contracts.
 	IncludeArchived param.Field[bool] `json:"include_archived"`
 	// Include the balance of credits and commits in the response. Setting this flag
 	// may cause the query to be slower.

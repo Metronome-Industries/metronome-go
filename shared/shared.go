@@ -57,6 +57,9 @@ type Commit struct {
 	ApplicableContractIDs []string `json:"applicable_contract_ids" format:"uuid"`
 	ApplicableProductIDs  []string `json:"applicable_product_ids" format:"uuid"`
 	ApplicableProductTags []string `json:"applicable_product_tags"`
+	// RFC 3339 timestamp indicating when the commit was archived. If not provided, the
+	// commit is not archived.
+	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
 	// The current balance of the credit or commit. This balance reflects the amount of
 	// credit or commit that the customer has access to use at this moment - thus,
 	// expired and upcoming credit or commit segments contribute 0 to the balance. The
@@ -105,6 +108,7 @@ type commitJSON struct {
 	ApplicableContractIDs   apijson.Field
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
+	ArchivedAt              apijson.Field
 	Balance                 apijson.Field
 	Contract                apijson.Field
 	CustomFields            apijson.Field
@@ -2943,6 +2947,7 @@ type ScheduledCharge struct {
 	ID           string                 `json:"id,required" format:"uuid"`
 	Product      ScheduledChargeProduct `json:"product,required"`
 	Schedule     SchedulePointInTime    `json:"schedule,required"`
+	ArchivedAt   time.Time              `json:"archived_at" format:"date-time"`
 	CustomFields map[string]string      `json:"custom_fields"`
 	// displayed on invoices
 	Name string `json:"name"`
@@ -2956,6 +2961,7 @@ type scheduledChargeJSON struct {
 	ID                   apijson.Field
 	Product              apijson.Field
 	Schedule             apijson.Field
+	ArchivedAt           apijson.Field
 	CustomFields         apijson.Field
 	Name                 apijson.Field
 	NetsuiteSalesOrderID apijson.Field
