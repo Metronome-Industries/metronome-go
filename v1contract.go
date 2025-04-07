@@ -2269,21 +2269,32 @@ func (r V1ContractNewParamsScheduledChargesOnUsageInvoices) IsKnown() bool {
 }
 
 type V1ContractNewParamsThresholdBillingConfiguration struct {
-	Commit param.Field[V1ContractNewParamsThresholdBillingConfigurationCommit] `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state
-	IsEnabled param.Field[bool] `json:"is_enabled,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+	CreditBalanceThresholdConfiguration param.Field[V1ContractNewParamsThresholdBillingConfigurationCreditBalanceThresholdConfiguration] `json:"credit_balance_threshold_configuration"`
+	SpendThresholdConfiguration         param.Field[V1ContractNewParamsThresholdBillingConfigurationSpendThresholdConfiguration]         `json:"spend_threshold_configuration"`
 }
 
 func (r V1ContractNewParamsThresholdBillingConfiguration) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type V1ContractNewParamsThresholdBillingConfigurationCommit struct {
+type V1ContractNewParamsThresholdBillingConfigurationCreditBalanceThresholdConfiguration struct {
+	Commit param.Field[V1ContractNewParamsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit] `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled param.Field[bool] `json:"is_enabled,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount param.Field[float64] `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+}
+
+func (r V1ContractNewParamsThresholdBillingConfigurationCreditBalanceThresholdConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit struct {
 	ProductID param.Field[string] `json:"product_id,required"`
 	// Which products the threshold commit applies to. If both applicable_product_ids
 	// and applicable_product_tags are not provided, the commit applies to all
@@ -2298,7 +2309,41 @@ type V1ContractNewParamsThresholdBillingConfigurationCommit struct {
 	Name param.Field[string] `json:"name"`
 }
 
-func (r V1ContractNewParamsThresholdBillingConfigurationCommit) MarshalJSON() (data []byte, err error) {
+func (r V1ContractNewParamsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsThresholdBillingConfigurationSpendThresholdConfiguration struct {
+	Commit param.Field[V1ContractNewParamsThresholdBillingConfigurationSpendThresholdConfigurationCommit] `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled param.Field[bool] `json:"is_enabled,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+}
+
+func (r V1ContractNewParamsThresholdBillingConfigurationSpendThresholdConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsThresholdBillingConfigurationSpendThresholdConfigurationCommit struct {
+	ProductID param.Field[string] `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	Description           param.Field[string]   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r V1ContractNewParamsThresholdBillingConfigurationSpendThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
