@@ -2736,25 +2736,18 @@ func (r V2ContractGetResponseDataScheduledChargesOnUsageInvoices) IsKnown() bool
 }
 
 type V2ContractGetResponseDataThresholdBillingConfiguration struct {
-	Commit V2ContractGetResponseDataThresholdBillingConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state
-	IsEnabled bool `json:"is_enabled,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                    `json:"threshold_amount,required"`
-	JSON            v2ContractGetResponseDataThresholdBillingConfigurationJSON `json:"-"`
+	CreditBalanceThresholdConfiguration V2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfiguration `json:"credit_balance_threshold_configuration"`
+	SpendThresholdConfiguration         V2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfiguration         `json:"spend_threshold_configuration"`
+	JSON                                v2ContractGetResponseDataThresholdBillingConfigurationJSON                                `json:"-"`
 }
 
 // v2ContractGetResponseDataThresholdBillingConfigurationJSON contains the JSON
 // metadata for the struct [V2ContractGetResponseDataThresholdBillingConfiguration]
 type v2ContractGetResponseDataThresholdBillingConfigurationJSON struct {
-	Commit          apijson.Field
-	IsEnabled       apijson.Field
-	ThresholdAmount apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
+	CreditBalanceThresholdConfiguration apijson.Field
+	SpendThresholdConfiguration         apijson.Field
+	raw                                 string
+	ExtraFields                         map[string]apijson.Field
 }
 
 func (r *V2ContractGetResponseDataThresholdBillingConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -2765,7 +2758,41 @@ func (r v2ContractGetResponseDataThresholdBillingConfigurationJSON) RawJSON() st
 	return r.raw
 }
 
-type V2ContractGetResponseDataThresholdBillingConfigurationCommit struct {
+type V2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfiguration struct {
+	Commit V2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled bool `json:"is_enabled,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                                                       `json:"threshold_amount,required"`
+	JSON            v2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfiguration]
+type v2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON struct {
+	Commit           apijson.Field
+	IsEnabled        apijson.Field
+	RechargeToAmount apijson.Field
+	ThresholdAmount  apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit struct {
 	ProductID string `json:"product_id,required"`
 	// Which products the threshold commit applies to. If both applicable_product_ids
 	// and applicable_product_tags are not provided, the commit applies to all
@@ -2777,14 +2804,14 @@ type V2ContractGetResponseDataThresholdBillingConfigurationCommit struct {
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
-	Name string                                                           `json:"name"`
-	JSON v2ContractGetResponseDataThresholdBillingConfigurationCommitJSON `json:"-"`
+	Name string                                                                                              `json:"name"`
+	JSON v2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON `json:"-"`
 }
 
-// v2ContractGetResponseDataThresholdBillingConfigurationCommitJSON contains the
-// JSON metadata for the struct
-// [V2ContractGetResponseDataThresholdBillingConfigurationCommit]
-type v2ContractGetResponseDataThresholdBillingConfigurationCommitJSON struct {
+// v2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit]
+type v2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON struct {
 	ProductID             apijson.Field
 	ApplicableProductIDs  apijson.Field
 	ApplicableProductTags apijson.Field
@@ -2794,11 +2821,79 @@ type v2ContractGetResponseDataThresholdBillingConfigurationCommitJSON struct {
 	ExtraFields           map[string]apijson.Field
 }
 
-func (r *V2ContractGetResponseDataThresholdBillingConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+func (r *V2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v2ContractGetResponseDataThresholdBillingConfigurationCommitJSON) RawJSON() string {
+func (r v2ContractGetResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfiguration struct {
+	Commit V2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled bool `json:"is_enabled,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                                               `json:"threshold_amount,required"`
+	JSON            v2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfiguration]
+type v2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationJSON struct {
+	Commit          apijson.Field
+	IsEnabled       apijson.Field
+	ThresholdAmount apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommit struct {
+	ProductID string `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags []string `json:"applicable_product_tags"`
+	Description           string   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name string                                                                                      `json:"name"`
+	JSON v2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommit]
+type v2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON struct {
+	ProductID             apijson.Field
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Description           apijson.Field
+	Name                  apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -5451,26 +5546,19 @@ func (r V2ContractListResponseDataScheduledChargesOnUsageInvoices) IsKnown() boo
 }
 
 type V2ContractListResponseDataThresholdBillingConfiguration struct {
-	Commit V2ContractListResponseDataThresholdBillingConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state
-	IsEnabled bool `json:"is_enabled,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                     `json:"threshold_amount,required"`
-	JSON            v2ContractListResponseDataThresholdBillingConfigurationJSON `json:"-"`
+	CreditBalanceThresholdConfiguration V2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfiguration `json:"credit_balance_threshold_configuration"`
+	SpendThresholdConfiguration         V2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfiguration         `json:"spend_threshold_configuration"`
+	JSON                                v2ContractListResponseDataThresholdBillingConfigurationJSON                                `json:"-"`
 }
 
 // v2ContractListResponseDataThresholdBillingConfigurationJSON contains the JSON
 // metadata for the struct
 // [V2ContractListResponseDataThresholdBillingConfiguration]
 type v2ContractListResponseDataThresholdBillingConfigurationJSON struct {
-	Commit          apijson.Field
-	IsEnabled       apijson.Field
-	ThresholdAmount apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
+	CreditBalanceThresholdConfiguration apijson.Field
+	SpendThresholdConfiguration         apijson.Field
+	raw                                 string
+	ExtraFields                         map[string]apijson.Field
 }
 
 func (r *V2ContractListResponseDataThresholdBillingConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -5481,7 +5569,41 @@ func (r v2ContractListResponseDataThresholdBillingConfigurationJSON) RawJSON() s
 	return r.raw
 }
 
-type V2ContractListResponseDataThresholdBillingConfigurationCommit struct {
+type V2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfiguration struct {
+	Commit V2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled bool `json:"is_enabled,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                                                        `json:"threshold_amount,required"`
+	JSON            v2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON `json:"-"`
+}
+
+// v2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfiguration]
+type v2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON struct {
+	Commit           apijson.Field
+	IsEnabled        apijson.Field
+	RechargeToAmount apijson.Field
+	ThresholdAmount  apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit struct {
 	ProductID string `json:"product_id,required"`
 	// Which products the threshold commit applies to. If both applicable_product_ids
 	// and applicable_product_tags are not provided, the commit applies to all
@@ -5493,14 +5615,14 @@ type V2ContractListResponseDataThresholdBillingConfigurationCommit struct {
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
-	Name string                                                            `json:"name"`
-	JSON v2ContractListResponseDataThresholdBillingConfigurationCommitJSON `json:"-"`
+	Name string                                                                                               `json:"name"`
+	JSON v2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON `json:"-"`
 }
 
-// v2ContractListResponseDataThresholdBillingConfigurationCommitJSON contains the
-// JSON metadata for the struct
-// [V2ContractListResponseDataThresholdBillingConfigurationCommit]
-type v2ContractListResponseDataThresholdBillingConfigurationCommitJSON struct {
+// v2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit]
+type v2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON struct {
 	ProductID             apijson.Field
 	ApplicableProductIDs  apijson.Field
 	ApplicableProductTags apijson.Field
@@ -5510,11 +5632,79 @@ type v2ContractListResponseDataThresholdBillingConfigurationCommitJSON struct {
 	ExtraFields           map[string]apijson.Field
 }
 
-func (r *V2ContractListResponseDataThresholdBillingConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+func (r *V2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v2ContractListResponseDataThresholdBillingConfigurationCommitJSON) RawJSON() string {
+func (r v2ContractListResponseDataThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfiguration struct {
+	Commit V2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled bool `json:"is_enabled,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                                                `json:"threshold_amount,required"`
+	JSON            v2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationJSON `json:"-"`
+}
+
+// v2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfiguration]
+type v2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationJSON struct {
+	Commit          apijson.Field
+	IsEnabled       apijson.Field
+	ThresholdAmount apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommit struct {
+	ProductID string `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags []string `json:"applicable_product_tags"`
+	Description           string   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name string                                                                                       `json:"name"`
+	JSON v2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON `json:"-"`
+}
+
+// v2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommit]
+type v2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON struct {
+	ProductID             apijson.Field
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Description           apijson.Field
+	Name                  apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
 }
 

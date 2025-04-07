@@ -236,7 +236,9 @@ func (r customerJSON) RawJSON() string {
 
 type CustomerDetail struct {
 	// the Metronome ID of the customer
-	ID             string                       `json:"id,required" format:"uuid"`
+	ID string `json:"id,required" format:"uuid"`
+	// RFC 3339 timestamp indicating when the customer was created.
+	CreatedAt      time.Time                    `json:"created_at,required" format:"date-time"`
 	CustomFields   map[string]string            `json:"custom_fields,required"`
 	CustomerConfig CustomerDetailCustomerConfig `json:"customer_config,required"`
 	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
@@ -257,6 +259,7 @@ type CustomerDetail struct {
 // customerDetailJSON contains the JSON metadata for the struct [CustomerDetail]
 type customerDetailJSON struct {
 	ID                    apijson.Field
+	CreatedAt             apijson.Field
 	CustomFields          apijson.Field
 	CustomerConfig        apijson.Field
 	ExternalID            apijson.Field
