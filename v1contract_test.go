@@ -289,15 +289,29 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		}}),
 		ScheduledChargesOnUsageInvoices: metronome.F(metronome.V1ContractNewParamsScheduledChargesOnUsageInvoicesAll),
 		ThresholdBillingConfiguration: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfiguration{
-			Commit: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfigurationCommit{
-				ProductID:             metronome.F("product_id"),
-				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-				ApplicableProductTags: metronome.F([]string{"string"}),
-				Description:           metronome.F("description"),
-				Name:                  metronome.F("name"),
+			CreditBalanceThresholdConfiguration: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfigurationCreditBalanceThresholdConfiguration{
+				Commit: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit{
+					ProductID:             metronome.F("product_id"),
+					ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+					ApplicableProductTags: metronome.F([]string{"string"}),
+					Description:           metronome.F("description"),
+					Name:                  metronome.F("name"),
+				}),
+				IsEnabled:        metronome.F(true),
+				RechargeToAmount: metronome.F(0.000000),
+				ThresholdAmount:  metronome.F(0.000000),
 			}),
-			IsEnabled:       metronome.F(true),
-			ThresholdAmount: metronome.F(0.000000),
+			SpendThresholdConfiguration: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfigurationSpendThresholdConfiguration{
+				Commit: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfigurationSpendThresholdConfigurationCommit{
+					ProductID:             metronome.F("product_id"),
+					ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+					ApplicableProductTags: metronome.F([]string{"string"}),
+					Description:           metronome.F("description"),
+					Name:                  metronome.F("name"),
+				}),
+				IsEnabled:       metronome.F(true),
+				ThresholdAmount: metronome.F(0.000000),
+			}),
 		}),
 		TotalContractValue: metronome.F(0.000000),
 		Transition: metronome.F(metronome.V1ContractNewParamsTransition{

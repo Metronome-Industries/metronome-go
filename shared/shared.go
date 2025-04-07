@@ -1735,25 +1735,18 @@ func (r ContractWithoutAmendmentsScheduledChargesOnUsageInvoices) IsKnown() bool
 }
 
 type ContractWithoutAmendmentsThresholdBillingConfiguration struct {
-	Commit ContractWithoutAmendmentsThresholdBillingConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state
-	IsEnabled bool `json:"is_enabled,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                    `json:"threshold_amount,required"`
-	JSON            contractWithoutAmendmentsThresholdBillingConfigurationJSON `json:"-"`
+	CreditBalanceThresholdConfiguration ContractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfiguration `json:"credit_balance_threshold_configuration"`
+	SpendThresholdConfiguration         ContractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfiguration         `json:"spend_threshold_configuration"`
+	JSON                                contractWithoutAmendmentsThresholdBillingConfigurationJSON                                `json:"-"`
 }
 
 // contractWithoutAmendmentsThresholdBillingConfigurationJSON contains the JSON
 // metadata for the struct [ContractWithoutAmendmentsThresholdBillingConfiguration]
 type contractWithoutAmendmentsThresholdBillingConfigurationJSON struct {
-	Commit          apijson.Field
-	IsEnabled       apijson.Field
-	ThresholdAmount apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
+	CreditBalanceThresholdConfiguration apijson.Field
+	SpendThresholdConfiguration         apijson.Field
+	raw                                 string
+	ExtraFields                         map[string]apijson.Field
 }
 
 func (r *ContractWithoutAmendmentsThresholdBillingConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -1764,7 +1757,41 @@ func (r contractWithoutAmendmentsThresholdBillingConfigurationJSON) RawJSON() st
 	return r.raw
 }
 
-type ContractWithoutAmendmentsThresholdBillingConfigurationCommit struct {
+type ContractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfiguration struct {
+	Commit ContractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled bool `json:"is_enabled,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                                                       `json:"threshold_amount,required"`
+	JSON            contractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfiguration]
+type contractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON struct {
+	Commit           apijson.Field
+	IsEnabled        apijson.Field
+	RechargeToAmount apijson.Field
+	ThresholdAmount  apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit struct {
 	ProductID string `json:"product_id,required"`
 	// Which products the threshold commit applies to. If both applicable_product_ids
 	// and applicable_product_tags are not provided, the commit applies to all
@@ -1776,14 +1803,14 @@ type ContractWithoutAmendmentsThresholdBillingConfigurationCommit struct {
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
-	Name string                                                           `json:"name"`
-	JSON contractWithoutAmendmentsThresholdBillingConfigurationCommitJSON `json:"-"`
+	Name string                                                                                              `json:"name"`
+	JSON contractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON `json:"-"`
 }
 
-// contractWithoutAmendmentsThresholdBillingConfigurationCommitJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsThresholdBillingConfigurationCommit]
-type contractWithoutAmendmentsThresholdBillingConfigurationCommitJSON struct {
+// contractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit]
+type contractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON struct {
 	ProductID             apijson.Field
 	ApplicableProductIDs  apijson.Field
 	ApplicableProductTags apijson.Field
@@ -1793,11 +1820,79 @@ type contractWithoutAmendmentsThresholdBillingConfigurationCommitJSON struct {
 	ExtraFields           map[string]apijson.Field
 }
 
-func (r *ContractWithoutAmendmentsThresholdBillingConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+func (r *ContractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r contractWithoutAmendmentsThresholdBillingConfigurationCommitJSON) RawJSON() string {
+func (r contractWithoutAmendmentsThresholdBillingConfigurationCreditBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfiguration struct {
+	Commit ContractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state
+	IsEnabled bool `json:"is_enabled,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                                               `json:"threshold_amount,required"`
+	JSON            contractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfiguration]
+type contractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationJSON struct {
+	Commit          apijson.Field
+	IsEnabled       apijson.Field
+	ThresholdAmount apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationCommit struct {
+	ProductID string `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags []string `json:"applicable_product_tags"`
+	Description           string   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name string                                                                                      `json:"name"`
+	JSON contractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationCommit]
+type contractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON struct {
+	ProductID             apijson.Field
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Description           apijson.Field
+	Name                  apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsThresholdBillingConfigurationSpendThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
 }
 
