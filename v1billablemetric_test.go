@@ -29,7 +29,7 @@ func TestV1BillableMetricNewWithOptionalParams(t *testing.T) {
 	_, err := client.V1.BillableMetrics.New(context.TODO(), metronome.V1BillableMetricNewParams{
 		Name:            metronome.F("CPU Hours"),
 		AggregationKey:  metronome.F("cpu_hours"),
-		AggregationType: metronome.F(metronome.V1BillableMetricNewParamsAggregationTypeCount),
+		AggregationType: metronome.F(metronome.V1BillableMetricNewParamsAggregationTypeSum),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
 		}),
