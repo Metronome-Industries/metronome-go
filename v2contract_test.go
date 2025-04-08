@@ -218,7 +218,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				Multiplier: metronome.F(0.000000),
 				Size:       metronome.F(0.000000),
 			}}),
-			Type: metronome.F(metronome.V2ContractEditParamsAddOverridesTypeOverwrite),
+			Type: metronome.F(metronome.V2ContractEditParamsAddOverridesTypeMultiplier),
 		}}),
 		AddProfessionalServices: metronome.F([]metronome.V2ContractEditParamsAddProfessionalService{{
 			MaxAmount: metronome.F(0.000000),

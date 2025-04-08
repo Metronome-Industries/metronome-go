@@ -27,7 +27,7 @@ func TestV1CustomFieldAddKey(t *testing.T) {
 	)
 	err := client.V1.CustomFields.AddKey(context.TODO(), metronome.V1CustomFieldAddKeyParams{
 		EnforceUniqueness: metronome.F(true),
-		Entity:            metronome.F(metronome.V1CustomFieldAddKeyParamsEntityAlert),
+		Entity:            metronome.F(metronome.V1CustomFieldAddKeyParamsEntityCustomer),
 		Key:               metronome.F("x_account_id"),
 	})
 	if err != nil {
@@ -52,7 +52,7 @@ func TestV1CustomFieldDeleteValues(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.CustomFields.DeleteValues(context.TODO(), metronome.V1CustomFieldDeleteValuesParams{
-		Entity:   metronome.F(metronome.V1CustomFieldDeleteValuesParamsEntityAlert),
+		Entity:   metronome.F(metronome.V1CustomFieldDeleteValuesParamsEntityCustomer),
 		EntityID: metronome.F("99594816-e8a5-4bca-be21-8d1de0f45120"),
 		Keys:     metronome.F([]string{"x_account_id"}),
 	})
@@ -79,7 +79,7 @@ func TestV1CustomFieldListKeysWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.V1.CustomFields.ListKeys(context.TODO(), metronome.V1CustomFieldListKeysParams{
 		NextPage: metronome.F("next_page"),
-		Entities: metronome.F([]metronome.V1CustomFieldListKeysParamsEntity{metronome.V1CustomFieldListKeysParamsEntityAlert}),
+		Entities: metronome.F([]metronome.V1CustomFieldListKeysParamsEntity{metronome.V1CustomFieldListKeysParamsEntityCustomer}),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -103,7 +103,7 @@ func TestV1CustomFieldRemoveKey(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.CustomFields.RemoveKey(context.TODO(), metronome.V1CustomFieldRemoveKeyParams{
-		Entity: metronome.F(metronome.V1CustomFieldRemoveKeyParamsEntityAlert),
+		Entity: metronome.F(metronome.V1CustomFieldRemoveKeyParamsEntityCustomer),
 		Key:    metronome.F("x_account_id"),
 	})
 	if err != nil {
@@ -131,7 +131,7 @@ func TestV1CustomFieldSetValues(t *testing.T) {
 		CustomFields: metronome.F(map[string]string{
 			"x_account_id": "KyVnHhSBWl7eY2bl",
 		}),
-		Entity:   metronome.F(metronome.V1CustomFieldSetValuesParamsEntityAlert),
+		Entity:   metronome.F(metronome.V1CustomFieldSetValuesParamsEntityCustomer),
 		EntityID: metronome.F("99594816-e8a5-4bca-be21-8d1de0f45120"),
 	})
 	if err != nil {
