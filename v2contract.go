@@ -5803,6 +5803,7 @@ type V2ContractGetEditHistoryResponseData struct {
 	AddRecurringCredits     []V2ContractGetEditHistoryResponseDataAddRecurringCredit     `json:"add_recurring_credits"`
 	AddResellerRoyalties    []V2ContractGetEditHistoryResponseDataAddResellerRoyalty     `json:"add_reseller_royalties"`
 	AddScheduledCharges     []V2ContractGetEditHistoryResponseDataAddScheduledCharge     `json:"add_scheduled_charges"`
+	AddSubscriptions        []V2ContractGetEditHistoryResponseDataAddSubscription        `json:"add_subscriptions"`
 	AddUsageFilters         []V2ContractGetEditHistoryResponseDataAddUsageFilter         `json:"add_usage_filters"`
 	ArchiveCommits          []V2ContractGetEditHistoryResponseDataArchiveCommit          `json:"archive_commits"`
 	ArchiveCredits          []V2ContractGetEditHistoryResponseDataArchiveCredit          `json:"archive_credits"`
@@ -5815,6 +5816,7 @@ type V2ContractGetEditHistoryResponseData struct {
 	UpdateDiscounts         []V2ContractGetEditHistoryResponseDataUpdateDiscount         `json:"update_discounts"`
 	UpdateRefundInvoices    []V2ContractGetEditHistoryResponseDataUpdateRefundInvoice    `json:"update_refund_invoices"`
 	UpdateScheduledCharges  []V2ContractGetEditHistoryResponseDataUpdateScheduledCharge  `json:"update_scheduled_charges"`
+	UpdateSubscriptions     []V2ContractGetEditHistoryResponseDataUpdateSubscription     `json:"update_subscriptions"`
 	JSON                    v2ContractGetEditHistoryResponseDataJSON                     `json:"-"`
 }
 
@@ -5831,6 +5833,7 @@ type v2ContractGetEditHistoryResponseDataJSON struct {
 	AddRecurringCredits     apijson.Field
 	AddResellerRoyalties    apijson.Field
 	AddScheduledCharges     apijson.Field
+	AddSubscriptions        apijson.Field
 	AddUsageFilters         apijson.Field
 	ArchiveCommits          apijson.Field
 	ArchiveCredits          apijson.Field
@@ -5843,6 +5846,7 @@ type v2ContractGetEditHistoryResponseDataJSON struct {
 	UpdateDiscounts         apijson.Field
 	UpdateRefundInvoices    apijson.Field
 	UpdateScheduledCharges  apijson.Field
+	UpdateSubscriptions     apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
@@ -6917,6 +6921,190 @@ func (r v2ContractGetEditHistoryResponseDataAddScheduledChargesProductJSON) RawJ
 	return r.raw
 }
 
+type V2ContractGetEditHistoryResponseDataAddSubscription struct {
+	CollectionSchedule V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
+	Proration          V2ContractGetEditHistoryResponseDataAddSubscriptionsProration          `json:"proration,required"`
+	QuantitySchedule   []V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt         time.Time                                                              `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate   V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
+	ID                 string                                                                 `json:"id" format:"uuid"`
+	Description        string                                                                 `json:"description"`
+	EndingBefore       time.Time                                                              `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID   string                                                                 `json:"fiat_credit_type_id" format:"uuid"`
+	Name               string                                                                 `json:"name"`
+	JSON               v2ContractGetEditHistoryResponseDataAddSubscriptionJSON                `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddSubscriptionJSON contains the JSON
+// metadata for the struct [V2ContractGetEditHistoryResponseDataAddSubscription]
+type v2ContractGetEditHistoryResponseDataAddSubscriptionJSON struct {
+	CollectionSchedule apijson.Field
+	Proration          apijson.Field
+	QuantitySchedule   apijson.Field
+	StartingAt         apijson.Field
+	SubscriptionRate   apijson.Field
+	ID                 apijson.Field
+	Description        apijson.Field
+	EndingBefore       apijson.Field
+	FiatCreditTypeID   apijson.Field
+	Name               apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddSubscription) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddSubscriptionJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionScheduleAdvance V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule = "ADVANCE"
+	V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionScheduleArrears V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule = "ARREARS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionScheduleAdvance, V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionScheduleArrears:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionsProration struct {
+	InvoiceBehavior V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior `json:"invoice_behavior,required"`
+	IsProrated      bool                                                                         `json:"is_prorated,required"`
+	JSON            v2ContractGetEditHistoryResponseDataAddSubscriptionsProrationJSON            `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddSubscriptionsProrationJSON contains the
+// JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddSubscriptionsProration]
+type v2ContractGetEditHistoryResponseDataAddSubscriptionsProrationJSON struct {
+	InvoiceBehavior apijson.Field
+	IsProrated      apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionsProration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddSubscriptionsProrationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehaviorBillImmediately          V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
+	V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehaviorBillImmediately, V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule struct {
+	Quantity     float64                                                                  `json:"quantity,required"`
+	StartingAt   time.Time                                                                `json:"starting_at,required" format:"date-time"`
+	EndingBefore time.Time                                                                `json:"ending_before" format:"date-time"`
+	JSON         v2ContractGetEditHistoryResponseDataAddSubscriptionsQuantityScheduleJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddSubscriptionsQuantityScheduleJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule]
+type v2ContractGetEditHistoryResponseDataAddSubscriptionsQuantityScheduleJSON struct {
+	Quantity     apijson.Field
+	StartingAt   apijson.Field
+	EndingBefore apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddSubscriptionsQuantityScheduleJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate struct {
+	BillingFrequency V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
+	Product          V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProduct          `json:"product,required"`
+	JSON             v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateJSON             `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate]
+type v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateJSON struct {
+	BillingFrequency apijson.Field
+	Product          apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyMonthly   V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
+	V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyQuarterly V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
+	V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyAnnual    V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
+	V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyWeekly    V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency = "WEEKLY"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyMonthly, V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyQuarterly, V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyAnnual, V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyWeekly:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProduct struct {
+	ID   string                                                                          `json:"id,required" format:"uuid"`
+	Name string                                                                          `json:"name,required"`
+	JSON v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProductJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProductJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProduct]
+type v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProductJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProductJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetEditHistoryResponseDataAddUsageFilter struct {
 	GroupKey    string   `json:"group_key,required"`
 	GroupValues []string `json:"group_values,required"`
@@ -7758,6 +7946,55 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateScheduledChargesInvoiceSchedu
 }
 
 func (r v2ContractGetEditHistoryResponseDataUpdateScheduledChargesInvoiceScheduleUpdateScheduleItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateSubscription struct {
+	ID              string                                                                  `json:"id,required" format:"uuid"`
+	EndingBefore    time.Time                                                               `json:"ending_before" format:"date-time"`
+	QuantityUpdates []V2ContractGetEditHistoryResponseDataUpdateSubscriptionsQuantityUpdate `json:"quantity_updates"`
+	JSON            v2ContractGetEditHistoryResponseDataUpdateSubscriptionJSON              `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateSubscriptionJSON contains the JSON
+// metadata for the struct [V2ContractGetEditHistoryResponseDataUpdateSubscription]
+type v2ContractGetEditHistoryResponseDataUpdateSubscriptionJSON struct {
+	ID              apijson.Field
+	EndingBefore    apijson.Field
+	QuantityUpdates apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateSubscription) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateSubscriptionJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateSubscriptionsQuantityUpdate struct {
+	Quantity   float64                                                                   `json:"quantity,required"`
+	StartingAt time.Time                                                                 `json:"starting_at,required" format:"date-time"`
+	JSON       v2ContractGetEditHistoryResponseDataUpdateSubscriptionsQuantityUpdateJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateSubscriptionsQuantityUpdateJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateSubscriptionsQuantityUpdate]
+type v2ContractGetEditHistoryResponseDataUpdateSubscriptionsQuantityUpdateJSON struct {
+	Quantity    apijson.Field
+	StartingAt  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionsQuantityUpdate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateSubscriptionsQuantityUpdateJSON) RawJSON() string {
 	return r.raw
 }
 
