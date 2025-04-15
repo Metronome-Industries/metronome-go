@@ -14,7 +14,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1ContractRateCardRateService contains methods and other services that help with
@@ -76,13 +75,13 @@ func (r *V1ContractRateCardRateService) AddMany(ctx context.Context, body V1Cont
 }
 
 type V1ContractRateCardRateListResponse struct {
-	Entitled            bool              `json:"entitled,required"`
-	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
-	ProductID           string            `json:"product_id,required" format:"uuid"`
-	ProductName         string            `json:"product_name,required"`
-	ProductTags         []string          `json:"product_tags,required"`
-	Rate                shared.Rate       `json:"rate,required"`
-	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
+	Entitled            bool                                   `json:"entitled,required"`
+	ProductCustomFields map[string]string                      `json:"product_custom_fields,required"`
+	ProductID           string                                 `json:"product_id,required" format:"uuid"`
+	ProductName         string                                 `json:"product_name,required"`
+	ProductTags         []string                               `json:"product_tags,required"`
+	Rate                V1ContractRateCardRateListResponseRate `json:"rate,required"`
+	StartingAt          time.Time                              `json:"starting_at,required" format:"date-time"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate         V1ContractRateCardRateListResponseCommitRate `json:"commit_rate"`
@@ -116,6 +115,120 @@ func (r v1ContractRateCardRateListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type V1ContractRateCardRateListResponseRate struct {
+	RateType   V1ContractRateCardRateListResponseRateRateType   `json:"rate_type,required"`
+	CreditType V1ContractRateCardRateListResponseRateCreditType `json:"credit_type"`
+	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+	// processors.
+	CustomRate map[string]interface{} `json:"custom_rate"`
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
+	IsProrated bool `json:"is_prorated"`
+	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+	Price float64 `json:"price"`
+	// if pricing groups are used, this will contain the values used to calculate the
+	// price
+	PricingGroupValues map[string]string `json:"pricing_group_values"`
+	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+	Quantity float64 `json:"quantity"`
+	// Only set for TIERED rate_type.
+	Tiers []V1ContractRateCardRateListResponseRateTier `json:"tiers"`
+	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
+	// using list prices rather than the standard rates for this product on the
+	// contract.
+	UseListPrices bool                                       `json:"use_list_prices"`
+	JSON          v1ContractRateCardRateListResponseRateJSON `json:"-"`
+}
+
+// v1ContractRateCardRateListResponseRateJSON contains the JSON metadata for the
+// struct [V1ContractRateCardRateListResponseRate]
+type v1ContractRateCardRateListResponseRateJSON struct {
+	RateType           apijson.Field
+	CreditType         apijson.Field
+	CustomRate         apijson.Field
+	IsProrated         apijson.Field
+	Price              apijson.Field
+	PricingGroupValues apijson.Field
+	Quantity           apijson.Field
+	Tiers              apijson.Field
+	UseListPrices      apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardRateListResponseRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardRateListResponseRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractRateCardRateListResponseRateRateType string
+
+const (
+	V1ContractRateCardRateListResponseRateRateTypeFlat         V1ContractRateCardRateListResponseRateRateType = "FLAT"
+	V1ContractRateCardRateListResponseRateRateTypePercentage   V1ContractRateCardRateListResponseRateRateType = "PERCENTAGE"
+	V1ContractRateCardRateListResponseRateRateTypeSubscription V1ContractRateCardRateListResponseRateRateType = "SUBSCRIPTION"
+	V1ContractRateCardRateListResponseRateRateTypeCustom       V1ContractRateCardRateListResponseRateRateType = "CUSTOM"
+	V1ContractRateCardRateListResponseRateRateTypeTiered       V1ContractRateCardRateListResponseRateRateType = "TIERED"
+)
+
+func (r V1ContractRateCardRateListResponseRateRateType) IsKnown() bool {
+	switch r {
+	case V1ContractRateCardRateListResponseRateRateTypeFlat, V1ContractRateCardRateListResponseRateRateTypePercentage, V1ContractRateCardRateListResponseRateRateTypeSubscription, V1ContractRateCardRateListResponseRateRateTypeCustom, V1ContractRateCardRateListResponseRateRateTypeTiered:
+		return true
+	}
+	return false
+}
+
+type V1ContractRateCardRateListResponseRateCreditType struct {
+	ID   string                                               `json:"id,required" format:"uuid"`
+	Name string                                               `json:"name,required"`
+	JSON v1ContractRateCardRateListResponseRateCreditTypeJSON `json:"-"`
+}
+
+// v1ContractRateCardRateListResponseRateCreditTypeJSON contains the JSON metadata
+// for the struct [V1ContractRateCardRateListResponseRateCreditType]
+type v1ContractRateCardRateListResponseRateCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardRateListResponseRateCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardRateListResponseRateCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractRateCardRateListResponseRateTier struct {
+	Price float64                                        `json:"price,required"`
+	Size  float64                                        `json:"size"`
+	JSON  v1ContractRateCardRateListResponseRateTierJSON `json:"-"`
+}
+
+// v1ContractRateCardRateListResponseRateTierJSON contains the JSON metadata for
+// the struct [V1ContractRateCardRateListResponseRateTier]
+type v1ContractRateCardRateListResponseRateTierJSON struct {
+	Price       apijson.Field
+	Size        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardRateListResponseRateTier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardRateListResponseRateTierJSON) RawJSON() string {
+	return r.raw
+}
+
 // A distinct rate on the rate card. You can choose to use this rate rather than
 // list rate when consuming a credit or commit.
 type V1ContractRateCardRateListResponseCommitRate struct {
@@ -123,8 +236,8 @@ type V1ContractRateCardRateListResponseCommitRate struct {
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price float64 `json:"price"`
 	// Only set for TIERED rate_type.
-	Tiers []shared.Tier                                    `json:"tiers"`
-	JSON  v1ContractRateCardRateListResponseCommitRateJSON `json:"-"`
+	Tiers []V1ContractRateCardRateListResponseCommitRateTier `json:"tiers"`
+	JSON  v1ContractRateCardRateListResponseCommitRateJSON   `json:"-"`
 }
 
 // v1ContractRateCardRateListResponseCommitRateJSON contains the JSON metadata for
@@ -163,6 +276,29 @@ func (r V1ContractRateCardRateListResponseCommitRateRateType) IsKnown() bool {
 	return false
 }
 
+type V1ContractRateCardRateListResponseCommitRateTier struct {
+	Price float64                                              `json:"price,required"`
+	Size  float64                                              `json:"size"`
+	JSON  v1ContractRateCardRateListResponseCommitRateTierJSON `json:"-"`
+}
+
+// v1ContractRateCardRateListResponseCommitRateTierJSON contains the JSON metadata
+// for the struct [V1ContractRateCardRateListResponseCommitRateTier]
+type v1ContractRateCardRateListResponseCommitRateTierJSON struct {
+	Price       apijson.Field
+	Size        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardRateListResponseCommitRateTier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardRateListResponseCommitRateTierJSON) RawJSON() string {
+	return r.raw
+}
+
 type V1ContractRateCardRateAddResponse struct {
 	Data V1ContractRateCardRateAddResponseData `json:"data,required"`
 	JSON v1ContractRateCardRateAddResponseJSON `json:"-"`
@@ -189,7 +325,7 @@ type V1ContractRateCardRateAddResponseData struct {
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate V1ContractRateCardRateAddResponseDataCommitRate `json:"commit_rate"`
-	CreditType shared.CreditTypeData                           `json:"credit_type"`
+	CreditType V1ContractRateCardRateAddResponseDataCreditType `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]interface{} `json:"custom_rate"`
@@ -205,7 +341,7 @@ type V1ContractRateCardRateAddResponseData struct {
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity float64 `json:"quantity"`
 	// Only set for TIERED rate_type.
-	Tiers []shared.Tier `json:"tiers"`
+	Tiers []V1ContractRateCardRateAddResponseDataTier `json:"tiers"`
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
@@ -263,8 +399,8 @@ type V1ContractRateCardRateAddResponseDataCommitRate struct {
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price float64 `json:"price"`
 	// Only set for TIERED rate_type.
-	Tiers []shared.Tier                                       `json:"tiers"`
-	JSON  v1ContractRateCardRateAddResponseDataCommitRateJSON `json:"-"`
+	Tiers []V1ContractRateCardRateAddResponseDataCommitRateTier `json:"tiers"`
+	JSON  v1ContractRateCardRateAddResponseDataCommitRateJSON   `json:"-"`
 }
 
 // v1ContractRateCardRateAddResponseDataCommitRateJSON contains the JSON metadata
@@ -303,9 +439,78 @@ func (r V1ContractRateCardRateAddResponseDataCommitRateRateType) IsKnown() bool 
 	return false
 }
 
+type V1ContractRateCardRateAddResponseDataCommitRateTier struct {
+	Price float64                                                 `json:"price,required"`
+	Size  float64                                                 `json:"size"`
+	JSON  v1ContractRateCardRateAddResponseDataCommitRateTierJSON `json:"-"`
+}
+
+// v1ContractRateCardRateAddResponseDataCommitRateTierJSON contains the JSON
+// metadata for the struct [V1ContractRateCardRateAddResponseDataCommitRateTier]
+type v1ContractRateCardRateAddResponseDataCommitRateTierJSON struct {
+	Price       apijson.Field
+	Size        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardRateAddResponseDataCommitRateTier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardRateAddResponseDataCommitRateTierJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractRateCardRateAddResponseDataCreditType struct {
+	ID   string                                              `json:"id,required" format:"uuid"`
+	Name string                                              `json:"name,required"`
+	JSON v1ContractRateCardRateAddResponseDataCreditTypeJSON `json:"-"`
+}
+
+// v1ContractRateCardRateAddResponseDataCreditTypeJSON contains the JSON metadata
+// for the struct [V1ContractRateCardRateAddResponseDataCreditType]
+type v1ContractRateCardRateAddResponseDataCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardRateAddResponseDataCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardRateAddResponseDataCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractRateCardRateAddResponseDataTier struct {
+	Price float64                                       `json:"price,required"`
+	Size  float64                                       `json:"size"`
+	JSON  v1ContractRateCardRateAddResponseDataTierJSON `json:"-"`
+}
+
+// v1ContractRateCardRateAddResponseDataTierJSON contains the JSON metadata for the
+// struct [V1ContractRateCardRateAddResponseDataTier]
+type v1ContractRateCardRateAddResponseDataTierJSON struct {
+	Price       apijson.Field
+	Size        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardRateAddResponseDataTier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardRateAddResponseDataTierJSON) RawJSON() string {
+	return r.raw
+}
+
 type V1ContractRateCardRateAddManyResponse struct {
 	// The ID of the rate card to which the rates were added.
-	Data shared.ID                                 `json:"data,required"`
+	Data V1ContractRateCardRateAddManyResponseData `json:"data,required"`
 	JSON v1ContractRateCardRateAddManyResponseJSON `json:"-"`
 }
 
@@ -322,6 +527,28 @@ func (r *V1ContractRateCardRateAddManyResponse) UnmarshalJSON(data []byte) (err 
 }
 
 func (r v1ContractRateCardRateAddManyResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// The ID of the rate card to which the rates were added.
+type V1ContractRateCardRateAddManyResponseData struct {
+	ID   string                                        `json:"id,required" format:"uuid"`
+	JSON v1ContractRateCardRateAddManyResponseDataJSON `json:"-"`
+}
+
+// v1ContractRateCardRateAddManyResponseDataJSON contains the JSON metadata for the
+// struct [V1ContractRateCardRateAddManyResponseData]
+type v1ContractRateCardRateAddManyResponseDataJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardRateAddManyResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardRateAddManyResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -404,7 +631,7 @@ type V1ContractRateCardRateAddParams struct {
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity param.Field[float64] `json:"quantity"`
 	// Only set for TIERED rate_type.
-	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
+	Tiers param.Field[[]V1ContractRateCardRateAddParamsTier] `json:"tiers"`
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
@@ -440,7 +667,7 @@ type V1ContractRateCardRateAddParamsCommitRate struct {
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price param.Field[float64] `json:"price"`
 	// Only set for TIERED rate_type.
-	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
+	Tiers param.Field[[]V1ContractRateCardRateAddParamsCommitRateTier] `json:"tiers"`
 }
 
 func (r V1ContractRateCardRateAddParamsCommitRate) MarshalJSON() (data []byte, err error) {
@@ -463,6 +690,24 @@ func (r V1ContractRateCardRateAddParamsCommitRateRateType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type V1ContractRateCardRateAddParamsCommitRateTier struct {
+	Price param.Field[float64] `json:"price,required"`
+	Size  param.Field[float64] `json:"size"`
+}
+
+func (r V1ContractRateCardRateAddParamsCommitRateTier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractRateCardRateAddParamsTier struct {
+	Price param.Field[float64] `json:"price,required"`
+	Size  param.Field[float64] `json:"size"`
+}
+
+func (r V1ContractRateCardRateAddParamsTier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type V1ContractRateCardRateAddManyParams struct {
@@ -506,7 +751,7 @@ type V1ContractRateCardRateAddManyParamsRate struct {
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity param.Field[float64] `json:"quantity"`
 	// Only set for TIERED rate_type.
-	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
+	Tiers param.Field[[]V1ContractRateCardRateAddManyParamsRatesTier] `json:"tiers"`
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
@@ -542,7 +787,7 @@ type V1ContractRateCardRateAddManyParamsRatesCommitRate struct {
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price param.Field[float64] `json:"price"`
 	// Only set for TIERED rate_type.
-	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
+	Tiers param.Field[[]V1ContractRateCardRateAddManyParamsRatesCommitRateTier] `json:"tiers"`
 }
 
 func (r V1ContractRateCardRateAddManyParamsRatesCommitRate) MarshalJSON() (data []byte, err error) {
@@ -565,4 +810,22 @@ func (r V1ContractRateCardRateAddManyParamsRatesCommitRateRateType) IsKnown() bo
 		return true
 	}
 	return false
+}
+
+type V1ContractRateCardRateAddManyParamsRatesCommitRateTier struct {
+	Price param.Field[float64] `json:"price,required"`
+	Size  param.Field[float64] `json:"size"`
+}
+
+func (r V1ContractRateCardRateAddManyParamsRatesCommitRateTier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractRateCardRateAddManyParamsRatesTier struct {
+	Price param.Field[float64] `json:"price,required"`
+	Size  param.Field[float64] `json:"size"`
+}
+
+func (r V1ContractRateCardRateAddManyParamsRatesTier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }

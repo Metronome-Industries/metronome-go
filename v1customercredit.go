@@ -5,13 +5,14 @@ package metronome
 import (
 	"context"
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/tidwall/gjson"
 )
 
 // V1CustomerCreditService contains methods and other services that help with
@@ -59,7 +60,7 @@ func (r *V1CustomerCreditService) UpdateEndDate(ctx context.Context, body V1Cust
 }
 
 type V1CustomerCreditNewResponse struct {
-	Data shared.ID                       `json:"data,required"`
+	Data V1CustomerCreditNewResponseData `json:"data,required"`
 	JSON v1CustomerCreditNewResponseJSON `json:"-"`
 }
 
@@ -79,10 +80,31 @@ func (r v1CustomerCreditNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type V1CustomerCreditNewResponseData struct {
+	ID   string                              `json:"id,required" format:"uuid"`
+	JSON v1CustomerCreditNewResponseDataJSON `json:"-"`
+}
+
+// v1CustomerCreditNewResponseDataJSON contains the JSON metadata for the struct
+// [V1CustomerCreditNewResponseData]
+type v1CustomerCreditNewResponseDataJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditNewResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditNewResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type V1CustomerCreditListResponse struct {
-	Data     []shared.Credit                  `json:"data,required"`
-	NextPage string                           `json:"next_page,required,nullable"`
-	JSON     v1CustomerCreditListResponseJSON `json:"-"`
+	Data     []V1CustomerCreditListResponseData `json:"data,required"`
+	NextPage string                             `json:"next_page,required,nullable"`
+	JSON     v1CustomerCreditListResponseJSON   `json:"-"`
 }
 
 // v1CustomerCreditListResponseJSON contains the JSON metadata for the struct
@@ -102,8 +124,386 @@ func (r v1CustomerCreditListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type V1CustomerCreditListResponseData struct {
+	ID      string                                  `json:"id,required" format:"uuid"`
+	Product V1CustomerCreditListResponseDataProduct `json:"product,required"`
+	Type    V1CustomerCreditListResponseDataType    `json:"type,required"`
+	// The schedule that the customer will gain access to the credits.
+	AccessSchedule        V1CustomerCreditListResponseDataAccessSchedule `json:"access_schedule"`
+	ApplicableContractIDs []string                                       `json:"applicable_contract_ids" format:"uuid"`
+	ApplicableProductIDs  []string                                       `json:"applicable_product_ids" format:"uuid"`
+	ApplicableProductTags []string                                       `json:"applicable_product_tags"`
+	// The current balance of the credit or commit. This balance reflects the amount of
+	// credit or commit that the customer has access to use at this moment - thus,
+	// expired and upcoming credit or commit segments contribute 0 to the balance. The
+	// balance will match the sum of all ledger entries with the exception of the case
+	// where the sum of negative manual ledger entries exceeds the positive amount
+	// remaining on the credit or commit - in that case, the balance will be 0. All
+	// manual ledger entries associated with active credit or commit segments are
+	// included in the balance, including future-dated manual ledger entries.
+	Balance      float64                                  `json:"balance"`
+	Contract     V1CustomerCreditListResponseDataContract `json:"contract"`
+	CustomFields map[string]string                        `json:"custom_fields"`
+	Description  string                                   `json:"description"`
+	// A list of ordered events that impact the balance of a credit. For example, an
+	// invoice deduction or an expiration.
+	Ledger []V1CustomerCreditListResponseDataLedger `json:"ledger"`
+	Name   string                                   `json:"name"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// If multiple credits or commits are applicable, the one with the lower priority
+	// will apply first.
+	Priority float64                                  `json:"priority"`
+	RateType V1CustomerCreditListResponseDataRateType `json:"rate_type"`
+	// This field's availability is dependent on your client's configuration.
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// Prevents the creation of duplicates. If a request to create a commit or credit
+	// is made with a uniqueness key that was previously used to create a commit or
+	// credit, a new record will not be created and the request will fail with a 409
+	// error.
+	UniquenessKey string                               `json:"uniqueness_key"`
+	JSON          v1CustomerCreditListResponseDataJSON `json:"-"`
+}
+
+// v1CustomerCreditListResponseDataJSON contains the JSON metadata for the struct
+// [V1CustomerCreditListResponseData]
+type v1CustomerCreditListResponseDataJSON struct {
+	ID                      apijson.Field
+	Product                 apijson.Field
+	Type                    apijson.Field
+	AccessSchedule          apijson.Field
+	ApplicableContractIDs   apijson.Field
+	ApplicableProductIDs    apijson.Field
+	ApplicableProductTags   apijson.Field
+	Balance                 apijson.Field
+	Contract                apijson.Field
+	CustomFields            apijson.Field
+	Description             apijson.Field
+	Ledger                  apijson.Field
+	Name                    apijson.Field
+	NetsuiteSalesOrderID    apijson.Field
+	Priority                apijson.Field
+	RateType                apijson.Field
+	SalesforceOpportunityID apijson.Field
+	UniquenessKey           apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditListResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditListResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerCreditListResponseDataProduct struct {
+	ID   string                                      `json:"id,required" format:"uuid"`
+	Name string                                      `json:"name,required"`
+	JSON v1CustomerCreditListResponseDataProductJSON `json:"-"`
+}
+
+// v1CustomerCreditListResponseDataProductJSON contains the JSON metadata for the
+// struct [V1CustomerCreditListResponseDataProduct]
+type v1CustomerCreditListResponseDataProductJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditListResponseDataProduct) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditListResponseDataProductJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerCreditListResponseDataType string
+
+const (
+	V1CustomerCreditListResponseDataTypeCredit V1CustomerCreditListResponseDataType = "CREDIT"
+)
+
+func (r V1CustomerCreditListResponseDataType) IsKnown() bool {
+	switch r {
+	case V1CustomerCreditListResponseDataTypeCredit:
+		return true
+	}
+	return false
+}
+
+// The schedule that the customer will gain access to the credits.
+type V1CustomerCreditListResponseDataAccessSchedule struct {
+	ScheduleItems []V1CustomerCreditListResponseDataAccessScheduleScheduleItem `json:"schedule_items,required"`
+	CreditType    V1CustomerCreditListResponseDataAccessScheduleCreditType     `json:"credit_type"`
+	JSON          v1CustomerCreditListResponseDataAccessScheduleJSON           `json:"-"`
+}
+
+// v1CustomerCreditListResponseDataAccessScheduleJSON contains the JSON metadata
+// for the struct [V1CustomerCreditListResponseDataAccessSchedule]
+type v1CustomerCreditListResponseDataAccessScheduleJSON struct {
+	ScheduleItems apijson.Field
+	CreditType    apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditListResponseDataAccessSchedule) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditListResponseDataAccessScheduleJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerCreditListResponseDataAccessScheduleScheduleItem struct {
+	ID           string                                                         `json:"id,required" format:"uuid"`
+	Amount       float64                                                        `json:"amount,required"`
+	EndingBefore time.Time                                                      `json:"ending_before,required" format:"date-time"`
+	StartingAt   time.Time                                                      `json:"starting_at,required" format:"date-time"`
+	JSON         v1CustomerCreditListResponseDataAccessScheduleScheduleItemJSON `json:"-"`
+}
+
+// v1CustomerCreditListResponseDataAccessScheduleScheduleItemJSON contains the JSON
+// metadata for the struct
+// [V1CustomerCreditListResponseDataAccessScheduleScheduleItem]
+type v1CustomerCreditListResponseDataAccessScheduleScheduleItemJSON struct {
+	ID           apijson.Field
+	Amount       apijson.Field
+	EndingBefore apijson.Field
+	StartingAt   apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditListResponseDataAccessScheduleScheduleItem) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditListResponseDataAccessScheduleScheduleItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerCreditListResponseDataAccessScheduleCreditType struct {
+	ID   string                                                       `json:"id,required" format:"uuid"`
+	Name string                                                       `json:"name,required"`
+	JSON v1CustomerCreditListResponseDataAccessScheduleCreditTypeJSON `json:"-"`
+}
+
+// v1CustomerCreditListResponseDataAccessScheduleCreditTypeJSON contains the JSON
+// metadata for the struct
+// [V1CustomerCreditListResponseDataAccessScheduleCreditType]
+type v1CustomerCreditListResponseDataAccessScheduleCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditListResponseDataAccessScheduleCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditListResponseDataAccessScheduleCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerCreditListResponseDataContract struct {
+	ID   string                                       `json:"id,required" format:"uuid"`
+	JSON v1CustomerCreditListResponseDataContractJSON `json:"-"`
+}
+
+// v1CustomerCreditListResponseDataContractJSON contains the JSON metadata for the
+// struct [V1CustomerCreditListResponseDataContract]
+type v1CustomerCreditListResponseDataContractJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditListResponseDataContract) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditListResponseDataContractJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerCreditListResponseDataLedger struct {
+	Amount    float64                                    `json:"amount,required"`
+	Timestamp time.Time                                  `json:"timestamp,required" format:"date-time"`
+	Type      V1CustomerCreditListResponseDataLedgerType `json:"type,required"`
+	InvoiceID string                                     `json:"invoice_id" format:"uuid"`
+	Reason    string                                     `json:"reason"`
+	SegmentID string                                     `json:"segment_id" format:"uuid"`
+	JSON      v1CustomerCreditListResponseDataLedgerJSON `json:"-"`
+	union     V1CustomerCreditListResponseDataLedgerUnion
+}
+
+// v1CustomerCreditListResponseDataLedgerJSON contains the JSON metadata for the
+// struct [V1CustomerCreditListResponseDataLedger]
+type v1CustomerCreditListResponseDataLedgerJSON struct {
+	Amount      apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	InvoiceID   apijson.Field
+	Reason      apijson.Field
+	SegmentID   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r v1CustomerCreditListResponseDataLedgerJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *V1CustomerCreditListResponseDataLedger) UnmarshalJSON(data []byte) (err error) {
+	*r = V1CustomerCreditListResponseDataLedger{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [V1CustomerCreditListResponseDataLedgerUnion] interface which
+// you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject].
+func (r V1CustomerCreditListResponseDataLedger) AsUnion() V1CustomerCreditListResponseDataLedgerUnion {
+	return r.union
+}
+
+// Union satisfied by [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject],
+// [V1CustomerCreditListResponseDataLedgerObject] or
+// [V1CustomerCreditListResponseDataLedgerObject].
+type V1CustomerCreditListResponseDataLedgerUnion interface {
+	implementsV1CustomerCreditListResponseDataLedger()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*V1CustomerCreditListResponseDataLedgerUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V1CustomerCreditListResponseDataLedgerObject{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V1CustomerCreditListResponseDataLedgerObject{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V1CustomerCreditListResponseDataLedgerObject{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V1CustomerCreditListResponseDataLedgerObject{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V1CustomerCreditListResponseDataLedgerObject{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V1CustomerCreditListResponseDataLedgerObject{}),
+		},
+	)
+}
+
+type V1CustomerCreditListResponseDataLedgerObject struct {
+	Amount    float64                                          `json:"amount,required"`
+	SegmentID string                                           `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                        `json:"timestamp,required" format:"date-time"`
+	Type      V1CustomerCreditListResponseDataLedgerObjectType `json:"type,required"`
+	JSON      v1CustomerCreditListResponseDataLedgerObjectJSON `json:"-"`
+}
+
+// v1CustomerCreditListResponseDataLedgerObjectJSON contains the JSON metadata for
+// the struct [V1CustomerCreditListResponseDataLedgerObject]
+type v1CustomerCreditListResponseDataLedgerObjectJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditListResponseDataLedgerObject) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditListResponseDataLedgerObjectJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V1CustomerCreditListResponseDataLedgerObject) implementsV1CustomerCreditListResponseDataLedger() {
+}
+
+type V1CustomerCreditListResponseDataLedgerObjectType string
+
+const (
+	V1CustomerCreditListResponseDataLedgerObjectTypeCreditSegmentStart V1CustomerCreditListResponseDataLedgerObjectType = "CREDIT_SEGMENT_START"
+)
+
+func (r V1CustomerCreditListResponseDataLedgerObjectType) IsKnown() bool {
+	switch r {
+	case V1CustomerCreditListResponseDataLedgerObjectTypeCreditSegmentStart:
+		return true
+	}
+	return false
+}
+
+type V1CustomerCreditListResponseDataLedgerType string
+
+const (
+	V1CustomerCreditListResponseDataLedgerTypeCreditSegmentStart              V1CustomerCreditListResponseDataLedgerType = "CREDIT_SEGMENT_START"
+	V1CustomerCreditListResponseDataLedgerTypeCreditAutomatedInvoiceDeduction V1CustomerCreditListResponseDataLedgerType = "CREDIT_AUTOMATED_INVOICE_DEDUCTION"
+	V1CustomerCreditListResponseDataLedgerTypeCreditExpiration                V1CustomerCreditListResponseDataLedgerType = "CREDIT_EXPIRATION"
+	V1CustomerCreditListResponseDataLedgerTypeCreditCanceled                  V1CustomerCreditListResponseDataLedgerType = "CREDIT_CANCELED"
+	V1CustomerCreditListResponseDataLedgerTypeCreditCredited                  V1CustomerCreditListResponseDataLedgerType = "CREDIT_CREDITED"
+	V1CustomerCreditListResponseDataLedgerTypeCreditManual                    V1CustomerCreditListResponseDataLedgerType = "CREDIT_MANUAL"
+)
+
+func (r V1CustomerCreditListResponseDataLedgerType) IsKnown() bool {
+	switch r {
+	case V1CustomerCreditListResponseDataLedgerTypeCreditSegmentStart, V1CustomerCreditListResponseDataLedgerTypeCreditAutomatedInvoiceDeduction, V1CustomerCreditListResponseDataLedgerTypeCreditExpiration, V1CustomerCreditListResponseDataLedgerTypeCreditCanceled, V1CustomerCreditListResponseDataLedgerTypeCreditCredited, V1CustomerCreditListResponseDataLedgerTypeCreditManual:
+		return true
+	}
+	return false
+}
+
+type V1CustomerCreditListResponseDataRateType string
+
+const (
+	V1CustomerCreditListResponseDataRateTypeCommitRate V1CustomerCreditListResponseDataRateType = "COMMIT_RATE"
+	V1CustomerCreditListResponseDataRateTypeListRate   V1CustomerCreditListResponseDataRateType = "LIST_RATE"
+)
+
+func (r V1CustomerCreditListResponseDataRateType) IsKnown() bool {
+	switch r {
+	case V1CustomerCreditListResponseDataRateTypeCommitRate, V1CustomerCreditListResponseDataRateTypeListRate:
+		return true
+	}
+	return false
+}
+
 type V1CustomerCreditUpdateEndDateResponse struct {
-	Data shared.ID                                 `json:"data,required"`
+	Data V1CustomerCreditUpdateEndDateResponseData `json:"data,required"`
 	JSON v1CustomerCreditUpdateEndDateResponseJSON `json:"-"`
 }
 
@@ -120,6 +520,27 @@ func (r *V1CustomerCreditUpdateEndDateResponse) UnmarshalJSON(data []byte) (err 
 }
 
 func (r v1CustomerCreditUpdateEndDateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerCreditUpdateEndDateResponseData struct {
+	ID   string                                        `json:"id,required" format:"uuid"`
+	JSON v1CustomerCreditUpdateEndDateResponseDataJSON `json:"-"`
+}
+
+// v1CustomerCreditUpdateEndDateResponseDataJSON contains the JSON metadata for the
+// struct [V1CustomerCreditUpdateEndDateResponseData]
+type v1CustomerCreditUpdateEndDateResponseDataJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerCreditUpdateEndDateResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerCreditUpdateEndDateResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
