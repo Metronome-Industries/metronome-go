@@ -10,6 +10,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1ContractRateCardProductOrderService contains methods and other services that
@@ -48,7 +49,7 @@ func (r *V1ContractRateCardProductOrderService) Set(ctx context.Context, body V1
 }
 
 type V1ContractRateCardProductOrderUpdateResponse struct {
-	Data V1ContractRateCardProductOrderUpdateResponseData `json:"data,required"`
+	Data shared.ID                                        `json:"data,required"`
 	JSON v1ContractRateCardProductOrderUpdateResponseJSON `json:"-"`
 }
 
@@ -68,29 +69,8 @@ func (r v1ContractRateCardProductOrderUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1ContractRateCardProductOrderUpdateResponseData struct {
-	ID   string                                               `json:"id,required" format:"uuid"`
-	JSON v1ContractRateCardProductOrderUpdateResponseDataJSON `json:"-"`
-}
-
-// v1ContractRateCardProductOrderUpdateResponseDataJSON contains the JSON metadata
-// for the struct [V1ContractRateCardProductOrderUpdateResponseData]
-type v1ContractRateCardProductOrderUpdateResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardProductOrderUpdateResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardProductOrderUpdateResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1ContractRateCardProductOrderSetResponse struct {
-	Data V1ContractRateCardProductOrderSetResponseData `json:"data,required"`
+	Data shared.ID                                     `json:"data,required"`
 	JSON v1ContractRateCardProductOrderSetResponseJSON `json:"-"`
 }
 
@@ -107,27 +87,6 @@ func (r *V1ContractRateCardProductOrderSetResponse) UnmarshalJSON(data []byte) (
 }
 
 func (r v1ContractRateCardProductOrderSetResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardProductOrderSetResponseData struct {
-	ID   string                                            `json:"id,required" format:"uuid"`
-	JSON v1ContractRateCardProductOrderSetResponseDataJSON `json:"-"`
-}
-
-// v1ContractRateCardProductOrderSetResponseDataJSON contains the JSON metadata for
-// the struct [V1ContractRateCardProductOrderSetResponseData]
-type v1ContractRateCardProductOrderSetResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardProductOrderSetResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardProductOrderSetResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 

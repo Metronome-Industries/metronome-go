@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1ContractProductNewWithOptionalParams(t *testing.T) {
@@ -38,14 +39,14 @@ func TestV1ContractProductNewWithOptionalParams(t *testing.T) {
 		NetsuiteOverageItemID:  metronome.F("netsuite_overage_item_id"),
 		PresentationGroupKey:   metronome.F([]string{"string"}),
 		PricingGroupKey:        metronome.F([]string{"string"}),
-		QuantityConversion: metronome.F(metronome.V1ContractProductNewParamsQuantityConversion{
+		QuantityConversion: metronome.F(metronome.QuantityConversionParam{
 			ConversionFactor: metronome.F(0.000000),
-			Operation:        metronome.F(metronome.V1ContractProductNewParamsQuantityConversionOperationMultiply),
+			Operation:        metronome.F(metronome.QuantityConversionOperationMultiply),
 			Name:             metronome.F("name"),
 		}),
-		QuantityRounding: metronome.F(metronome.V1ContractProductNewParamsQuantityRounding{
+		QuantityRounding: metronome.F(metronome.QuantityRoundingParam{
 			DecimalPlaces:  metronome.F(0.000000),
-			RoundingMethod: metronome.F(metronome.V1ContractProductNewParamsQuantityRoundingRoundingMethodRoundUp),
+			RoundingMethod: metronome.F(metronome.QuantityRoundingRoundingMethodRoundUp),
 		}),
 		Tags: metronome.F([]string{"string"}),
 	})
@@ -71,7 +72,9 @@ func TestV1ContractProductGet(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.Products.Get(context.TODO(), metronome.V1ContractProductGetParams{
-		ID: metronome.F("d84e7f4e-7a70-4fe4-be02-7a5027beffcc"),
+		ID: shared.IDParam{
+			ID: metronome.F("d84e7f4e-7a70-4fe4-be02-7a5027beffcc"),
+		},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -107,14 +110,14 @@ func TestV1ContractProductUpdateWithOptionalParams(t *testing.T) {
 		NetsuiteOverageItemID:  metronome.F("netsuite_overage_item_id"),
 		PresentationGroupKey:   metronome.F([]string{"string"}),
 		PricingGroupKey:        metronome.F([]string{"string"}),
-		QuantityConversion: metronome.F(metronome.V1ContractProductUpdateParamsQuantityConversion{
+		QuantityConversion: metronome.F(metronome.QuantityConversionParam{
 			ConversionFactor: metronome.F(0.000000),
-			Operation:        metronome.F(metronome.V1ContractProductUpdateParamsQuantityConversionOperationMultiply),
+			Operation:        metronome.F(metronome.QuantityConversionOperationMultiply),
 			Name:             metronome.F("name"),
 		}),
-		QuantityRounding: metronome.F(metronome.V1ContractProductUpdateParamsQuantityRounding{
+		QuantityRounding: metronome.F(metronome.QuantityRoundingParam{
 			DecimalPlaces:  metronome.F(0.000000),
-			RoundingMethod: metronome.F(metronome.V1ContractProductUpdateParamsQuantityRoundingRoundingMethodRoundUp),
+			RoundingMethod: metronome.F(metronome.QuantityRoundingRoundingMethodRoundUp),
 		}),
 		Tags: metronome.F([]string{"string"}),
 	})
