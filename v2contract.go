@@ -7055,6 +7055,7 @@ type V2ContractGetEditHistoryResponseDataAddSubscription struct {
 	StartingAt         time.Time                                                              `json:"starting_at,required" format:"date-time"`
 	SubscriptionRate   V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
 	ID                 string                                                                 `json:"id" format:"uuid"`
+	CustomFields       map[string]string                                                      `json:"custom_fields"`
 	Description        string                                                                 `json:"description"`
 	EndingBefore       time.Time                                                              `json:"ending_before" format:"date-time"`
 	FiatCreditTypeID   string                                                                 `json:"fiat_credit_type_id" format:"uuid"`
@@ -7071,6 +7072,7 @@ type v2ContractGetEditHistoryResponseDataAddSubscriptionJSON struct {
 	StartingAt         apijson.Field
 	SubscriptionRate   apijson.Field
 	ID                 apijson.Field
+	CustomFields       apijson.Field
 	Description        apijson.Field
 	EndingBefore       apijson.Field
 	FiatCreditTypeID   apijson.Field

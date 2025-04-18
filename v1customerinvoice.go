@@ -273,9 +273,10 @@ type InvoiceLineItem struct {
 	// only present for beta contract invoices
 	ScheduledChargeID string `json:"scheduled_charge_id" format:"uuid"`
 	// only present for beta contract invoices
-	StartingAt   time.Time                     `json:"starting_at" format:"date-time"`
-	SubLineItems []InvoiceLineItemsSubLineItem `json:"sub_line_items"`
-	Tier         InvoiceLineItemsTier          `json:"tier"`
+	StartingAt               time.Time                     `json:"starting_at" format:"date-time"`
+	SubLineItems             []InvoiceLineItemsSubLineItem `json:"sub_line_items"`
+	SubscriptionCustomFields map[string]string             `json:"subscription_custom_fields"`
+	Tier                     InvoiceLineItemsTier          `json:"tier"`
 	// only present for beta contract invoices
 	UnitPrice float64             `json:"unit_price"`
 	JSON      invoiceLineItemJSON `json:"-"`
@@ -317,6 +318,7 @@ type invoiceLineItemJSON struct {
 	ScheduledChargeID               apijson.Field
 	StartingAt                      apijson.Field
 	SubLineItems                    apijson.Field
+	SubscriptionCustomFields        apijson.Field
 	Tier                            apijson.Field
 	UnitPrice                       apijson.Field
 	raw                             string
