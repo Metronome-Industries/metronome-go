@@ -262,6 +262,7 @@ type InvoiceLineItem struct {
 	PricingGroupValues  map[string]string `json:"pricing_group_values"`
 	ProductCustomFields map[string]string `json:"product_custom_fields"`
 	ProductID           string            `json:"product_id" format:"uuid"`
+	ProductTags         []string          `json:"product_tags"`
 	ProductType         string            `json:"product_type"`
 	// only present for beta contract invoices
 	ProfessionalServiceCustomFields map[string]string `json:"professional_service_custom_fields"`
@@ -309,6 +310,7 @@ type invoiceLineItemJSON struct {
 	PricingGroupValues              apijson.Field
 	ProductCustomFields             apijson.Field
 	ProductID                       apijson.Field
+	ProductTags                     apijson.Field
 	ProductType                     apijson.Field
 	ProfessionalServiceCustomFields apijson.Field
 	ProfessionalServiceID           apijson.Field
