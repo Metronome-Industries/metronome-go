@@ -1412,6 +1412,10 @@ type V1ContractNewParamsCommitsPaymentGateConfig struct {
 	PaymentGateType param.Field[V1ContractNewParamsCommitsPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
 	// Only applicable if using Stripe as your payment gateway through Metronome.
 	StripeConfig param.Field[V1ContractNewParamsCommitsPaymentGateConfigStripeConfig] `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType param.Field[V1ContractNewParamsCommitsPaymentGateConfigTaxType] `json:"tax_type"`
 }
 
 func (r V1ContractNewParamsCommitsPaymentGateConfig) MarshalJSON() (data []byte, err error) {
@@ -1459,6 +1463,24 @@ const (
 func (r V1ContractNewParamsCommitsPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice, V1ContractNewParamsCommitsPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type V1ContractNewParamsCommitsPaymentGateConfigTaxType string
+
+const (
+	V1ContractNewParamsCommitsPaymentGateConfigTaxTypeNone   V1ContractNewParamsCommitsPaymentGateConfigTaxType = "NONE"
+	V1ContractNewParamsCommitsPaymentGateConfigTaxTypeStripe V1ContractNewParamsCommitsPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r V1ContractNewParamsCommitsPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCommitsPaymentGateConfigTaxTypeNone, V1ContractNewParamsCommitsPaymentGateConfigTaxTypeStripe:
 		return true
 	}
 	return false
@@ -1526,6 +1548,10 @@ type V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfig str
 	PaymentGateType param.Field[V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
 	// Only applicable if using Stripe as your payment gateway through Metronome.
 	StripeConfig param.Field[V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType param.Field[V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
 }
 
 func (r V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
@@ -1573,6 +1599,24 @@ const (
 func (r V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType string
+
+const (
+	V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone   V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe:
 		return true
 	}
 	return false
@@ -2469,6 +2513,10 @@ type V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfig struct {
 	PaymentGateType param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
 	// Only applicable if using Stripe as your payment gateway through Metronome.
 	StripeConfig param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
 }
 
 func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
@@ -2516,6 +2564,24 @@ const (
 func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType string
+
+const (
+	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone   V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe:
 		return true
 	}
 	return false
@@ -2915,6 +2981,10 @@ type V1ContractAmendParamsCommitsPaymentGateConfig struct {
 	PaymentGateType param.Field[V1ContractAmendParamsCommitsPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
 	// Only applicable if using Stripe as your payment gateway through Metronome.
 	StripeConfig param.Field[V1ContractAmendParamsCommitsPaymentGateConfigStripeConfig] `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType param.Field[V1ContractAmendParamsCommitsPaymentGateConfigTaxType] `json:"tax_type"`
 }
 
 func (r V1ContractAmendParamsCommitsPaymentGateConfig) MarshalJSON() (data []byte, err error) {
@@ -2962,6 +3032,24 @@ const (
 func (r V1ContractAmendParamsCommitsPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
 	switch r {
 	case V1ContractAmendParamsCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice, V1ContractAmendParamsCommitsPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type V1ContractAmendParamsCommitsPaymentGateConfigTaxType string
+
+const (
+	V1ContractAmendParamsCommitsPaymentGateConfigTaxTypeNone   V1ContractAmendParamsCommitsPaymentGateConfigTaxType = "NONE"
+	V1ContractAmendParamsCommitsPaymentGateConfigTaxTypeStripe V1ContractAmendParamsCommitsPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r V1ContractAmendParamsCommitsPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCommitsPaymentGateConfigTaxTypeNone, V1ContractAmendParamsCommitsPaymentGateConfigTaxTypeStripe:
 		return true
 	}
 	return false

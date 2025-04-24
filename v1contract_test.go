@@ -78,6 +78,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				StripeConfig: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice),
 				}),
+				TaxType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigTaxTypeNone),
 			}),
 			Priority:         metronome.F(0.000000),
 			RateType:         metronome.F(metronome.V1ContractNewParamsCommitsRateTypeCommitRate),
@@ -98,6 +99,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				StripeConfig: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
 				}),
+				TaxType: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
 			RechargeToAmount: metronome.F(0.000000),
 			ThresholdAmount:  metronome.F(0.000000),
@@ -324,6 +326,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				StripeConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
 				}),
+				TaxType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
@@ -502,6 +505,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 				StripeConfig: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice),
 				}),
+				TaxType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigTaxTypeNone),
 			}),
 			Priority:         metronome.F(0.000000),
 			RateType:         metronome.F(metronome.V1ContractAmendParamsCommitsRateTypeCommitRate),

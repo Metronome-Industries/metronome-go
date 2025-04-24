@@ -130,6 +130,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice),
 				}),
+				TaxType: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigTaxTypeNone),
 			}),
 			Priority:         metronome.F(0.000000),
 			RateType:         metronome.F(metronome.V2ContractEditParamsAddCommitsRateTypeCommitRate),
@@ -346,6 +347,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
 				}),
+				TaxType: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
@@ -460,6 +462,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
 				}),
+				TaxType: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
