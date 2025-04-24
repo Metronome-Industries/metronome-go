@@ -1229,7 +1229,11 @@ type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConf
 	PaymentGateType ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
 	// Only applicable if using Stripe as your payment gateway through Metronome.
 	StripeConfig ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	JSON         contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigJSON         `json:"-"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
+	JSON    contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
 }
 
 // contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigJSON
@@ -1238,6 +1242,7 @@ type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConf
 type contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigJSON struct {
 	PaymentGateType apijson.Field
 	StripeConfig    apijson.Field
+	TaxType         apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
@@ -1305,6 +1310,24 @@ const (
 func (r ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
 	switch r {
 	case ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType string
+
+const (
+	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone   ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe:
 		return true
 	}
 	return false
@@ -1970,7 +1993,11 @@ type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig struc
 	PaymentGateType ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
 	// Only applicable if using Stripe as your payment gateway through Metronome.
 	StripeConfig ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	JSON         contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigJSON         `json:"-"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
+	JSON    contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
 }
 
 // contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigJSON
@@ -1979,6 +2006,7 @@ type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig struc
 type contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigJSON struct {
 	PaymentGateType apijson.Field
 	StripeConfig    apijson.Field
+	TaxType         apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
@@ -2046,6 +2074,24 @@ const (
 func (r ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
 	switch r {
 	case ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType string
+
+const (
+	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone   ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe:
 		return true
 	}
 	return false
