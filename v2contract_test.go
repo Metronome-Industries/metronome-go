@@ -351,6 +351,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
+		AllowContractEndingBeforeFinalizedInvoice: metronome.F(true),
 		ArchiveCommits: metronome.F([]metronome.V2ContractEditParamsArchiveCommit{{
 			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}}),
@@ -405,6 +406,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ProductID:            metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			RolloverFraction:     metronome.F(0.000000),
 		}}),
+		UpdateContractEndDate: metronome.F(time.Now()),
 		UpdateCredits: metronome.F([]metronome.V2ContractEditParamsUpdateCredit{{
 			CreditID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			AccessSchedule: metronome.F(metronome.V2ContractEditParamsUpdateCreditsAccessSchedule{

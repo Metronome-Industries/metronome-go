@@ -7933,6 +7933,11 @@ type V2ContractEditParams struct {
 	AddResellerRoyalties           param.Field[[]V2ContractEditParamsAddResellerRoyalty]           `json:"add_reseller_royalties"`
 	AddScheduledCharges            param.Field[[]V2ContractEditParamsAddScheduledCharge]           `json:"add_scheduled_charges"`
 	AddSpendThresholdConfiguration param.Field[V2ContractEditParamsAddSpendThresholdConfiguration] `json:"add_spend_threshold_configuration"`
+	// If true, allows setting the contract end date earlier than the end_timestamp of
+	// existing finalized invoices. Finalized invoices will be unchanged; if you want
+	// to incorporate the new end date, you can void and regenerate finalized usage
+	// invoices. Defaults to true.
+	AllowContractEndingBeforeFinalizedInvoice param.Field[bool] `json:"allow_contract_ending_before_finalized_invoice"`
 	// IDs of commits to archive
 	ArchiveCommits param.Field[[]V2ContractEditParamsArchiveCommit] `json:"archive_commits"`
 	// IDs of credits to archive
@@ -7940,8 +7945,10 @@ type V2ContractEditParams struct {
 	// IDs of scheduled charges to archive
 	ArchiveScheduledCharges param.Field[[]V2ContractEditParamsArchiveScheduledCharge] `json:"archive_scheduled_charges"`
 	// IDs of overrides to remove
-	RemoveOverrides                   param.Field[[]V2ContractEditParamsRemoveOverride]                  `json:"remove_overrides"`
-	UpdateCommits                     param.Field[[]V2ContractEditParamsUpdateCommit]                    `json:"update_commits"`
+	RemoveOverrides param.Field[[]V2ContractEditParamsRemoveOverride] `json:"remove_overrides"`
+	UpdateCommits   param.Field[[]V2ContractEditParamsUpdateCommit]   `json:"update_commits"`
+	// RFC 3339 timestamp indicating when the contract will end (exclusive).
+	UpdateContractEndDate             param.Field[time.Time]                                             `json:"update_contract_end_date" format:"date-time"`
 	UpdateCredits                     param.Field[[]V2ContractEditParamsUpdateCredit]                    `json:"update_credits"`
 	UpdateScheduledCharges            param.Field[[]V2ContractEditParamsUpdateScheduledCharge]           `json:"update_scheduled_charges"`
 	UpdateSpendThresholdConfiguration param.Field[V2ContractEditParamsUpdateSpendThresholdConfiguration] `json:"update_spend_threshold_configuration"`
