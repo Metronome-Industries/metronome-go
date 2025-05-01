@@ -92,6 +92,14 @@ func (r *V1ContractRateCardService) ListAutoPaging(ctx context.Context, params V
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
+// Archive a rate card
+func (r *V1ContractRateCardService) Archive(ctx context.Context, body V1ContractRateCardArchiveParams, opts ...option.RequestOption) (res *V1ContractRateCardArchiveResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "v1/contract-pricing/rate-cards/archive"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Get all rates for a rate card from starting_at (either in perpetuity or until
 // ending_before, if provided)
 func (r *V1ContractRateCardService) GetRateSchedule(ctx context.Context, params V1ContractRateCardGetRateScheduleParams, opts ...option.RequestOption) (res *V1ContractRateCardGetRateScheduleResponse, err error) {
@@ -334,6 +342,27 @@ func (r v1ContractRateCardListResponseCreditTypeConversionJSON) RawJSON() string
 	return r.raw
 }
 
+type V1ContractRateCardArchiveResponse struct {
+	Data shared.ID                             `json:"data,required"`
+	JSON v1ContractRateCardArchiveResponseJSON `json:"-"`
+}
+
+// v1ContractRateCardArchiveResponseJSON contains the JSON metadata for the struct
+// [V1ContractRateCardArchiveResponse]
+type v1ContractRateCardArchiveResponseJSON struct {
+	Data        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractRateCardArchiveResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractRateCardArchiveResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 type V1ContractRateCardGetRateScheduleResponse struct {
 	Data     []V1ContractRateCardGetRateScheduleResponseData `json:"data,required"`
 	NextPage string                                          `json:"next_page,nullable"`
@@ -538,6 +567,14 @@ func (r V1ContractRateCardListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type V1ContractRateCardArchiveParams struct {
+	ID shared.IDParam `json:"id,required"`
+}
+
+func (r V1ContractRateCardArchiveParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.ID)
 }
 
 type V1ContractRateCardGetRateScheduleParams struct {
