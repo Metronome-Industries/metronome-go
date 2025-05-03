@@ -259,36 +259,36 @@ func (r *CommitLedger) UnmarshalJSON(data []byte) (err error) {
 // specific types for more type safety.
 //
 // Possible runtime types of the union are
-// [shared.CommitLedgerPrepaidCommitSegmentStartLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitRolloverLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitExpirationLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitCanceledLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitCreditedLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitInitialBalanceLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitRolloverLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitTrueupLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitManualLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitManualLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitExpirationLedgerEntry].
+// [CommitLedgerPrepaidCommitSegmentStartLedgerEntry],
+// [CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry],
+// [CommitLedgerPrepaidCommitRolloverLedgerEntry],
+// [CommitLedgerPrepaidCommitExpirationLedgerEntry],
+// [CommitLedgerPrepaidCommitCanceledLedgerEntry],
+// [CommitLedgerPrepaidCommitCreditedLedgerEntry],
+// [CommitLedgerPostpaidCommitInitialBalanceLedgerEntry],
+// [CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
+// [CommitLedgerPostpaidCommitRolloverLedgerEntry],
+// [CommitLedgerPostpaidCommitTrueupLedgerEntry],
+// [CommitLedgerPrepaidCommitManualLedgerEntry],
+// [CommitLedgerPostpaidCommitManualLedgerEntry],
+// [CommitLedgerPostpaidCommitExpirationLedgerEntry].
 func (r CommitLedger) AsUnion() CommitLedgerUnion {
 	return r.union
 }
 
-// Union satisfied by [shared.CommitLedgerPrepaidCommitSegmentStartLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitRolloverLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitExpirationLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitCanceledLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitCreditedLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitInitialBalanceLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitRolloverLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitTrueupLedgerEntry],
-// [shared.CommitLedgerPrepaidCommitManualLedgerEntry],
-// [shared.CommitLedgerPostpaidCommitManualLedgerEntry] or
-// [shared.CommitLedgerPostpaidCommitExpirationLedgerEntry].
+// Union satisfied by [CommitLedgerPrepaidCommitSegmentStartLedgerEntry],
+// [CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry],
+// [CommitLedgerPrepaidCommitRolloverLedgerEntry],
+// [CommitLedgerPrepaidCommitExpirationLedgerEntry],
+// [CommitLedgerPrepaidCommitCanceledLedgerEntry],
+// [CommitLedgerPrepaidCommitCreditedLedgerEntry],
+// [CommitLedgerPostpaidCommitInitialBalanceLedgerEntry],
+// [CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
+// [CommitLedgerPostpaidCommitRolloverLedgerEntry],
+// [CommitLedgerPostpaidCommitTrueupLedgerEntry],
+// [CommitLedgerPrepaidCommitManualLedgerEntry],
+// [CommitLedgerPostpaidCommitManualLedgerEntry] or
+// [CommitLedgerPostpaidCommitExpirationLedgerEntry].
 type CommitLedgerUnion interface {
 	implementsCommitLedger()
 }
@@ -2318,22 +2318,20 @@ func (r *CreditLedger) UnmarshalJSON(data []byte) (err error) {
 // specific types for more type safety.
 //
 // Possible runtime types of the union are
-// [shared.CreditLedgerCreditSegmentStartLedgerEntry],
-// [shared.CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
-// [shared.CreditLedgerCreditExpirationLedgerEntry],
-// [shared.CreditLedgerCreditCanceledLedgerEntry],
-// [shared.CreditLedgerCreditCreditedLedgerEntry],
-// [shared.CreditLedgerCreditManualLedgerEntry].
+// [CreditLedgerCreditSegmentStartLedgerEntry],
+// [CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
+// [CreditLedgerCreditExpirationLedgerEntry],
+// [CreditLedgerCreditCanceledLedgerEntry],
+// [CreditLedgerCreditCreditedLedgerEntry], [CreditLedgerCreditManualLedgerEntry].
 func (r CreditLedger) AsUnion() CreditLedgerUnion {
 	return r.union
 }
 
-// Union satisfied by [shared.CreditLedgerCreditSegmentStartLedgerEntry],
-// [shared.CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
-// [shared.CreditLedgerCreditExpirationLedgerEntry],
-// [shared.CreditLedgerCreditCanceledLedgerEntry],
-// [shared.CreditLedgerCreditCreditedLedgerEntry] or
-// [shared.CreditLedgerCreditManualLedgerEntry].
+// Union satisfied by [CreditLedgerCreditSegmentStartLedgerEntry],
+// [CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
+// [CreditLedgerCreditExpirationLedgerEntry],
+// [CreditLedgerCreditCanceledLedgerEntry], [CreditLedgerCreditCreditedLedgerEntry]
+// or [CreditLedgerCreditManualLedgerEntry].
 type CreditLedgerUnion interface {
 	implementsCreditLedger()
 }
