@@ -268,16 +268,14 @@ type InvoiceLineItem struct {
 	// `SubscriptionProductListItem` (for `SUBSCRIPTION` type products) or
 	// `CompositeProductListItem` (for `COMPOSITE` type products). For scheduled
 	// charges, commit and credit payments, the value is `FixedProductListItem`.
-	ProductType string `json:"product_type"`
-	// only present for beta contract invoices
+	ProductType                     string            `json:"product_type"`
 	ProfessionalServiceCustomFields map[string]string `json:"professional_service_custom_fields"`
-	// only present for beta contract invoices
-	ProfessionalServiceID string `json:"professional_service_id" format:"uuid"`
+	ProfessionalServiceID           string            `json:"professional_service_id" format:"uuid"`
 	// The quantity associated with the line item.
 	Quantity                    float64                      `json:"quantity"`
 	ResellerType                InvoiceLineItemsResellerType `json:"reseller_type"`
 	ScheduledChargeCustomFields map[string]string            `json:"scheduled_charge_custom_fields"`
-	// only present for beta contract invoices
+	// ID of scheduled charge.
 	ScheduledChargeID string `json:"scheduled_charge_id" format:"uuid"`
 	// The line item's start date (inclusive).
 	StartingAt               time.Time                     `json:"starting_at" format:"date-time"`
