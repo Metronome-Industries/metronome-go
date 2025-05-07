@@ -232,8 +232,11 @@ type InvoiceLineItem struct {
 	CommitSegmentID            string `json:"commit_segment_id" format:"uuid"`
 	// `PrepaidCommit` (for commit types `PREPAID` and `CREDIT`) or `PostpaidCommit`
 	// (for commit type `POSTPAID`).
-	CommitType   string            `json:"commit_type"`
-	CustomFields map[string]string `json:"custom_fields"`
+	CommitType           string            `json:"commit_type"`
+	CustomFields         map[string]string `json:"custom_fields"`
+	DiscountCustomFields map[string]string `json:"discount_custom_fields"`
+	// ID of the discount applied to this line item.
+	DiscountID string `json:"discount_id" format:"uuid"`
 	// The line item's end date (exclusive).
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	GroupKey     string    `json:"group_key"`
@@ -301,6 +304,8 @@ type invoiceLineItemJSON struct {
 	CommitSegmentID                 apijson.Field
 	CommitType                      apijson.Field
 	CustomFields                    apijson.Field
+	DiscountCustomFields            apijson.Field
+	DiscountID                      apijson.Field
 	EndingBefore                    apijson.Field
 	GroupKey                        apijson.Field
 	GroupValue                      apijson.Field
