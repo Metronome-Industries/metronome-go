@@ -986,23 +986,23 @@ func (r commitRolledOverFromJSON) RawJSON() string {
 }
 
 type ContractWithoutAmendments struct {
-	Commits                             []Commit                                                     `json:"commits,required"`
-	CreatedAt                           time.Time                                                    `json:"created_at,required" format:"date-time"`
-	CreatedBy                           string                                                       `json:"created_by,required"`
-	Overrides                           []Override                                                   `json:"overrides,required"`
-	ScheduledCharges                    []ScheduledCharge                                            `json:"scheduled_charges,required"`
-	StartingAt                          time.Time                                                    `json:"starting_at,required" format:"date-time"`
-	Transitions                         []ContractWithoutAmendmentsTransition                        `json:"transitions,required"`
-	UsageStatementSchedule              ContractWithoutAmendmentsUsageStatementSchedule              `json:"usage_statement_schedule,required"`
-	CreditBalanceThresholdConfiguration ContractWithoutAmendmentsCreditBalanceThresholdConfiguration `json:"credit_balance_threshold_configuration"`
-	Credits                             []Credit                                                     `json:"credits"`
+	Commits                []Commit                                        `json:"commits,required"`
+	CreatedAt              time.Time                                       `json:"created_at,required" format:"date-time"`
+	CreatedBy              string                                          `json:"created_by,required"`
+	Overrides              []Override                                      `json:"overrides,required"`
+	ScheduledCharges       []ScheduledCharge                               `json:"scheduled_charges,required"`
+	StartingAt             time.Time                                       `json:"starting_at,required" format:"date-time"`
+	Transitions            []ContractWithoutAmendmentsTransition           `json:"transitions,required"`
+	UsageStatementSchedule ContractWithoutAmendmentsUsageStatementSchedule `json:"usage_statement_schedule,required"`
+	Credits                []Credit                                        `json:"credits"`
 	// This field's availability is dependent on your client's configuration.
 	Discounts           []Discount `json:"discounts"`
 	EndingBefore        time.Time  `json:"ending_before" format:"date-time"`
 	Name                string     `json:"name"`
 	NetPaymentTermsDays float64    `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	NetsuiteSalesOrderID                 string                                                        `json:"netsuite_sales_order_id"`
+	PrepaidBalanceThresholdConfiguration ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	ProfessionalServices []ProService                               `json:"professional_services"`
 	RateCardID           string                                     `json:"rate_card_id" format:"uuid"`
@@ -1028,33 +1028,33 @@ type ContractWithoutAmendments struct {
 // contractWithoutAmendmentsJSON contains the JSON metadata for the struct
 // [ContractWithoutAmendments]
 type contractWithoutAmendmentsJSON struct {
-	Commits                             apijson.Field
-	CreatedAt                           apijson.Field
-	CreatedBy                           apijson.Field
-	Overrides                           apijson.Field
-	ScheduledCharges                    apijson.Field
-	StartingAt                          apijson.Field
-	Transitions                         apijson.Field
-	UsageStatementSchedule              apijson.Field
-	CreditBalanceThresholdConfiguration apijson.Field
-	Credits                             apijson.Field
-	Discounts                           apijson.Field
-	EndingBefore                        apijson.Field
-	Name                                apijson.Field
-	NetPaymentTermsDays                 apijson.Field
-	NetsuiteSalesOrderID                apijson.Field
-	ProfessionalServices                apijson.Field
-	RateCardID                          apijson.Field
-	RecurringCommits                    apijson.Field
-	RecurringCredits                    apijson.Field
-	ResellerRoyalties                   apijson.Field
-	SalesforceOpportunityID             apijson.Field
-	ScheduledChargesOnUsageInvoices     apijson.Field
-	SpendThresholdConfiguration         apijson.Field
-	TotalContractValue                  apijson.Field
-	UsageFilter                         apijson.Field
-	raw                                 string
-	ExtraFields                         map[string]apijson.Field
+	Commits                              apijson.Field
+	CreatedAt                            apijson.Field
+	CreatedBy                            apijson.Field
+	Overrides                            apijson.Field
+	ScheduledCharges                     apijson.Field
+	StartingAt                           apijson.Field
+	Transitions                          apijson.Field
+	UsageStatementSchedule               apijson.Field
+	Credits                              apijson.Field
+	Discounts                            apijson.Field
+	EndingBefore                         apijson.Field
+	Name                                 apijson.Field
+	NetPaymentTermsDays                  apijson.Field
+	NetsuiteSalesOrderID                 apijson.Field
+	PrepaidBalanceThresholdConfiguration apijson.Field
+	ProfessionalServices                 apijson.Field
+	RateCardID                           apijson.Field
+	RecurringCommits                     apijson.Field
+	RecurringCredits                     apijson.Field
+	ResellerRoyalties                    apijson.Field
+	SalesforceOpportunityID              apijson.Field
+	ScheduledChargesOnUsageInvoices      apijson.Field
+	SpendThresholdConfiguration          apijson.Field
+	TotalContractValue                   apijson.Field
+	UsageFilter                          apijson.Field
+	raw                                  string
+	ExtraFields                          map[string]apijson.Field
 }
 
 func (r *ContractWithoutAmendments) UnmarshalJSON(data []byte) (err error) {
@@ -1146,25 +1146,25 @@ func (r ContractWithoutAmendmentsUsageStatementScheduleFrequency) IsKnown() bool
 	return false
 }
 
-type ContractWithoutAmendmentsCreditBalanceThresholdConfiguration struct {
-	Commit ContractWithoutAmendmentsCreditBalanceThresholdConfigurationCommit `json:"commit,required"`
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration struct {
+	Commit ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                                                                          `json:"is_enabled,required"`
-	PaymentGateConfig ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
+	IsEnabled         bool                                                                           `json:"is_enabled,required"`
+	PaymentGateConfig ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
 	// Specify the amount the balance should be recharged to.
 	RechargeToAmount float64 `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's balance
-	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                          `json:"threshold_amount,required"`
-	JSON            contractWithoutAmendmentsCreditBalanceThresholdConfigurationJSON `json:"-"`
+	// Specify the threshold amount for the contract. Each time the contract's prepaid
+	// balance lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                           `json:"threshold_amount,required"`
+	JSON            contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
-// contractWithoutAmendmentsCreditBalanceThresholdConfigurationJSON contains the
+// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON contains the
 // JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditBalanceThresholdConfiguration]
-type contractWithoutAmendmentsCreditBalanceThresholdConfigurationJSON struct {
+// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration]
+type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON struct {
 	Commit            apijson.Field
 	IsEnabled         apijson.Field
 	PaymentGateConfig apijson.Field
@@ -1174,15 +1174,15 @@ type contractWithoutAmendmentsCreditBalanceThresholdConfigurationJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *ContractWithoutAmendmentsCreditBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r contractWithoutAmendmentsCreditBalanceThresholdConfigurationJSON) RawJSON() string {
+func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON) RawJSON() string {
 	return r.raw
 }
 
-type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationCommit struct {
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit struct {
 	// The commit product that will be used to generate the line item for commit
 	// payment.
 	ProductID string `json:"product_id,required"`
@@ -1196,14 +1196,14 @@ type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationCommit struct {
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
-	Name string                                                                 `json:"name"`
-	JSON contractWithoutAmendmentsCreditBalanceThresholdConfigurationCommitJSON `json:"-"`
+	Name string                                                                  `json:"name"`
+	JSON contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
 }
 
-// contractWithoutAmendmentsCreditBalanceThresholdConfigurationCommitJSON contains
+// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitJSON contains
 // the JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditBalanceThresholdConfigurationCommit]
-type contractWithoutAmendmentsCreditBalanceThresholdConfigurationCommitJSON struct {
+// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit]
+type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitJSON struct {
 	ProductID             apijson.Field
 	ApplicableProductIDs  apijson.Field
 	ApplicableProductTags apijson.Field
@@ -1213,33 +1213,33 @@ type contractWithoutAmendmentsCreditBalanceThresholdConfigurationCommitJSON stru
 	ExtraFields           map[string]apijson.Field
 }
 
-func (r *ContractWithoutAmendmentsCreditBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r contractWithoutAmendmentsCreditBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
 }
 
-type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfig struct {
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
 	// Gate access to the commit balance based on successful collection of payment.
 	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
 	// facilitate payment using your own payment integration. Select NONE if you do not
 	// wish to payment gate the commit balance.
-	PaymentGateType ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
+	PaymentGateType ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
 	// Only applicable if using Stripe as your payment gateway through Metronome.
-	StripeConfig ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
+	StripeConfig ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
 	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
-	TaxType ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
+	TaxType ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
+	JSON    contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
 }
 
-// contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigJSON
+// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON
 // contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfig]
-type contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigJSON struct {
+// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig]
+type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON struct {
 	PaymentGateType apijson.Field
 	StripeConfig    apijson.Field
 	TaxType         apijson.Field
@@ -1247,11 +1247,11 @@ type contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConf
 	ExtraFields     map[string]apijson.Field
 }
 
-func (r *ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
+func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
+func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1259,57 +1259,57 @@ func (r contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateC
 // Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
 // facilitate payment using your own payment integration. Select NONE if you do not
 // wish to payment gate the commit balance.
-type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
 
 const (
-	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
+	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
+	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
+	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
 )
 
-func (r ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
+func (r ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
 	switch r {
-	case ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
+	case ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
 		return true
 	}
 	return false
 }
 
 // Only applicable if using Stripe as your payment gateway through Metronome.
-type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
 	// If left blank, will default to INVOICE
-	PaymentType ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	JSON        contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON        `json:"-"`
+	PaymentType ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
+	JSON        contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON        `json:"-"`
 }
 
-// contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
+// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
 // contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
-type contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
+// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
+type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
 	PaymentType apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
+func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r contractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
+func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
 	return r.raw
 }
 
 // If left blank, will default to INVOICE
-type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
 
 const (
-	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
+	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
+	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
 )
 
-func (r ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
+func (r ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
 	switch r {
-	case ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+	case ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
 		return true
 	}
 	return false
@@ -1318,16 +1318,16 @@ func (r ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateC
 // Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
 // not wish Metronome to calculate tax on your behalf. Leaving this field blank
 // will default to NONE.
-type ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType string
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
 
 const (
-	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone   ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone   ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
 )
 
-func (r ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+func (r ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
 	switch r {
-	case ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractWithoutAmendmentsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe:
+	case ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe:
 		return true
 	}
 	return false

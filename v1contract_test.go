@@ -85,25 +85,6 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			RolloverFraction: metronome.F(0.000000),
 			TemporaryID:      metronome.F("temporary_id"),
 		}}),
-		CreditBalanceThresholdConfiguration: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfiguration{
-			Commit: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationCommit{
-				ProductID:             metronome.F("product_id"),
-				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-				ApplicableProductTags: metronome.F([]string{"string"}),
-				Description:           metronome.F("description"),
-				Name:                  metronome.F("name"),
-			}),
-			IsEnabled: metronome.F(true),
-			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfig{
-				PaymentGateType: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
-				StripeConfig: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
-					PaymentType: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
-				}),
-				TaxType: metronome.F(metronome.V1ContractNewParamsCreditBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
-			}),
-			RechargeToAmount: metronome.F(0.000000),
-			ThresholdAmount:  metronome.F(0.000000),
-		}),
 		Credits: metronome.F([]metronome.V1ContractNewParamsCredit{{
 			AccessSchedule: metronome.F(metronome.V1ContractNewParamsCreditsAccessSchedule{
 				ScheduleItems: metronome.F([]metronome.V1ContractNewParamsCreditsAccessScheduleScheduleItem{{
@@ -202,6 +183,25 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			}}),
 			Type: metronome.F(metronome.V1ContractNewParamsOverridesTypeOverwrite),
 		}}),
+		PrepaidBalanceThresholdConfiguration: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfiguration{
+			Commit: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommit{
+				ProductID:             metronome.F("product_id"),
+				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+				ApplicableProductTags: metronome.F([]string{"string"}),
+				Description:           metronome.F("description"),
+				Name:                  metronome.F("name"),
+			}),
+			IsEnabled: metronome.F(true),
+			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfig{
+				PaymentGateType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				StripeConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
+					PaymentType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				}),
+				TaxType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
+			}),
+			RechargeToAmount: metronome.F(0.000000),
+			ThresholdAmount:  metronome.F(0.000000),
+		}),
 		ProfessionalServices: metronome.F([]metronome.V1ContractNewParamsProfessionalService{{
 			MaxAmount: metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
