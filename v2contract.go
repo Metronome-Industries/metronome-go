@@ -110,21 +110,20 @@ func (r v2ContractGetResponseJSON) RawJSON() string {
 }
 
 type V2ContractGetResponseData struct {
-	ID                                  string                                                       `json:"id,required" format:"uuid"`
-	Commits                             []V2ContractGetResponseDataCommit                            `json:"commits,required"`
-	CreatedAt                           time.Time                                                    `json:"created_at,required" format:"date-time"`
-	CreatedBy                           string                                                       `json:"created_by,required"`
-	CustomerID                          string                                                       `json:"customer_id,required" format:"uuid"`
-	Overrides                           []V2ContractGetResponseDataOverride                          `json:"overrides,required"`
-	ScheduledCharges                    []shared.ScheduledCharge                                     `json:"scheduled_charges,required"`
-	StartingAt                          time.Time                                                    `json:"starting_at,required" format:"date-time"`
-	Transitions                         []V2ContractGetResponseDataTransition                        `json:"transitions,required"`
-	UsageFilter                         []V2ContractGetResponseDataUsageFilter                       `json:"usage_filter,required"`
-	UsageStatementSchedule              V2ContractGetResponseDataUsageStatementSchedule              `json:"usage_statement_schedule,required"`
-	ArchivedAt                          time.Time                                                    `json:"archived_at" format:"date-time"`
-	CreditBalanceThresholdConfiguration V2ContractGetResponseDataCreditBalanceThresholdConfiguration `json:"credit_balance_threshold_configuration"`
-	Credits                             []V2ContractGetResponseDataCredit                            `json:"credits"`
-	CustomFields                        map[string]string                                            `json:"custom_fields"`
+	ID                     string                                          `json:"id,required" format:"uuid"`
+	Commits                []V2ContractGetResponseDataCommit               `json:"commits,required"`
+	CreatedAt              time.Time                                       `json:"created_at,required" format:"date-time"`
+	CreatedBy              string                                          `json:"created_by,required"`
+	CustomerID             string                                          `json:"customer_id,required" format:"uuid"`
+	Overrides              []V2ContractGetResponseDataOverride             `json:"overrides,required"`
+	ScheduledCharges       []shared.ScheduledCharge                        `json:"scheduled_charges,required"`
+	StartingAt             time.Time                                       `json:"starting_at,required" format:"date-time"`
+	Transitions            []V2ContractGetResponseDataTransition           `json:"transitions,required"`
+	UsageFilter            []V2ContractGetResponseDataUsageFilter          `json:"usage_filter,required"`
+	UsageStatementSchedule V2ContractGetResponseDataUsageStatementSchedule `json:"usage_statement_schedule,required"`
+	ArchivedAt             time.Time                                       `json:"archived_at" format:"date-time"`
+	Credits                []V2ContractGetResponseDataCredit               `json:"credits"`
+	CustomFields           map[string]string                               `json:"custom_fields"`
 	// This field's availability is dependent on your client's configuration.
 	CustomerBillingProviderConfiguration V2ContractGetResponseDataCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	// This field's availability is dependent on your client's configuration.
@@ -138,7 +137,8 @@ type V2ContractGetResponseData struct {
 	Name                             string                                                    `json:"name"`
 	NetPaymentTermsDays              float64                                                   `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	NetsuiteSalesOrderID                 string                                                        `json:"netsuite_sales_order_id"`
+	PrepaidBalanceThresholdConfiguration V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	ProfessionalServices []shared.ProService                        `json:"professional_services"`
 	RateCardID           string                                     `json:"rate_card_id" format:"uuid"`
@@ -178,7 +178,6 @@ type v2ContractGetResponseDataJSON struct {
 	UsageFilter                          apijson.Field
 	UsageStatementSchedule               apijson.Field
 	ArchivedAt                           apijson.Field
-	CreditBalanceThresholdConfiguration  apijson.Field
 	Credits                              apijson.Field
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
@@ -188,6 +187,7 @@ type v2ContractGetResponseDataJSON struct {
 	Name                                 apijson.Field
 	NetPaymentTermsDays                  apijson.Field
 	NetsuiteSalesOrderID                 apijson.Field
+	PrepaidBalanceThresholdConfiguration apijson.Field
 	ProfessionalServices                 apijson.Field
 	RateCardID                           apijson.Field
 	RecurringCommits                     apijson.Field
@@ -1494,79 +1494,6 @@ func (r V2ContractGetResponseDataUsageStatementScheduleFrequency) IsKnown() bool
 	return false
 }
 
-type V2ContractGetResponseDataCreditBalanceThresholdConfiguration struct {
-	Commit V2ContractGetResponseDataCreditBalanceThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled bool `json:"is_enabled,required"`
-	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's balance
-	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                          `json:"threshold_amount,required"`
-	JSON            v2ContractGetResponseDataCreditBalanceThresholdConfigurationJSON `json:"-"`
-}
-
-// v2ContractGetResponseDataCreditBalanceThresholdConfigurationJSON contains the
-// JSON metadata for the struct
-// [V2ContractGetResponseDataCreditBalanceThresholdConfiguration]
-type v2ContractGetResponseDataCreditBalanceThresholdConfigurationJSON struct {
-	Commit           apijson.Field
-	IsEnabled        apijson.Field
-	RechargeToAmount apijson.Field
-	ThresholdAmount  apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *V2ContractGetResponseDataCreditBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetResponseDataCreditBalanceThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetResponseDataCreditBalanceThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If both applicable_product_ids
-	// and applicable_product_tags are not provided, the commit applies to all
-	// products.
-	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
-	ApplicableProductTags []string `json:"applicable_product_tags"`
-	Description           string   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string                                                                 `json:"name"`
-	JSON v2ContractGetResponseDataCreditBalanceThresholdConfigurationCommitJSON `json:"-"`
-}
-
-// v2ContractGetResponseDataCreditBalanceThresholdConfigurationCommitJSON contains
-// the JSON metadata for the struct
-// [V2ContractGetResponseDataCreditBalanceThresholdConfigurationCommit]
-type v2ContractGetResponseDataCreditBalanceThresholdConfigurationCommitJSON struct {
-	ProductID             apijson.Field
-	ApplicableProductIDs  apijson.Field
-	ApplicableProductTags apijson.Field
-	Description           apijson.Field
-	Name                  apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V2ContractGetResponseDataCreditBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetResponseDataCreditBalanceThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
 type V2ContractGetResponseDataCredit struct {
 	ID      string                                  `json:"id,required" format:"uuid"`
 	Product V2ContractGetResponseDataCreditsProduct `json:"product,required"`
@@ -2159,6 +2086,79 @@ func (r V2ContractGetResponseDataMultiplierOverridePrioritization) IsKnown() boo
 		return true
 	}
 	return false
+}
+
+type V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration struct {
+	Commit V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled bool `json:"is_enabled,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                           `json:"threshold_amount,required"`
+	JSON            v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON contains the
+// JSON metadata for the struct
+// [V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration]
+type v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON struct {
+	Commit           apijson.Field
+	IsEnabled        apijson.Field
+	RechargeToAmount apijson.Field
+	ThresholdAmount  apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID string `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags []string `json:"applicable_product_tags"`
+	Description           string   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name string                                                                  `json:"name"`
+	JSON v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON contains
+// the JSON metadata for the struct
+// [V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit]
+type v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON struct {
+	ProductID             apijson.Field
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Description           apijson.Field
+	Name                  apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
 }
 
 type V2ContractGetResponseDataRecurringCommit struct {
@@ -2987,21 +2987,20 @@ func (r v2ContractListResponseJSON) RawJSON() string {
 }
 
 type V2ContractListResponseData struct {
-	ID                                  string                                                        `json:"id,required" format:"uuid"`
-	Commits                             []V2ContractListResponseDataCommit                            `json:"commits,required"`
-	CreatedAt                           time.Time                                                     `json:"created_at,required" format:"date-time"`
-	CreatedBy                           string                                                        `json:"created_by,required"`
-	CustomerID                          string                                                        `json:"customer_id,required" format:"uuid"`
-	Overrides                           []V2ContractListResponseDataOverride                          `json:"overrides,required"`
-	ScheduledCharges                    []shared.ScheduledCharge                                      `json:"scheduled_charges,required"`
-	StartingAt                          time.Time                                                     `json:"starting_at,required" format:"date-time"`
-	Transitions                         []V2ContractListResponseDataTransition                        `json:"transitions,required"`
-	UsageFilter                         []V2ContractListResponseDataUsageFilter                       `json:"usage_filter,required"`
-	UsageStatementSchedule              V2ContractListResponseDataUsageStatementSchedule              `json:"usage_statement_schedule,required"`
-	ArchivedAt                          time.Time                                                     `json:"archived_at" format:"date-time"`
-	CreditBalanceThresholdConfiguration V2ContractListResponseDataCreditBalanceThresholdConfiguration `json:"credit_balance_threshold_configuration"`
-	Credits                             []V2ContractListResponseDataCredit                            `json:"credits"`
-	CustomFields                        map[string]string                                             `json:"custom_fields"`
+	ID                     string                                           `json:"id,required" format:"uuid"`
+	Commits                []V2ContractListResponseDataCommit               `json:"commits,required"`
+	CreatedAt              time.Time                                        `json:"created_at,required" format:"date-time"`
+	CreatedBy              string                                           `json:"created_by,required"`
+	CustomerID             string                                           `json:"customer_id,required" format:"uuid"`
+	Overrides              []V2ContractListResponseDataOverride             `json:"overrides,required"`
+	ScheduledCharges       []shared.ScheduledCharge                         `json:"scheduled_charges,required"`
+	StartingAt             time.Time                                        `json:"starting_at,required" format:"date-time"`
+	Transitions            []V2ContractListResponseDataTransition           `json:"transitions,required"`
+	UsageFilter            []V2ContractListResponseDataUsageFilter          `json:"usage_filter,required"`
+	UsageStatementSchedule V2ContractListResponseDataUsageStatementSchedule `json:"usage_statement_schedule,required"`
+	ArchivedAt             time.Time                                        `json:"archived_at" format:"date-time"`
+	Credits                []V2ContractListResponseDataCredit               `json:"credits"`
+	CustomFields           map[string]string                                `json:"custom_fields"`
 	// This field's availability is dependent on your client's configuration.
 	CustomerBillingProviderConfiguration V2ContractListResponseDataCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	// This field's availability is dependent on your client's configuration.
@@ -3015,7 +3014,8 @@ type V2ContractListResponseData struct {
 	Name                             string                                                     `json:"name"`
 	NetPaymentTermsDays              float64                                                    `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	NetsuiteSalesOrderID                 string                                                         `json:"netsuite_sales_order_id"`
+	PrepaidBalanceThresholdConfiguration V2ContractListResponseDataPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	ProfessionalServices []shared.ProService                         `json:"professional_services"`
 	RateCardID           string                                      `json:"rate_card_id" format:"uuid"`
@@ -3055,7 +3055,6 @@ type v2ContractListResponseDataJSON struct {
 	UsageFilter                          apijson.Field
 	UsageStatementSchedule               apijson.Field
 	ArchivedAt                           apijson.Field
-	CreditBalanceThresholdConfiguration  apijson.Field
 	Credits                              apijson.Field
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
@@ -3065,6 +3064,7 @@ type v2ContractListResponseDataJSON struct {
 	Name                                 apijson.Field
 	NetPaymentTermsDays                  apijson.Field
 	NetsuiteSalesOrderID                 apijson.Field
+	PrepaidBalanceThresholdConfiguration apijson.Field
 	ProfessionalServices                 apijson.Field
 	RateCardID                           apijson.Field
 	RecurringCommits                     apijson.Field
@@ -4371,79 +4371,6 @@ func (r V2ContractListResponseDataUsageStatementScheduleFrequency) IsKnown() boo
 	return false
 }
 
-type V2ContractListResponseDataCreditBalanceThresholdConfiguration struct {
-	Commit V2ContractListResponseDataCreditBalanceThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled bool `json:"is_enabled,required"`
-	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's balance
-	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                           `json:"threshold_amount,required"`
-	JSON            v2ContractListResponseDataCreditBalanceThresholdConfigurationJSON `json:"-"`
-}
-
-// v2ContractListResponseDataCreditBalanceThresholdConfigurationJSON contains the
-// JSON metadata for the struct
-// [V2ContractListResponseDataCreditBalanceThresholdConfiguration]
-type v2ContractListResponseDataCreditBalanceThresholdConfigurationJSON struct {
-	Commit           apijson.Field
-	IsEnabled        apijson.Field
-	RechargeToAmount apijson.Field
-	ThresholdAmount  apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *V2ContractListResponseDataCreditBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractListResponseDataCreditBalanceThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractListResponseDataCreditBalanceThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If both applicable_product_ids
-	// and applicable_product_tags are not provided, the commit applies to all
-	// products.
-	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
-	ApplicableProductTags []string `json:"applicable_product_tags"`
-	Description           string   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string                                                                  `json:"name"`
-	JSON v2ContractListResponseDataCreditBalanceThresholdConfigurationCommitJSON `json:"-"`
-}
-
-// v2ContractListResponseDataCreditBalanceThresholdConfigurationCommitJSON contains
-// the JSON metadata for the struct
-// [V2ContractListResponseDataCreditBalanceThresholdConfigurationCommit]
-type v2ContractListResponseDataCreditBalanceThresholdConfigurationCommitJSON struct {
-	ProductID             apijson.Field
-	ApplicableProductIDs  apijson.Field
-	ApplicableProductTags apijson.Field
-	Description           apijson.Field
-	Name                  apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V2ContractListResponseDataCreditBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractListResponseDataCreditBalanceThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
 type V2ContractListResponseDataCredit struct {
 	ID      string                                   `json:"id,required" format:"uuid"`
 	Product V2ContractListResponseDataCreditsProduct `json:"product,required"`
@@ -5036,6 +4963,79 @@ func (r V2ContractListResponseDataMultiplierOverridePrioritization) IsKnown() bo
 		return true
 	}
 	return false
+}
+
+type V2ContractListResponseDataPrepaidBalanceThresholdConfiguration struct {
+	Commit V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled bool `json:"is_enabled,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                                                            `json:"threshold_amount,required"`
+	JSON            v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
+}
+
+// v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON contains the
+// JSON metadata for the struct
+// [V2ContractListResponseDataPrepaidBalanceThresholdConfiguration]
+type v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON struct {
+	Commit           apijson.Field
+	IsEnabled        apijson.Field
+	RechargeToAmount apijson.Field
+	ThresholdAmount  apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID string `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags []string `json:"applicable_product_tags"`
+	Description           string   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name string                                                                   `json:"name"`
+	JSON v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
+}
+
+// v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit]
+type v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON struct {
+	ProductID             apijson.Field
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Description           apijson.Field
+	Name                  apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
 }
 
 type V2ContractListResponseDataRecurringCommit struct {
