@@ -326,10 +326,30 @@ type V1CustomerAlertGetParams struct {
 	AlertID param.Field[string] `json:"alert_id,required" format:"uuid"`
 	// The Metronome ID of the customer
 	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+	// When parallel alerts are enabled during migration, this flag denotes whether to
+	// fetch alerts for plans or contracts.
+	PlansOrContracts param.Field[V1CustomerAlertGetParamsPlansOrContracts] `json:"plans_or_contracts"`
 }
 
 func (r V1CustomerAlertGetParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// When parallel alerts are enabled during migration, this flag denotes whether to
+// fetch alerts for plans or contracts.
+type V1CustomerAlertGetParamsPlansOrContracts string
+
+const (
+	V1CustomerAlertGetParamsPlansOrContractsPlans     V1CustomerAlertGetParamsPlansOrContracts = "PLANS"
+	V1CustomerAlertGetParamsPlansOrContractsContracts V1CustomerAlertGetParamsPlansOrContracts = "CONTRACTS"
+)
+
+func (r V1CustomerAlertGetParamsPlansOrContracts) IsKnown() bool {
+	switch r {
+	case V1CustomerAlertGetParamsPlansOrContractsPlans, V1CustomerAlertGetParamsPlansOrContractsContracts:
+		return true
+	}
+	return false
 }
 
 type V1CustomerAlertListParams struct {
