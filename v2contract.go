@@ -2093,7 +2093,8 @@ type V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration struct {
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled bool `json:"is_enabled,required"`
+	IsEnabled         bool                                                                           `json:"is_enabled,required"`
+	PaymentGateConfig V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
 	// Specify the amount the balance should be recharged to.
 	RechargeToAmount float64 `json:"recharge_to_amount,required"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
@@ -2106,12 +2107,13 @@ type V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration struct {
 // JSON metadata for the struct
 // [V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration]
 type v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON struct {
-	Commit           apijson.Field
-	IsEnabled        apijson.Field
-	RechargeToAmount apijson.Field
-	ThresholdAmount  apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
+	Commit            apijson.Field
+	IsEnabled         apijson.Field
+	PaymentGateConfig apijson.Field
+	RechargeToAmount  apijson.Field
+	ThresholdAmount   apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
 func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -2159,6 +2161,118 @@ func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit) Un
 
 func (r v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
+}
+
+type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	PaymentGateType V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
+	// Only applicable if using Stripe as your payment gateway through Metronome.
+	StripeConfig V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
+	JSON    v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
+}
+
+// v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfig]
+type v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON struct {
+	PaymentGateType apijson.Field
+	StripeConfig    apijson.Field
+	TaxType         apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
+
+const (
+	V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
+	V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
+	V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
+)
+
+func (r V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
+	switch r {
+	case V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
+		return true
+	}
+	return false
+}
+
+// Only applicable if using Stripe as your payment gateway through Metronome.
+type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
+	// If left blank, will default to INVOICE
+	PaymentType V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
+	JSON        v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON        `json:"-"`
+}
+
+// v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
+type v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
+	PaymentType apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// If left blank, will default to INVOICE
+type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
+
+const (
+	V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
+	V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
+)
+
+func (r V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
+	switch r {
+	case V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
+
+const (
+	V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone   V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe:
+		return true
+	}
+	return false
 }
 
 type V2ContractGetResponseDataRecurringCommit struct {
@@ -4970,7 +5084,8 @@ type V2ContractListResponseDataPrepaidBalanceThresholdConfiguration struct {
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled bool `json:"is_enabled,required"`
+	IsEnabled         bool                                                                            `json:"is_enabled,required"`
+	PaymentGateConfig V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
 	// Specify the amount the balance should be recharged to.
 	RechargeToAmount float64 `json:"recharge_to_amount,required"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
@@ -4983,12 +5098,13 @@ type V2ContractListResponseDataPrepaidBalanceThresholdConfiguration struct {
 // JSON metadata for the struct
 // [V2ContractListResponseDataPrepaidBalanceThresholdConfiguration]
 type v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON struct {
-	Commit           apijson.Field
-	IsEnabled        apijson.Field
-	RechargeToAmount apijson.Field
-	ThresholdAmount  apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
+	Commit            apijson.Field
+	IsEnabled         apijson.Field
+	PaymentGateConfig apijson.Field
+	RechargeToAmount  apijson.Field
+	ThresholdAmount   apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
 func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -5036,6 +5152,118 @@ func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit) U
 
 func (r v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
+}
+
+type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	PaymentGateType V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
+	// Only applicable if using Stripe as your payment gateway through Metronome.
+	StripeConfig V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
+	JSON    v2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
+}
+
+// v2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfig]
+type v2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON struct {
+	PaymentGateType apijson.Field
+	StripeConfig    apijson.Field
+	TaxType         apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
+
+const (
+	V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
+	V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
+	V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
+)
+
+func (r V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
+	switch r {
+	case V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
+		return true
+	}
+	return false
+}
+
+// Only applicable if using Stripe as your payment gateway through Metronome.
+type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
+	// If left blank, will default to INVOICE
+	PaymentType V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
+	JSON        v2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON        `json:"-"`
+}
+
+// v2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
+type v2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
+	PaymentType apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// If left blank, will default to INVOICE
+type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
+
+const (
+	V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
+	V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
+)
+
+func (r V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
+	switch r {
+	case V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
+
+const (
+	V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone   V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractListResponseDataPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe:
+		return true
+	}
+	return false
 }
 
 type V2ContractListResponseDataRecurringCommit struct {
@@ -7921,11 +8149,12 @@ type V2ContractEditParams struct {
 	// ID of the contract being edited
 	ContractID param.Field[string] `json:"contract_id,required" format:"uuid"`
 	// ID of the customer whose contract is being edited
-	CustomerID   param.Field[string]                            `json:"customer_id,required" format:"uuid"`
-	AddCommits   param.Field[[]V2ContractEditParamsAddCommit]   `json:"add_commits"`
-	AddCredits   param.Field[[]V2ContractEditParamsAddCredit]   `json:"add_credits"`
-	AddDiscounts param.Field[[]V2ContractEditParamsAddDiscount] `json:"add_discounts"`
-	AddOverrides param.Field[[]V2ContractEditParamsAddOverride] `json:"add_overrides"`
+	CustomerID                              param.Field[string]                                                      `json:"customer_id,required" format:"uuid"`
+	AddCommits                              param.Field[[]V2ContractEditParamsAddCommit]                             `json:"add_commits"`
+	AddCredits                              param.Field[[]V2ContractEditParamsAddCredit]                             `json:"add_credits"`
+	AddDiscounts                            param.Field[[]V2ContractEditParamsAddDiscount]                           `json:"add_discounts"`
+	AddOverrides                            param.Field[[]V2ContractEditParamsAddOverride]                           `json:"add_overrides"`
+	AddPrepaidBalanceThresholdConfiguration param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration] `json:"add_prepaid_balance_threshold_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	AddProfessionalServices        param.Field[[]V2ContractEditParamsAddProfessionalService]       `json:"add_professional_services"`
 	AddRecurringCommits            param.Field[[]V2ContractEditParamsAddRecurringCommit]           `json:"add_recurring_commits"`
@@ -7948,10 +8177,11 @@ type V2ContractEditParams struct {
 	RemoveOverrides param.Field[[]V2ContractEditParamsRemoveOverride] `json:"remove_overrides"`
 	UpdateCommits   param.Field[[]V2ContractEditParamsUpdateCommit]   `json:"update_commits"`
 	// RFC 3339 timestamp indicating when the contract will end (exclusive).
-	UpdateContractEndDate             param.Field[time.Time]                                             `json:"update_contract_end_date" format:"date-time"`
-	UpdateCredits                     param.Field[[]V2ContractEditParamsUpdateCredit]                    `json:"update_credits"`
-	UpdateScheduledCharges            param.Field[[]V2ContractEditParamsUpdateScheduledCharge]           `json:"update_scheduled_charges"`
-	UpdateSpendThresholdConfiguration param.Field[V2ContractEditParamsUpdateSpendThresholdConfiguration] `json:"update_spend_threshold_configuration"`
+	UpdateContractEndDate                      param.Field[time.Time]                                                      `json:"update_contract_end_date" format:"date-time"`
+	UpdateCredits                              param.Field[[]V2ContractEditParamsUpdateCredit]                             `json:"update_credits"`
+	UpdatePrepaidBalanceThresholdConfiguration param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration] `json:"update_prepaid_balance_threshold_configuration"`
+	UpdateScheduledCharges                     param.Field[[]V2ContractEditParamsUpdateScheduledCharge]                    `json:"update_scheduled_charges"`
+	UpdateSpendThresholdConfiguration          param.Field[V2ContractEditParamsUpdateSpendThresholdConfiguration]          `json:"update_spend_threshold_configuration"`
 }
 
 func (r V2ContractEditParams) MarshalJSON() (data []byte, err error) {
@@ -8572,6 +8802,127 @@ const (
 func (r V2ContractEditParamsAddOverridesType) IsKnown() bool {
 	switch r {
 	case V2ContractEditParamsAddOverridesTypeOverwrite, V2ContractEditParamsAddOverridesTypeMultiplier, V2ContractEditParamsAddOverridesTypeTiered:
+		return true
+	}
+	return false
+}
+
+type V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration struct {
+	Commit param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit] `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         param.Field[bool]                                                                         `json:"is_enabled,required"`
+	PaymentGateConfig param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig] `json:"payment_gate_config,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount param.Field[float64] `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+}
+
+func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID param.Field[string] `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	Description           param.Field[string]   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	PaymentGateType param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
+	// Only applicable if using Stripe as your payment gateway through Metronome.
+	StripeConfig param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
+}
+
+func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
+
+const (
+	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
+	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
+	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
+)
+
+func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
+		return true
+	}
+	return false
+}
+
+// Only applicable if using Stripe as your payment gateway through Metronome.
+type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
+	// If left blank, will default to INVOICE
+	PaymentType param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
+}
+
+func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If left blank, will default to INVOICE
+type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
+
+const (
+	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
+	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
+)
+
+func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
+
+const (
+	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone   V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe:
 		return true
 	}
 	return false
@@ -9352,6 +9703,127 @@ type V2ContractEditParamsUpdateCreditsAccessScheduleUpdateScheduleItem struct {
 
 func (r V2ContractEditParamsUpdateCreditsAccessScheduleUpdateScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
+	Commit param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit] `json:"commit"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         param.Field[bool]                                                                            `json:"is_enabled"`
+	PaymentGateConfig param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig] `json:"payment_gate_config"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount param.Field[float64] `json:"recharge_to_amount"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount"`
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID param.Field[string] `json:"product_id,required"`
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	Description           param.Field[string]   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	PaymentGateType param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
+	// Only applicable if using Stripe as your payment gateway through Metronome.
+	StripeConfig param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
+
+const (
+	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
+	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
+	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
+)
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
+		return true
+	}
+	return false
+}
+
+// Only applicable if using Stripe as your payment gateway through Metronome.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
+	// If left blank, will default to INVOICE
+	PaymentType param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If left blank, will default to INVOICE
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
+
+const (
+	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
+	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
+)
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
+
+const (
+	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone   V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
+	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
+)
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe:
+		return true
+	}
+	return false
 }
 
 type V2ContractEditParamsUpdateScheduledCharge struct {
