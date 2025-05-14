@@ -31,7 +31,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		CustomerID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
 		StartingAt: metronome.F(time.Now()),
 		BillingProviderConfiguration: metronome.F(metronome.V1ContractNewParamsBillingProviderConfiguration{
-			BillingProvider:                metronome.F(metronome.V1ContractNewParamsBillingProviderConfigurationBillingProviderAwsMarketplace),
+			BillingProvider:                metronome.F(metronome.V1ContractNewParamsBillingProviderConfigurationBillingProviderStripe),
 			BillingProviderConfigurationID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			DeliveryMethod:                 metronome.F(metronome.V1ContractNewParamsBillingProviderConfigurationDeliveryMethodDirectToBillingProvider),
 		}),
@@ -73,10 +73,17 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			}),
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
-			Priority:             metronome.F(0.000000),
-			RateType:             metronome.F(metronome.V1ContractNewParamsCommitsRateTypeCommitRate),
-			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
+			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfig{
+				PaymentGateType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigPaymentGateTypeNone),
+				StripeConfig: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigStripeConfig{
+					PaymentType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				}),
+				TaxType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigTaxTypeNone),
+			}),
+			Priority:         metronome.F(0.000000),
+			RateType:         metronome.F(metronome.V1ContractNewParamsCommitsRateTypeCommitRate),
+			RolloverFraction: metronome.F(0.000000),
+			TemporaryID:      metronome.F("temporary_id"),
 		}}),
 		Credits: metronome.F([]metronome.V1ContractNewParamsCredit{{
 			AccessSchedule: metronome.F(metronome.V1ContractNewParamsCreditsAccessSchedule{
@@ -141,8 +148,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.V1ContractNewParamsOverridesOverrideSpecifier{{
-				BillingFrequency: metronome.F(metronome.V1ContractNewParamsOverridesOverrideSpecifiersBillingFrequencyMonthly),
-				CommitIDs:        metronome.F([]string{"string"}),
+				CommitIDs: metronome.F([]string{"string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -177,6 +183,25 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			}}),
 			Type: metronome.F(metronome.V1ContractNewParamsOverridesTypeOverwrite),
 		}}),
+		PrepaidBalanceThresholdConfiguration: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfiguration{
+			Commit: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommit{
+				ProductID:             metronome.F("product_id"),
+				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+				ApplicableProductTags: metronome.F([]string{"string"}),
+				Description:           metronome.F("description"),
+				Name:                  metronome.F("name"),
+			}),
+			IsEnabled: metronome.F(true),
+			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfig{
+				PaymentGateType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				StripeConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
+					PaymentType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				}),
+				TaxType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
+			}),
+			RechargeToAmount: metronome.F(0.000000),
+			ThresholdAmount:  metronome.F(0.000000),
+		}),
 		ProfessionalServices: metronome.F([]metronome.V1ContractNewParamsProfessionalService{{
 			MaxAmount: metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -289,31 +314,20 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
 		ScheduledChargesOnUsageInvoices: metronome.F(metronome.V1ContractNewParamsScheduledChargesOnUsageInvoicesAll),
-		Subscriptions: metronome.F([]metronome.V1ContractNewParamsSubscription{{
-			CollectionSchedule: metronome.F(metronome.V1ContractNewParamsSubscriptionsCollectionScheduleAdvance),
-			InitialQuantity:    metronome.F(0.000000),
-			Proration: metronome.F(metronome.V1ContractNewParamsSubscriptionsProration{
-				InvoiceBehavior: metronome.F(metronome.V1ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillImmediately),
-				IsProrated:      metronome.F(true),
+		SpendThresholdConfiguration: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfiguration{
+			Commit: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationCommit{
+				ProductID:   metronome.F("product_id"),
+				Description: metronome.F("description"),
+				Name:        metronome.F("name"),
 			}),
-			SubscriptionRate: metronome.F(metronome.V1ContractNewParamsSubscriptionsSubscriptionRate{
-				BillingFrequency: metronome.F(metronome.V1ContractNewParamsSubscriptionsSubscriptionRateBillingFrequencyMonthly),
-				ProductID:        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			IsEnabled: metronome.F(true),
+			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfig{
+				PaymentGateType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				StripeConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfig{
+					PaymentType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				}),
+				TaxType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
-			Description:  metronome.F("description"),
-			EndingBefore: metronome.F(time.Now()),
-			Name:         metronome.F("name"),
-			StartingAt:   metronome.F(time.Now()),
-		}}),
-		ThresholdBillingConfiguration: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfiguration{
-			Commit: metronome.F(metronome.V1ContractNewParamsThresholdBillingConfigurationCommit{
-				ProductID:             metronome.F("product_id"),
-				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-				ApplicableProductTags: metronome.F([]string{"string"}),
-				Description:           metronome.F("description"),
-				Name:                  metronome.F("name"),
-			}),
-			IsEnabled:       metronome.F(true),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
 		TotalContractValue: metronome.F(0.000000),
@@ -486,10 +500,17 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			}),
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
-			Priority:             metronome.F(0.000000),
-			RateType:             metronome.F(metronome.V1ContractAmendParamsCommitsRateTypeCommitRate),
-			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
+			PaymentGateConfig: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfig{
+				PaymentGateType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigPaymentGateTypeNone),
+				StripeConfig: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigStripeConfig{
+					PaymentType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				}),
+				TaxType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigTaxTypeNone),
+			}),
+			Priority:         metronome.F(0.000000),
+			RateType:         metronome.F(metronome.V1ContractAmendParamsCommitsRateTypeCommitRate),
+			RolloverFraction: metronome.F(0.000000),
+			TemporaryID:      metronome.F("temporary_id"),
 		}}),
 		Credits: metronome.F([]metronome.V1ContractAmendParamsCredit{{
 			AccessSchedule: metronome.F(metronome.V1ContractAmendParamsCreditsAccessSchedule{
@@ -550,8 +571,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(0.000000),
 			OverrideSpecifiers: metronome.F([]metronome.V1ContractAmendParamsOverridesOverrideSpecifier{{
-				BillingFrequency: metronome.F(metronome.V1ContractAmendParamsOverridesOverrideSpecifiersBillingFrequencyMonthly),
-				CommitIDs:        metronome.F([]string{"string"}),
+				CommitIDs: metronome.F([]string{"string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -783,7 +803,6 @@ func TestV1ContractGetRateScheduleWithOptionalParams(t *testing.T) {
 		NextPage:   metronome.F("next_page"),
 		At:         metronome.F(time.Now()),
 		Selectors: metronome.F([]metronome.V1ContractGetRateScheduleParamsSelector{{
-			BillingFrequency: metronome.F(metronome.V1ContractGetRateScheduleParamsSelectorsBillingFrequencyMonthly),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",

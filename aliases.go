@@ -242,6 +242,64 @@ const ContractWithoutAmendmentsUsageStatementScheduleFrequencyQuarterly = shared
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual
 
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsUsageStatementScheduleFrequencyWeekly = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyWeekly
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
+
+// Only applicable if using Stripe as your payment gateway through Metronome.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig
+
+// If left blank, will default to INVOICE
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCommit = shared.ContractWithoutAmendmentsRecurringCommit
 
@@ -319,6 +377,9 @@ const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyQuarterly = sh
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual = shared.ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual
 
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCredit = shared.ContractWithoutAmendmentsRecurringCredit
 
@@ -391,6 +452,9 @@ const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyQuarterly = sh
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual = shared.ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual
 
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
 
@@ -422,10 +486,59 @@ type ContractWithoutAmendmentsScheduledChargesOnUsageInvoices = shared.ContractW
 const ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll = shared.ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll
 
 // This is an alias to an internal type.
-type ContractWithoutAmendmentsThresholdBillingConfiguration = shared.ContractWithoutAmendmentsThresholdBillingConfiguration
+type ContractWithoutAmendmentsSpendThresholdConfiguration = shared.ContractWithoutAmendmentsSpendThresholdConfiguration
 
 // This is an alias to an internal type.
-type ContractWithoutAmendmentsThresholdBillingConfigurationCommit = shared.ContractWithoutAmendmentsThresholdBillingConfigurationCommit
+type ContractWithoutAmendmentsSpendThresholdConfigurationCommit = shared.ContractWithoutAmendmentsSpendThresholdConfigurationCommit
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
+
+// Only applicable if using Stripe as your payment gateway through Metronome.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig
+
+// If left blank, will default to INVOICE
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsUsageFilter = shared.ContractWithoutAmendmentsUsageFilter
@@ -565,18 +678,6 @@ type Override = shared.Override
 
 // This is an alias to an internal type.
 type OverrideOverrideSpecifier = shared.OverrideOverrideSpecifier
-
-// This is an alias to an internal type.
-type OverrideOverrideSpecifiersBillingFrequency = shared.OverrideOverrideSpecifiersBillingFrequency
-
-// This is an alias to an internal value.
-const OverrideOverrideSpecifiersBillingFrequencyMonthly = shared.OverrideOverrideSpecifiersBillingFrequencyMonthly
-
-// This is an alias to an internal value.
-const OverrideOverrideSpecifiersBillingFrequencyQuarterly = shared.OverrideOverrideSpecifiersBillingFrequencyQuarterly
-
-// This is an alias to an internal value.
-const OverrideOverrideSpecifiersBillingFrequencyAnnual = shared.OverrideOverrideSpecifiersBillingFrequencyAnnual
 
 // This is an alias to an internal type.
 type OverrideOverrideTier = shared.OverrideOverrideTier

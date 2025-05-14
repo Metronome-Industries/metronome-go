@@ -41,7 +41,7 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 			"foo": "string",
 		}),
 		CustomerBillingProviderConfigurations: metronome.F([]metronome.V1CustomerNewParamsCustomerBillingProviderConfiguration{{
-			BillingProvider: metronome.F(metronome.V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAwsMarketplace),
+			BillingProvider: metronome.F(metronome.V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderStripe),
 			Configuration: metronome.F(map[string]interface{}{
 				"stripe_customer_id":       "bar",
 				"stripe_collection_method": "bar",

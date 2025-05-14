@@ -13,7 +13,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/option"
 )
 
-func TestV1CustomerAlertGet(t *testing.T) {
+func TestV1CustomerAlertGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,8 +26,9 @@ func TestV1CustomerAlertGet(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Alerts.Get(context.TODO(), metronome.V1CustomerAlertGetParams{
-		AlertID:    metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
-		CustomerID: metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
+		AlertID:          metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
+		CustomerID:       metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
+		PlansOrContracts: metronome.F(metronome.V1CustomerAlertGetParamsPlansOrContractsPlans),
 	})
 	if err != nil {
 		var apierr *metronome.Error

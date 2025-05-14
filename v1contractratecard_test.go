@@ -136,6 +136,32 @@ func TestV1ContractRateCardListWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestV1ContractRateCardArchive(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.V1.Contracts.RateCards.Archive(context.TODO(), metronome.V1ContractRateCardArchiveParams{
+		ID: shared.IDParam{
+			ID: metronome.F("12b21470-4570-40df-8998-449d0b0bc52f"),
+		},
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestV1ContractRateCardGetRateScheduleWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -155,7 +181,6 @@ func TestV1ContractRateCardGetRateScheduleWithOptionalParams(t *testing.T) {
 		NextPage:     metronome.F("next_page"),
 		EndingBefore: metronome.F(time.Now()),
 		Selectors: metronome.F([]metronome.V1ContractRateCardGetRateScheduleParamsSelector{{
-			BillingFrequency: metronome.F(metronome.V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyMonthly),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",

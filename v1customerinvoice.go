@@ -161,7 +161,7 @@ type Invoice struct {
 	PlanCustomFields     map[string]string `json:"plan_custom_fields"`
 	PlanID               string            `json:"plan_id" format:"uuid"`
 	PlanName             string            `json:"plan_name"`
-	// only present for beta contract invoices with reseller royalties
+	// Only present for contract invoices with reseller royalties.
 	ResellerRoyalty InvoiceResellerRoyalty `json:"reseller_royalty"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
@@ -217,30 +217,33 @@ type InvoiceLineItem struct {
 	CreditType shared.CreditTypeData `json:"credit_type,required"`
 	Name       string                `json:"name,required"`
 	Total      float64               `json:"total,required"`
-	// only present for beta contract invoices
+	// Details about the credit or commit that was applied to this line item. Only
+	// present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
+	// types.
 	AppliedCommitOrCredit InvoiceLineItemsAppliedCommitOrCredit `json:"applied_commit_or_credit"`
-	// only present for beta contract invoices
-	CommitCustomFields map[string]string `json:"commit_custom_fields"`
-	// only present for beta contract invoices
-	CommitID string `json:"commit_id" format:"uuid"`
-	// only present for beta contract invoices. This field's availability is dependent
-	// on your client's configuration.
-	CommitNetsuiteItemID string `json:"commit_netsuite_item_id"`
-	// only present for beta contract invoices. This field's availability is dependent
-	// on your client's configuration.
+	CommitCustomFields    map[string]string                     `json:"commit_custom_fields"`
+	// For line items with product of `USAGE`, `SUBSCRIPTION`, or `COMPOSITE` types,
+	// the ID of the credit or commit that was applied to this line item. For line
+	// items with product type of `FIXED`, the ID of the prepaid or postpaid commit
+	// that is being paid for.
+	CommitID                   string `json:"commit_id" format:"uuid"`
+	CommitNetsuiteItemID       string `json:"commit_netsuite_item_id"`
 	CommitNetsuiteSalesOrderID string `json:"commit_netsuite_sales_order_id"`
-	// only present for beta contract invoices
-	CommitSegmentID string `json:"commit_segment_id" format:"uuid"`
-	// only present for beta contract invoices
-	CommitType   string            `json:"commit_type"`
-	CustomFields map[string]string `json:"custom_fields"`
-	// only present for beta contract invoices
+	CommitSegmentID            string `json:"commit_segment_id" format:"uuid"`
+	// `PrepaidCommit` (for commit types `PREPAID` and `CREDIT`) or `PostpaidCommit`
+	// (for commit type `POSTPAID`).
+	CommitType           string            `json:"commit_type"`
+	CustomFields         map[string]string `json:"custom_fields"`
+	DiscountCustomFields map[string]string `json:"discount_custom_fields"`
+	// ID of the discount applied to this line item.
+	DiscountID string `json:"discount_id" format:"uuid"`
+	// The line item's end date (exclusive).
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	GroupKey     string    `json:"group_key"`
 	GroupValue   string    `json:"group_value,nullable"`
-	// only present for beta contract invoices
+	// Indicates whether the line item is prorated for `SUBSCRIPTION` type product.
 	IsProrated bool `json:"is_prorated"`
-	// Only present for contract invoices and when the include_list_prices query
+	// Only present for contract invoices and when the `include_list_prices` query
 	// parameter is set to true. This will include the list rate for the charge if
 	// applicable. Only present for usage and subscription line items.
 	ListPrice shared.Rate `json:"list_price"`
@@ -249,34 +252,41 @@ type InvoiceLineItem struct {
 	NetsuiteInvoiceBillingEnd time.Time `json:"netsuite_invoice_billing_end" format:"date-time"`
 	// The start date for the billing period on the invoice.
 	NetsuiteInvoiceBillingStart time.Time `json:"netsuite_invoice_billing_start" format:"date-time"`
-	// only present for beta contract invoices. This field's availability is dependent
-	// on your client's configuration.
-	NetsuiteItemID string `json:"netsuite_item_id"`
-	// only present for beta contract invoices
+	NetsuiteItemID              string    `json:"netsuite_item_id"`
+	// Only present for line items paying for a postpaid commit true-up.
 	PostpaidCommit InvoiceLineItemsPostpaidCommit `json:"postpaid_commit"`
-	// if presentation groups are used, this will contain the values used to break down
-	// the line item
+	// Includes the presentation group values associated with this line item if
+	// presentation group keys are used.
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	// if pricing groups are used, this will contain the values used to calculate the
-	// price
+	// Includes the pricing group values associated with this line item if dimensional
+	// pricing is used.
 	PricingGroupValues  map[string]string `json:"pricing_group_values"`
 	ProductCustomFields map[string]string `json:"product_custom_fields"`
-	ProductID           string            `json:"product_id" format:"uuid"`
-	ProductType         string            `json:"product_type"`
-	// only present for beta contract invoices
+	// ID of the product associated with the line item.
+	ProductID string `json:"product_id" format:"uuid"`
+	// The current product tags associated with the line item's `product_id`.
+	ProductTags []string `json:"product_tags"`
+	// The type of the line item's product. Possible values are `FixedProductListItem`
+	// (for `FIXED` type products), `UsageProductListItem` (for `USAGE` type products),
+	// `SubscriptionProductListItem` (for `SUBSCRIPTION` type products) or
+	// `CompositeProductListItem` (for `COMPOSITE` type products). For scheduled
+	// charges, commit and credit payments, the value is `FixedProductListItem`.
+	ProductType                     string            `json:"product_type"`
 	ProfessionalServiceCustomFields map[string]string `json:"professional_service_custom_fields"`
-	// only present for beta contract invoices
-	ProfessionalServiceID       string                       `json:"professional_service_id" format:"uuid"`
+	ProfessionalServiceID           string            `json:"professional_service_id" format:"uuid"`
+	// The quantity associated with the line item.
 	Quantity                    float64                      `json:"quantity"`
 	ResellerType                InvoiceLineItemsResellerType `json:"reseller_type"`
 	ScheduledChargeCustomFields map[string]string            `json:"scheduled_charge_custom_fields"`
-	// only present for beta contract invoices
+	// ID of scheduled charge.
 	ScheduledChargeID string `json:"scheduled_charge_id" format:"uuid"`
-	// only present for beta contract invoices
-	StartingAt   time.Time                     `json:"starting_at" format:"date-time"`
-	SubLineItems []InvoiceLineItemsSubLineItem `json:"sub_line_items"`
-	Tier         InvoiceLineItemsTier          `json:"tier"`
-	// only present for beta contract invoices
+	// The line item's start date (inclusive).
+	StartingAt               time.Time                     `json:"starting_at" format:"date-time"`
+	SubLineItems             []InvoiceLineItemsSubLineItem `json:"sub_line_items"`
+	SubscriptionCustomFields map[string]string             `json:"subscription_custom_fields"`
+	// Populated if the line item has a tiered price.
+	Tier InvoiceLineItemsTier `json:"tier"`
+	// The unit price associated with the line item.
 	UnitPrice float64             `json:"unit_price"`
 	JSON      invoiceLineItemJSON `json:"-"`
 }
@@ -294,6 +304,8 @@ type invoiceLineItemJSON struct {
 	CommitSegmentID                 apijson.Field
 	CommitType                      apijson.Field
 	CustomFields                    apijson.Field
+	DiscountCustomFields            apijson.Field
+	DiscountID                      apijson.Field
 	EndingBefore                    apijson.Field
 	GroupKey                        apijson.Field
 	GroupValue                      apijson.Field
@@ -308,6 +320,7 @@ type invoiceLineItemJSON struct {
 	PricingGroupValues              apijson.Field
 	ProductCustomFields             apijson.Field
 	ProductID                       apijson.Field
+	ProductTags                     apijson.Field
 	ProductType                     apijson.Field
 	ProfessionalServiceCustomFields apijson.Field
 	ProfessionalServiceID           apijson.Field
@@ -317,6 +330,7 @@ type invoiceLineItemJSON struct {
 	ScheduledChargeID               apijson.Field
 	StartingAt                      apijson.Field
 	SubLineItems                    apijson.Field
+	SubscriptionCustomFields        apijson.Field
 	Tier                            apijson.Field
 	UnitPrice                       apijson.Field
 	raw                             string
@@ -331,7 +345,9 @@ func (r invoiceLineItemJSON) RawJSON() string {
 	return r.raw
 }
 
-// only present for beta contract invoices
+// Details about the credit or commit that was applied to this line item. Only
+// present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
+// types.
 type InvoiceLineItemsAppliedCommitOrCredit struct {
 	ID   string                                    `json:"id,required" format:"uuid"`
 	Type InvoiceLineItemsAppliedCommitOrCreditType `json:"type,required"`
@@ -371,7 +387,7 @@ func (r InvoiceLineItemsAppliedCommitOrCreditType) IsKnown() bool {
 	return false
 }
 
-// only present for beta contract invoices
+// Only present for line items paying for a postpaid commit true-up.
 type InvoiceLineItemsPostpaidCommit struct {
 	ID   string                             `json:"id,required" format:"uuid"`
 	JSON invoiceLineItemsPostpaidCommitJSON `json:"-"`
@@ -508,6 +524,7 @@ func (r invoiceLineItemsSubLineItemsTierJSON) RawJSON() string {
 	return r.raw
 }
 
+// Populated if the line item has a tiered price.
 type InvoiceLineItemsTier struct {
 	Level      float64                  `json:"level,required"`
 	StartingAt string                   `json:"starting_at,required"`
@@ -749,7 +766,7 @@ func (r invoiceInvoiceAdjustmentJSON) RawJSON() string {
 	return r.raw
 }
 
-// only present for beta contract invoices with reseller royalties
+// Only present for contract invoices with reseller royalties.
 type InvoiceResellerRoyalty struct {
 	Fraction           string                             `json:"fraction,required"`
 	NetsuiteResellerID string                             `json:"netsuite_reseller_id,required"`
