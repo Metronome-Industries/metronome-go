@@ -110,7 +110,7 @@ type V1AlertNewParams struct {
 	// Only present for contract invoices.
 	CustomFieldFilters param.Field[[]V1AlertNewParamsCustomFieldFilter] `json:"custom_field_filters"`
 	// If provided, will create this alert for this specific customer. To create an
-	// alert for all customers, do not specify `customer_id` or `plan_id`.
+	// alert for all customers, do not specify a `customer_id`.
 	CustomerID param.Field[string] `json:"customer_id" format:"uuid"`
 	// If true, the alert will evaluate immediately on customers that already meet the
 	// alert threshold. If false, it will only evaluate on future customers that
@@ -123,7 +123,7 @@ type V1AlertNewParams struct {
 	// evaluate.
 	InvoiceTypesFilter param.Field[[]string] `json:"invoice_types_filter"`
 	// If provided, will create this alert for this specific plan. To create an alert
-	// for all customers, do not specify `customer_id` or `plan_id`.
+	// for all customers, do not specify a `plan_id`.
 	PlanID param.Field[string] `json:"plan_id" format:"uuid"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
