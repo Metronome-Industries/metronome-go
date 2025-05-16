@@ -759,7 +759,7 @@ type V1ContractProductListParams struct {
 	Limit param.Field[int64] `query:"limit"`
 	// Cursor that indicates where the next page of results should start.
 	NextPage param.Field[string] `query:"next_page"`
-	// Filter options for the product list
+	// Filter options for the product list. If not provided, defaults to not archived.
 	ArchiveFilter param.Field[V1ContractProductListParamsArchiveFilter] `json:"archive_filter"`
 }
 
@@ -776,7 +776,7 @@ func (r V1ContractProductListParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Filter options for the product list
+// Filter options for the product list. If not provided, defaults to not archived.
 type V1ContractProductListParamsArchiveFilter string
 
 const (
