@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1ContractRateCardNewWithOptionalParams(t *testing.T) {
@@ -65,7 +66,9 @@ func TestV1ContractRateCardGet(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.Get(context.TODO(), metronome.V1ContractRateCardGetParams{
-		ID: metronome.F("f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe"),
+		ID: shared.IDParam{
+			ID: metronome.F("f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe"),
+		},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -146,7 +149,9 @@ func TestV1ContractRateCardArchive(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.Archive(context.TODO(), metronome.V1ContractRateCardArchiveParams{
-		ID: metronome.F("12b21470-4570-40df-8998-449d0b0bc52f"),
+		ID: shared.IDParam{
+			ID: metronome.F("12b21470-4570-40df-8998-449d0b0bc52f"),
+		},
 	})
 	if err != nil {
 		var apierr *metronome.Error
