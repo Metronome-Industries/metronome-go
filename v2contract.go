@@ -250,8 +250,12 @@ type V2ContractGetResponseDataCommit struct {
 	RolledOverFrom   V2ContractGetResponseDataCommitsRolledOverFrom `json:"rolled_over_from"`
 	RolloverFraction float64                                        `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string                              `json:"salesforce_opportunity_id"`
-	JSON                    v2ContractGetResponseDataCommitJSON `json:"-"`
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractGetResponseDataCommitsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetResponseDataCommitJSON         `json:"-"`
 }
 
 // v2ContractGetResponseDataCommitJSON contains the JSON metadata for the struct
@@ -279,6 +283,7 @@ type v2ContractGetResponseDataCommitJSON struct {
 	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
@@ -1166,6 +1171,36 @@ func (r v2ContractGetResponseDataCommitsRolledOverFromJSON) RawJSON() string {
 	return r.raw
 }
 
+type V2ContractGetResponseDataCommitsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                      `json:"product_tags"`
+	JSON        v2ContractGetResponseDataCommitsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataCommitsSpecifierJSON contains the JSON metadata for the
+// struct [V2ContractGetResponseDataCommitsSpecifier]
+type v2ContractGetResponseDataCommitsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataCommitsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetResponseDataOverride struct {
 	ID                    string                                                `json:"id,required" format:"uuid"`
 	StartingAt            time.Time                                             `json:"starting_at,required" format:"date-time"`
@@ -1525,8 +1560,12 @@ type V2ContractGetResponseDataCredit struct {
 	// will apply first.
 	Priority float64 `json:"priority"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string                              `json:"salesforce_opportunity_id"`
-	JSON                    v2ContractGetResponseDataCreditJSON `json:"-"`
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractGetResponseDataCreditsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetResponseDataCreditJSON         `json:"-"`
 }
 
 // v2ContractGetResponseDataCreditJSON contains the JSON metadata for the struct
@@ -1548,6 +1587,7 @@ type v2ContractGetResponseDataCreditJSON struct {
 	NetsuiteSalesOrderID    apijson.Field
 	Priority                apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
@@ -2006,6 +2046,36 @@ func (r V2ContractGetResponseDataCreditsLedgerType) IsKnown() bool {
 	return false
 }
 
+type V2ContractGetResponseDataCreditsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                      `json:"product_tags"`
+	JSON        v2ContractGetResponseDataCreditsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataCreditsSpecifierJSON contains the JSON metadata for the
+// struct [V2ContractGetResponseDataCreditsSpecifier]
+type v2ContractGetResponseDataCreditsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 // This field's availability is dependent on your client's configuration.
 type V2ContractGetResponseDataCustomerBillingProviderConfiguration struct {
 	BillingProvider V2ContractGetResponseDataCustomerBillingProviderConfigurationBillingProvider `json:"billing_provider,required"`
@@ -2315,8 +2385,12 @@ type V2ContractGetResponseDataRecurringCommit struct {
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
-	RolloverFraction float64                                      `json:"rollover_fraction"`
-	JSON             v2ContractGetResponseDataRecurringCommitJSON `json:"-"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractGetResponseDataRecurringCommitsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetResponseDataRecurringCommitJSON         `json:"-"`
 }
 
 // v2ContractGetResponseDataRecurringCommitJSON contains the JSON metadata for the
@@ -2340,6 +2414,7 @@ type v2ContractGetResponseDataRecurringCommitJSON struct {
 	Proration             apijson.Field
 	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -2544,6 +2619,36 @@ func (r V2ContractGetResponseDataRecurringCommitsRecurrenceFrequency) IsKnown() 
 	return false
 }
 
+type V2ContractGetResponseDataRecurringCommitsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                               `json:"product_tags"`
+	JSON        v2ContractGetResponseDataRecurringCommitsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataRecurringCommitsSpecifierJSON contains the JSON
+// metadata for the struct [V2ContractGetResponseDataRecurringCommitsSpecifier]
+type v2ContractGetResponseDataRecurringCommitsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataRecurringCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataRecurringCommitsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetResponseDataRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -2582,8 +2687,12 @@ type V2ContractGetResponseDataRecurringCredit struct {
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
-	RolloverFraction float64                                      `json:"rollover_fraction"`
-	JSON             v2ContractGetResponseDataRecurringCreditJSON `json:"-"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractGetResponseDataRecurringCreditsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetResponseDataRecurringCreditJSON         `json:"-"`
 }
 
 // v2ContractGetResponseDataRecurringCreditJSON contains the JSON metadata for the
@@ -2606,6 +2715,7 @@ type v2ContractGetResponseDataRecurringCreditJSON struct {
 	Proration             apijson.Field
 	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -2782,6 +2892,36 @@ func (r V2ContractGetResponseDataRecurringCreditsRecurrenceFrequency) IsKnown() 
 		return true
 	}
 	return false
+}
+
+type V2ContractGetResponseDataRecurringCreditsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                               `json:"product_tags"`
+	JSON        v2ContractGetResponseDataRecurringCreditsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataRecurringCreditsSpecifierJSON contains the JSON
+// metadata for the struct [V2ContractGetResponseDataRecurringCreditsSpecifier]
+type v2ContractGetResponseDataRecurringCreditsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataRecurringCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataRecurringCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
 }
 
 type V2ContractGetResponseDataResellerRoyalty struct {
@@ -3241,8 +3381,12 @@ type V2ContractListResponseDataCommit struct {
 	RolledOverFrom   V2ContractListResponseDataCommitsRolledOverFrom `json:"rolled_over_from"`
 	RolloverFraction float64                                         `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string                               `json:"salesforce_opportunity_id"`
-	JSON                    v2ContractListResponseDataCommitJSON `json:"-"`
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractListResponseDataCommitsSpecifier `json:"specifiers"`
+	JSON       v2ContractListResponseDataCommitJSON         `json:"-"`
 }
 
 // v2ContractListResponseDataCommitJSON contains the JSON metadata for the struct
@@ -3270,6 +3414,7 @@ type v2ContractListResponseDataCommitJSON struct {
 	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
@@ -4157,6 +4302,36 @@ func (r v2ContractListResponseDataCommitsRolledOverFromJSON) RawJSON() string {
 	return r.raw
 }
 
+type V2ContractListResponseDataCommitsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                       `json:"product_tags"`
+	JSON        v2ContractListResponseDataCommitsSpecifierJSON `json:"-"`
+}
+
+// v2ContractListResponseDataCommitsSpecifierJSON contains the JSON metadata for
+// the struct [V2ContractListResponseDataCommitsSpecifier]
+type v2ContractListResponseDataCommitsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataCommitsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractListResponseDataOverride struct {
 	ID                    string                                                 `json:"id,required" format:"uuid"`
 	StartingAt            time.Time                                              `json:"starting_at,required" format:"date-time"`
@@ -4516,8 +4691,12 @@ type V2ContractListResponseDataCredit struct {
 	// will apply first.
 	Priority float64 `json:"priority"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string                               `json:"salesforce_opportunity_id"`
-	JSON                    v2ContractListResponseDataCreditJSON `json:"-"`
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractListResponseDataCreditsSpecifier `json:"specifiers"`
+	JSON       v2ContractListResponseDataCreditJSON         `json:"-"`
 }
 
 // v2ContractListResponseDataCreditJSON contains the JSON metadata for the struct
@@ -4539,6 +4718,7 @@ type v2ContractListResponseDataCreditJSON struct {
 	NetsuiteSalesOrderID    apijson.Field
 	Priority                apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
@@ -4997,6 +5177,36 @@ func (r V2ContractListResponseDataCreditsLedgerType) IsKnown() bool {
 	return false
 }
 
+type V2ContractListResponseDataCreditsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                       `json:"product_tags"`
+	JSON        v2ContractListResponseDataCreditsSpecifierJSON `json:"-"`
+}
+
+// v2ContractListResponseDataCreditsSpecifierJSON contains the JSON metadata for
+// the struct [V2ContractListResponseDataCreditsSpecifier]
+type v2ContractListResponseDataCreditsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 // This field's availability is dependent on your client's configuration.
 type V2ContractListResponseDataCustomerBillingProviderConfiguration struct {
 	BillingProvider V2ContractListResponseDataCustomerBillingProviderConfigurationBillingProvider `json:"billing_provider,required"`
@@ -5306,8 +5516,12 @@ type V2ContractListResponseDataRecurringCommit struct {
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
-	RolloverFraction float64                                       `json:"rollover_fraction"`
-	JSON             v2ContractListResponseDataRecurringCommitJSON `json:"-"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractListResponseDataRecurringCommitsSpecifier `json:"specifiers"`
+	JSON       v2ContractListResponseDataRecurringCommitJSON         `json:"-"`
 }
 
 // v2ContractListResponseDataRecurringCommitJSON contains the JSON metadata for the
@@ -5331,6 +5545,7 @@ type v2ContractListResponseDataRecurringCommitJSON struct {
 	Proration             apijson.Field
 	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -5536,6 +5751,36 @@ func (r V2ContractListResponseDataRecurringCommitsRecurrenceFrequency) IsKnown()
 	return false
 }
 
+type V2ContractListResponseDataRecurringCommitsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                `json:"product_tags"`
+	JSON        v2ContractListResponseDataRecurringCommitsSpecifierJSON `json:"-"`
+}
+
+// v2ContractListResponseDataRecurringCommitsSpecifierJSON contains the JSON
+// metadata for the struct [V2ContractListResponseDataRecurringCommitsSpecifier]
+type v2ContractListResponseDataRecurringCommitsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataRecurringCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataRecurringCommitsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractListResponseDataRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -5574,8 +5819,12 @@ type V2ContractListResponseDataRecurringCredit struct {
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
-	RolloverFraction float64                                       `json:"rollover_fraction"`
-	JSON             v2ContractListResponseDataRecurringCreditJSON `json:"-"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractListResponseDataRecurringCreditsSpecifier `json:"specifiers"`
+	JSON       v2ContractListResponseDataRecurringCreditJSON         `json:"-"`
 }
 
 // v2ContractListResponseDataRecurringCreditJSON contains the JSON metadata for the
@@ -5598,6 +5847,7 @@ type v2ContractListResponseDataRecurringCreditJSON struct {
 	Proration             apijson.Field
 	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -5774,6 +6024,36 @@ func (r V2ContractListResponseDataRecurringCreditsRecurrenceFrequency) IsKnown()
 		return true
 	}
 	return false
+}
+
+type V2ContractListResponseDataRecurringCreditsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                `json:"product_tags"`
+	JSON        v2ContractListResponseDataRecurringCreditsSpecifierJSON `json:"-"`
+}
+
+// v2ContractListResponseDataRecurringCreditsSpecifierJSON contains the JSON
+// metadata for the struct [V2ContractListResponseDataRecurringCreditsSpecifier]
+type v2ContractListResponseDataRecurringCreditsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataRecurringCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataRecurringCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
 }
 
 type V2ContractListResponseDataResellerRoyalty struct {
@@ -6239,8 +6519,13 @@ type V2ContractGetEditHistoryResponseDataAddCommit struct {
 	RateType         V2ContractGetEditHistoryResponseDataAddCommitsRateType `json:"rate_type"`
 	RolloverFraction float64                                                `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string                                            `json:"salesforce_opportunity_id"`
-	JSON                    v2ContractGetEditHistoryResponseDataAddCommitJSON `json:"-"`
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []V2ContractGetEditHistoryResponseDataAddCommitsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetEditHistoryResponseDataAddCommitJSON         `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddCommitJSON contains the JSON metadata for
@@ -6260,6 +6545,7 @@ type v2ContractGetEditHistoryResponseDataAddCommitJSON struct {
 	RateType                apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
@@ -6325,6 +6611,37 @@ func (r V2ContractGetEditHistoryResponseDataAddCommitsRateType) IsKnown() bool {
 	return false
 }
 
+type V2ContractGetEditHistoryResponseDataAddCommitsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                    `json:"product_tags"`
+	JSON        v2ContractGetEditHistoryResponseDataAddCommitsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCommitsSpecifierJSON contains the JSON
+// metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCommitsSpecifier]
+type v2ContractGetEditHistoryResponseDataAddCommitsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCommitsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetEditHistoryResponseDataAddCredit struct {
 	ID      string                                                `json:"id,required" format:"uuid"`
 	Product V2ContractGetEditHistoryResponseDataAddCreditsProduct `json:"product,required"`
@@ -6341,8 +6658,13 @@ type V2ContractGetEditHistoryResponseDataAddCredit struct {
 	// will apply first.
 	Priority float64 `json:"priority"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string                                            `json:"salesforce_opportunity_id"`
-	JSON                    v2ContractGetEditHistoryResponseDataAddCreditJSON `json:"-"`
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []V2ContractGetEditHistoryResponseDataAddCreditsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetEditHistoryResponseDataAddCreditJSON         `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddCreditJSON contains the JSON metadata for
@@ -6359,6 +6681,7 @@ type v2ContractGetEditHistoryResponseDataAddCreditJSON struct {
 	NetsuiteSalesOrderID    apijson.Field
 	Priority                apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }
@@ -6406,6 +6729,37 @@ func (r V2ContractGetEditHistoryResponseDataAddCreditsType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                    `json:"product_tags"`
+	JSON        v2ContractGetEditHistoryResponseDataAddCreditsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCreditsSpecifierJSON contains the JSON
+// metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCreditsSpecifier]
+type v2ContractGetEditHistoryResponseDataAddCreditsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
 }
 
 type V2ContractGetEditHistoryResponseDataAddOverride struct {
@@ -6668,8 +7022,12 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
-	RolloverFraction float64                                                    `json:"rollover_fraction"`
-	JSON             v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON `json:"-"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON         `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON contains the JSON
@@ -6693,6 +7051,7 @@ type v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON struct {
 	Proration             apijson.Field
 	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -6901,6 +7260,37 @@ func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsRecurrenceFrequen
 	return false
 }
 
+type V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                             `json:"product_tags"`
+	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON contains
+// the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier]
+type v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -6939,8 +7329,12 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
-	RolloverFraction float64                                                    `json:"rollover_fraction"`
-	JSON             v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON `json:"-"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON         `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON contains the JSON
@@ -6963,6 +7357,7 @@ type v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON struct {
 	Proration             apijson.Field
 	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -7142,6 +7537,37 @@ func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsRecurrenceFrequen
 		return true
 	}
 	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                             `json:"product_tags"`
+	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON contains
+// the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier]
+type v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
 }
 
 type V2ContractGetEditHistoryResponseDataAddResellerRoyalty struct {
@@ -7391,7 +7817,12 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	NetsuiteSalesOrderID  string                                                           `json:"netsuite_sales_order_id,nullable"`
 	ProductID             string                                                           `json:"product_id" format:"uuid"`
 	RolloverFraction      float64                                                          `json:"rollover_fraction,nullable"`
-	JSON                  v2ContractGetEditHistoryResponseDataUpdateCommitJSON             `json:"-"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier `json:"specifiers"`
+	JSON       v2ContractGetEditHistoryResponseDataUpdateCommitJSON         `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataUpdateCommitJSON contains the JSON metadata
@@ -7406,6 +7837,7 @@ type v2ContractGetEditHistoryResponseDataUpdateCommitJSON struct {
 	NetsuiteSalesOrderID  apijson.Field
 	ProductID             apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -7627,6 +8059,37 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceScheduleUpdateS
 }
 
 func (r v2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceScheduleUpdateScheduleItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                       `json:"product_tags"`
+	JSON        v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON contains the JSON
+// metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier]
+type v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -8223,6 +8686,11 @@ type V2ContractEditParamsAddCommit struct {
 	RateType param.Field[V2ContractEditParamsAddCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V2ContractEditParamsAddCommitsSpecifier] `json:"specifiers"`
 	// A temporary ID for the commit that can be used to reference the commit for
 	// commit specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -8471,6 +8939,20 @@ func (r V2ContractEditParamsAddCommitsRateType) IsKnown() bool {
 	return false
 }
 
+type V2ContractEditParamsAddCommitsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V2ContractEditParamsAddCommitsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type V2ContractEditParamsAddCredit struct {
 	// Schedule for distributing the credit to the customer.
 	AccessSchedule param.Field[V2ContractEditParamsAddCreditsAccessSchedule] `json:"access_schedule,required"`
@@ -8492,6 +8974,11 @@ type V2ContractEditParamsAddCredit struct {
 	// first.
 	Priority param.Field[float64]                                `json:"priority"`
 	RateType param.Field[V2ContractEditParamsAddCreditsRateType] `json:"rate_type"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V2ContractEditParamsAddCreditsSpecifier] `json:"specifiers"`
 }
 
 func (r V2ContractEditParamsAddCredit) MarshalJSON() (data []byte, err error) {
@@ -8533,6 +9020,20 @@ func (r V2ContractEditParamsAddCreditsRateType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type V2ContractEditParamsAddCreditsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V2ContractEditParamsAddCreditsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type V2ContractEditParamsAddDiscount struct {
@@ -8987,6 +9488,11 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V2ContractEditParamsAddRecurringCommitsSpecifier] `json:"specifiers"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -9099,6 +9605,20 @@ func (r V2ContractEditParamsAddRecurringCommitsRecurrenceFrequency) IsKnown() bo
 	return false
 }
 
+type V2ContractEditParamsAddRecurringCommitsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V2ContractEditParamsAddRecurringCommitsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type V2ContractEditParamsAddRecurringCredit struct {
 	// The amount of commit to grant.
 	AccessAmount param.Field[V2ContractEditParamsAddRecurringCreditsAccessAmount] `json:"access_amount,required"`
@@ -9136,6 +9656,11 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V2ContractEditParamsAddRecurringCreditsSpecifier] `json:"specifiers"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -9235,6 +9760,20 @@ func (r V2ContractEditParamsAddRecurringCreditsRecurrenceFrequency) IsKnown() bo
 		return true
 	}
 	return false
+}
+
+type V2ContractEditParamsAddRecurringCreditsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V2ContractEditParamsAddRecurringCreditsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type V2ContractEditParamsAddResellerRoyalty struct {
@@ -10003,6 +10542,11 @@ type V2ContractEditCommitParams struct {
 	InvoiceContractID param.Field[string]                                    `json:"invoice_contract_id" format:"uuid"`
 	InvoiceSchedule   param.Field[V2ContractEditCommitParamsInvoiceSchedule] `json:"invoice_schedule"`
 	ProductID         param.Field[string]                                    `json:"product_id" format:"uuid"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V2ContractEditCommitParamsSpecifier] `json:"specifiers"`
 }
 
 func (r V2ContractEditCommitParams) MarshalJSON() (data []byte, err error) {
@@ -10089,6 +10633,20 @@ func (r V2ContractEditCommitParamsInvoiceScheduleUpdateScheduleItem) MarshalJSON
 	return apijson.MarshalRoot(r)
 }
 
+type V2ContractEditCommitParamsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V2ContractEditCommitParamsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type V2ContractEditCreditParams struct {
 	// ID of the credit to edit
 	CreditID param.Field[string] `json:"credit_id,required" format:"uuid"`
@@ -10102,6 +10660,11 @@ type V2ContractEditCreditParams struct {
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
 	ProductID             param.Field[string]   `json:"product_id" format:"uuid"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V2ContractEditCreditParamsSpecifier] `json:"specifiers"`
 }
 
 func (r V2ContractEditCreditParams) MarshalJSON() (data []byte, err error) {
@@ -10144,6 +10707,20 @@ type V2ContractEditCreditParamsAccessScheduleUpdateScheduleItem struct {
 }
 
 func (r V2ContractEditCreditParamsAccessScheduleUpdateScheduleItem) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditCreditParamsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V2ContractEditCreditParamsSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 

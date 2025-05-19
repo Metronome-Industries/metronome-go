@@ -1573,6 +1573,9 @@ type V1ContractListBalancesResponseData struct {
 	RolloverFraction float64     `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// This field can have the runtime type of [[]shared.CommitSpecifier],
+	// [[]shared.CreditSpecifier].
+	Specifiers interface{} `json:"specifiers"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
@@ -1608,6 +1611,7 @@ type v1ContractListBalancesResponseDataJSON struct {
 	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	UniquenessKey           apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
@@ -1983,6 +1987,11 @@ type V1ContractNewParamsCommit struct {
 	RateType param.Field[V1ContractNewParamsCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V1ContractNewParamsCommitsSpecifier] `json:"specifiers"`
 	// A temporary ID for the commit that can be used to reference the commit for
 	// commit specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -2231,6 +2240,20 @@ func (r V1ContractNewParamsCommitsRateType) IsKnown() bool {
 	return false
 }
 
+type V1ContractNewParamsCommitsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V1ContractNewParamsCommitsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type V1ContractNewParamsCredit struct {
 	// Schedule for distributing the credit to the customer.
 	AccessSchedule param.Field[V1ContractNewParamsCreditsAccessSchedule] `json:"access_schedule,required"`
@@ -2252,6 +2275,11 @@ type V1ContractNewParamsCredit struct {
 	// first.
 	Priority param.Field[float64]                            `json:"priority"`
 	RateType param.Field[V1ContractNewParamsCreditsRateType] `json:"rate_type"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V1ContractNewParamsCreditsSpecifier] `json:"specifiers"`
 }
 
 func (r V1ContractNewParamsCredit) MarshalJSON() (data []byte, err error) {
@@ -2294,6 +2322,20 @@ func (r V1ContractNewParamsCreditsRateType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type V1ContractNewParamsCreditsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V1ContractNewParamsCreditsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type V1ContractNewParamsDiscount struct {
@@ -2769,6 +2811,11 @@ type V1ContractNewParamsRecurringCommit struct {
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V1ContractNewParamsRecurringCommitsSpecifier] `json:"specifiers"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -2881,6 +2928,20 @@ func (r V1ContractNewParamsRecurringCommitsRecurrenceFrequency) IsKnown() bool {
 	return false
 }
 
+type V1ContractNewParamsRecurringCommitsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V1ContractNewParamsRecurringCommitsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type V1ContractNewParamsRecurringCredit struct {
 	// The amount of commit to grant.
 	AccessAmount param.Field[V1ContractNewParamsRecurringCreditsAccessAmount] `json:"access_amount,required"`
@@ -2918,6 +2979,11 @@ type V1ContractNewParamsRecurringCredit struct {
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V1ContractNewParamsRecurringCreditsSpecifier] `json:"specifiers"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -3017,6 +3083,20 @@ func (r V1ContractNewParamsRecurringCreditsRecurrenceFrequency) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type V1ContractNewParamsRecurringCreditsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V1ContractNewParamsRecurringCreditsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type V1ContractNewParamsResellerRoyalty struct {
@@ -3552,6 +3632,11 @@ type V1ContractAmendParamsCommit struct {
 	RateType param.Field[V1ContractAmendParamsCommitsRateType] `json:"rate_type"`
 	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
 	RolloverFraction param.Field[float64] `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V1ContractAmendParamsCommitsSpecifier] `json:"specifiers"`
 	// A temporary ID for the commit that can be used to reference the commit for
 	// commit specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -3800,6 +3885,20 @@ func (r V1ContractAmendParamsCommitsRateType) IsKnown() bool {
 	return false
 }
 
+type V1ContractAmendParamsCommitsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V1ContractAmendParamsCommitsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type V1ContractAmendParamsCredit struct {
 	// Schedule for distributing the credit to the customer.
 	AccessSchedule param.Field[V1ContractAmendParamsCreditsAccessSchedule] `json:"access_schedule,required"`
@@ -3821,6 +3920,11 @@ type V1ContractAmendParamsCredit struct {
 	// first.
 	Priority param.Field[float64]                              `json:"priority"`
 	RateType param.Field[V1ContractAmendParamsCreditsRateType] `json:"rate_type"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V1ContractAmendParamsCreditsSpecifier] `json:"specifiers"`
 }
 
 func (r V1ContractAmendParamsCredit) MarshalJSON() (data []byte, err error) {
@@ -3863,6 +3967,20 @@ func (r V1ContractAmendParamsCreditsRateType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type V1ContractAmendParamsCreditsSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V1ContractAmendParamsCreditsSpecifier) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type V1ContractAmendParamsDiscount struct {

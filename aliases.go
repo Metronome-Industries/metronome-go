@@ -213,6 +213,9 @@ const CommitRateTypeListRate = shared.CommitRateTypeListRate
 type CommitRolledOverFrom = shared.CommitRolledOverFrom
 
 // This is an alias to an internal type.
+type CommitSpecifier = shared.CommitSpecifier
+
+// This is an alias to an internal type.
 type ContractWithoutAmendments = shared.ContractWithoutAmendments
 
 // This is an alias to an internal type.
@@ -381,6 +384,9 @@ const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual = share
 const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly
 
 // This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsSpecifier = shared.ContractWithoutAmendmentsRecurringCommitsSpecifier
+
+// This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCredit = shared.ContractWithoutAmendmentsRecurringCredit
 
 // The amount of commit to grant.
@@ -454,6 +460,9 @@ const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual = share
 
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsSpecifier = shared.ContractWithoutAmendmentsRecurringCreditsSpecifier
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
@@ -647,6 +656,9 @@ const CreditRateTypeCommitRate = shared.CreditRateTypeCommitRate
 
 // This is an alias to an internal value.
 const CreditRateTypeListRate = shared.CreditRateTypeListRate
+
+// This is an alias to an internal type.
+type CreditSpecifier = shared.CreditSpecifier
 
 // This is an alias to an internal type.
 type CreditTypeData = shared.CreditTypeData
