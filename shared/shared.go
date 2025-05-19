@@ -90,6 +90,10 @@ type Commit struct {
 	RolloverFraction float64              `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []CommitSpecifier `json:"specifiers"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
@@ -123,6 +127,7 @@ type commitJSON struct {
 	RolledOverFrom          apijson.Field
 	RolloverFraction        apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	UniquenessKey           apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
@@ -985,6 +990,35 @@ func (r commitRolledOverFromJSON) RawJSON() string {
 	return r.raw
 }
 
+type CommitSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string            `json:"product_tags"`
+	JSON        commitSpecifierJSON `json:"-"`
+}
+
+// commitSpecifierJSON contains the JSON metadata for the struct [CommitSpecifier]
+type commitSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *CommitSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 type ContractWithoutAmendments struct {
 	Commits                []Commit                                        `json:"commits,required"`
 	CreatedAt              time.Time                                       `json:"created_at,required" format:"date-time"`
@@ -1373,8 +1407,12 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
-	RolloverFraction float64                                      `json:"rollover_fraction"`
-	JSON             contractWithoutAmendmentsRecurringCommitJSON `json:"-"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []ContractWithoutAmendmentsRecurringCommitsSpecifier `json:"specifiers"`
+	JSON       contractWithoutAmendmentsRecurringCommitJSON         `json:"-"`
 }
 
 // contractWithoutAmendmentsRecurringCommitJSON contains the JSON metadata for the
@@ -1398,6 +1436,7 @@ type contractWithoutAmendmentsRecurringCommitJSON struct {
 	Proration             apijson.Field
 	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -1602,6 +1641,36 @@ func (r ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequency) IsKnown() 
 	return false
 }
 
+type ContractWithoutAmendmentsRecurringCommitsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                               `json:"product_tags"`
+	JSON        contractWithoutAmendmentsRecurringCommitsSpecifierJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsRecurringCommitsSpecifierJSON contains the JSON
+// metadata for the struct [ContractWithoutAmendmentsRecurringCommitsSpecifier]
+type contractWithoutAmendmentsRecurringCommitsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsRecurringCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsRecurringCommitsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
 type ContractWithoutAmendmentsRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -1640,8 +1709,12 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
 	// between 0 and 1.
-	RolloverFraction float64                                      `json:"rollover_fraction"`
-	JSON             contractWithoutAmendmentsRecurringCreditJSON `json:"-"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []ContractWithoutAmendmentsRecurringCreditsSpecifier `json:"specifiers"`
+	JSON       contractWithoutAmendmentsRecurringCreditJSON         `json:"-"`
 }
 
 // contractWithoutAmendmentsRecurringCreditJSON contains the JSON metadata for the
@@ -1664,6 +1737,7 @@ type contractWithoutAmendmentsRecurringCreditJSON struct {
 	Proration             apijson.Field
 	RecurrenceFrequency   apijson.Field
 	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -1840,6 +1914,36 @@ func (r ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequency) IsKnown() 
 		return true
 	}
 	return false
+}
+
+type ContractWithoutAmendmentsRecurringCreditsSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                               `json:"product_tags"`
+	JSON        contractWithoutAmendmentsRecurringCreditsSpecifierJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsRecurringCreditsSpecifierJSON contains the JSON
+// metadata for the struct [ContractWithoutAmendmentsRecurringCreditsSpecifier]
+type contractWithoutAmendmentsRecurringCreditsSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsRecurringCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsRecurringCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
 }
 
 type ContractWithoutAmendmentsResellerRoyalty struct {
@@ -2180,6 +2284,10 @@ type Credit struct {
 	RateType CreditRateType `json:"rate_type"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []CreditSpecifier `json:"specifiers"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
@@ -2207,6 +2315,7 @@ type creditJSON struct {
 	Priority                apijson.Field
 	RateType                apijson.Field
 	SalesforceOpportunityID apijson.Field
+	Specifiers              apijson.Field
 	UniquenessKey           apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
@@ -2663,6 +2772,35 @@ func (r CreditRateType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type CreditSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string            `json:"product_tags"`
+	JSON        creditSpecifierJSON `json:"-"`
+}
+
+// creditSpecifierJSON contains the JSON metadata for the struct [CreditSpecifier]
+type creditSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *CreditSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditSpecifierJSON) RawJSON() string {
+	return r.raw
 }
 
 type CreditTypeData struct {

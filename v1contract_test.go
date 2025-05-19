@@ -83,7 +83,17 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Priority:         metronome.F(0.000000),
 			RateType:         metronome.F(metronome.V1ContractNewParamsCommitsRateTypeCommitRate),
 			RolloverFraction: metronome.F(0.000000),
-			TemporaryID:      metronome.F("temporary_id"),
+			Specifiers: metronome.F([]metronome.V1ContractNewParamsCommitsSpecifier{{
+				PresentationGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				PricingGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ProductTags: metronome.F([]string{"string"}),
+			}}),
+			TemporaryID: metronome.F("temporary_id"),
 		}}),
 		Credits: metronome.F([]metronome.V1ContractNewParamsCredit{{
 			AccessSchedule: metronome.F(metronome.V1ContractNewParamsCreditsAccessSchedule{
@@ -105,6 +115,16 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
 			RateType:             metronome.F(metronome.V1ContractNewParamsCreditsRateTypeCommitRate),
+			Specifiers: metronome.F([]metronome.V1ContractNewParamsCreditsSpecifier{{
+				PresentationGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				PricingGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ProductTags: metronome.F([]string{"string"}),
+			}}),
 		}}),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
@@ -243,7 +263,17 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			RateType:             metronome.F(metronome.V1ContractNewParamsRecurringCommitsRateTypeCommitRate),
 			RecurrenceFrequency:  metronome.F(metronome.V1ContractNewParamsRecurringCommitsRecurrenceFrequencyMonthly),
 			RolloverFraction:     metronome.F(0.000000),
-			TemporaryID:          metronome.F("temporary_id"),
+			Specifiers: metronome.F([]metronome.V1ContractNewParamsRecurringCommitsSpecifier{{
+				PresentationGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				PricingGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ProductTags: metronome.F([]string{"string"}),
+			}}),
+			TemporaryID: metronome.F("temporary_id"),
 		}}),
 		RecurringCredits: metronome.F([]metronome.V1ContractNewParamsRecurringCredit{{
 			AccessAmount: metronome.F(metronome.V1ContractNewParamsRecurringCreditsAccessAmount{
@@ -268,7 +298,17 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			RateType:              metronome.F(metronome.V1ContractNewParamsRecurringCreditsRateTypeCommitRate),
 			RecurrenceFrequency:   metronome.F(metronome.V1ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly),
 			RolloverFraction:      metronome.F(0.000000),
-			TemporaryID:           metronome.F("temporary_id"),
+			Specifiers: metronome.F([]metronome.V1ContractNewParamsRecurringCreditsSpecifier{{
+				PresentationGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				PricingGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ProductTags: metronome.F([]string{"string"}),
+			}}),
+			TemporaryID: metronome.F("temporary_id"),
 		}}),
 		ResellerRoyalties: metronome.F([]metronome.V1ContractNewParamsResellerRoyalty{{
 			Fraction:              metronome.F(0.000000),
@@ -510,7 +550,17 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			Priority:         metronome.F(0.000000),
 			RateType:         metronome.F(metronome.V1ContractAmendParamsCommitsRateTypeCommitRate),
 			RolloverFraction: metronome.F(0.000000),
-			TemporaryID:      metronome.F("temporary_id"),
+			Specifiers: metronome.F([]metronome.V1ContractAmendParamsCommitsSpecifier{{
+				PresentationGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				PricingGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ProductTags: metronome.F([]string{"string"}),
+			}}),
+			TemporaryID: metronome.F("temporary_id"),
 		}}),
 		Credits: metronome.F([]metronome.V1ContractAmendParamsCredit{{
 			AccessSchedule: metronome.F(metronome.V1ContractAmendParamsCreditsAccessSchedule{
@@ -532,6 +582,16 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
 			RateType:             metronome.F(metronome.V1ContractAmendParamsCreditsRateTypeCommitRate),
+			Specifiers: metronome.F([]metronome.V1ContractAmendParamsCreditsSpecifier{{
+				PresentationGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				PricingGroupValues: metronome.F(map[string]string{
+					"foo": "string",
+				}),
+				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				ProductTags: metronome.F([]string{"string"}),
+			}}),
 		}}),
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
