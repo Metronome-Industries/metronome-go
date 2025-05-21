@@ -471,8 +471,13 @@ type V1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit struct 
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
-	Name string                                                                  `json:"name"`
-	JSON v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
+	Name string `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []V1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
+	JSON       v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
 }
 
 // v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON contains
@@ -484,6 +489,7 @@ type v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON str
 	ApplicableProductTags apijson.Field
 	Description           apijson.Field
 	Name                  apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -493,6 +499,37 @@ func (r *V1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit) Un
 }
 
 func (r v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                                         `json:"product_tags"`
+	JSON        v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
+}
+
+// v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON
+// contains the JSON metadata for the struct
+// [V1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier]
+type v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1103,8 +1140,13 @@ type V1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit struct
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
-	Name string                                                                   `json:"name"`
-	JSON v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
+	Name string `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []V1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
+	JSON       v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
 }
 
 // v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON
@@ -1116,6 +1158,7 @@ type v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON st
 	ApplicableProductTags apijson.Field
 	Description           apijson.Field
 	Name                  apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -1125,6 +1168,37 @@ func (r *V1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit) U
 }
 
 func (r v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                                          `json:"product_tags"`
+	JSON        v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
+}
+
+// v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON
+// contains the JSON metadata for the struct
+// [V1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier]
+type v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -2664,9 +2738,28 @@ type V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommit struct {
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name param.Field[string] `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommitSpecifier] `json:"specifiers"`
 }
 
 func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommitSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -2804,7 +2897,7 @@ type V1ContractNewParamsRecurringCommit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency param.Field[V1ContractNewParamsRecurringCommitsRecurrenceFrequency] `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -2909,7 +3002,7 @@ func (r V1ContractNewParamsRecurringCommitsRateType) IsKnown() bool {
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V1ContractNewParamsRecurringCommitsRecurrenceFrequency string
 
@@ -2972,7 +3065,7 @@ type V1ContractNewParamsRecurringCredit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency param.Field[V1ContractNewParamsRecurringCreditsRecurrenceFrequency] `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -3066,7 +3159,7 @@ func (r V1ContractNewParamsRecurringCreditsRateType) IsKnown() bool {
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V1ContractNewParamsRecurringCreditsRecurrenceFrequency string
 
