@@ -254,6 +254,16 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				ApplicableProductTags: metronome.F([]string{"string"}),
 				Description:           metronome.F("description"),
 				Name:                  metronome.F("name"),
+				Specifiers: metronome.F([]metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier{{
+					PresentationGroupValues: metronome.F(map[string]string{
+						"foo": "string",
+					}),
+					PricingGroupValues: metronome.F(map[string]string{
+						"foo": "string",
+					}),
+					ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					ProductTags: metronome.F([]string{"string"}),
+				}}),
 			}),
 			IsEnabled: metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig{
@@ -496,6 +506,16 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				ApplicableProductTags: metronome.F([]string{"string"}),
 				Description:           metronome.F("description"),
 				Name:                  metronome.F("name"),
+				Specifiers: metronome.F([]metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier{{
+					PresentationGroupValues: metronome.F(map[string]string{
+						"foo": "string",
+					}),
+					PricingGroupValues: metronome.F(map[string]string{
+						"foo": "string",
+					}),
+					ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					ProductTags: metronome.F([]string{"string"}),
+				}}),
 			}),
 			IsEnabled: metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig{

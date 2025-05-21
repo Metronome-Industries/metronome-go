@@ -2208,8 +2208,13 @@ type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit struct 
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
-	Name string                                                                  `json:"name"`
-	JSON v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
+	Name string `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
+	JSON       v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
 }
 
 // v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON contains
@@ -2221,6 +2226,7 @@ type v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON str
 	ApplicableProductTags apijson.Field
 	Description           apijson.Field
 	Name                  apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -2230,6 +2236,37 @@ func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit) Un
 }
 
 func (r v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                                         `json:"product_tags"`
+	JSON        v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier]
+type v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -2379,7 +2416,7 @@ type V2ContractGetResponseDataRecurringCommit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency V2ContractGetResponseDataRecurringCommitsRecurrenceFrequency `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -2600,7 +2637,7 @@ func (r V2ContractGetResponseDataRecurringCommitsProration) IsKnown() bool {
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V2ContractGetResponseDataRecurringCommitsRecurrenceFrequency string
 
@@ -2681,7 +2718,7 @@ type V2ContractGetResponseDataRecurringCredit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency V2ContractGetResponseDataRecurringCreditsRecurrenceFrequency `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -2875,7 +2912,7 @@ func (r V2ContractGetResponseDataRecurringCreditsProration) IsKnown() bool {
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V2ContractGetResponseDataRecurringCreditsRecurrenceFrequency string
 
@@ -5339,8 +5376,13 @@ type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit struct
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
-	Name string                                                                   `json:"name"`
-	JSON v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
+	Name string `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
+	JSON       v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
 }
 
 // v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON
@@ -5352,6 +5394,7 @@ type v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON st
 	ApplicableProductTags apijson.Field
 	Description           apijson.Field
 	Name                  apijson.Field
+	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -5361,6 +5404,37 @@ func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit) U
 }
 
 func (r v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                                                                          `json:"product_tags"`
+	JSON        v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
+}
+
+// v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier]
+type v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -5510,7 +5584,7 @@ type V2ContractListResponseDataRecurringCommit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency V2ContractListResponseDataRecurringCommitsRecurrenceFrequency `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -5732,7 +5806,7 @@ func (r V2ContractListResponseDataRecurringCommitsProration) IsKnown() bool {
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V2ContractListResponseDataRecurringCommitsRecurrenceFrequency string
 
@@ -5813,7 +5887,7 @@ type V2ContractListResponseDataRecurringCredit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency V2ContractListResponseDataRecurringCreditsRecurrenceFrequency `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -6007,7 +6081,7 @@ func (r V2ContractListResponseDataRecurringCreditsProration) IsKnown() bool {
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V2ContractListResponseDataRecurringCreditsRecurrenceFrequency string
 
@@ -7016,7 +7090,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency V2ContractGetEditHistoryResponseDataAddRecurringCommitsRecurrenceFrequency `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -7241,7 +7315,7 @@ func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsProration) IsKnow
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitsRecurrenceFrequency string
 
@@ -7323,7 +7397,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency V2ContractGetEditHistoryResponseDataAddRecurringCreditsRecurrenceFrequency `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -7520,7 +7594,7 @@ func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsProration) IsKnow
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditsRecurrenceFrequency string
 
@@ -9341,9 +9415,28 @@ type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit struct {
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name param.Field[string] `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier] `json:"specifiers"`
 }
 
 func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -9481,7 +9574,7 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency param.Field[V2ContractEditParamsAddRecurringCommitsRecurrenceFrequency] `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -9586,7 +9679,7 @@ func (r V2ContractEditParamsAddRecurringCommitsRateType) IsKnown() bool {
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V2ContractEditParamsAddRecurringCommitsRecurrenceFrequency string
 
@@ -9649,7 +9742,7 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's start_date rather than the usage
+	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	RecurrenceFrequency param.Field[V2ContractEditParamsAddRecurringCreditsRecurrenceFrequency] `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
@@ -9743,7 +9836,7 @@ func (r V2ContractEditParamsAddRecurringCreditsRateType) IsKnown() bool {
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 type V2ContractEditParamsAddRecurringCreditsRecurrenceFrequency string
 
@@ -10277,9 +10370,28 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name param.Field[string] `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier] `json:"specifiers"`
 }
 
 func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 

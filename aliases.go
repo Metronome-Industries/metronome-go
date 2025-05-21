@@ -255,6 +255,9 @@ type ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration = shared.Cont
 type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit
 
 // This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifier = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifier
+
+// This is an alias to an internal type.
 type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig
 
 // Gate access to the commit balance based on successful collection of payment.
@@ -365,7 +368,7 @@ const ContractWithoutAmendmentsRecurringCommitsProrationFirstAndLast = shared.Co
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 //
 // This is an alias to an internal type.
@@ -443,7 +446,7 @@ const ContractWithoutAmendmentsRecurringCreditsProrationFirstAndLast = shared.Co
 // The frequency at which the recurring commits will be created. If not provided: -
 // The commits will be created on the usage invoice frequency. If provided: - The
 // period defined in the duration will correspond to this frequency. - Commits will
-// be created aligned with the recurring commit's start_date rather than the usage
+// be created aligned with the recurring commit's starting_at rather than the usage
 // invoice dates.
 //
 // This is an alias to an internal type.
