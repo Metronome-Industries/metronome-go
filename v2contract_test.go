@@ -528,6 +528,26 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			RechargeToAmount: metronome.F(0.000000),
 			ThresholdAmount:  metronome.F(0.000000),
 		}),
+		UpdateRecurringCommits: metronome.F([]metronome.V2ContractEditParamsUpdateRecurringCommit{{
+			RecurringCommitID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			AccessAmount: metronome.F(metronome.V2ContractEditParamsUpdateRecurringCommitsAccessAmount{
+				Quantity:  metronome.F(0.000000),
+				UnitPrice: metronome.F(0.000000),
+			}),
+			EndingBefore: metronome.F(time.Now()),
+			InvoiceAmount: metronome.F(metronome.V2ContractEditParamsUpdateRecurringCommitsInvoiceAmount{
+				Quantity:  metronome.F(0.000000),
+				UnitPrice: metronome.F(0.000000),
+			}),
+		}}),
+		UpdateRecurringCredits: metronome.F([]metronome.V2ContractEditParamsUpdateRecurringCredit{{
+			RecurringCreditID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			AccessAmount: metronome.F(metronome.V2ContractEditParamsUpdateRecurringCreditsAccessAmount{
+				Quantity:  metronome.F(0.000000),
+				UnitPrice: metronome.F(0.000000),
+			}),
+			EndingBefore: metronome.F(time.Now()),
+		}}),
 		UpdateScheduledCharges: metronome.F([]metronome.V2ContractEditParamsUpdateScheduledCharge{{
 			ScheduledChargeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			InvoiceSchedule: metronome.F(metronome.V2ContractEditParamsUpdateScheduledChargesInvoiceSchedule{
