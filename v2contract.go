@@ -6530,6 +6530,8 @@ type V2ContractGetEditHistoryResponseData struct {
 	UpdateContractEndDate   time.Time                                                    `json:"update_contract_end_date" format:"date-time"`
 	UpdateCredits           []V2ContractGetEditHistoryResponseDataUpdateCredit           `json:"update_credits"`
 	UpdateDiscounts         []V2ContractGetEditHistoryResponseDataUpdateDiscount         `json:"update_discounts"`
+	UpdateRecurringCommits  []V2ContractGetEditHistoryResponseDataUpdateRecurringCommit  `json:"update_recurring_commits"`
+	UpdateRecurringCredits  []V2ContractGetEditHistoryResponseDataUpdateRecurringCredit  `json:"update_recurring_credits"`
 	UpdateRefundInvoices    []V2ContractGetEditHistoryResponseDataUpdateRefundInvoice    `json:"update_refund_invoices"`
 	UpdateScheduledCharges  []V2ContractGetEditHistoryResponseDataUpdateScheduledCharge  `json:"update_scheduled_charges"`
 	JSON                    v2ContractGetEditHistoryResponseDataJSON                     `json:"-"`
@@ -6558,6 +6560,8 @@ type v2ContractGetEditHistoryResponseDataJSON struct {
 	UpdateContractEndDate   apijson.Field
 	UpdateCredits           apijson.Field
 	UpdateDiscounts         apijson.Field
+	UpdateRecurringCommits  apijson.Field
+	UpdateRecurringCredits  apijson.Field
 	UpdateRefundInvoices    apijson.Field
 	UpdateScheduledCharges  apijson.Field
 	raw                     string
@@ -8484,6 +8488,132 @@ func (r v2ContractGetEditHistoryResponseDataUpdateDiscountsScheduleScheduleItemJ
 	return r.raw
 }
 
+type V2ContractGetEditHistoryResponseDataUpdateRecurringCommit struct {
+	ID            string                                                                  `json:"id,required" format:"uuid"`
+	AccessAmount  V2ContractGetEditHistoryResponseDataUpdateRecurringCommitsAccessAmount  `json:"access_amount"`
+	EndingBefore  time.Time                                                               `json:"ending_before" format:"date-time"`
+	InvoiceAmount V2ContractGetEditHistoryResponseDataUpdateRecurringCommitsInvoiceAmount `json:"invoice_amount"`
+	JSON          v2ContractGetEditHistoryResponseDataUpdateRecurringCommitJSON           `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateRecurringCommitJSON contains the JSON
+// metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateRecurringCommit]
+type v2ContractGetEditHistoryResponseDataUpdateRecurringCommitJSON struct {
+	ID            apijson.Field
+	AccessAmount  apijson.Field
+	EndingBefore  apijson.Field
+	InvoiceAmount apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateRecurringCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateRecurringCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateRecurringCommitsAccessAmount struct {
+	Quantity  float64                                                                    `json:"quantity"`
+	UnitPrice float64                                                                    `json:"unit_price"`
+	JSON      v2ContractGetEditHistoryResponseDataUpdateRecurringCommitsAccessAmountJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateRecurringCommitsAccessAmountJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateRecurringCommitsAccessAmount]
+type v2ContractGetEditHistoryResponseDataUpdateRecurringCommitsAccessAmountJSON struct {
+	Quantity    apijson.Field
+	UnitPrice   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateRecurringCommitsAccessAmount) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateRecurringCommitsAccessAmountJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateRecurringCommitsInvoiceAmount struct {
+	Quantity  float64                                                                     `json:"quantity"`
+	UnitPrice float64                                                                     `json:"unit_price"`
+	JSON      v2ContractGetEditHistoryResponseDataUpdateRecurringCommitsInvoiceAmountJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateRecurringCommitsInvoiceAmountJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateRecurringCommitsInvoiceAmount]
+type v2ContractGetEditHistoryResponseDataUpdateRecurringCommitsInvoiceAmountJSON struct {
+	Quantity    apijson.Field
+	UnitPrice   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateRecurringCommitsInvoiceAmount) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateRecurringCommitsInvoiceAmountJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateRecurringCredit struct {
+	ID           string                                                                 `json:"id,required" format:"uuid"`
+	AccessAmount V2ContractGetEditHistoryResponseDataUpdateRecurringCreditsAccessAmount `json:"access_amount"`
+	EndingBefore time.Time                                                              `json:"ending_before" format:"date-time"`
+	JSON         v2ContractGetEditHistoryResponseDataUpdateRecurringCreditJSON          `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateRecurringCreditJSON contains the JSON
+// metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateRecurringCredit]
+type v2ContractGetEditHistoryResponseDataUpdateRecurringCreditJSON struct {
+	ID           apijson.Field
+	AccessAmount apijson.Field
+	EndingBefore apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateRecurringCredit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateRecurringCreditJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateRecurringCreditsAccessAmount struct {
+	Quantity  float64                                                                    `json:"quantity"`
+	UnitPrice float64                                                                    `json:"unit_price"`
+	JSON      v2ContractGetEditHistoryResponseDataUpdateRecurringCreditsAccessAmountJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateRecurringCreditsAccessAmountJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateRecurringCreditsAccessAmount]
+type v2ContractGetEditHistoryResponseDataUpdateRecurringCreditsAccessAmountJSON struct {
+	Quantity    apijson.Field
+	UnitPrice   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateRecurringCreditsAccessAmount) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateRecurringCreditsAccessAmountJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetEditHistoryResponseDataUpdateRefundInvoice struct {
 	Date      time.Time                                                   `json:"date,required" format:"date-time"`
 	InvoiceID string                                                      `json:"invoice_id,required" format:"uuid"`
@@ -8717,6 +8847,8 @@ type V2ContractEditParams struct {
 	UpdateContractEndDate                      param.Field[time.Time]                                                      `json:"update_contract_end_date" format:"date-time"`
 	UpdateCredits                              param.Field[[]V2ContractEditParamsUpdateCredit]                             `json:"update_credits"`
 	UpdatePrepaidBalanceThresholdConfiguration param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration] `json:"update_prepaid_balance_threshold_configuration"`
+	UpdateRecurringCommits                     param.Field[[]V2ContractEditParamsUpdateRecurringCommit]                    `json:"update_recurring_commits"`
+	UpdateRecurringCredits                     param.Field[[]V2ContractEditParamsUpdateRecurringCredit]                    `json:"update_recurring_credits"`
 	UpdateScheduledCharges                     param.Field[[]V2ContractEditParamsUpdateScheduledCharge]                    `json:"update_scheduled_charges"`
 	UpdateSpendThresholdConfiguration          param.Field[V2ContractEditParamsUpdateSpendThresholdConfiguration]          `json:"update_spend_threshold_configuration"`
 }
@@ -10475,6 +10607,54 @@ func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGat
 		return true
 	}
 	return false
+}
+
+type V2ContractEditParamsUpdateRecurringCommit struct {
+	RecurringCommitID param.Field[string]                                                  `json:"recurring_commit_id,required" format:"uuid"`
+	AccessAmount      param.Field[V2ContractEditParamsUpdateRecurringCommitsAccessAmount]  `json:"access_amount"`
+	EndingBefore      param.Field[time.Time]                                               `json:"ending_before" format:"date-time"`
+	InvoiceAmount     param.Field[V2ContractEditParamsUpdateRecurringCommitsInvoiceAmount] `json:"invoice_amount"`
+}
+
+func (r V2ContractEditParamsUpdateRecurringCommit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsUpdateRecurringCommitsAccessAmount struct {
+	Quantity  param.Field[float64] `json:"quantity"`
+	UnitPrice param.Field[float64] `json:"unit_price"`
+}
+
+func (r V2ContractEditParamsUpdateRecurringCommitsAccessAmount) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsUpdateRecurringCommitsInvoiceAmount struct {
+	Quantity  param.Field[float64] `json:"quantity"`
+	UnitPrice param.Field[float64] `json:"unit_price"`
+}
+
+func (r V2ContractEditParamsUpdateRecurringCommitsInvoiceAmount) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsUpdateRecurringCredit struct {
+	RecurringCreditID param.Field[string]                                                 `json:"recurring_credit_id,required" format:"uuid"`
+	AccessAmount      param.Field[V2ContractEditParamsUpdateRecurringCreditsAccessAmount] `json:"access_amount"`
+	EndingBefore      param.Field[time.Time]                                              `json:"ending_before" format:"date-time"`
+}
+
+func (r V2ContractEditParamsUpdateRecurringCredit) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsUpdateRecurringCreditsAccessAmount struct {
+	Quantity  param.Field[float64] `json:"quantity"`
+	UnitPrice param.Field[float64] `json:"unit_price"`
+}
+
+func (r V2ContractEditParamsUpdateRecurringCreditsAccessAmount) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type V2ContractEditParamsUpdateScheduledCharge struct {
