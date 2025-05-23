@@ -16,7 +16,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1PlanService contains methods and other services that help with interacting
@@ -129,137 +128,6 @@ func (r *V1PlanService) ListCustomersAutoPaging(ctx context.Context, params V1Pl
 	return pagination.NewCursorPageAutoPager(r.ListCustomers(ctx, params, opts...))
 }
 
-type PlanDetail struct {
-	ID           string                  `json:"id,required" format:"uuid"`
-	CustomFields map[string]string       `json:"custom_fields,required"`
-	Name         string                  `json:"name,required"`
-	CreditGrants []PlanDetailCreditGrant `json:"credit_grants"`
-	Description  string                  `json:"description"`
-	Minimums     []PlanDetailMinimum     `json:"minimums"`
-	OverageRates []PlanDetailOverageRate `json:"overage_rates"`
-	JSON         planDetailJSON          `json:"-"`
-}
-
-// planDetailJSON contains the JSON metadata for the struct [PlanDetail]
-type planDetailJSON struct {
-	ID           apijson.Field
-	CustomFields apijson.Field
-	Name         apijson.Field
-	CreditGrants apijson.Field
-	Description  apijson.Field
-	Minimums     apijson.Field
-	OverageRates apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *PlanDetail) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r planDetailJSON) RawJSON() string {
-	return r.raw
-}
-
-type PlanDetailCreditGrant struct {
-	AmountGranted           float64                   `json:"amount_granted,required"`
-	AmountGrantedCreditType shared.CreditTypeData     `json:"amount_granted_credit_type,required"`
-	AmountPaid              float64                   `json:"amount_paid,required"`
-	AmountPaidCreditType    shared.CreditTypeData     `json:"amount_paid_credit_type,required"`
-	EffectiveDuration       float64                   `json:"effective_duration,required"`
-	Name                    string                    `json:"name,required"`
-	Priority                string                    `json:"priority,required"`
-	SendInvoice             bool                      `json:"send_invoice,required"`
-	Reason                  string                    `json:"reason"`
-	RecurrenceDuration      float64                   `json:"recurrence_duration"`
-	RecurrenceInterval      float64                   `json:"recurrence_interval"`
-	JSON                    planDetailCreditGrantJSON `json:"-"`
-}
-
-// planDetailCreditGrantJSON contains the JSON metadata for the struct
-// [PlanDetailCreditGrant]
-type planDetailCreditGrantJSON struct {
-	AmountGranted           apijson.Field
-	AmountGrantedCreditType apijson.Field
-	AmountPaid              apijson.Field
-	AmountPaidCreditType    apijson.Field
-	EffectiveDuration       apijson.Field
-	Name                    apijson.Field
-	Priority                apijson.Field
-	SendInvoice             apijson.Field
-	Reason                  apijson.Field
-	RecurrenceDuration      apijson.Field
-	RecurrenceInterval      apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *PlanDetailCreditGrant) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r planDetailCreditGrantJSON) RawJSON() string {
-	return r.raw
-}
-
-type PlanDetailMinimum struct {
-	CreditType shared.CreditTypeData `json:"credit_type,required"`
-	Name       string                `json:"name,required"`
-	// Used in price ramps. Indicates how many billing periods pass before the charge
-	// applies.
-	StartPeriod float64               `json:"start_period,required"`
-	Value       float64               `json:"value,required"`
-	JSON        planDetailMinimumJSON `json:"-"`
-}
-
-// planDetailMinimumJSON contains the JSON metadata for the struct
-// [PlanDetailMinimum]
-type planDetailMinimumJSON struct {
-	CreditType  apijson.Field
-	Name        apijson.Field
-	StartPeriod apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *PlanDetailMinimum) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r planDetailMinimumJSON) RawJSON() string {
-	return r.raw
-}
-
-type PlanDetailOverageRate struct {
-	CreditType     shared.CreditTypeData `json:"credit_type,required"`
-	FiatCreditType shared.CreditTypeData `json:"fiat_credit_type,required"`
-	// Used in price ramps. Indicates how many billing periods pass before the charge
-	// applies.
-	StartPeriod            float64                   `json:"start_period,required"`
-	ToFiatConversionFactor float64                   `json:"to_fiat_conversion_factor,required"`
-	JSON                   planDetailOverageRateJSON `json:"-"`
-}
-
-// planDetailOverageRateJSON contains the JSON metadata for the struct
-// [PlanDetailOverageRate]
-type planDetailOverageRateJSON struct {
-	CreditType             apijson.Field
-	FiatCreditType         apijson.Field
-	StartPeriod            apijson.Field
-	ToFiatConversionFactor apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *PlanDetailOverageRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r planDetailOverageRateJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1PlanListResponse struct {
 	ID           string                 `json:"id,required" format:"uuid"`
 	Description  string                 `json:"description,required"`
@@ -288,7 +156,7 @@ func (r v1PlanListResponseJSON) RawJSON() string {
 }
 
 type V1PlanGetDetailsResponse struct {
-	Data PlanDetail                   `json:"data,required"`
+	Data V1PlanGetDetailsResponseData `json:"data,required"`
 	JSON v1PlanGetDetailsResponseJSON `json:"-"`
 }
 
@@ -308,10 +176,259 @@ func (r v1PlanGetDetailsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type V1PlanGetDetailsResponseData struct {
+	ID           string                                    `json:"id,required" format:"uuid"`
+	CustomFields map[string]string                         `json:"custom_fields,required"`
+	Name         string                                    `json:"name,required"`
+	CreditGrants []V1PlanGetDetailsResponseDataCreditGrant `json:"credit_grants"`
+	Description  string                                    `json:"description"`
+	Minimums     []V1PlanGetDetailsResponseDataMinimum     `json:"minimums"`
+	OverageRates []V1PlanGetDetailsResponseDataOverageRate `json:"overage_rates"`
+	JSON         v1PlanGetDetailsResponseDataJSON          `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataJSON contains the JSON metadata for the struct
+// [V1PlanGetDetailsResponseData]
+type v1PlanGetDetailsResponseDataJSON struct {
+	ID           apijson.Field
+	CustomFields apijson.Field
+	Name         apijson.Field
+	CreditGrants apijson.Field
+	Description  apijson.Field
+	Minimums     apijson.Field
+	OverageRates apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanGetDetailsResponseDataCreditGrant struct {
+	AmountGranted           float64                                                         `json:"amount_granted,required"`
+	AmountGrantedCreditType V1PlanGetDetailsResponseDataCreditGrantsAmountGrantedCreditType `json:"amount_granted_credit_type,required"`
+	AmountPaid              float64                                                         `json:"amount_paid,required"`
+	AmountPaidCreditType    V1PlanGetDetailsResponseDataCreditGrantsAmountPaidCreditType    `json:"amount_paid_credit_type,required"`
+	EffectiveDuration       float64                                                         `json:"effective_duration,required"`
+	Name                    string                                                          `json:"name,required"`
+	Priority                string                                                          `json:"priority,required"`
+	SendInvoice             bool                                                            `json:"send_invoice,required"`
+	Reason                  string                                                          `json:"reason"`
+	RecurrenceDuration      float64                                                         `json:"recurrence_duration"`
+	RecurrenceInterval      float64                                                         `json:"recurrence_interval"`
+	JSON                    v1PlanGetDetailsResponseDataCreditGrantJSON                     `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataCreditGrantJSON contains the JSON metadata for the
+// struct [V1PlanGetDetailsResponseDataCreditGrant]
+type v1PlanGetDetailsResponseDataCreditGrantJSON struct {
+	AmountGranted           apijson.Field
+	AmountGrantedCreditType apijson.Field
+	AmountPaid              apijson.Field
+	AmountPaidCreditType    apijson.Field
+	EffectiveDuration       apijson.Field
+	Name                    apijson.Field
+	Priority                apijson.Field
+	SendInvoice             apijson.Field
+	Reason                  apijson.Field
+	RecurrenceDuration      apijson.Field
+	RecurrenceInterval      apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseDataCreditGrant) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataCreditGrantJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanGetDetailsResponseDataCreditGrantsAmountGrantedCreditType struct {
+	ID   string                                                              `json:"id,required" format:"uuid"`
+	Name string                                                              `json:"name,required"`
+	JSON v1PlanGetDetailsResponseDataCreditGrantsAmountGrantedCreditTypeJSON `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataCreditGrantsAmountGrantedCreditTypeJSON contains the
+// JSON metadata for the struct
+// [V1PlanGetDetailsResponseDataCreditGrantsAmountGrantedCreditType]
+type v1PlanGetDetailsResponseDataCreditGrantsAmountGrantedCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseDataCreditGrantsAmountGrantedCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataCreditGrantsAmountGrantedCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanGetDetailsResponseDataCreditGrantsAmountPaidCreditType struct {
+	ID   string                                                           `json:"id,required" format:"uuid"`
+	Name string                                                           `json:"name,required"`
+	JSON v1PlanGetDetailsResponseDataCreditGrantsAmountPaidCreditTypeJSON `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataCreditGrantsAmountPaidCreditTypeJSON contains the
+// JSON metadata for the struct
+// [V1PlanGetDetailsResponseDataCreditGrantsAmountPaidCreditType]
+type v1PlanGetDetailsResponseDataCreditGrantsAmountPaidCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseDataCreditGrantsAmountPaidCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataCreditGrantsAmountPaidCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanGetDetailsResponseDataMinimum struct {
+	CreditType V1PlanGetDetailsResponseDataMinimumsCreditType `json:"credit_type,required"`
+	Name       string                                         `json:"name,required"`
+	// Used in price ramps. Indicates how many billing periods pass before the charge
+	// applies.
+	StartPeriod float64                                 `json:"start_period,required"`
+	Value       float64                                 `json:"value,required"`
+	JSON        v1PlanGetDetailsResponseDataMinimumJSON `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataMinimumJSON contains the JSON metadata for the
+// struct [V1PlanGetDetailsResponseDataMinimum]
+type v1PlanGetDetailsResponseDataMinimumJSON struct {
+	CreditType  apijson.Field
+	Name        apijson.Field
+	StartPeriod apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseDataMinimum) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataMinimumJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanGetDetailsResponseDataMinimumsCreditType struct {
+	ID   string                                             `json:"id,required" format:"uuid"`
+	Name string                                             `json:"name,required"`
+	JSON v1PlanGetDetailsResponseDataMinimumsCreditTypeJSON `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataMinimumsCreditTypeJSON contains the JSON metadata
+// for the struct [V1PlanGetDetailsResponseDataMinimumsCreditType]
+type v1PlanGetDetailsResponseDataMinimumsCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseDataMinimumsCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataMinimumsCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanGetDetailsResponseDataOverageRate struct {
+	CreditType     V1PlanGetDetailsResponseDataOverageRatesCreditType     `json:"credit_type,required"`
+	FiatCreditType V1PlanGetDetailsResponseDataOverageRatesFiatCreditType `json:"fiat_credit_type,required"`
+	// Used in price ramps. Indicates how many billing periods pass before the charge
+	// applies.
+	StartPeriod            float64                                     `json:"start_period,required"`
+	ToFiatConversionFactor float64                                     `json:"to_fiat_conversion_factor,required"`
+	JSON                   v1PlanGetDetailsResponseDataOverageRateJSON `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataOverageRateJSON contains the JSON metadata for the
+// struct [V1PlanGetDetailsResponseDataOverageRate]
+type v1PlanGetDetailsResponseDataOverageRateJSON struct {
+	CreditType             apijson.Field
+	FiatCreditType         apijson.Field
+	StartPeriod            apijson.Field
+	ToFiatConversionFactor apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseDataOverageRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataOverageRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanGetDetailsResponseDataOverageRatesCreditType struct {
+	ID   string                                                 `json:"id,required" format:"uuid"`
+	Name string                                                 `json:"name,required"`
+	JSON v1PlanGetDetailsResponseDataOverageRatesCreditTypeJSON `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataOverageRatesCreditTypeJSON contains the JSON
+// metadata for the struct [V1PlanGetDetailsResponseDataOverageRatesCreditType]
+type v1PlanGetDetailsResponseDataOverageRatesCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseDataOverageRatesCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataOverageRatesCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanGetDetailsResponseDataOverageRatesFiatCreditType struct {
+	ID   string                                                     `json:"id,required" format:"uuid"`
+	Name string                                                     `json:"name,required"`
+	JSON v1PlanGetDetailsResponseDataOverageRatesFiatCreditTypeJSON `json:"-"`
+}
+
+// v1PlanGetDetailsResponseDataOverageRatesFiatCreditTypeJSON contains the JSON
+// metadata for the struct [V1PlanGetDetailsResponseDataOverageRatesFiatCreditType]
+type v1PlanGetDetailsResponseDataOverageRatesFiatCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1PlanGetDetailsResponseDataOverageRatesFiatCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanGetDetailsResponseDataOverageRatesFiatCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
 type V1PlanListChargesResponse struct {
 	ID           string                              `json:"id,required" format:"uuid"`
 	ChargeType   V1PlanListChargesResponseChargeType `json:"charge_type,required"`
-	CreditType   shared.CreditTypeData               `json:"credit_type,required"`
+	CreditType   V1PlanListChargesResponseCreditType `json:"credit_type,required"`
 	CustomFields map[string]string                   `json:"custom_fields,required"`
 	Name         string                              `json:"name,required"`
 	Prices       []V1PlanListChargesResponsePrice    `json:"prices,required"`
@@ -372,6 +489,29 @@ func (r V1PlanListChargesResponseChargeType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type V1PlanListChargesResponseCreditType struct {
+	ID   string                                  `json:"id,required" format:"uuid"`
+	Name string                                  `json:"name,required"`
+	JSON v1PlanListChargesResponseCreditTypeJSON `json:"-"`
+}
+
+// v1PlanListChargesResponseCreditTypeJSON contains the JSON metadata for the
+// struct [V1PlanListChargesResponseCreditType]
+type v1PlanListChargesResponseCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1PlanListChargesResponseCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanListChargesResponseCreditTypeJSON) RawJSON() string {
+	return r.raw
 }
 
 type V1PlanListChargesResponsePrice struct {
@@ -449,9 +589,9 @@ func (r V1PlanListChargesResponseUnitConversionRoundingBehavior) IsKnown() bool 
 }
 
 type V1PlanListCustomersResponse struct {
-	CustomerDetails CustomerDetail                         `json:"customer_details,required"`
-	PlanDetails     V1PlanListCustomersResponsePlanDetails `json:"plan_details,required"`
-	JSON            v1PlanListCustomersResponseJSON        `json:"-"`
+	CustomerDetails V1PlanListCustomersResponseCustomerDetails `json:"customer_details,required"`
+	PlanDetails     V1PlanListCustomersResponsePlanDetails     `json:"plan_details,required"`
+	JSON            v1PlanListCustomersResponseJSON            `json:"-"`
 }
 
 // v1PlanListCustomersResponseJSON contains the JSON metadata for the struct
@@ -469,6 +609,115 @@ func (r *V1PlanListCustomersResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r v1PlanListCustomersResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type V1PlanListCustomersResponseCustomerDetails struct {
+	// the Metronome ID of the customer
+	ID string `json:"id,required" format:"uuid"`
+	// RFC 3339 timestamp indicating when the customer was created.
+	CreatedAt      time.Time                                                `json:"created_at,required" format:"date-time"`
+	CustomFields   map[string]string                                        `json:"custom_fields,required"`
+	CustomerConfig V1PlanListCustomersResponseCustomerDetailsCustomerConfig `json:"customer_config,required"`
+	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
+	// alias) that can be used in usage events
+	ExternalID string `json:"external_id,required"`
+	// aliases for this customer that can be used instead of the Metronome customer ID
+	// in usage events
+	IngestAliases []string `json:"ingest_aliases,required"`
+	Name          string   `json:"name,required"`
+	// RFC 3339 timestamp indicating when the customer was archived. Null if the
+	// customer is active.
+	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
+	// This field's availability is dependent on your client's configuration.
+	CurrentBillableStatus V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatus `json:"current_billable_status"`
+	JSON                  v1PlanListCustomersResponseCustomerDetailsJSON                  `json:"-"`
+}
+
+// v1PlanListCustomersResponseCustomerDetailsJSON contains the JSON metadata for
+// the struct [V1PlanListCustomersResponseCustomerDetails]
+type v1PlanListCustomersResponseCustomerDetailsJSON struct {
+	ID                    apijson.Field
+	CreatedAt             apijson.Field
+	CustomFields          apijson.Field
+	CustomerConfig        apijson.Field
+	ExternalID            apijson.Field
+	IngestAliases         apijson.Field
+	Name                  apijson.Field
+	ArchivedAt            apijson.Field
+	CurrentBillableStatus apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *V1PlanListCustomersResponseCustomerDetails) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanListCustomersResponseCustomerDetailsJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanListCustomersResponseCustomerDetailsCustomerConfig struct {
+	// The Salesforce account ID for the customer
+	SalesforceAccountID string                                                       `json:"salesforce_account_id,required,nullable"`
+	JSON                v1PlanListCustomersResponseCustomerDetailsCustomerConfigJSON `json:"-"`
+}
+
+// v1PlanListCustomersResponseCustomerDetailsCustomerConfigJSON contains the JSON
+// metadata for the struct
+// [V1PlanListCustomersResponseCustomerDetailsCustomerConfig]
+type v1PlanListCustomersResponseCustomerDetailsCustomerConfigJSON struct {
+	SalesforceAccountID apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *V1PlanListCustomersResponseCustomerDetailsCustomerConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanListCustomersResponseCustomerDetailsCustomerConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// This field's availability is dependent on your client's configuration.
+type V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatus struct {
+	Value       V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValue `json:"value,required"`
+	EffectiveAt time.Time                                                            `json:"effective_at,nullable" format:"date-time"`
+	JSON        v1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusJSON  `json:"-"`
+}
+
+// v1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusJSON contains the
+// JSON metadata for the struct
+// [V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatus]
+type v1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusJSON struct {
+	Value       apijson.Field
+	EffectiveAt apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValue string
+
+const (
+	V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValueBillable   V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValue = "billable"
+	V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValueUnbillable V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValue = "unbillable"
+)
+
+func (r V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValue) IsKnown() bool {
+	switch r {
+	case V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValueBillable, V1PlanListCustomersResponseCustomerDetailsCurrentBillableStatusValueUnbillable:
+		return true
+	}
+	return false
 }
 
 type V1PlanListCustomersResponsePlanDetails struct {

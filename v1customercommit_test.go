@@ -69,7 +69,17 @@ func TestV1CustomerCommitNewWithOptionalParams(t *testing.T) {
 		NetsuiteSalesOrderID:    metronome.F("netsuite_sales_order_id"),
 		RateType:                metronome.F(metronome.V1CustomerCommitNewParamsRateTypeCommitRate),
 		SalesforceOpportunityID: metronome.F("salesforce_opportunity_id"),
-		UniquenessKey:           metronome.F("x"),
+		Specifiers: metronome.F([]metronome.V1CustomerCommitNewParamsSpecifier{{
+			PresentationGroupValues: metronome.F(map[string]string{
+				"foo": "string",
+			}),
+			PricingGroupValues: metronome.F(map[string]string{
+				"foo": "string",
+			}),
+			ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			ProductTags: metronome.F([]string{"string"}),
+		}}),
+		UniquenessKey: metronome.F("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error

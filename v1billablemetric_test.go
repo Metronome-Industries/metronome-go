@@ -11,7 +11,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1BillableMetricNewWithOptionalParams(t *testing.T) {
@@ -33,12 +32,12 @@ func TestV1BillableMetricNewWithOptionalParams(t *testing.T) {
 		CustomFields: metronome.F(map[string]string{
 			"foo": "string",
 		}),
-		EventTypeFilter: metronome.F(shared.EventTypeFilterParam{
+		EventTypeFilter: metronome.F(metronome.V1BillableMetricNewParamsEventTypeFilter{
 			InValues:    metronome.F([]string{"cpu_usage"}),
 			NotInValues: metronome.F([]string{"string"}),
 		}),
 		GroupKeys: metronome.F([][]string{{"region"}, {"machine_type"}}),
-		PropertyFilters: metronome.F([]shared.PropertyFilterParam{{
+		PropertyFilters: metronome.F([]metronome.V1BillableMetricNewParamsPropertyFilter{{
 			Name:        metronome.F("cpu_hours"),
 			Exists:      metronome.F(true),
 			InValues:    metronome.F([]string{"string"}),
@@ -128,9 +127,7 @@ func TestV1BillableMetricArchive(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.BillableMetrics.Archive(context.TODO(), metronome.V1BillableMetricArchiveParams{
-		ID: shared.IDParam{
-			ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
-		},
+		ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
