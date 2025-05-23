@@ -12,7 +12,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV2ContractGetWithOptionalParams(t *testing.T) {
@@ -233,7 +232,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]shared.TierParam{{
+				Tiers: metronome.F([]metronome.V2ContractEditParamsAddOverridesOverwriteRateTier{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -501,11 +500,11 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}}),
 		UpdatePrepaidBalanceThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration{
 			Commit: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit{
-				ProductID:             metronome.F("product_id"),
 				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 				ApplicableProductTags: metronome.F([]string{"string"}),
 				Description:           metronome.F("description"),
 				Name:                  metronome.F("name"),
+				ProductID:             metronome.F("product_id"),
 				Specifiers: metronome.F([]metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier{{
 					PresentationGroupValues: metronome.F(map[string]string{
 						"foo": "string",
