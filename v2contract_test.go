@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV2ContractGetWithOptionalParams(t *testing.T) {
@@ -211,7 +212,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.F(true),
 			Multiplier:            metronome.F(2.000000),
 			OverrideSpecifiers: metronome.F([]metronome.V2ContractEditParamsAddOverridesOverrideSpecifier{{
-				CommitIDs: metronome.F([]string{"string"}),
+				BillingFrequency: metronome.F(metronome.V2ContractEditParamsAddOverridesOverrideSpecifiersBillingFrequencyMonthly),
+				CommitIDs:        metronome.F([]string{"string"}),
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -232,7 +234,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.V2ContractEditParamsAddOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -419,6 +421,25 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
+		AddSubscriptions: metronome.F([]metronome.V2ContractEditParamsAddSubscription{{
+			CollectionSchedule: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsCollectionScheduleAdvance),
+			InitialQuantity:    metronome.F(0.000000),
+			Proration: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsProration{
+				InvoiceBehavior: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsProrationInvoiceBehaviorBillImmediately),
+				IsProrated:      metronome.F(true),
+			}),
+			SubscriptionRate: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsSubscriptionRate{
+				BillingFrequency: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsSubscriptionRateBillingFrequencyMonthly),
+				ProductID:        metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			}),
+			CustomFields: metronome.F(map[string]string{
+				"foo": "string",
+			}),
+			Description:  metronome.F("description"),
+			EndingBefore: metronome.F(time.Now()),
+			Name:         metronome.F("name"),
+			StartingAt:   metronome.F(time.Now()),
+		}}),
 		AllowContractEndingBeforeFinalizedInvoice: metronome.F(true),
 		ArchiveCommits: metronome.F([]metronome.V2ContractEditParamsArchiveCommit{{
 			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -585,6 +606,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
+		UpdateSubscriptions: metronome.F([]metronome.V2ContractEditParamsUpdateSubscription{{
+			SubscriptionID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			EndingBefore:   metronome.F(time.Now()),
+			QuantityUpdates: metronome.F([]metronome.V2ContractEditParamsUpdateSubscriptionsQuantityUpdate{{
+				StartingAt:    metronome.F(time.Now()),
+				Quantity:      metronome.F(0.000000),
+				QuantityDelta: metronome.F(0.000000),
+			}}),
+		}}),
 	})
 	if err != nil {
 		var apierr *metronome.Error
