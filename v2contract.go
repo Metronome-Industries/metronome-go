@@ -10329,10 +10329,16 @@ type V2ContractEditParams struct {
 	UpdateContractEndDate                      param.Field[time.Time]                                                      `json:"update_contract_end_date" format:"date-time"`
 	UpdateCredits                              param.Field[[]V2ContractEditParamsUpdateCredit]                             `json:"update_credits"`
 	UpdatePrepaidBalanceThresholdConfiguration param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration] `json:"update_prepaid_balance_threshold_configuration"`
-	UpdateRecurringCommits                     param.Field[[]V2ContractEditParamsUpdateRecurringCommit]                    `json:"update_recurring_commits"`
-	UpdateRecurringCredits                     param.Field[[]V2ContractEditParamsUpdateRecurringCredit]                    `json:"update_recurring_credits"`
-	UpdateScheduledCharges                     param.Field[[]V2ContractEditParamsUpdateScheduledCharge]                    `json:"update_scheduled_charges"`
-	UpdateSpendThresholdConfiguration          param.Field[V2ContractEditParamsUpdateSpendThresholdConfiguration]          `json:"update_spend_threshold_configuration"`
+	// Edits to these recurring commits will only affect commits whose access schedules
+	// has not started. Expired commits, and commits with an active access schedule
+	// will remain unchanged.
+	UpdateRecurringCommits param.Field[[]V2ContractEditParamsUpdateRecurringCommit] `json:"update_recurring_commits"`
+	// Edits to these recurring credits will only affect credits whose access schedules
+	// has not started. Expired credits, and credits with an active access schedule
+	// will remain unchanged.
+	UpdateRecurringCredits            param.Field[[]V2ContractEditParamsUpdateRecurringCredit]           `json:"update_recurring_credits"`
+	UpdateScheduledCharges            param.Field[[]V2ContractEditParamsUpdateScheduledCharge]           `json:"update_scheduled_charges"`
+	UpdateSpendThresholdConfiguration param.Field[V2ContractEditParamsUpdateSpendThresholdConfiguration] `json:"update_spend_threshold_configuration"`
 	// (beta) Optional list of subscriptions to update.
 	UpdateSubscriptions param.Field[[]V2ContractEditParamsUpdateSubscription] `json:"update_subscriptions"`
 }
