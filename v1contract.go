@@ -106,6 +106,15 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 	return
 }
 
+// Fetch the quantity and price for a subscription over time. End-point does not
+// return future scheduled changes.
+func (r *V1ContractService) GetSubscriptionQuantityHistory(ctx context.Context, body V1ContractGetSubscriptionQuantityHistoryParams, opts ...option.RequestOption) (res *V1ContractGetSubscriptionQuantityHistoryResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "v1/contracts/getSubscriptionQuantityHistory"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // List balances (commits and credits).
 func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) (res *V1ContractListBalancesResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -1941,6 +1950,102 @@ func (r *V1ContractNewHistoricalInvoicesResponse) UnmarshalJSON(data []byte) (er
 }
 
 func (r v1ContractNewHistoricalInvoicesResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractGetSubscriptionQuantityHistoryResponse struct {
+	Data V1ContractGetSubscriptionQuantityHistoryResponseData `json:"data,required"`
+	JSON v1ContractGetSubscriptionQuantityHistoryResponseJSON `json:"-"`
+}
+
+// v1ContractGetSubscriptionQuantityHistoryResponseJSON contains the JSON metadata
+// for the struct [V1ContractGetSubscriptionQuantityHistoryResponse]
+type v1ContractGetSubscriptionQuantityHistoryResponseJSON struct {
+	Data        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractGetSubscriptionQuantityHistoryResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractGetSubscriptionQuantityHistoryResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractGetSubscriptionQuantityHistoryResponseData struct {
+	FiatCreditTypeID string                                                        `json:"fiat_credit_type_id" format:"uuid"`
+	History          []V1ContractGetSubscriptionQuantityHistoryResponseDataHistory `json:"history"`
+	SubscriptionID   string                                                        `json:"subscription_id" format:"uuid"`
+	JSON             v1ContractGetSubscriptionQuantityHistoryResponseDataJSON      `json:"-"`
+}
+
+// v1ContractGetSubscriptionQuantityHistoryResponseDataJSON contains the JSON
+// metadata for the struct [V1ContractGetSubscriptionQuantityHistoryResponseData]
+type v1ContractGetSubscriptionQuantityHistoryResponseDataJSON struct {
+	FiatCreditTypeID apijson.Field
+	History          apijson.Field
+	SubscriptionID   apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *V1ContractGetSubscriptionQuantityHistoryResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractGetSubscriptionQuantityHistoryResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractGetSubscriptionQuantityHistoryResponseDataHistory struct {
+	Data       []V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData `json:"data,required"`
+	StartingAt time.Time                                                         `json:"starting_at,required" format:"date-time"`
+	JSON       v1ContractGetSubscriptionQuantityHistoryResponseDataHistoryJSON   `json:"-"`
+}
+
+// v1ContractGetSubscriptionQuantityHistoryResponseDataHistoryJSON contains the
+// JSON metadata for the struct
+// [V1ContractGetSubscriptionQuantityHistoryResponseDataHistory]
+type v1ContractGetSubscriptionQuantityHistoryResponseDataHistoryJSON struct {
+	Data        apijson.Field
+	StartingAt  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractGetSubscriptionQuantityHistoryResponseDataHistory) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractGetSubscriptionQuantityHistoryResponseDataHistoryJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData struct {
+	Quantity  float64                                                             `json:"quantity,required"`
+	Total     float64                                                             `json:"total,required"`
+	UnitPrice float64                                                             `json:"unit_price,required"`
+	JSON      v1ContractGetSubscriptionQuantityHistoryResponseDataHistoryDataJSON `json:"-"`
+}
+
+// v1ContractGetSubscriptionQuantityHistoryResponseDataHistoryDataJSON contains the
+// JSON metadata for the struct
+// [V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData]
+type v1ContractGetSubscriptionQuantityHistoryResponseDataHistoryDataJSON struct {
+	Quantity    apijson.Field
+	Total       apijson.Field
+	UnitPrice   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1ContractGetSubscriptionQuantityHistoryResponseDataHistoryDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -5163,6 +5268,16 @@ func (r V1ContractNewHistoricalInvoicesParamsInvoicesBreakdownGranularity) IsKno
 		return true
 	}
 	return false
+}
+
+type V1ContractGetSubscriptionQuantityHistoryParams struct {
+	ContractID     param.Field[string] `json:"contract_id,required" format:"uuid"`
+	CustomerID     param.Field[string] `json:"customer_id,required" format:"uuid"`
+	SubscriptionID param.Field[string] `json:"subscription_id,required" format:"uuid"`
+}
+
+func (r V1ContractGetSubscriptionQuantityHistoryParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type V1ContractListBalancesParams struct {
