@@ -2462,7 +2462,9 @@ type V1ContractNewParams struct {
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices param.Field[V1ContractNewParamsScheduledChargesOnUsageInvoices] `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     param.Field[V1ContractNewParamsSpendThresholdConfiguration]     `json:"spend_threshold_configuration"`
-	// (beta) Optional list of subscriptions to add to the contract.
+	// (beta) Optional list of
+	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
+	// to add to the contract.
 	Subscriptions param.Field[[]V1ContractNewParamsSubscription] `json:"subscriptions"`
 	// This field's availability is dependent on your client's configuration.
 	TotalContractValue param.Field[float64]                       `json:"total_contract_value"`

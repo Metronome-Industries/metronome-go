@@ -10309,7 +10309,9 @@ type V2ContractEditParams struct {
 	AddResellerRoyalties           param.Field[[]V2ContractEditParamsAddResellerRoyalty]           `json:"add_reseller_royalties"`
 	AddScheduledCharges            param.Field[[]V2ContractEditParamsAddScheduledCharge]           `json:"add_scheduled_charges"`
 	AddSpendThresholdConfiguration param.Field[V2ContractEditParamsAddSpendThresholdConfiguration] `json:"add_spend_threshold_configuration"`
-	// (beta) Optional list of subscriptions to add to the contract.
+	// (beta) Optional list of
+	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
+	// to add to the contract.
 	AddSubscriptions param.Field[[]V2ContractEditParamsAddSubscription] `json:"add_subscriptions"`
 	// If true, allows setting the contract end date earlier than the end_timestamp of
 	// existing finalized invoices. Finalized invoices will be unchanged; if you want
