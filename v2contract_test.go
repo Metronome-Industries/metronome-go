@@ -12,7 +12,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV2ContractGetWithOptionalParams(t *testing.T) {
@@ -234,7 +233,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]shared.TierParam{{
+				Tiers: metronome.F([]metronome.V2ContractEditParamsAddOverridesOverwriteRateTier{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -295,8 +294,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				UnitPrice:    metronome.F(0.000000),
 			}),
 			CommitDuration: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsCommitDuration{
-				Unit:  metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsCommitDurationUnitPeriods),
 				Value: metronome.F(0.000000),
+				Unit:  metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsCommitDurationUnitPeriods),
 			}),
 			Priority:              metronome.F(0.000000),
 			ProductID:             metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -335,8 +334,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				UnitPrice:    metronome.F(0.000000),
 			}),
 			CommitDuration: metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsCommitDuration{
-				Unit:  metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsCommitDurationUnitPeriods),
 				Value: metronome.F(0.000000),
+				Unit:  metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsCommitDurationUnitPeriods),
 			}),
 			Priority:              metronome.F(0.000000),
 			ProductID:             metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
