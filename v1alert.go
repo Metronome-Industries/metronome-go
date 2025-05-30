@@ -10,7 +10,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1AlertService contains methods and other services that help with interacting
@@ -49,7 +48,7 @@ func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams,
 }
 
 type V1AlertNewResponse struct {
-	Data shared.ID              `json:"data,required"`
+	Data V1AlertNewResponseData `json:"data,required"`
 	JSON v1AlertNewResponseJSON `json:"-"`
 }
 
@@ -69,8 +68,29 @@ func (r v1AlertNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type V1AlertNewResponseData struct {
+	ID   string                     `json:"id,required" format:"uuid"`
+	JSON v1AlertNewResponseDataJSON `json:"-"`
+}
+
+// v1AlertNewResponseDataJSON contains the JSON metadata for the struct
+// [V1AlertNewResponseData]
+type v1AlertNewResponseDataJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1AlertNewResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1AlertNewResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type V1AlertArchiveResponse struct {
-	Data shared.ID                  `json:"data,required"`
+	Data V1AlertArchiveResponseData `json:"data,required"`
 	JSON v1AlertArchiveResponseJSON `json:"-"`
 }
 
@@ -87,6 +107,27 @@ func (r *V1AlertArchiveResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1AlertArchiveResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1AlertArchiveResponseData struct {
+	ID   string                         `json:"id,required" format:"uuid"`
+	JSON v1AlertArchiveResponseDataJSON `json:"-"`
+}
+
+// v1AlertArchiveResponseDataJSON contains the JSON metadata for the struct
+// [V1AlertArchiveResponseData]
+type v1AlertArchiveResponseDataJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1AlertArchiveResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1AlertArchiveResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -110,7 +151,7 @@ type V1AlertNewParams struct {
 	// Only present for contract invoices.
 	CustomFieldFilters param.Field[[]V1AlertNewParamsCustomFieldFilter] `json:"custom_field_filters"`
 	// If provided, will create this alert for this specific customer. To create an
-	// alert for all customers, do not specify `customer_id` or `plan_id`.
+	// alert for all customers, do not specify a `customer_id`.
 	CustomerID param.Field[string] `json:"customer_id" format:"uuid"`
 	// If true, the alert will evaluate immediately on customers that already meet the
 	// alert threshold. If false, it will only evaluate on future customers that
@@ -123,7 +164,7 @@ type V1AlertNewParams struct {
 	// evaluate.
 	InvoiceTypesFilter param.Field[[]string] `json:"invoice_types_filter"`
 	// If provided, will create this alert for this specific plan. To create an alert
-	// for all customers, do not specify `customer_id` or `plan_id`.
+	// for all customers, do not specify a `plan_id`.
 	PlanID param.Field[string] `json:"plan_id" format:"uuid"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the

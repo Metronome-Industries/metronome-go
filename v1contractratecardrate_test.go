@@ -12,7 +12,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1ContractRateCardRateListWithOptionalParams(t *testing.T) {
@@ -33,6 +32,7 @@ func TestV1ContractRateCardRateListWithOptionalParams(t *testing.T) {
 		Limit:      metronome.F(int64(1)),
 		NextPage:   metronome.F("next_page"),
 		Selectors: metronome.F([]metronome.V1ContractRateCardRateListParamsSelector{{
+			BillingFrequency: metronome.F(metronome.V1ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly),
 			PartialPricingGroupValues: metronome.F(map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
@@ -66,15 +66,16 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.Rates.Add(context.TODO(), metronome.V1ContractRateCardRateAddParams{
-		Entitled:   metronome.F(true),
-		ProductID:  metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		RateType:   metronome.F(metronome.V1ContractRateCardRateAddParamsRateTypeFlat),
-		StartingAt: metronome.F(time.Now()),
+		Entitled:         metronome.F(true),
+		ProductID:        metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		RateCardID:       metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		RateType:         metronome.F(metronome.V1ContractRateCardRateAddParamsRateTypeFlat),
+		StartingAt:       metronome.F(time.Now()),
+		BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddParamsBillingFrequencyMonthly),
 		CommitRate: metronome.F(metronome.V1ContractRateCardRateAddParamsCommitRate{
 			RateType: metronome.F(metronome.V1ContractRateCardRateAddParamsCommitRateRateTypeFlat),
 			Price:    metronome.F(0.000000),
-			Tiers: metronome.F([]shared.TierParam{{
+			Tiers: metronome.F([]metronome.V1ContractRateCardRateAddParamsCommitRateTier{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}}),
@@ -90,7 +91,7 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 			"foo": "string",
 		}),
 		Quantity: metronome.F(0.000000),
-		Tiers: metronome.F([]shared.TierParam{{
+		Tiers: metronome.F([]metronome.V1ContractRateCardRateAddParamsTier{{
 			Price: metronome.F(0.000000),
 			Size:  metronome.F(0.000000),
 		}}),
@@ -120,14 +121,15 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 	_, err := client.V1.Contracts.RateCards.Rates.AddMany(context.TODO(), metronome.V1ContractRateCardRateAddManyParams{
 		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
 		Rates: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRate{{
-			Entitled:   metronome.F(true),
-			ProductID:  metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-			RateType:   metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesRateTypeFlat),
-			StartingAt: metronome.F(time.Now()),
+			Entitled:         metronome.F(true),
+			ProductID:        metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			RateType:         metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesRateTypeFlat),
+			StartingAt:       metronome.F(time.Now()),
+			BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly),
 			CommitRate: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRate{
 				RateType: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
 				Price:    metronome.F(0.000000),
-				Tiers: metronome.F([]shared.TierParam{{
+				Tiers: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateTier{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -144,20 +146,21 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 				"cloud":  "aws",
 			}),
 			Quantity: metronome.F(0.000000),
-			Tiers: metronome.F([]shared.TierParam{{
+			Tiers: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRatesTier{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}}),
 			UseListPrices: metronome.F(true),
 		}, {
-			Entitled:   metronome.F(true),
-			ProductID:  metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-			RateType:   metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesRateTypeFlat),
-			StartingAt: metronome.F(time.Now()),
+			Entitled:         metronome.F(true),
+			ProductID:        metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+			RateType:         metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesRateTypeFlat),
+			StartingAt:       metronome.F(time.Now()),
+			BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly),
 			CommitRate: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRate{
 				RateType: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
 				Price:    metronome.F(0.000000),
-				Tiers: metronome.F([]shared.TierParam{{
+				Tiers: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateTier{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -174,7 +177,7 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 				"cloud":  "aws",
 			}),
 			Quantity: metronome.F(0.000000),
-			Tiers: metronome.F([]shared.TierParam{{
+			Tiers: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRatesTier{{
 				Price: metronome.F(0.000000),
 				Size:  metronome.F(0.000000),
 			}}),
