@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.1.0-beta.9 (2025-05-30)
+
+Full Changelog: [v0.1.0-beta.8...v0.1.0-beta.9](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.8...v0.1.0-beta.9)
+
+### Features
+
+* **api:** add subscription quantity history endpoint ([4f398e4](https://github.com/Metronome-Industries/metronome-go/commit/4f398e435024aa47ed9995adca9cd839efdd6631))
+* **api:** api update ([8744d14](https://github.com/Metronome-Industries/metronome-go/commit/8744d14df97f945fc0bbf91d9d2bca361ec7ac6a))
+* **api:** api update ([291390f](https://github.com/Metronome-Industries/metronome-go/commit/291390f64fe72cbb9360fcdefd5af271885aa776))
+* **api:** api update ([2632d65](https://github.com/Metronome-Industries/metronome-go/commit/2632d6525af825275c4c73378332c0c46df90c22))
+* **api:** api update ([aab00d9](https://github.com/Metronome-Industries/metronome-go/commit/aab00d979454d1c1125d4f853f7dccf7f0f7beed))
+* **api:** api update ([753d192](https://github.com/Metronome-Industries/metronome-go/commit/753d192e78f89341cbbd08de5ffd9f1543feaab3))
+* **api:** api update ([ef24354](https://github.com/Metronome-Industries/metronome-go/commit/ef24354543134ab6a34700ff16d0207d93f203b9))
+* **api:** api update ([dfe0cd4](https://github.com/Metronome-Industries/metronome-go/commit/dfe0cd44cb6aefb76ba85e8300dcf65d7b4d1fed))
+* **api:** api update ([63e0dd7](https://github.com/Metronome-Industries/metronome-go/commit/63e0dd739537d0bc3c2c505e3760a9dce3fbbd19))
+* **api:** api update ([8965d2e](https://github.com/Metronome-Industries/metronome-go/commit/8965d2e53a8db7f456704442e1b359bd7f147d22))
+* **api:** api update ([eb5afc5](https://github.com/Metronome-Industries/metronome-go/commit/eb5afc57b137b7bd0d77dc942b9b1beacf92e10b))
+* **api:** rename get subscription quantity history to retrieve ([9a6896c](https://github.com/Metronome-Industries/metronome-go/commit/9a6896c948bb0af86432cc36e9d717cfe9877dac))
+
+
+### Chores
+
+* configure new SDK language ([244732e](https://github.com/Metronome-Industries/metronome-go/commit/244732e251e59ecf27317f3c63a9267746ef7fdb))
+* **docs:** grammar improvements ([b64995d](https://github.com/Metronome-Industries/metronome-go/commit/b64995d32091dc9959f9aa59fa4f8e49ae3f0edc))
+* improve devcontainer setup ([963976d](https://github.com/Metronome-Industries/metronome-go/commit/963976d16bc2994bc5f7df1ef22582fbc6015682))
+
 ## 0.1.0-beta.8 (2025-05-14)
 
 Full Changelog: [v0.1.0-beta.7...v0.1.0-beta.8](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.7...v0.1.0-beta.8)
