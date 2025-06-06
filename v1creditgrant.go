@@ -739,6 +739,8 @@ func (r V1CreditGrantEditParams) MarshalJSON() (data []byte, err error) {
 type V1CreditGrantListEntriesParams struct {
 	// Cursor that indicates where the next page of results should start.
 	NextPage param.Field[string] `query:"next_page"`
+	// Ledgers sort order by date, asc or desc. Defaults to asc.
+	Sort param.Field[V1CreditGrantListEntriesParamsSort] `query:"sort"`
 	// A list of Metronome credit type IDs to fetch ledger entries for. If absent,
 	// ledger entries for all credit types will be returned.
 	CreditTypeIDs param.Field[[]string] `json:"credit_type_ids" format:"uuid"`
@@ -766,6 +768,22 @@ func (r V1CreditGrantListEntriesParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+// Ledgers sort order by date, asc or desc. Defaults to asc.
+type V1CreditGrantListEntriesParamsSort string
+
+const (
+	V1CreditGrantListEntriesParamsSortAsc  V1CreditGrantListEntriesParamsSort = "asc"
+	V1CreditGrantListEntriesParamsSortDesc V1CreditGrantListEntriesParamsSort = "desc"
+)
+
+func (r V1CreditGrantListEntriesParamsSort) IsKnown() bool {
+	switch r {
+	case V1CreditGrantListEntriesParamsSortAsc, V1CreditGrantListEntriesParamsSortDesc:
+		return true
+	}
+	return false
 }
 
 type V1CreditGrantVoidParams struct {

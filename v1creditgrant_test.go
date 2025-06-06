@@ -137,6 +137,7 @@ func TestV1CreditGrantListEntriesWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.V1.CreditGrants.ListEntries(context.TODO(), metronome.V1CreditGrantListEntriesParams{
 		NextPage:      metronome.F("next_page"),
+		Sort:          metronome.F(metronome.V1CreditGrantListEntriesParamsSortAsc),
 		CreditTypeIDs: metronome.F([]string{"2714e483-4ff1-48e4-9e25-ac732e8f24f2"}),
 		CustomerIDs:   metronome.F([]string{"6a37bb88-8538-48c5-b37b-a41c836328bd"}),
 		EndingBefore:  metronome.F(time.Now()),
