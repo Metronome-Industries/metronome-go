@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0-beta.10 (2025-06-06)
+
+Full Changelog: [v0.1.0-beta.9...v0.1.0-beta.10](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.9...v0.1.0-beta.10)
+
+### Features
+
+* **api:** api update ([7793347](https://github.com/Metronome-Industries/metronome-go/commit/77933470076683148375ee38bfd939875c411448))
+* **api:** api update ([da9c2ab](https://github.com/Metronome-Industries/metronome-go/commit/da9c2ab4c1f9cebf4fbac5fc01e3be4cd2c5d36d))
+
+
+### Chores
+
+* make go mod tidy continue on error ([6b9c643](https://github.com/Metronome-Industries/metronome-go/commit/6b9c64342d35d360bfe63c00fc53fe0a8ceb166d))
+
 ## 0.1.0-beta.9 (2025-05-30)
 
 Full Changelog: [v0.1.0-beta.8...v0.1.0-beta.9](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.8...v0.1.0-beta.9)
