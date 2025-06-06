@@ -10,6 +10,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1AlertService contains methods and other services that help with interacting
@@ -48,7 +49,7 @@ func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams,
 }
 
 type V1AlertNewResponse struct {
-	Data V1AlertNewResponseData `json:"data,required"`
+	Data shared.ID              `json:"data,required"`
 	JSON v1AlertNewResponseJSON `json:"-"`
 }
 
@@ -68,29 +69,8 @@ func (r v1AlertNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1AlertNewResponseData struct {
-	ID   string                     `json:"id,required" format:"uuid"`
-	JSON v1AlertNewResponseDataJSON `json:"-"`
-}
-
-// v1AlertNewResponseDataJSON contains the JSON metadata for the struct
-// [V1AlertNewResponseData]
-type v1AlertNewResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1AlertNewResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1AlertNewResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1AlertArchiveResponse struct {
-	Data V1AlertArchiveResponseData `json:"data,required"`
+	Data shared.ID                  `json:"data,required"`
 	JSON v1AlertArchiveResponseJSON `json:"-"`
 }
 
@@ -107,27 +87,6 @@ func (r *V1AlertArchiveResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1AlertArchiveResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1AlertArchiveResponseData struct {
-	ID   string                         `json:"id,required" format:"uuid"`
-	JSON v1AlertArchiveResponseDataJSON `json:"-"`
-}
-
-// v1AlertArchiveResponseDataJSON contains the JSON metadata for the struct
-// [V1AlertArchiveResponseData]
-type v1AlertArchiveResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1AlertArchiveResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1AlertArchiveResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
