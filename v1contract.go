@@ -3443,8 +3443,10 @@ func (r V1ContractNewParamsRecurringCommit) MarshalJSON() (data []byte, err erro
 // The amount of commit to grant.
 type V1ContractNewParamsRecurringCommitsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     param.Field[float64] `json:"quantity,required"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
+	// This field is currently required. Upcoming recurring commit/credit configuration
+	// options will allow it to be optional.
+	Quantity param.Field[float64] `json:"quantity"`
 }
 
 func (r V1ContractNewParamsRecurringCommitsAccessAmount) MarshalJSON() (data []byte, err error) {
@@ -3615,8 +3617,10 @@ func (r V1ContractNewParamsRecurringCredit) MarshalJSON() (data []byte, err erro
 // The amount of commit to grant.
 type V1ContractNewParamsRecurringCreditsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     param.Field[float64] `json:"quantity,required"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
+	// This field is currently required. Upcoming recurring commit/credit configuration
+	// options will allow it to be optional.
+	Quantity param.Field[float64] `json:"quantity"`
 }
 
 func (r V1ContractNewParamsRecurringCreditsAccessAmount) MarshalJSON() (data []byte, err error) {

@@ -1489,8 +1489,8 @@ func (r contractWithoutAmendmentsRecurringCommitJSON) RawJSON() string {
 // The amount of commit to grant.
 type ContractWithoutAmendmentsRecurringCommitsAccessAmount struct {
 	CreditTypeID string                                                    `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                   `json:"quantity,required"`
 	UnitPrice    float64                                                   `json:"unit_price,required"`
+	Quantity     float64                                                   `json:"quantity"`
 	JSON         contractWithoutAmendmentsRecurringCommitsAccessAmountJSON `json:"-"`
 }
 
@@ -1498,8 +1498,8 @@ type ContractWithoutAmendmentsRecurringCommitsAccessAmount struct {
 // metadata for the struct [ContractWithoutAmendmentsRecurringCommitsAccessAmount]
 type contractWithoutAmendmentsRecurringCommitsAccessAmountJSON struct {
 	CreditTypeID apijson.Field
-	Quantity     apijson.Field
 	UnitPrice    apijson.Field
+	Quantity     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -1790,8 +1790,8 @@ func (r contractWithoutAmendmentsRecurringCreditJSON) RawJSON() string {
 // The amount of commit to grant.
 type ContractWithoutAmendmentsRecurringCreditsAccessAmount struct {
 	CreditTypeID string                                                    `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                   `json:"quantity,required"`
 	UnitPrice    float64                                                   `json:"unit_price,required"`
+	Quantity     float64                                                   `json:"quantity"`
 	JSON         contractWithoutAmendmentsRecurringCreditsAccessAmountJSON `json:"-"`
 }
 
@@ -1799,8 +1799,8 @@ type ContractWithoutAmendmentsRecurringCreditsAccessAmount struct {
 // metadata for the struct [ContractWithoutAmendmentsRecurringCreditsAccessAmount]
 type contractWithoutAmendmentsRecurringCreditsAccessAmountJSON struct {
 	CreditTypeID apijson.Field
-	Quantity     apijson.Field
 	UnitPrice    apijson.Field
+	Quantity     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
