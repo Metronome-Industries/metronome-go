@@ -2434,6 +2434,7 @@ type V2ContractGetResponseDataRecurringCommit struct {
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// Determines whether the first and last commit will be prorated. If not provided,
 	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	// subscription_config:
 	Proration V2ContractGetResponseDataRecurringCommitsProration `json:"proration"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
@@ -2489,8 +2490,8 @@ func (r v2ContractGetResponseDataRecurringCommitJSON) RawJSON() string {
 // The amount of commit to grant.
 type V2ContractGetResponseDataRecurringCommitsAccessAmount struct {
 	CreditTypeID string                                                    `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                   `json:"quantity,required"`
 	UnitPrice    float64                                                   `json:"unit_price,required"`
+	Quantity     float64                                                   `json:"quantity"`
 	JSON         v2ContractGetResponseDataRecurringCommitsAccessAmountJSON `json:"-"`
 }
 
@@ -2498,8 +2499,8 @@ type V2ContractGetResponseDataRecurringCommitsAccessAmount struct {
 // metadata for the struct [V2ContractGetResponseDataRecurringCommitsAccessAmount]
 type v2ContractGetResponseDataRecurringCommitsAccessAmountJSON struct {
 	CreditTypeID apijson.Field
-	Quantity     apijson.Field
 	UnitPrice    apijson.Field
+	Quantity     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -2639,6 +2640,7 @@ func (r v2ContractGetResponseDataRecurringCommitsInvoiceAmountJSON) RawJSON() st
 
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+// subscription_config:
 type V2ContractGetResponseDataRecurringCommitsProration string
 
 const (
@@ -2736,6 +2738,7 @@ type V2ContractGetResponseDataRecurringCredit struct {
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// Determines whether the first and last commit will be prorated. If not provided,
 	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	// subscription_config:
 	Proration V2ContractGetResponseDataRecurringCreditsProration `json:"proration"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
@@ -2790,8 +2793,8 @@ func (r v2ContractGetResponseDataRecurringCreditJSON) RawJSON() string {
 // The amount of commit to grant.
 type V2ContractGetResponseDataRecurringCreditsAccessAmount struct {
 	CreditTypeID string                                                    `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                   `json:"quantity,required"`
 	UnitPrice    float64                                                   `json:"unit_price,required"`
+	Quantity     float64                                                   `json:"quantity"`
 	JSON         v2ContractGetResponseDataRecurringCreditsAccessAmountJSON `json:"-"`
 }
 
@@ -2799,8 +2802,8 @@ type V2ContractGetResponseDataRecurringCreditsAccessAmount struct {
 // metadata for the struct [V2ContractGetResponseDataRecurringCreditsAccessAmount]
 type v2ContractGetResponseDataRecurringCreditsAccessAmountJSON struct {
 	CreditTypeID apijson.Field
-	Quantity     apijson.Field
 	UnitPrice    apijson.Field
+	Quantity     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -2914,6 +2917,7 @@ func (r v2ContractGetResponseDataRecurringCreditsContractJSON) RawJSON() string 
 
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+// subscription_config:
 type V2ContractGetResponseDataRecurringCreditsProration string
 
 const (
@@ -5807,6 +5811,7 @@ type V2ContractListResponseDataRecurringCommit struct {
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// Determines whether the first and last commit will be prorated. If not provided,
 	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	// subscription_config:
 	Proration V2ContractListResponseDataRecurringCommitsProration `json:"proration"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
@@ -5862,8 +5867,8 @@ func (r v2ContractListResponseDataRecurringCommitJSON) RawJSON() string {
 // The amount of commit to grant.
 type V2ContractListResponseDataRecurringCommitsAccessAmount struct {
 	CreditTypeID string                                                     `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                    `json:"quantity,required"`
 	UnitPrice    float64                                                    `json:"unit_price,required"`
+	Quantity     float64                                                    `json:"quantity"`
 	JSON         v2ContractListResponseDataRecurringCommitsAccessAmountJSON `json:"-"`
 }
 
@@ -5871,8 +5876,8 @@ type V2ContractListResponseDataRecurringCommitsAccessAmount struct {
 // metadata for the struct [V2ContractListResponseDataRecurringCommitsAccessAmount]
 type v2ContractListResponseDataRecurringCommitsAccessAmountJSON struct {
 	CreditTypeID apijson.Field
-	Quantity     apijson.Field
 	UnitPrice    apijson.Field
+	Quantity     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -6013,6 +6018,7 @@ func (r v2ContractListResponseDataRecurringCommitsInvoiceAmountJSON) RawJSON() s
 
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+// subscription_config:
 type V2ContractListResponseDataRecurringCommitsProration string
 
 const (
@@ -6110,6 +6116,7 @@ type V2ContractListResponseDataRecurringCredit struct {
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// Determines whether the first and last commit will be prorated. If not provided,
 	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	// subscription_config:
 	Proration V2ContractListResponseDataRecurringCreditsProration `json:"proration"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
@@ -6164,8 +6171,8 @@ func (r v2ContractListResponseDataRecurringCreditJSON) RawJSON() string {
 // The amount of commit to grant.
 type V2ContractListResponseDataRecurringCreditsAccessAmount struct {
 	CreditTypeID string                                                     `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                    `json:"quantity,required"`
 	UnitPrice    float64                                                    `json:"unit_price,required"`
+	Quantity     float64                                                    `json:"quantity"`
 	JSON         v2ContractListResponseDataRecurringCreditsAccessAmountJSON `json:"-"`
 }
 
@@ -6173,8 +6180,8 @@ type V2ContractListResponseDataRecurringCreditsAccessAmount struct {
 // metadata for the struct [V2ContractListResponseDataRecurringCreditsAccessAmount]
 type v2ContractListResponseDataRecurringCreditsAccessAmountJSON struct {
 	CreditTypeID apijson.Field
-	Quantity     apijson.Field
 	UnitPrice    apijson.Field
+	Quantity     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -6288,6 +6295,7 @@ func (r v2ContractListResponseDataRecurringCreditsContractJSON) RawJSON() string
 
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+// subscription_config:
 type V2ContractListResponseDataRecurringCreditsProration string
 
 const (
@@ -7759,6 +7767,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// Determines whether the first and last commit will be prorated. If not provided,
 	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	// subscription_config:
 	Proration V2ContractGetEditHistoryResponseDataAddRecurringCommitsProration `json:"proration"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
@@ -7814,8 +7823,8 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON) RawJSON() st
 // The amount of commit to grant.
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitsAccessAmount struct {
 	CreditTypeID string                                                                  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                                 `json:"quantity,required"`
 	UnitPrice    float64                                                                 `json:"unit_price,required"`
+	Quantity     float64                                                                 `json:"quantity"`
 	JSON         v2ContractGetEditHistoryResponseDataAddRecurringCommitsAccessAmountJSON `json:"-"`
 }
 
@@ -7824,8 +7833,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommitsAccessAmount struct 
 // [V2ContractGetEditHistoryResponseDataAddRecurringCommitsAccessAmount]
 type v2ContractGetEditHistoryResponseDataAddRecurringCommitsAccessAmountJSON struct {
 	CreditTypeID apijson.Field
-	Quantity     apijson.Field
 	UnitPrice    apijson.Field
+	Quantity     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -7968,6 +7977,7 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsInvoiceAmountJSON
 
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+// subscription_config:
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitsProration string
 
 const (
@@ -8066,6 +8076,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// Determines whether the first and last commit will be prorated. If not provided,
 	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	// subscription_config:
 	Proration V2ContractGetEditHistoryResponseDataAddRecurringCreditsProration `json:"proration"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
@@ -8120,8 +8131,8 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON) RawJSON() st
 // The amount of commit to grant.
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditsAccessAmount struct {
 	CreditTypeID string                                                                  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64                                                                 `json:"quantity,required"`
 	UnitPrice    float64                                                                 `json:"unit_price,required"`
+	Quantity     float64                                                                 `json:"quantity"`
 	JSON         v2ContractGetEditHistoryResponseDataAddRecurringCreditsAccessAmountJSON `json:"-"`
 }
 
@@ -8130,8 +8141,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCreditsAccessAmount struct 
 // [V2ContractGetEditHistoryResponseDataAddRecurringCreditsAccessAmount]
 type v2ContractGetEditHistoryResponseDataAddRecurringCreditsAccessAmountJSON struct {
 	CreditTypeID apijson.Field
-	Quantity     apijson.Field
 	UnitPrice    apijson.Field
+	Quantity     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -8247,6 +8258,7 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsContractJSON) Raw
 
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+// subscription_config:
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditsProration string
 
 const (
@@ -11242,8 +11254,10 @@ func (r V2ContractEditParamsAddRecurringCommit) MarshalJSON() (data []byte, err 
 // The amount of commit to grant.
 type V2ContractEditParamsAddRecurringCommitsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     param.Field[float64] `json:"quantity,required"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
+	// This field is currently required. Upcoming recurring commit/credit configuration
+	// options will allow it to be optional.
+	Quantity param.Field[float64] `json:"quantity"`
 }
 
 func (r V2ContractEditParamsAddRecurringCommitsAccessAmount) MarshalJSON() (data []byte, err error) {
@@ -11414,8 +11428,10 @@ func (r V2ContractEditParamsAddRecurringCredit) MarshalJSON() (data []byte, err 
 // The amount of commit to grant.
 type V2ContractEditParamsAddRecurringCreditsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     param.Field[float64] `json:"quantity,required"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
+	// This field is currently required. Upcoming recurring commit/credit configuration
+	// options will allow it to be optional.
+	Quantity param.Field[float64] `json:"quantity"`
 }
 
 func (r V2ContractEditParamsAddRecurringCreditsAccessAmount) MarshalJSON() (data []byte, err error) {

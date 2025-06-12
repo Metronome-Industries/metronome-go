@@ -249,8 +249,8 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		RecurringCommits: metronome.F([]metronome.V1ContractNewParamsRecurringCommit{{
 			AccessAmount: metronome.F(metronome.V1ContractNewParamsRecurringCommitsAccessAmount{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				Quantity:     metronome.F(0.000000),
 				UnitPrice:    metronome.F(0.000000),
+				Quantity:     metronome.F(0.000000),
 			}),
 			CommitDuration: metronome.F(metronome.V1ContractNewParamsRecurringCommitsCommitDuration{
 				Value: metronome.F(0.000000),
@@ -289,8 +289,8 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		RecurringCredits: metronome.F([]metronome.V1ContractNewParamsRecurringCredit{{
 			AccessAmount: metronome.F(metronome.V1ContractNewParamsRecurringCreditsAccessAmount{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				Quantity:     metronome.F(0.000000),
 				UnitPrice:    metronome.F(0.000000),
+				Quantity:     metronome.F(0.000000),
 			}),
 			CommitDuration: metronome.F(metronome.V1ContractNewParamsRecurringCreditsCommitDuration{
 				Value: metronome.F(0.000000),
