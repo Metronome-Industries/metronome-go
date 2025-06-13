@@ -155,7 +155,7 @@ type V2ContractGetResponseData struct {
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices V2ContractGetResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     V2ContractGetResponseDataSpendThresholdConfiguration     `json:"spend_threshold_configuration"`
-	// (beta) List of subscriptions on the contract.
+	// List of subscriptions on the contract.
 	Subscriptions      []V2ContractGetResponseDataSubscription `json:"subscriptions"`
 	TotalContractValue float64                                 `json:"total_contract_value"`
 	// Prevents the creation of duplicates. If a request to create a record is made
@@ -3285,16 +3285,18 @@ func (r V2ContractGetResponseDataSpendThresholdConfigurationPaymentGateConfigTax
 type V2ContractGetResponseDataSubscription struct {
 	CollectionSchedule V2ContractGetResponseDataSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
 	Proration          V2ContractGetResponseDataSubscriptionsProration          `json:"proration,required"`
-	QuantitySchedule   []V2ContractGetResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt         time.Time                                                `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate   V2ContractGetResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	ID                 string                                                   `json:"id" format:"uuid"`
-	CustomFields       map[string]string                                        `json:"custom_fields"`
-	Description        string                                                   `json:"description"`
-	EndingBefore       time.Time                                                `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID   string                                                   `json:"fiat_credit_type_id" format:"uuid"`
-	Name               string                                                   `json:"name"`
-	JSON               v2ContractGetResponseDataSubscriptionJSON                `json:"-"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []V2ContractGetResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt       time.Time                                                `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate V2ContractGetResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
+	ID               string                                                   `json:"id" format:"uuid"`
+	CustomFields     map[string]string                                        `json:"custom_fields"`
+	Description      string                                                   `json:"description"`
+	EndingBefore     time.Time                                                `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                                                   `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                                                   `json:"name"`
+	JSON             v2ContractGetResponseDataSubscriptionJSON                `json:"-"`
 }
 
 // v2ContractGetResponseDataSubscriptionJSON contains the JSON metadata for the
@@ -3532,7 +3534,7 @@ type V2ContractListResponseData struct {
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices V2ContractListResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     V2ContractListResponseDataSpendThresholdConfiguration     `json:"spend_threshold_configuration"`
-	// (beta) List of subscriptions on the contract.
+	// List of subscriptions on the contract.
 	Subscriptions      []V2ContractListResponseDataSubscription `json:"subscriptions"`
 	TotalContractValue float64                                  `json:"total_contract_value"`
 	// Prevents the creation of duplicates. If a request to create a record is made
@@ -6663,16 +6665,18 @@ func (r V2ContractListResponseDataSpendThresholdConfigurationPaymentGateConfigTa
 type V2ContractListResponseDataSubscription struct {
 	CollectionSchedule V2ContractListResponseDataSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
 	Proration          V2ContractListResponseDataSubscriptionsProration          `json:"proration,required"`
-	QuantitySchedule   []V2ContractListResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt         time.Time                                                 `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate   V2ContractListResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	ID                 string                                                    `json:"id" format:"uuid"`
-	CustomFields       map[string]string                                         `json:"custom_fields"`
-	Description        string                                                    `json:"description"`
-	EndingBefore       time.Time                                                 `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID   string                                                    `json:"fiat_credit_type_id" format:"uuid"`
-	Name               string                                                    `json:"name"`
-	JSON               v2ContractListResponseDataSubscriptionJSON                `json:"-"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []V2ContractListResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt       time.Time                                                 `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate V2ContractListResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
+	ID               string                                                    `json:"id" format:"uuid"`
+	CustomFields     map[string]string                                         `json:"custom_fields"`
+	Description      string                                                    `json:"description"`
+	EndingBefore     time.Time                                                 `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                                                    `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                                                    `json:"name"`
+	JSON             v2ContractListResponseDataSubscriptionJSON                `json:"-"`
 }
 
 // v2ContractListResponseDataSubscriptionJSON contains the JSON metadata for the
@@ -6942,7 +6946,7 @@ type V2ContractGetEditHistoryResponseData struct {
 	AddResellerRoyalties                    []V2ContractGetEditHistoryResponseDataAddResellerRoyalty                    `json:"add_reseller_royalties"`
 	AddScheduledCharges                     []V2ContractGetEditHistoryResponseDataAddScheduledCharge                    `json:"add_scheduled_charges"`
 	AddSpendThresholdConfiguration          V2ContractGetEditHistoryResponseDataAddSpendThresholdConfiguration          `json:"add_spend_threshold_configuration"`
-	// (beta) List of subscriptions on the contract.
+	// List of subscriptions on the contract.
 	AddSubscriptions                           []V2ContractGetEditHistoryResponseDataAddSubscription                          `json:"add_subscriptions"`
 	AddUsageFilters                            []V2ContractGetEditHistoryResponseDataAddUsageFilter                           `json:"add_usage_filters"`
 	ArchiveCommits                             []V2ContractGetEditHistoryResponseDataArchiveCommit                            `json:"archive_commits"`
@@ -6960,7 +6964,7 @@ type V2ContractGetEditHistoryResponseData struct {
 	UpdateRefundInvoices                       []V2ContractGetEditHistoryResponseDataUpdateRefundInvoice                      `json:"update_refund_invoices"`
 	UpdateScheduledCharges                     []V2ContractGetEditHistoryResponseDataUpdateScheduledCharge                    `json:"update_scheduled_charges"`
 	UpdateSpendThresholdConfiguration          V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration          `json:"update_spend_threshold_configuration"`
-	// (beta) Optional list of subscriptions to update.
+	// Optional list of subscriptions to update.
 	UpdateSubscriptions []V2ContractGetEditHistoryResponseDataUpdateSubscription `json:"update_subscriptions"`
 	JSON                v2ContractGetEditHistoryResponseDataJSON                 `json:"-"`
 }
@@ -8624,16 +8628,18 @@ func (r V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymen
 type V2ContractGetEditHistoryResponseDataAddSubscription struct {
 	CollectionSchedule V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
 	Proration          V2ContractGetEditHistoryResponseDataAddSubscriptionsProration          `json:"proration,required"`
-	QuantitySchedule   []V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt         time.Time                                                              `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate   V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	ID                 string                                                                 `json:"id" format:"uuid"`
-	CustomFields       map[string]string                                                      `json:"custom_fields"`
-	Description        string                                                                 `json:"description"`
-	EndingBefore       time.Time                                                              `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID   string                                                                 `json:"fiat_credit_type_id" format:"uuid"`
-	Name               string                                                                 `json:"name"`
-	JSON               v2ContractGetEditHistoryResponseDataAddSubscriptionJSON                `json:"-"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt       time.Time                                                              `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
+	ID               string                                                                 `json:"id" format:"uuid"`
+	CustomFields     map[string]string                                                      `json:"custom_fields"`
+	Description      string                                                                 `json:"description"`
+	EndingBefore     time.Time                                                              `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                                                                 `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                                                                 `json:"name"`
+	JSON             v2ContractGetEditHistoryResponseDataAddSubscriptionJSON                `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddSubscriptionJSON contains the JSON
@@ -10321,7 +10327,7 @@ type V2ContractEditParams struct {
 	AddResellerRoyalties           param.Field[[]V2ContractEditParamsAddResellerRoyalty]           `json:"add_reseller_royalties"`
 	AddScheduledCharges            param.Field[[]V2ContractEditParamsAddScheduledCharge]           `json:"add_scheduled_charges"`
 	AddSpendThresholdConfiguration param.Field[V2ContractEditParamsAddSpendThresholdConfiguration] `json:"add_spend_threshold_configuration"`
-	// (beta) Optional list of
+	// Optional list of
 	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
 	// to add to the contract.
 	AddSubscriptions param.Field[[]V2ContractEditParamsAddSubscription] `json:"add_subscriptions"`
@@ -10353,7 +10359,7 @@ type V2ContractEditParams struct {
 	UpdateRecurringCredits            param.Field[[]V2ContractEditParamsUpdateRecurringCredit]           `json:"update_recurring_credits"`
 	UpdateScheduledCharges            param.Field[[]V2ContractEditParamsUpdateScheduledCharge]           `json:"update_scheduled_charges"`
 	UpdateSpendThresholdConfiguration param.Field[V2ContractEditParamsUpdateSpendThresholdConfiguration] `json:"update_spend_threshold_configuration"`
-	// (beta) Optional list of subscriptions to update.
+	// Optional list of subscriptions to update.
 	UpdateSubscriptions param.Field[[]V2ContractEditParamsUpdateSubscription] `json:"update_subscriptions"`
 }
 

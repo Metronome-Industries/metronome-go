@@ -1030,10 +1030,13 @@ type ContractWithoutAmendments struct {
 	UsageStatementSchedule ContractWithoutAmendmentsUsageStatementSchedule `json:"usage_statement_schedule,required"`
 	Credits                []Credit                                        `json:"credits"`
 	// This field's availability is dependent on your client's configuration.
-	Discounts           []Discount `json:"discounts"`
-	EndingBefore        time.Time  `json:"ending_before" format:"date-time"`
-	Name                string     `json:"name"`
-	NetPaymentTermsDays float64    `json:"net_payment_terms_days"`
+	Discounts    []Discount `json:"discounts"`
+	EndingBefore time.Time  `json:"ending_before" format:"date-time"`
+	// Either a **parent** configuration with a list of children or a **child**
+	// configuration with a single parent.
+	HierarchyConfiguration ContractWithoutAmendmentsHierarchyConfiguration `json:"hierarchy_configuration"`
+	Name                   string                                          `json:"name"`
+	NetPaymentTermsDays    float64                                         `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID                 string                                                        `json:"netsuite_sales_order_id"`
 	PrepaidBalanceThresholdConfiguration ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
@@ -1073,6 +1076,7 @@ type contractWithoutAmendmentsJSON struct {
 	Credits                              apijson.Field
 	Discounts                            apijson.Field
 	EndingBefore                         apijson.Field
+	HierarchyConfiguration               apijson.Field
 	Name                                 apijson.Field
 	NetPaymentTermsDays                  apijson.Field
 	NetsuiteSalesOrderID                 apijson.Field
@@ -1178,6 +1182,177 @@ func (r ContractWithoutAmendmentsUsageStatementScheduleFrequency) IsKnown() bool
 		return true
 	}
 	return false
+}
+
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+type ContractWithoutAmendmentsHierarchyConfiguration struct {
+	// This field can have the runtime type of
+	// [[]ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild].
+	Children interface{} `json:"children"`
+	// This field can have the runtime type of
+	// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent].
+	Parent interface{}                                         `json:"parent"`
+	JSON   contractWithoutAmendmentsHierarchyConfigurationJSON `json:"-"`
+	union  ContractWithoutAmendmentsHierarchyConfigurationUnion
+}
+
+// contractWithoutAmendmentsHierarchyConfigurationJSON contains the JSON metadata
+// for the struct [ContractWithoutAmendmentsHierarchyConfiguration]
+type contractWithoutAmendmentsHierarchyConfigurationJSON struct {
+	Children    apijson.Field
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r contractWithoutAmendmentsHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *ContractWithoutAmendmentsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	*r = ContractWithoutAmendmentsHierarchyConfiguration{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [ContractWithoutAmendmentsHierarchyConfigurationUnion]
+// interface which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration],
+// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration].
+func (r ContractWithoutAmendmentsHierarchyConfiguration) AsUnion() ContractWithoutAmendmentsHierarchyConfigurationUnion {
+	return r.union
+}
+
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+//
+// Union satisfied by
+// [ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration] or
+// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration].
+type ContractWithoutAmendmentsHierarchyConfigurationUnion interface {
+	implementsContractWithoutAmendmentsHierarchyConfiguration()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*ContractWithoutAmendmentsHierarchyConfigurationUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration{}),
+		},
+	)
+}
+
+type ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration struct {
+	// List of contracts that belong to this parent.
+	Children []ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild `json:"children,required"`
+	JSON     contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationJSON    `json:"-"`
+}
+
+// contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration]
+type contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationJSON struct {
+	Children    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration) implementsContractWithoutAmendmentsHierarchyConfiguration() {
+}
+
+type ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild struct {
+	ContractID string                                                                               `json:"contract_id,required" format:"uuid"`
+	CustomerID string                                                                               `json:"customer_id,required" format:"uuid"`
+	JSON       contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChildJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChildJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild]
+type contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChildJSON struct {
+	ContractID  apijson.Field
+	CustomerID  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChildJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration struct {
+	// The single parent contract/customer for this child.
+	Parent ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
+	JSON   contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationJSON   `json:"-"`
+}
+
+// contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration]
+type contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationJSON struct {
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration) implementsContractWithoutAmendmentsHierarchyConfiguration() {
+}
+
+// The single parent contract/customer for this child.
+type ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent struct {
+	ContractID string                                                                               `json:"contract_id,required" format:"uuid"`
+	CustomerID string                                                                               `json:"customer_id,required" format:"uuid"`
+	JSON       contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParentJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParentJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent]
+type contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParentJSON struct {
+	ContractID  apijson.Field
+	CustomerID  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParentJSON) RawJSON() string {
+	return r.raw
 }
 
 type ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration struct {
