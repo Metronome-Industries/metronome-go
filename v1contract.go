@@ -219,7 +219,7 @@ type V1ContractGetResponseData struct {
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices V1ContractGetResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     V1ContractGetResponseDataSpendThresholdConfiguration     `json:"spend_threshold_configuration"`
-	// (beta) List of subscriptions on the contract.
+	// List of subscriptions on the contract.
 	Subscriptions []V1ContractGetResponseDataSubscription `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
@@ -853,16 +853,18 @@ func (r V1ContractGetResponseDataSpendThresholdConfigurationPaymentGateConfigTax
 type V1ContractGetResponseDataSubscription struct {
 	CollectionSchedule V1ContractGetResponseDataSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
 	Proration          V1ContractGetResponseDataSubscriptionsProration          `json:"proration,required"`
-	QuantitySchedule   []V1ContractGetResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt         time.Time                                                `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate   V1ContractGetResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	ID                 string                                                   `json:"id" format:"uuid"`
-	CustomFields       map[string]string                                        `json:"custom_fields"`
-	Description        string                                                   `json:"description"`
-	EndingBefore       time.Time                                                `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID   string                                                   `json:"fiat_credit_type_id" format:"uuid"`
-	Name               string                                                   `json:"name"`
-	JSON               v1ContractGetResponseDataSubscriptionJSON                `json:"-"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []V1ContractGetResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt       time.Time                                                `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate V1ContractGetResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
+	ID               string                                                   `json:"id" format:"uuid"`
+	CustomFields     map[string]string                                        `json:"custom_fields"`
+	Description      string                                                   `json:"description"`
+	EndingBefore     time.Time                                                `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                                                   `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                                                   `json:"name"`
+	JSON             v1ContractGetResponseDataSubscriptionJSON                `json:"-"`
 }
 
 // v1ContractGetResponseDataSubscriptionJSON contains the JSON metadata for the
@@ -1074,7 +1076,7 @@ type V1ContractListResponseData struct {
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices V1ContractListResponseDataScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     V1ContractListResponseDataSpendThresholdConfiguration     `json:"spend_threshold_configuration"`
-	// (beta) List of subscriptions on the contract.
+	// List of subscriptions on the contract.
 	Subscriptions []V1ContractListResponseDataSubscription `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
@@ -1708,16 +1710,18 @@ func (r V1ContractListResponseDataSpendThresholdConfigurationPaymentGateConfigTa
 type V1ContractListResponseDataSubscription struct {
 	CollectionSchedule V1ContractListResponseDataSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
 	Proration          V1ContractListResponseDataSubscriptionsProration          `json:"proration,required"`
-	QuantitySchedule   []V1ContractListResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt         time.Time                                                 `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate   V1ContractListResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	ID                 string                                                    `json:"id" format:"uuid"`
-	CustomFields       map[string]string                                         `json:"custom_fields"`
-	Description        string                                                    `json:"description"`
-	EndingBefore       time.Time                                                 `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID   string                                                    `json:"fiat_credit_type_id" format:"uuid"`
-	Name               string                                                    `json:"name"`
-	JSON               v1ContractListResponseDataSubscriptionJSON                `json:"-"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []V1ContractListResponseDataSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt       time.Time                                                 `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate V1ContractListResponseDataSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
+	ID               string                                                    `json:"id" format:"uuid"`
+	CustomFields     map[string]string                                         `json:"custom_fields"`
+	Description      string                                                    `json:"description"`
+	EndingBefore     time.Time                                                 `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                                                    `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                                                    `json:"name"`
+	JSON             v1ContractListResponseDataSubscriptionJSON                `json:"-"`
 }
 
 // v1ContractListResponseDataSubscriptionJSON contains the JSON metadata for the
@@ -2462,7 +2466,7 @@ type V1ContractNewParams struct {
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices param.Field[V1ContractNewParamsScheduledChargesOnUsageInvoices] `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     param.Field[V1ContractNewParamsSpendThresholdConfiguration]     `json:"spend_threshold_configuration"`
-	// (beta) Optional list of
+	// Optional list of
 	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
 	// to add to the contract.
 	Subscriptions param.Field[[]V1ContractNewParamsSubscription] `json:"subscriptions"`

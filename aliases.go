@@ -248,6 +248,26 @@ const ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual = shared.Co
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsUsageStatementScheduleFrequencyWeekly = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyWeekly
 
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsHierarchyConfiguration = shared.ContractWithoutAmendmentsHierarchyConfiguration
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration = shared.ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild = shared.ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration = shared.ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration
+
+// The single parent contract/customer for this child.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent = shared.ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration
 
