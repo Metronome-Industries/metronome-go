@@ -50,8 +50,8 @@ func TestV1CreditGrantNewWithOptionalParams(t *testing.T) {
 		RolloverSettings: metronome.F(metronome.V1CreditGrantNewParamsRolloverSettings{
 			ExpiresAt: metronome.F(time.Now()),
 			Priority:  metronome.F(0.000000),
-			RolloverAmount: metronome.F[metronome.V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion](metronome.V1CreditGrantNewParamsRolloverSettingsRolloverAmountObject{
-				Type:  metronome.F(metronome.V1CreditGrantNewParamsRolloverSettingsRolloverAmountObjectTypeMaxPercentage),
+			RolloverAmount: metronome.F[metronome.V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion](metronome.RolloverAmountMaxPercentageParam{
+				Type:  metronome.F(metronome.RolloverAmountMaxPercentageTypeMaxPercentage),
 				Value: metronome.F(0.000000),
 			}),
 		}),
@@ -137,6 +137,7 @@ func TestV1CreditGrantListEntriesWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.V1.CreditGrants.ListEntries(context.TODO(), metronome.V1CreditGrantListEntriesParams{
 		NextPage:      metronome.F("next_page"),
+		Sort:          metronome.F(metronome.V1CreditGrantListEntriesParamsSortAsc),
 		CreditTypeIDs: metronome.F([]string{"2714e483-4ff1-48e4-9e25-ac732e8f24f2"}),
 		CustomerIDs:   metronome.F([]string{"6a37bb88-8538-48c5-b37b-a41c836328bd"}),
 		EndingBefore:  metronome.F(time.Now()),
