@@ -2220,12 +2220,13 @@ type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit struct 
 	// The commit product that will be used to generate the line item for commit
 	// payment.
 	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If both applicable_product_ids
-	// and applicable_product_tags are not provided, the commit applies to all
-	// products.
+	// Which products the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags"`
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
@@ -5599,12 +5600,13 @@ type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit struct
 	// The commit product that will be used to generate the line item for commit
 	// payment.
 	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If both applicable_product_ids
-	// and applicable_product_tags are not provided, the commit applies to all
-	// products.
+	// Which products the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags"`
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
@@ -7557,12 +7559,13 @@ type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration
 	// The commit product that will be used to generate the line item for commit
 	// payment.
 	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If both applicable_product_ids
-	// and applicable_product_tags are not provided, the commit applies to all
-	// products.
+	// Which products the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags"`
 	Description           string   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
@@ -8932,11 +8935,13 @@ func (r v2ContractGetEditHistoryResponseDataRemoveOverrideJSON) RawJSON() string
 type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	ID             string                                                          `json:"id,required" format:"uuid"`
 	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCommitsAccessSchedule `json:"access_schedule"`
-	// Which products the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which products the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,nullable" format:"uuid"`
-	// Which tags the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags []string                                                         `json:"applicable_product_tags,nullable"`
 	InvoiceSchedule       V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceSchedule `json:"invoice_schedule"`
 	Name                  string                                                           `json:"name"`
@@ -10376,11 +10381,13 @@ type V2ContractEditParamsAddCommit struct {
 	AccessSchedule param.Field[V2ContractEditParamsAddCommitsAccessSchedule] `json:"access_schedule"`
 	// (DEPRECATED) Use access_schedule and invoice_schedule instead.
 	Amount param.Field[float64] `json:"amount"`
-	// Which products the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which products the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags param.Field[[]string]          `json:"applicable_product_tags"`
 	CustomFields          param.Field[map[string]string] `json:"custom_fields"`
 	// Used only in UI/API. It is not exposed to end customers.
@@ -11064,12 +11071,13 @@ type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit struct {
 	// The commit product that will be used to generate the line item for commit
 	// payment.
 	ProductID param.Field[string] `json:"product_id,required"`
-	// Which products the threshold commit applies to. If both applicable_product_ids
-	// and applicable_product_tags are not provided, the commit applies to all
-	// products.
+	// Which products the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
 	Description           param.Field[string]   `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
@@ -11956,11 +11964,13 @@ func (r V2ContractEditParamsRemoveOverride) MarshalJSON() (data []byte, err erro
 type V2ContractEditParamsUpdateCommit struct {
 	CommitID       param.Field[string]                                          `json:"commit_id,required" format:"uuid"`
 	AccessSchedule param.Field[V2ContractEditParamsUpdateCommitsAccessSchedule] `json:"access_schedule"`
-	// Which products the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which products the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags param.Field[[]string]                                         `json:"applicable_product_tags"`
 	InvoiceSchedule       param.Field[V2ContractEditParamsUpdateCommitsInvoiceSchedule] `json:"invoice_schedule"`
 	NetsuiteSalesOrderID  param.Field[string]                                           `json:"netsuite_sales_order_id"`
@@ -12055,11 +12065,13 @@ func (r V2ContractEditParamsUpdateCommitsInvoiceScheduleUpdateScheduleItem) Mars
 type V2ContractEditParamsUpdateCredit struct {
 	CreditID       param.Field[string]                                          `json:"credit_id,required" format:"uuid"`
 	AccessSchedule param.Field[V2ContractEditParamsUpdateCreditsAccessSchedule] `json:"access_schedule"`
-	// Which products the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which products the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
 	NetsuiteSalesOrderID  param.Field[string]   `json:"netsuite_sales_order_id"`
 	ProductID             param.Field[string]   `json:"product_id" format:"uuid"`
@@ -12493,11 +12505,13 @@ type V2ContractEditCommitParams struct {
 	// ID of the customer whose commit is being edited
 	CustomerID     param.Field[string]                                   `json:"customer_id,required" format:"uuid"`
 	AccessSchedule param.Field[V2ContractEditCommitParamsAccessSchedule] `json:"access_schedule"`
-	// Which products the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which products the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the commit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the commit applies to all products.
+	// Which tags the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
 	// ID of contract to use for invoicing
 	InvoiceContractID param.Field[string]                                    `json:"invoice_contract_id" format:"uuid"`
