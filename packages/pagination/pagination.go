@@ -40,6 +40,9 @@ func (r cursorPageJSON) RawJSON() string {
 // there is no next page, this function will return a 'nil' for the page value, but
 // will not return an error
 func (r *CursorPage[T]) GetNextPage() (res *CursorPage[T], err error) {
+	if len(r.Data) == 0 {
+		return nil, nil
+	}
 	next := r.NextPage
 	if len(next) == 0 {
 		return nil, nil
