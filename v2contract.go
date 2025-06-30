@@ -129,6 +129,9 @@ type V2ContractGetResponseData struct {
 	// This field's availability is dependent on your client's configuration.
 	Discounts    []shared.Discount `json:"discounts"`
 	EndingBefore time.Time         `json:"ending_before" format:"date-time"`
+	// Either a **parent** configuration with a list of children or a **child**
+	// configuration with a single parent.
+	HierarchyConfiguration V2ContractGetResponseDataHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 	// prices automatically. EXPLICIT prioritization requires specifying priorities for
 	// each multiplier; the one with the lowest priority value will be prioritized
@@ -185,6 +188,7 @@ type v2ContractGetResponseDataJSON struct {
 	CustomerBillingProviderConfiguration apijson.Field
 	Discounts                            apijson.Field
 	EndingBefore                         apijson.Field
+	HierarchyConfiguration               apijson.Field
 	MultiplierOverridePrioritization     apijson.Field
 	Name                                 apijson.Field
 	NetPaymentTermsDays                  apijson.Field
@@ -2161,6 +2165,177 @@ func (r V2ContractGetResponseDataCustomerBillingProviderConfigurationDeliveryMet
 	return false
 }
 
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+type V2ContractGetResponseDataHierarchyConfiguration struct {
+	// This field can have the runtime type of
+	// [[]V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChild].
+	Children interface{} `json:"children"`
+	// This field can have the runtime type of
+	// [V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParent].
+	Parent interface{}                                         `json:"parent"`
+	JSON   v2ContractGetResponseDataHierarchyConfigurationJSON `json:"-"`
+	union  V2ContractGetResponseDataHierarchyConfigurationUnion
+}
+
+// v2ContractGetResponseDataHierarchyConfigurationJSON contains the JSON metadata
+// for the struct [V2ContractGetResponseDataHierarchyConfiguration]
+type v2ContractGetResponseDataHierarchyConfigurationJSON struct {
+	Children    apijson.Field
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r v2ContractGetResponseDataHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *V2ContractGetResponseDataHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	*r = V2ContractGetResponseDataHierarchyConfiguration{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [V2ContractGetResponseDataHierarchyConfigurationUnion]
+// interface which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfiguration],
+// [V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfiguration].
+func (r V2ContractGetResponseDataHierarchyConfiguration) AsUnion() V2ContractGetResponseDataHierarchyConfigurationUnion {
+	return r.union
+}
+
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+//
+// Union satisfied by
+// [V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfiguration] or
+// [V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfiguration].
+type V2ContractGetResponseDataHierarchyConfigurationUnion interface {
+	implementsV2ContractGetResponseDataHierarchyConfiguration()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*V2ContractGetResponseDataHierarchyConfigurationUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfiguration{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfiguration{}),
+		},
+	)
+}
+
+type V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfiguration struct {
+	// List of contracts that belong to this parent.
+	Children []V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChild `json:"children,required"`
+	JSON     v2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationJSON    `json:"-"`
+}
+
+// v2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfiguration]
+type v2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationJSON struct {
+	Children    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfiguration) implementsV2ContractGetResponseDataHierarchyConfiguration() {
+}
+
+type V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChild struct {
+	ContractID string                                                                               `json:"contract_id,required" format:"uuid"`
+	CustomerID string                                                                               `json:"customer_id,required" format:"uuid"`
+	JSON       v2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChildJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChildJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChild]
+type v2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChildJSON struct {
+	ContractID  apijson.Field
+	CustomerID  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataHierarchyConfigurationParentHierarchyConfigurationChildJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfiguration struct {
+	// The single parent contract/customer for this child.
+	Parent V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
+	JSON   v2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationJSON   `json:"-"`
+}
+
+// v2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfiguration]
+type v2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationJSON struct {
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfiguration) implementsV2ContractGetResponseDataHierarchyConfiguration() {
+}
+
+// The single parent contract/customer for this child.
+type V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParent struct {
+	ContractID string                                                                               `json:"contract_id,required" format:"uuid"`
+	CustomerID string                                                                               `json:"customer_id,required" format:"uuid"`
+	JSON       v2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParentJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParentJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParent]
+type v2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParentJSON struct {
+	ContractID  apijson.Field
+	CustomerID  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParent) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataHierarchyConfigurationChildHierarchyConfigurationParentJSON) RawJSON() string {
+	return r.raw
+}
+
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 // prices automatically. EXPLICIT prioritization requires specifying priorities for
 // each multiplier; the one with the lowest priority value will be prioritized
@@ -3509,6 +3684,9 @@ type V2ContractListResponseData struct {
 	// This field's availability is dependent on your client's configuration.
 	Discounts    []shared.Discount `json:"discounts"`
 	EndingBefore time.Time         `json:"ending_before" format:"date-time"`
+	// Either a **parent** configuration with a list of children or a **child**
+	// configuration with a single parent.
+	HierarchyConfiguration V2ContractListResponseDataHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 	// prices automatically. EXPLICIT prioritization requires specifying priorities for
 	// each multiplier; the one with the lowest priority value will be prioritized
@@ -3565,6 +3743,7 @@ type v2ContractListResponseDataJSON struct {
 	CustomerBillingProviderConfiguration apijson.Field
 	Discounts                            apijson.Field
 	EndingBefore                         apijson.Field
+	HierarchyConfiguration               apijson.Field
 	MultiplierOverridePrioritization     apijson.Field
 	Name                                 apijson.Field
 	NetPaymentTermsDays                  apijson.Field
@@ -5539,6 +5718,178 @@ func (r V2ContractListResponseDataCustomerBillingProviderConfigurationDeliveryMe
 		return true
 	}
 	return false
+}
+
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+type V2ContractListResponseDataHierarchyConfiguration struct {
+	// This field can have the runtime type of
+	// [[]V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChild].
+	Children interface{} `json:"children"`
+	// This field can have the runtime type of
+	// [V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParent].
+	Parent interface{}                                          `json:"parent"`
+	JSON   v2ContractListResponseDataHierarchyConfigurationJSON `json:"-"`
+	union  V2ContractListResponseDataHierarchyConfigurationUnion
+}
+
+// v2ContractListResponseDataHierarchyConfigurationJSON contains the JSON metadata
+// for the struct [V2ContractListResponseDataHierarchyConfiguration]
+type v2ContractListResponseDataHierarchyConfigurationJSON struct {
+	Children    apijson.Field
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r v2ContractListResponseDataHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *V2ContractListResponseDataHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	*r = V2ContractListResponseDataHierarchyConfiguration{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [V2ContractListResponseDataHierarchyConfigurationUnion]
+// interface which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfiguration],
+// [V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfiguration].
+func (r V2ContractListResponseDataHierarchyConfiguration) AsUnion() V2ContractListResponseDataHierarchyConfigurationUnion {
+	return r.union
+}
+
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+//
+// Union satisfied by
+// [V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfiguration]
+// or
+// [V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfiguration].
+type V2ContractListResponseDataHierarchyConfigurationUnion interface {
+	implementsV2ContractListResponseDataHierarchyConfiguration()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*V2ContractListResponseDataHierarchyConfigurationUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfiguration{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfiguration{}),
+		},
+	)
+}
+
+type V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfiguration struct {
+	// List of contracts that belong to this parent.
+	Children []V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChild `json:"children,required"`
+	JSON     v2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationJSON    `json:"-"`
+}
+
+// v2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfiguration]
+type v2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationJSON struct {
+	Children    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfiguration) implementsV2ContractListResponseDataHierarchyConfiguration() {
+}
+
+type V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChild struct {
+	ContractID string                                                                                `json:"contract_id,required" format:"uuid"`
+	CustomerID string                                                                                `json:"customer_id,required" format:"uuid"`
+	JSON       v2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChildJSON `json:"-"`
+}
+
+// v2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChildJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChild]
+type v2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChildJSON struct {
+	ContractID  apijson.Field
+	CustomerID  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataHierarchyConfigurationParentHierarchyConfigurationChildJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfiguration struct {
+	// The single parent contract/customer for this child.
+	Parent V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
+	JSON   v2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationJSON   `json:"-"`
+}
+
+// v2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfiguration]
+type v2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationJSON struct {
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfiguration) implementsV2ContractListResponseDataHierarchyConfiguration() {
+}
+
+// The single parent contract/customer for this child.
+type V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParent struct {
+	ContractID string                                                                                `json:"contract_id,required" format:"uuid"`
+	CustomerID string                                                                                `json:"customer_id,required" format:"uuid"`
+	JSON       v2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParentJSON `json:"-"`
+}
+
+// v2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParentJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParent]
+type v2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParentJSON struct {
+	ContractID  apijson.Field
+	CustomerID  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParent) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataHierarchyConfigurationChildHierarchyConfigurationParentJSON) RawJSON() string {
+	return r.raw
 }
 
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
