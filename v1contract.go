@@ -2436,7 +2436,8 @@ type V1ContractNewParams struct {
 	// This field's availability is dependent on your client's configuration.
 	Discounts param.Field[[]V1ContractNewParamsDiscount] `json:"discounts"`
 	// exclusive contract end time
-	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
+	EndingBefore           param.Field[time.Time]                                 `json:"ending_before" format:"date-time"`
+	HierarchyConfiguration param.Field[V1ContractNewParamsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 	// prices automatically. EXPLICIT prioritization requires specifying priorities for
 	// each multiplier; the one with the lowest priority value will be prioritized
@@ -3032,6 +3033,23 @@ type V1ContractNewParamsDiscountsScheduleScheduleItem struct {
 }
 
 func (r V1ContractNewParamsDiscountsScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsHierarchyConfiguration struct {
+	Parent param.Field[V1ContractNewParamsHierarchyConfigurationParent] `json:"parent,required"`
+}
+
+func (r V1ContractNewParamsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsHierarchyConfigurationParent struct {
+	ContractID param.Field[string] `json:"contract_id,required" format:"uuid"`
+	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+}
+
+func (r V1ContractNewParamsHierarchyConfigurationParent) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 

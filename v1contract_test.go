@@ -155,7 +155,13 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
-		EndingBefore:                     metronome.F(time.Now()),
+		EndingBefore: metronome.F(time.Now()),
+		HierarchyConfiguration: metronome.F(metronome.V1ContractNewParamsHierarchyConfiguration{
+			Parent: metronome.F(metronome.V1ContractNewParamsHierarchyConfigurationParent{
+				ContractID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				CustomerID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			}),
+		}),
 		MultiplierOverridePrioritization: metronome.F(metronome.V1ContractNewParamsMultiplierOverridePrioritizationLowestMultiplier),
 		Name:                             metronome.F("name"),
 		NetPaymentTermsDays:              metronome.F(0.000000),
