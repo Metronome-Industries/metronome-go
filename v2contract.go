@@ -7300,15 +7300,18 @@ type V2ContractGetEditHistoryResponseData struct {
 	AddScheduledCharges                     []V2ContractGetEditHistoryResponseDataAddScheduledCharge                    `json:"add_scheduled_charges"`
 	AddSpendThresholdConfiguration          V2ContractGetEditHistoryResponseDataAddSpendThresholdConfiguration          `json:"add_spend_threshold_configuration"`
 	// List of subscriptions on the contract.
-	AddSubscriptions                           []V2ContractGetEditHistoryResponseDataAddSubscription                          `json:"add_subscriptions"`
-	AddUsageFilters                            []V2ContractGetEditHistoryResponseDataAddUsageFilter                           `json:"add_usage_filters"`
-	ArchiveCommits                             []V2ContractGetEditHistoryResponseDataArchiveCommit                            `json:"archive_commits"`
-	ArchiveCredits                             []V2ContractGetEditHistoryResponseDataArchiveCredit                            `json:"archive_credits"`
-	ArchiveScheduledCharges                    []V2ContractGetEditHistoryResponseDataArchiveScheduledCharge                   `json:"archive_scheduled_charges"`
-	RemoveOverrides                            []V2ContractGetEditHistoryResponseDataRemoveOverride                           `json:"remove_overrides"`
-	Timestamp                                  time.Time                                                                      `json:"timestamp" format:"date-time"`
-	UpdateCommits                              []V2ContractGetEditHistoryResponseDataUpdateCommit                             `json:"update_commits"`
-	UpdateContractEndDate                      time.Time                                                                      `json:"update_contract_end_date" format:"date-time"`
+	AddSubscriptions        []V2ContractGetEditHistoryResponseDataAddSubscription        `json:"add_subscriptions"`
+	AddUsageFilters         []V2ContractGetEditHistoryResponseDataAddUsageFilter         `json:"add_usage_filters"`
+	ArchiveCommits          []V2ContractGetEditHistoryResponseDataArchiveCommit          `json:"archive_commits"`
+	ArchiveCredits          []V2ContractGetEditHistoryResponseDataArchiveCredit          `json:"archive_credits"`
+	ArchiveScheduledCharges []V2ContractGetEditHistoryResponseDataArchiveScheduledCharge `json:"archive_scheduled_charges"`
+	RemoveOverrides         []V2ContractGetEditHistoryResponseDataRemoveOverride         `json:"remove_overrides"`
+	Timestamp               time.Time                                                    `json:"timestamp" format:"date-time"`
+	UpdateCommits           []V2ContractGetEditHistoryResponseDataUpdateCommit           `json:"update_commits"`
+	UpdateContractEndDate   time.Time                                                    `json:"update_contract_end_date" format:"date-time"`
+	// Value to update the contract name to. If not provided, the contract name will
+	// remain unchanged.
+	UpdateContractName                         string                                                                         `json:"update_contract_name,nullable"`
 	UpdateCredits                              []V2ContractGetEditHistoryResponseDataUpdateCredit                             `json:"update_credits"`
 	UpdateDiscounts                            []V2ContractGetEditHistoryResponseDataUpdateDiscount                           `json:"update_discounts"`
 	UpdatePrepaidBalanceThresholdConfiguration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfiguration `json:"update_prepaid_balance_threshold_configuration"`
@@ -7346,6 +7349,7 @@ type v2ContractGetEditHistoryResponseDataJSON struct {
 	Timestamp                                  apijson.Field
 	UpdateCommits                              apijson.Field
 	UpdateContractEndDate                      apijson.Field
+	UpdateContractName                         apijson.Field
 	UpdateCredits                              apijson.Field
 	UpdateDiscounts                            apijson.Field
 	UpdatePrepaidBalanceThresholdConfiguration apijson.Field
@@ -10702,7 +10706,10 @@ type V2ContractEditParams struct {
 	RemoveOverrides param.Field[[]V2ContractEditParamsRemoveOverride] `json:"remove_overrides"`
 	UpdateCommits   param.Field[[]V2ContractEditParamsUpdateCommit]   `json:"update_commits"`
 	// RFC 3339 timestamp indicating when the contract will end (exclusive).
-	UpdateContractEndDate                      param.Field[time.Time]                                                      `json:"update_contract_end_date" format:"date-time"`
+	UpdateContractEndDate param.Field[time.Time] `json:"update_contract_end_date" format:"date-time"`
+	// Value to update the contract name to. If not provided, the contract name will
+	// remain unchanged.
+	UpdateContractName                         param.Field[string]                                                         `json:"update_contract_name"`
 	UpdateCredits                              param.Field[[]V2ContractEditParamsUpdateCredit]                             `json:"update_credits"`
 	UpdatePrepaidBalanceThresholdConfiguration param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration] `json:"update_prepaid_balance_threshold_configuration"`
 	// Edits to these recurring commits will only affect commits whose access schedules
