@@ -212,6 +212,8 @@ type V1ContractGetResponseData struct {
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration V1ContractGetResponseDataCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	PrepaidBalanceThresholdConfiguration V1ContractGetResponseDataPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
+	// Priority of the contract.
+	Priority float64 `json:"priority"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
 	// usage invoice. The charge's `timestamp` must match the usage invoice's
 	// `ending_before` date for consolidation to occur. This field cannot be modified
@@ -240,6 +242,7 @@ type v1ContractGetResponseDataJSON struct {
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
 	PrepaidBalanceThresholdConfiguration apijson.Field
+	Priority                             apijson.Field
 	ScheduledChargesOnUsageInvoices      apijson.Field
 	SpendThresholdConfiguration          apijson.Field
 	Subscriptions                        apijson.Field
@@ -1070,6 +1073,8 @@ type V1ContractListResponseData struct {
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration V1ContractListResponseDataCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	PrepaidBalanceThresholdConfiguration V1ContractListResponseDataPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
+	// Priority of the contract.
+	Priority float64 `json:"priority"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
 	// usage invoice. The charge's `timestamp` must match the usage invoice's
 	// `ending_before` date for consolidation to occur. This field cannot be modified
@@ -1098,6 +1103,7 @@ type v1ContractListResponseDataJSON struct {
 	CustomFields                         apijson.Field
 	CustomerBillingProviderConfiguration apijson.Field
 	PrepaidBalanceThresholdConfiguration apijson.Field
+	Priority                             apijson.Field
 	ScheduledChargesOnUsageInvoices      apijson.Field
 	SpendThresholdConfiguration          apijson.Field
 	Subscriptions                        apijson.Field

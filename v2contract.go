@@ -142,6 +142,8 @@ type V2ContractGetResponseData struct {
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID                 string                                                        `json:"netsuite_sales_order_id"`
 	PrepaidBalanceThresholdConfiguration V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
+	// Priority of the contract.
+	Priority float64 `json:"priority"`
 	// This field's availability is dependent on your client's configuration.
 	ProfessionalServices []shared.ProService                        `json:"professional_services"`
 	RateCardID           string                                     `json:"rate_card_id" format:"uuid"`
@@ -194,6 +196,7 @@ type v2ContractGetResponseDataJSON struct {
 	NetPaymentTermsDays                  apijson.Field
 	NetsuiteSalesOrderID                 apijson.Field
 	PrepaidBalanceThresholdConfiguration apijson.Field
+	Priority                             apijson.Field
 	ProfessionalServices                 apijson.Field
 	RateCardID                           apijson.Field
 	RecurringCommits                     apijson.Field
@@ -3697,6 +3700,8 @@ type V2ContractListResponseData struct {
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID                 string                                                         `json:"netsuite_sales_order_id"`
 	PrepaidBalanceThresholdConfiguration V2ContractListResponseDataPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
+	// Priority of the contract.
+	Priority float64 `json:"priority"`
 	// This field's availability is dependent on your client's configuration.
 	ProfessionalServices []shared.ProService                         `json:"professional_services"`
 	RateCardID           string                                      `json:"rate_card_id" format:"uuid"`
@@ -3749,6 +3754,7 @@ type v2ContractListResponseDataJSON struct {
 	NetPaymentTermsDays                  apijson.Field
 	NetsuiteSalesOrderID                 apijson.Field
 	PrepaidBalanceThresholdConfiguration apijson.Field
+	Priority                             apijson.Field
 	ProfessionalServices                 apijson.Field
 	RateCardID                           apijson.Field
 	RecurringCommits                     apijson.Field
