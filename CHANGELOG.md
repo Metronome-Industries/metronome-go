@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.1.0-beta.10 (2025-07-03)
+
+Full Changelog: [v0.1.0-beta.9...v0.1.0-beta.10](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.9...v0.1.0-beta.10)
+
+### Features
+
+* **api:** api update ([ba0171c](https://github.com/Metronome-Industries/metronome-go/commit/ba0171ce3373acd3f5a0c0ca9f28fda96f5a1b7f))
+* **api:** api update ([2e728fe](https://github.com/Metronome-Industries/metronome-go/commit/2e728fe262aa17188a99ac7a41d1dab8697ca58e))
+* **api:** api update ([af56da3](https://github.com/Metronome-Industries/metronome-go/commit/af56da3d7231fe7cffb76b2048cf1ee84c947c3a))
+* **api:** api update ([21433c2](https://github.com/Metronome-Industries/metronome-go/commit/21433c2f88155d470180c0f0126351f00e37142e))
+* **api:** api update ([6cc9155](https://github.com/Metronome-Industries/metronome-go/commit/6cc91553bb22a2fe0ad8cb4c30def9e222bf8c3c))
+* **api:** api update ([cfc1d4d](https://github.com/Metronome-Industries/metronome-go/commit/cfc1d4db02ff32e650b52382ec0911987a5e8051))
+* **api:** api update ([3019739](https://github.com/Metronome-Industries/metronome-go/commit/3019739253ba835e81e9c77bf39d4db031a73e9e))
+* **api:** api update ([d18807f](https://github.com/Metronome-Industries/metronome-go/commit/d18807f041b837a1afd9c1fb184ea48e1adfbc89))
+* **api:** api update ([1553750](https://github.com/Metronome-Industries/metronome-go/commit/1553750f458e67088a73c2f04453e49b9b5b8eb5))
+* **api:** api update ([7793347](https://github.com/Metronome-Industries/metronome-go/commit/77933470076683148375ee38bfd939875c411448))
+* **api:** api update ([da9c2ab](https://github.com/Metronome-Industries/metronome-go/commit/da9c2ab4c1f9cebf4fbac5fc01e3be4cd2c5d36d))
+* **client:** add debug log helper ([971b349](https://github.com/Metronome-Industries/metronome-go/commit/971b349c13b3876439f8e2e6bd5223b297223bee))
+
+
+### Bug Fixes
+
+* don't try to deserialize as json when ResponseBodyInto is []byte ([210d41d](https://github.com/Metronome-Industries/metronome-go/commit/210d41db721dc29e54a56566f3c3b839241de1a4))
+* **pagination:** check if page data is empty in GetNextPage ([c9d18f6](https://github.com/Metronome-Industries/metronome-go/commit/c9d18f68935a58f68d2f6729a7502ed01740abd0))
+
+
+### Chores
+
+* **ci:** enable for pull requests ([3c45346](https://github.com/Metronome-Industries/metronome-go/commit/3c453464e971438bf4fa1b8d195656210fb230e7))
+* **ci:** only run for pushes and fork pull requests ([3816420](https://github.com/Metronome-Industries/metronome-go/commit/3816420c2b5d9812ed3825c2639a93b38f769aa6))
+* make go mod tidy continue on error ([6b9c643](https://github.com/Metronome-Industries/metronome-go/commit/6b9c64342d35d360bfe63c00fc53fe0a8ceb166d))
+
 ## 0.1.0-beta.9 (2025-05-30)
 
 Full Changelog: [v0.1.0-beta.8...v0.1.0-beta.9](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.8...v0.1.0-beta.9)
