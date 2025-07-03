@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1ContractNewWithOptionalParams(t *testing.T) {
@@ -154,7 +155,13 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
-		EndingBefore:                     metronome.F(time.Now()),
+		EndingBefore: metronome.F(time.Now()),
+		HierarchyConfiguration: metronome.F(metronome.V1ContractNewParamsHierarchyConfiguration{
+			Parent: metronome.F(metronome.V1ContractNewParamsHierarchyConfigurationParent{
+				ContractID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				CustomerID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			}),
+		}),
 		MultiplierOverridePrioritization: metronome.F(metronome.V1ContractNewParamsMultiplierOverridePrioritizationLowestMultiplier),
 		Name:                             metronome.F("name"),
 		NetPaymentTermsDays:              metronome.F(0.000000),
@@ -189,7 +196,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.V1ContractNewParamsOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -248,8 +255,8 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		RecurringCommits: metronome.F([]metronome.V1ContractNewParamsRecurringCommit{{
 			AccessAmount: metronome.F(metronome.V1ContractNewParamsRecurringCommitsAccessAmount{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				Quantity:     metronome.F(0.000000),
 				UnitPrice:    metronome.F(0.000000),
+				Quantity:     metronome.F(0.000000),
 			}),
 			CommitDuration: metronome.F(metronome.V1ContractNewParamsRecurringCommitsCommitDuration{
 				Value: metronome.F(0.000000),
@@ -288,8 +295,8 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		RecurringCredits: metronome.F([]metronome.V1ContractNewParamsRecurringCredit{{
 			AccessAmount: metronome.F(metronome.V1ContractNewParamsRecurringCreditsAccessAmount{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				Quantity:     metronome.F(0.000000),
 				UnitPrice:    metronome.F(0.000000),
+				Quantity:     metronome.F(0.000000),
 			}),
 			CommitDuration: metronome.F(metronome.V1ContractNewParamsRecurringCreditsCommitDuration{
 				Value: metronome.F(0.000000),
@@ -408,7 +415,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			}),
 		}),
 		UniquenessKey: metronome.F("x"),
-		UsageFilter: metronome.F(metronome.V1ContractNewParamsUsageFilter{
+		UsageFilter: metronome.F(shared.BaseUsageFilterParam{
 			GroupKey:    metronome.F("group_key"),
 			GroupValues: metronome.F([]string{"string"}),
 			StartingAt:  metronome.F(time.Now()),
@@ -682,7 +689,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]metronome.V1ContractAmendParamsOverridesOverwriteRateTier{{
+				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
