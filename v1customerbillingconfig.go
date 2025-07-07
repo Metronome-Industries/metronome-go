@@ -110,9 +110,11 @@ type V1CustomerBillingConfigGetResponseData struct {
 	// Contract expiration date for the customer. The expected format is RFC 3339 and
 	// can be retrieved from
 	// [AWS's GetEntitlements API](https://docs.aws.amazon.com/marketplaceentitlement/latest/APIReference/API_GetEntitlements.html).
-	AwsExpirationDate time.Time                                       `json:"aws_expiration_date" format:"date-time"`
-	AwsProductCode    string                                          `json:"aws_product_code"`
-	AwsRegion         V1CustomerBillingConfigGetResponseDataAwsRegion `json:"aws_region"`
+	AwsExpirationDate time.Time `json:"aws_expiration_date" format:"date-time"`
+	// True if the aws_product_code is a SAAS subscription product, false otherwise.
+	AwsIsSubscriptionProduct bool                                            `json:"aws_is_subscription_product"`
+	AwsProductCode           string                                          `json:"aws_product_code"`
+	AwsRegion                V1CustomerBillingConfigGetResponseDataAwsRegion `json:"aws_region"`
 	// Subscription term start/end date for the customer. The expected format is RFC
 	// 3339 and can be retrieved from
 	// [Azure's Get Subscription API](https://learn.microsoft.com/en-us/partner-center/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#get-subscription).
@@ -132,6 +134,7 @@ type V1CustomerBillingConfigGetResponseData struct {
 // struct [V1CustomerBillingConfigGetResponseData]
 type v1CustomerBillingConfigGetResponseDataJSON struct {
 	AwsExpirationDate         apijson.Field
+	AwsIsSubscriptionProduct  apijson.Field
 	AwsProductCode            apijson.Field
 	AwsRegion                 apijson.Field
 	AzureExpirationDate       apijson.Field
