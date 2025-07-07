@@ -162,20 +162,6 @@ func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1Cu
 	return pagination.NewCursorPageAutoPager(r.ListCosts(ctx, params, opts...))
 }
 
-// Generates a draft invoice for a customer using their current contract
-// configuration and the provided events. This is useful for testing how new events
-// will affect the customer's invoice before they are actually processed.
-func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1CustomerPreviewEventsParams, opts ...option.RequestOption) (res *V1CustomerPreviewEventsResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if params.CustomerID.Value == "" {
-		err = errors.New("missing required customer_id parameter")
-		return
-	}
-	path := fmt.Sprintf("v1/customers/%s/previewEvents", params.CustomerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
-}
-
 // Sets the ingest aliases for a customer. Ingest aliases can be used in the
 // `customer_id` field when sending usage events to Metronome. This call is
 // idempotent. It fully replaces the set of ingest aliases for the given customer.
@@ -579,27 +565,6 @@ func (r v1CustomerListCostsResponseCreditTypesLineItemBreakdownJSON) RawJSON() s
 	return r.raw
 }
 
-type V1CustomerPreviewEventsResponse struct {
-	Data Invoice                             `json:"data,required"`
-	JSON v1CustomerPreviewEventsResponseJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseJSON contains the JSON metadata for the struct
-// [V1CustomerPreviewEventsResponse]
-type v1CustomerPreviewEventsResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1CustomerSetNameResponse struct {
 	Data Customer                      `json:"data,required"`
 	JSON v1CustomerSetNameResponseJSON `json:"-"`
@@ -862,58 +827,6 @@ func (r V1CustomerListCostsParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type V1CustomerPreviewEventsParams struct {
-	CustomerID param.Field[string]                               `path:"customer_id,required" format:"uuid"`
-	Events     param.Field[[]V1CustomerPreviewEventsParamsEvent] `json:"events,required"`
-	// If set to "replace", the preview will be generated as if those were the only
-	// events for the specified customer. If set to "merge", the events will be merged
-	// with any existing events for the specified customer. Defaults to "replace".
-	Mode param.Field[V1CustomerPreviewEventsParamsMode] `json:"mode"`
-	// If set, all zero quantity line items will be filtered out of the response.
-	SkipZeroQtyLineItems param.Field[bool] `json:"skip_zero_qty_line_items"`
-}
-
-func (r V1CustomerPreviewEventsParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1CustomerPreviewEventsParamsEvent struct {
-	EventType param.Field[string] `json:"event_type,required"`
-	// This has no effect for preview events, but may be set for consistency with Event
-	// objects. They will be processed even if they do not match the customer's ID or
-	// ingest aliases.
-	CustomerID param.Field[string]                 `json:"customer_id"`
-	Properties param.Field[map[string]interface{}] `json:"properties"`
-	// RFC 3339 formatted. If not provided, the current time will be used.
-	Timestamp param.Field[string] `json:"timestamp"`
-	// This has no effect for preview events, but may be set for consistency with Event
-	// objects. Duplicate transaction_ids are NOT filtered out, even within the same
-	// request.
-	TransactionID param.Field[string] `json:"transaction_id"`
-}
-
-func (r V1CustomerPreviewEventsParamsEvent) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// If set to "replace", the preview will be generated as if those were the only
-// events for the specified customer. If set to "merge", the events will be merged
-// with any existing events for the specified customer. Defaults to "replace".
-type V1CustomerPreviewEventsParamsMode string
-
-const (
-	V1CustomerPreviewEventsParamsModeReplace V1CustomerPreviewEventsParamsMode = "replace"
-	V1CustomerPreviewEventsParamsModeMerge   V1CustomerPreviewEventsParamsMode = "merge"
-)
-
-func (r V1CustomerPreviewEventsParamsMode) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsParamsModeReplace, V1CustomerPreviewEventsParamsModeMerge:
-		return true
-	}
-	return false
 }
 
 type V1CustomerSetIngestAliasesParams struct {
