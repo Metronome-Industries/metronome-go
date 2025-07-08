@@ -2455,6 +2455,8 @@ type V1ContractNewParams struct {
 	NetsuiteSalesOrderID                 param.Field[string]                                                  `json:"netsuite_sales_order_id"`
 	Overrides                            param.Field[[]V1ContractNewParamsOverride]                           `json:"overrides"`
 	PrepaidBalanceThresholdConfiguration param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfiguration] `json:"prepaid_balance_threshold_configuration"`
+	// Priority of the contract.
+	Priority param.Field[float64] `json:"priority"`
 	// This field's availability is dependent on your client's configuration.
 	ProfessionalServices param.Field[[]V1ContractNewParamsProfessionalService] `json:"professional_services"`
 	// Selects the rate card linked to the specified alias as of the contract's start

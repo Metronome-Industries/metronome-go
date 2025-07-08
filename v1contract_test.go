@@ -239,6 +239,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			RechargeToAmount: metronome.F(0.000000),
 			ThresholdAmount:  metronome.F(0.000000),
 		}),
+		Priority: metronome.F(0.000000),
 		ProfessionalServices: metronome.F([]metronome.V1ContractNewParamsProfessionalService{{
 			MaxAmount: metronome.F(0.000000),
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
