@@ -2369,21 +2369,25 @@ type V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration struct {
 	RechargeToAmount float64 `json:"recharge_to_amount,required"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                           `json:"threshold_amount,required"`
-	JSON            v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
+	ThresholdAmount float64 `json:"threshold_amount,required"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID string                                                            `json:"custom_credit_type_id"`
+	JSON               v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
 // v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON contains the
 // JSON metadata for the struct
 // [V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration]
 type v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON struct {
-	Commit            apijson.Field
-	IsEnabled         apijson.Field
-	PaymentGateConfig apijson.Field
-	RechargeToAmount  apijson.Field
-	ThresholdAmount   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
+	Commit             apijson.Field
+	IsEnabled          apijson.Field
+	PaymentGateConfig  apijson.Field
+	RechargeToAmount   apijson.Field
+	ThresholdAmount    apijson.Field
+	CustomCreditTypeID apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -5928,21 +5932,25 @@ type V2ContractListResponseDataPrepaidBalanceThresholdConfiguration struct {
 	RechargeToAmount float64 `json:"recharge_to_amount,required"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                            `json:"threshold_amount,required"`
-	JSON            v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
+	ThresholdAmount float64 `json:"threshold_amount,required"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID string                                                             `json:"custom_credit_type_id"`
+	JSON               v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
 // v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON contains the
 // JSON metadata for the struct
 // [V2ContractListResponseDataPrepaidBalanceThresholdConfiguration]
 type v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON struct {
-	Commit            apijson.Field
-	IsEnabled         apijson.Field
-	PaymentGateConfig apijson.Field
-	RechargeToAmount  apijson.Field
-	ThresholdAmount   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
+	Commit             apijson.Field
+	IsEnabled          apijson.Field
+	PaymentGateConfig  apijson.Field
+	RechargeToAmount   apijson.Field
+	ThresholdAmount    apijson.Field
+	CustomCreditTypeID apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *V2ContractListResponseDataPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -7891,21 +7899,25 @@ type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration
 	RechargeToAmount float64 `json:"recharge_to_amount,required"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                                         `json:"threshold_amount,required"`
-	JSON            v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON `json:"-"`
+	ThresholdAmount float64 `json:"threshold_amount,required"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID string                                                                          `json:"custom_credit_type_id"`
+	JSON               v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON
 // contains the JSON metadata for the struct
 // [V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration]
 type v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON struct {
-	Commit            apijson.Field
-	IsEnabled         apijson.Field
-	PaymentGateConfig apijson.Field
-	RechargeToAmount  apijson.Field
-	ThresholdAmount   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
+	Commit             apijson.Field
+	IsEnabled          apijson.Field
+	PaymentGateConfig  apijson.Field
+	RechargeToAmount   apijson.Field
+	ThresholdAmount    apijson.Field
+	CustomCreditTypeID apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -9904,6 +9916,9 @@ func (r v2ContractGetEditHistoryResponseDataUpdateDiscountsScheduleScheduleItemJ
 
 type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfiguration struct {
 	Commit V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommit `json:"commit"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID string `json:"custom_credit_type_id"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -9921,13 +9936,14 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 // contains the JSON metadata for the struct
 // [V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfiguration]
 type v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationJSON struct {
-	Commit            apijson.Field
-	IsEnabled         apijson.Field
-	PaymentGateConfig apijson.Field
-	RechargeToAmount  apijson.Field
-	ThresholdAmount   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
+	Commit             apijson.Field
+	CustomCreditTypeID apijson.Field
+	IsEnabled          apijson.Field
+	PaymentGateConfig  apijson.Field
+	RechargeToAmount   apijson.Field
+	ThresholdAmount    apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
@@ -11425,6 +11441,9 @@ type V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration struct {
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
 	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id"`
 }
 
 func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration) MarshalJSON() (data []byte, err error) {
@@ -12486,6 +12505,9 @@ func (r V2ContractEditParamsUpdateCreditsAccessScheduleUpdateScheduleItem) Marsh
 
 type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	Commit param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit] `json:"commit"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.

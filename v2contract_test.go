@@ -274,8 +274,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				}),
 				TaxType: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
-			RechargeToAmount: metronome.F(0.000000),
-			ThresholdAmount:  metronome.F(0.000000),
+			RechargeToAmount:   metronome.F(0.000000),
+			ThresholdAmount:    metronome.F(0.000000),
+			CustomCreditTypeID: metronome.F("custom_credit_type_id"),
 		}),
 		AddProfessionalServices: metronome.F([]metronome.V2ContractEditParamsAddProfessionalService{{
 			MaxAmount: metronome.F(0.000000),
@@ -538,7 +539,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					ProductTags: metronome.F([]string{"string"}),
 				}}),
 			}),
-			IsEnabled: metronome.F(true),
+			CustomCreditTypeID: metronome.F("custom_credit_type_id"),
+			IsEnabled:          metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{

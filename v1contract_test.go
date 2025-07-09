@@ -236,8 +236,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				}),
 				TaxType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
-			RechargeToAmount: metronome.F(0.000000),
-			ThresholdAmount:  metronome.F(0.000000),
+			RechargeToAmount:   metronome.F(0.000000),
+			ThresholdAmount:    metronome.F(0.000000),
+			CustomCreditTypeID: metronome.F("custom_credit_type_id"),
 		}),
 		Priority: metronome.F(0.000000),
 		ProfessionalServices: metronome.F([]metronome.V1ContractNewParamsProfessionalService{{
