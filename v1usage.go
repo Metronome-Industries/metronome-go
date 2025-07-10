@@ -83,8 +83,10 @@ func (r *V1UsageService) ListWithGroupsAutoPaging(ctx context.Context, params V1
 	return pagination.NewCursorPageAutoPager(r.ListWithGroups(ctx, params, opts...))
 }
 
-// Find events to match to customers, billable metrics, etc. We only look for
-// transactions that occurred in the last 34 days.
+// For a set of events, look up matched billable metrics and customers by
+// transaction id. This endpoint looks at transactions that occurred in the last 34
+// days, and is intended for sampling-based testing workflows. It is heavily rate
+// limited.
 func (r *V1UsageService) Search(ctx context.Context, body V1UsageSearchParams, opts ...option.RequestOption) (res *[]V1UsageSearchResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/events/search"
