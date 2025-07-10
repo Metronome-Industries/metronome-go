@@ -162,9 +162,10 @@ func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1Cu
 	return pagination.NewCursorPageAutoPager(r.ListCosts(ctx, params, opts...))
 }
 
-// Generates a draft invoice for a customer using their current contract
-// configuration and the provided events. This is useful for testing how new events
-// will affect the customer's invoice before they are actually processed.
+// Preview how a set of events will affect a customer's invoice. Generates a draft
+// invoice for a customer using their current contract configuration and the
+// provided events. This is useful for testing how new events will affect the
+// customer's invoice before they are actually processed.
 func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1CustomerPreviewEventsParams, opts ...option.RequestOption) (res *V1CustomerPreviewEventsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.CustomerID.Value == "" {

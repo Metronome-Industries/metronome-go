@@ -2372,7 +2372,7 @@ type V2ContractGetResponseDataPrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount,required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                                            `json:"custom_credit_type_id"`
+	CustomCreditTypeID string                                                            `json:"custom_credit_type_id" format:"uuid"`
 	JSON               v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
@@ -5935,7 +5935,7 @@ type V2ContractListResponseDataPrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount,required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                                             `json:"custom_credit_type_id"`
+	CustomCreditTypeID string                                                             `json:"custom_credit_type_id" format:"uuid"`
 	JSON               v2ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
@@ -7902,7 +7902,7 @@ type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration
 	ThresholdAmount float64 `json:"threshold_amount,required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                                                          `json:"custom_credit_type_id"`
+	CustomCreditTypeID string                                                                          `json:"custom_credit_type_id" format:"uuid"`
 	JSON               v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
@@ -9918,7 +9918,7 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	Commit V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommit `json:"commit"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string `json:"custom_credit_type_id"`
+	CustomCreditTypeID string `json:"custom_credit_type_id,nullable" format:"uuid"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -11443,7 +11443,7 @@ type V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id"`
+	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id" format:"uuid"`
 }
 
 func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration) MarshalJSON() (data []byte, err error) {
@@ -12507,7 +12507,7 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	Commit param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit] `json:"commit"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id"`
+	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id" format:"uuid"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.

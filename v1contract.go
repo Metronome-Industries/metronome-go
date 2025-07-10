@@ -450,7 +450,7 @@ type V1ContractGetResponseDataPrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount,required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                                            `json:"custom_credit_type_id"`
+	CustomCreditTypeID string                                                            `json:"custom_credit_type_id" format:"uuid"`
 	JSON               v1ContractGetResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
@@ -1315,7 +1315,7 @@ type V1ContractListResponseDataPrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount,required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                                             `json:"custom_credit_type_id"`
+	CustomCreditTypeID string                                                             `json:"custom_credit_type_id" format:"uuid"`
 	JSON               v1ContractListResponseDataPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 
@@ -3281,7 +3281,7 @@ type V1ContractNewParamsPrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id"`
+	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id" format:"uuid"`
 }
 
 func (r V1ContractNewParamsPrepaidBalanceThresholdConfiguration) MarshalJSON() (data []byte, err error) {
