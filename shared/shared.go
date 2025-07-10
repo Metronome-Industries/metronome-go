@@ -1369,7 +1369,7 @@ type ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount,required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                                            `json:"custom_credit_type_id"`
+	CustomCreditTypeID string                                                            `json:"custom_credit_type_id" format:"uuid"`
 	JSON               contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON `json:"-"`
 }
 

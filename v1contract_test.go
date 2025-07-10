@@ -238,7 +238,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			}),
 			RechargeToAmount:   metronome.F(0.000000),
 			ThresholdAmount:    metronome.F(0.000000),
-			CustomCreditTypeID: metronome.F("custom_credit_type_id"),
+			CustomCreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}),
 		Priority: metronome.F(0.000000),
 		ProfessionalServices: metronome.F([]metronome.V1ContractNewParamsProfessionalService{{
