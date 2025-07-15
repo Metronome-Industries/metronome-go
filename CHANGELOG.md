@@ -6,8 +6,9 @@ Full Changelog: [v0.1.0-beta.9...v0.1.0-beta.10](https://github.com/Metronome-In
 
 ### Features
 
-* **api:** Add Event Search API ([25c419f](https://github.com/Metronome-Industries/metronome-go/commit/25c419f98a132a86d3231305d01e05b8283f2be2))
-* **api:** add previewEvents API ([fe1821e](https://github.com/Metronome-Industries/metronome-go/commit/fe1821ef081398fcabf045d49f8118c8d5010a91))
+* **api:** Add Event Search API for finding events to match to customers and billable metrics ([25c419f](https://github.com/Metronome-Industries/metronome-go/commit/25c419f98a132a86d3231305d01e05b8283f2be2))
+* **api:** add previewEvents API for generating draft invoices with provided events ([fe1821e](https://github.com/Metronome-Industries/metronome-go/commit/fe1821ef081398fcabf045d49f8118c8d5010a91))
+* **api:** update v2 contracts list endpoint documentation to clarify chronological ordering ([cc830e8](https://github.com/Metronome-Industries/metronome-go/commit/cc830e815eb00e4cd42f63655f9eeacd09635e3a))
 * **api:** api update ([64985e8](https://github.com/Metronome-Industries/metronome-go/commit/64985e8288143e110a600fb44a3662202f94bd20))
 * **api:** api update ([2e45de7](https://github.com/Metronome-Industries/metronome-go/commit/2e45de7ca9281a735121cddb7fb959b1af0ead5a))
 * **api:** api update ([95714f0](https://github.com/Metronome-Industries/metronome-go/commit/95714f02991657dabf61fb2aa339f978098274ec))
