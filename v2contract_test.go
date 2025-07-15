@@ -132,8 +132,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigTaxTypeNone),
 			}),
@@ -279,8 +286,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			IsEnabled: metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
@@ -425,8 +439,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			IsEnabled: metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
@@ -563,8 +584,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			IsEnabled:          metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
@@ -622,8 +650,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			IsEnabled: metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),

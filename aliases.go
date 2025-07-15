@@ -297,7 +297,12 @@ const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateCo
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
 
-// Only applicable if using Stripe as your payment gateway through Metronome.
+// Only applicable if using PRECALCULATED as your tax type.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig
+
+// Only applicable if using STRIPE as your payment gate type.
 //
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig
@@ -325,6 +330,12 @@ const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateCo
 
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCommit = shared.ContractWithoutAmendmentsRecurringCommit
@@ -543,7 +554,12 @@ const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPayme
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
 
-// Only applicable if using Stripe as your payment gateway through Metronome.
+// Only applicable if using PRECALCULATED as your tax type.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig
+
+// Only applicable if using STRIPE as your payment gate type.
 //
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig
@@ -571,6 +587,12 @@ const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTy
 
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsUsageFilter = shared.ContractWithoutAmendmentsUsageFilter
