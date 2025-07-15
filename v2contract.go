@@ -44,8 +44,8 @@ func (r *V2ContractService) Get(ctx context.Context, body V2ContractGetParams, o
 	return
 }
 
-// List all contracts for a customer. New clients should use this endpoint rather
-// than the v1 endpoint.
+// List all contracts for a customer in chronological order. New clients should use
+// this endpoint rather than the v1 endpoint.
 func (r *V2ContractService) List(ctx context.Context, body V2ContractListParams, opts ...option.RequestOption) (res *V2ContractListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/list"
