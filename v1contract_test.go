@@ -80,8 +80,15 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigTaxTypeNone),
 			}),
@@ -241,8 +248,15 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			IsEnabled: metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
@@ -392,8 +406,15 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			IsEnabled: metronome.F(true),
 			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
 			}),
@@ -595,8 +616,15 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			PaymentGateConfig: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfig{
 				PaymentGateType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigPrecalculatedTaxConfig{
+					TaxAmount: metronome.F(0.000000),
+					TaxName:   metronome.F("tax_name"),
+				}),
 				StripeConfig: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigStripeConfig{
 					PaymentType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigStripeConfigPaymentTypeInvoice),
+					InvoiceMetadata: metronome.F(map[string]string{
+						"foo": "string",
+					}),
 				}),
 				TaxType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigTaxTypeNone),
 			}),
