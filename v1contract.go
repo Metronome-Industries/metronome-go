@@ -2571,6 +2571,8 @@ type V1ContractNewParamsCommit struct {
 	CustomFields          param.Field[map[string]string] `json:"custom_fields"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration param.Field[V1ContractNewParamsCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// Required for "POSTPAID" commits: the true up invoice will be generated at this
 	// time and only one schedule item is allowed; the total must match access_schedule
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
@@ -2640,6 +2642,128 @@ type V1ContractNewParamsCommitsAccessScheduleScheduleItem struct {
 
 func (r V1ContractNewParamsCommitsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Optional configuration for commit hierarchy access control
+type V1ContractNewParamsCommitsHierarchyConfiguration struct {
+	ChildAccess param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccess struct {
+	Type        param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
+	ContractIDs param.Field[interface{}]                                                     `json:"contract_ids"`
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccess) implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion() {
+}
+
+// Satisfied by
+// [V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
+// [V1ContractNewParamsCommitsHierarchyConfigurationChildAccess].
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion interface {
+	implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion()
+}
+
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs param.Field[[]string]                                                                                             `json:"contract_ids,required" format:"uuid"`
+	Type        param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType string
+
+const (
+	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeAll         V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType = "ALL"
+	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeNone        V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType = "NONE"
+	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeContractIDs V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeAll, V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeNone, V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
 }
 
 // Required for "POSTPAID" commits: the true up invoice will be generated at this
@@ -2868,6 +2992,8 @@ type V1ContractNewParamsCredit struct {
 	CustomFields          param.Field[map[string]string] `json:"custom_fields"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
+	// Optional configuration for credit hierarchy access control
+	HierarchyConfiguration param.Field[V1ContractNewParamsCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -2908,6 +3034,128 @@ type V1ContractNewParamsCreditsAccessScheduleScheduleItem struct {
 
 func (r V1ContractNewParamsCreditsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Optional configuration for credit hierarchy access control
+type V1ContractNewParamsCreditsHierarchyConfiguration struct {
+	ChildAccess param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccess struct {
+	Type        param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
+	ContractIDs param.Field[interface{}]                                                     `json:"contract_ids"`
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccess) implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion() {
+}
+
+// Satisfied by
+// [V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
+// [V1ContractNewParamsCreditsHierarchyConfigurationChildAccess].
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion interface {
+	implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion()
+}
+
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs param.Field[[]string]                                                                                             `json:"contract_ids,required" format:"uuid"`
+	Type        param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType string
+
+const (
+	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeAll         V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType = "ALL"
+	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeNone        V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType = "NONE"
+	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeContractIDs V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeAll, V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeNone, V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
 }
 
 type V1ContractNewParamsCreditsRateType string
@@ -4388,6 +4636,8 @@ type V1ContractAmendParamsCommit struct {
 	CustomFields          param.Field[map[string]string] `json:"custom_fields"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration param.Field[V1ContractAmendParamsCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// Required for "POSTPAID" commits: the true up invoice will be generated at this
 	// time and only one schedule item is allowed; the total must match access_schedule
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
@@ -4457,6 +4707,128 @@ type V1ContractAmendParamsCommitsAccessScheduleScheduleItem struct {
 
 func (r V1ContractAmendParamsCommitsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Optional configuration for commit hierarchy access control
+type V1ContractAmendParamsCommitsHierarchyConfiguration struct {
+	ChildAccess param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccess struct {
+	Type        param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
+	ContractIDs param.Field[interface{}]                                                       `json:"contract_ids"`
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccess) implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion() {
+}
+
+// Satisfied by
+// [V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
+// [V1ContractAmendParamsCommitsHierarchyConfigurationChildAccess].
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion interface {
+	implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion()
+}
+
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs param.Field[[]string]                                                                                               `json:"contract_ids,required" format:"uuid"`
+	Type        param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType string
+
+const (
+	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeAll         V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType = "ALL"
+	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeNone        V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType = "NONE"
+	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeContractIDs V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeAll, V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeNone, V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
 }
 
 // Required for "POSTPAID" commits: the true up invoice will be generated at this
@@ -4685,6 +5057,8 @@ type V1ContractAmendParamsCredit struct {
 	CustomFields          param.Field[map[string]string] `json:"custom_fields"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
+	// Optional configuration for credit hierarchy access control
+	HierarchyConfiguration param.Field[V1ContractAmendParamsCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -4725,6 +5099,128 @@ type V1ContractAmendParamsCreditsAccessScheduleScheduleItem struct {
 
 func (r V1ContractAmendParamsCreditsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Optional configuration for credit hierarchy access control
+type V1ContractAmendParamsCreditsHierarchyConfiguration struct {
+	ChildAccess param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccess struct {
+	Type        param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
+	ContractIDs param.Field[interface{}]                                                       `json:"contract_ids"`
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccess) implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion() {
+}
+
+// Satisfied by
+// [V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
+// [V1ContractAmendParamsCreditsHierarchyConfigurationChildAccess].
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion interface {
+	implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion()
+}
+
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs param.Field[[]string]                                                                                               `json:"contract_ids,required" format:"uuid"`
+	Type        param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion() {
+}
+
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType string
+
+const (
+	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeAll         V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType = "ALL"
+	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeNone        V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType = "NONE"
+	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeContractIDs V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeAll, V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeNone, V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
 }
 
 type V1ContractAmendParamsCreditsRateType string
