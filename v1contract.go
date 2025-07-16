@@ -2183,6 +2183,9 @@ type V1ContractListBalancesResponseData struct {
 	// This field can have the runtime type of [map[string]string].
 	CustomFields interface{} `json:"custom_fields"`
 	Description  string      `json:"description"`
+	// This field can have the runtime type of [shared.CommitHierarchyConfiguration],
+	// [shared.CreditHierarchyConfiguration].
+	HierarchyConfiguration interface{} `json:"hierarchy_configuration"`
 	// This field can have the runtime type of [shared.CommitInvoiceContract].
 	InvoiceContract interface{} `json:"invoice_contract"`
 	// The schedule that the customer will be invoiced for this commit.
@@ -2230,6 +2233,7 @@ type v1ContractListBalancesResponseDataJSON struct {
 	Contract                apijson.Field
 	CustomFields            apijson.Field
 	Description             apijson.Field
+	HierarchyConfiguration  apijson.Field
 	InvoiceContract         apijson.Field
 	InvoiceSchedule         apijson.Field
 	Ledger                  apijson.Field
