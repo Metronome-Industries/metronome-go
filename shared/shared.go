@@ -72,6 +72,8 @@ type Commit struct {
 	Contract     CommitContract    `json:"contract"`
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The contract that this commit will be billed on.
 	InvoiceContract CommitInvoiceContract `json:"invoice_contract"`
 	// The schedule that the customer will be invoiced for this commit.
@@ -117,6 +119,7 @@ type commitJSON struct {
 	Contract                apijson.Field
 	CustomFields            apijson.Field
 	Description             apijson.Field
+	HierarchyConfiguration  apijson.Field
 	InvoiceContract         apijson.Field
 	InvoiceSchedule         apijson.Field
 	Ledger                  apijson.Field
@@ -198,6 +201,231 @@ func (r *CommitContract) UnmarshalJSON(data []byte) (err error) {
 
 func (r commitContractJSON) RawJSON() string {
 	return r.raw
+}
+
+// Optional configuration for commit hierarchy access control
+type CommitHierarchyConfiguration struct {
+	ChildAccess CommitHierarchyConfigurationChildAccess `json:"child_access,required"`
+	JSON        commitHierarchyConfigurationJSON        `json:"-"`
+}
+
+// commitHierarchyConfigurationJSON contains the JSON metadata for the struct
+// [CommitHierarchyConfiguration]
+type commitHierarchyConfigurationJSON struct {
+	ChildAccess apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type CommitHierarchyConfigurationChildAccess struct {
+	Type CommitHierarchyConfigurationChildAccessType `json:"type,required"`
+	// This field can have the runtime type of [[]string].
+	ContractIDs interface{}                                 `json:"contract_ids"`
+	JSON        commitHierarchyConfigurationChildAccessJSON `json:"-"`
+	union       CommitHierarchyConfigurationChildAccessUnion
+}
+
+// commitHierarchyConfigurationChildAccessJSON contains the JSON metadata for the
+// struct [CommitHierarchyConfigurationChildAccess]
+type commitHierarchyConfigurationChildAccessJSON struct {
+	Type        apijson.Field
+	ContractIDs apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r commitHierarchyConfigurationChildAccessJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *CommitHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
+	*r = CommitHierarchyConfigurationChildAccess{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [CommitHierarchyConfigurationChildAccessUnion] interface which
+// you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+func (r CommitHierarchyConfigurationChildAccess) AsUnion() CommitHierarchyConfigurationChildAccessUnion {
+	return r.union
+}
+
+// Union satisfied by
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone] or
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+type CommitHierarchyConfigurationChildAccessUnion interface {
+	implementsCommitHierarchyConfigurationChildAccess()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*CommitHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
+		},
+	)
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
+	JSON commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
+}
+
+// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
+// contains the JSON metadata for the struct
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
+type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsCommitHierarchyConfigurationChildAccess() {
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
+	JSON commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
+}
+
+// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
+// contains the JSON metadata for the struct
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsCommitHierarchyConfigurationChildAccess() {
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs []string                                                                         `json:"contract_ids,required" format:"uuid"`
+	Type        CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
+	JSON        commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
+}
+
+// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
+// contains the JSON metadata for the struct
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
+type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
+	ContractIDs apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsCommitHierarchyConfigurationChildAccess() {
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type CommitHierarchyConfigurationChildAccessType string
+
+const (
+	CommitHierarchyConfigurationChildAccessTypeAll         CommitHierarchyConfigurationChildAccessType = "ALL"
+	CommitHierarchyConfigurationChildAccessTypeNone        CommitHierarchyConfigurationChildAccessType = "NONE"
+	CommitHierarchyConfigurationChildAccessTypeContractIDs CommitHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r CommitHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case CommitHierarchyConfigurationChildAccessTypeAll, CommitHierarchyConfigurationChildAccessTypeNone, CommitHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
 }
 
 // The contract that this commit will be billed on.
@@ -2565,6 +2793,8 @@ type Credit struct {
 	Contract     CreditContract    `json:"contract"`
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
+	// Optional configuration for credit hierarchy access control
+	HierarchyConfiguration CreditHierarchyConfiguration `json:"hierarchy_configuration"`
 	// A list of ordered events that impact the balance of a credit. For example, an
 	// invoice deduction or an expiration.
 	Ledger []CreditLedger `json:"ledger"`
@@ -2602,6 +2832,7 @@ type creditJSON struct {
 	Contract                apijson.Field
 	CustomFields            apijson.Field
 	Description             apijson.Field
+	HierarchyConfiguration  apijson.Field
 	Ledger                  apijson.Field
 	Name                    apijson.Field
 	NetsuiteSalesOrderID    apijson.Field
@@ -2678,6 +2909,231 @@ func (r *CreditContract) UnmarshalJSON(data []byte) (err error) {
 
 func (r creditContractJSON) RawJSON() string {
 	return r.raw
+}
+
+// Optional configuration for credit hierarchy access control
+type CreditHierarchyConfiguration struct {
+	ChildAccess CreditHierarchyConfigurationChildAccess `json:"child_access,required"`
+	JSON        creditHierarchyConfigurationJSON        `json:"-"`
+}
+
+// creditHierarchyConfigurationJSON contains the JSON metadata for the struct
+// [CreditHierarchyConfiguration]
+type creditHierarchyConfigurationJSON struct {
+	ChildAccess apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type CreditHierarchyConfigurationChildAccess struct {
+	Type CreditHierarchyConfigurationChildAccessType `json:"type,required"`
+	// This field can have the runtime type of [[]string].
+	ContractIDs interface{}                                 `json:"contract_ids"`
+	JSON        creditHierarchyConfigurationChildAccessJSON `json:"-"`
+	union       CreditHierarchyConfigurationChildAccessUnion
+}
+
+// creditHierarchyConfigurationChildAccessJSON contains the JSON metadata for the
+// struct [CreditHierarchyConfigurationChildAccess]
+type creditHierarchyConfigurationChildAccessJSON struct {
+	Type        apijson.Field
+	ContractIDs apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r creditHierarchyConfigurationChildAccessJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *CreditHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
+	*r = CreditHierarchyConfigurationChildAccess{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [CreditHierarchyConfigurationChildAccessUnion] interface which
+// you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+func (r CreditHierarchyConfigurationChildAccess) AsUnion() CreditHierarchyConfigurationChildAccessUnion {
+	return r.union
+}
+
+// Union satisfied by
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone] or
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+type CreditHierarchyConfigurationChildAccessUnion interface {
+	implementsCreditHierarchyConfigurationChildAccess()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*CreditHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
+		},
+	)
+}
+
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
+	JSON creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
+}
+
+// creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
+// contains the JSON metadata for the struct
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
+type creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsCreditHierarchyConfigurationChildAccess() {
+}
+
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
+	JSON creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
+}
+
+// creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
+// contains the JSON metadata for the struct
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+type creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsCreditHierarchyConfigurationChildAccess() {
+}
+
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs []string                                                                         `json:"contract_ids,required" format:"uuid"`
+	Type        CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
+	JSON        creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
+}
+
+// creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
+// contains the JSON metadata for the struct
+// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
+type creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
+	ContractIDs apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsCreditHierarchyConfigurationChildAccess() {
+}
+
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type CreditHierarchyConfigurationChildAccessType string
+
+const (
+	CreditHierarchyConfigurationChildAccessTypeAll         CreditHierarchyConfigurationChildAccessType = "ALL"
+	CreditHierarchyConfigurationChildAccessTypeNone        CreditHierarchyConfigurationChildAccessType = "NONE"
+	CreditHierarchyConfigurationChildAccessTypeContractIDs CreditHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r CreditHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case CreditHierarchyConfigurationChildAccessTypeAll, CreditHierarchyConfigurationChildAccessTypeNone, CreditHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
 }
 
 type CreditLedger struct {

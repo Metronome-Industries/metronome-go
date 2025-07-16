@@ -33,6 +33,53 @@ const CommitTypePostpaid = shared.CommitTypePostpaid
 // This is an alias to an internal type.
 type CommitContract = shared.CommitContract
 
+// Optional configuration for commit hierarchy access control
+//
+// This is an alias to an internal type.
+type CommitHierarchyConfiguration = shared.CommitHierarchyConfiguration
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccess = shared.CommitHierarchyConfigurationChildAccess
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessType = shared.CommitHierarchyConfigurationChildAccessType
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessTypeAll = shared.CommitHierarchyConfigurationChildAccessTypeAll
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessTypeNone = shared.CommitHierarchyConfigurationChildAccessTypeNone
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessTypeContractIDs = shared.CommitHierarchyConfigurationChildAccessTypeContractIDs
+
 // The contract that this commit will be billed on.
 //
 // This is an alias to an internal type.
@@ -614,6 +661,53 @@ const CreditTypeCredit = shared.CreditTypeCredit
 
 // This is an alias to an internal type.
 type CreditContract = shared.CreditContract
+
+// Optional configuration for credit hierarchy access control
+//
+// This is an alias to an internal type.
+type CreditHierarchyConfiguration = shared.CreditHierarchyConfiguration
+
+// This is an alias to an internal type.
+type CreditHierarchyConfigurationChildAccess = shared.CreditHierarchyConfigurationChildAccess
+
+// This is an alias to an internal type.
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
+
+// This is an alias to an internal type.
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
+
+// This is an alias to an internal value.
+const CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
+
+// This is an alias to an internal type.
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
+
+// This is an alias to an internal type.
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
+
+// This is an alias to an internal value.
+const CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
+
+// This is an alias to an internal type.
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
+
+// This is an alias to an internal type.
+type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
+
+// This is an alias to an internal value.
+const CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
+
+// This is an alias to an internal type.
+type CreditHierarchyConfigurationChildAccessType = shared.CreditHierarchyConfigurationChildAccessType
+
+// This is an alias to an internal value.
+const CreditHierarchyConfigurationChildAccessTypeAll = shared.CreditHierarchyConfigurationChildAccessTypeAll
+
+// This is an alias to an internal value.
+const CreditHierarchyConfigurationChildAccessTypeNone = shared.CreditHierarchyConfigurationChildAccessTypeNone
+
+// This is an alias to an internal value.
+const CreditHierarchyConfigurationChildAccessTypeContractIDs = shared.CreditHierarchyConfigurationChildAccessTypeContractIDs
 
 // This is an alias to an internal type.
 type CreditLedger = shared.CreditLedger
