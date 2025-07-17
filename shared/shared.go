@@ -4276,10 +4276,10 @@ func (r schedulePointInTimeJSON) RawJSON() string {
 type SchedulePointInTimeScheduleItem struct {
 	ID        string                              `json:"id,required" format:"uuid"`
 	Amount    float64                             `json:"amount,required"`
-	InvoiceID string                              `json:"invoice_id,required" format:"uuid"`
 	Quantity  float64                             `json:"quantity,required"`
 	Timestamp time.Time                           `json:"timestamp,required" format:"date-time"`
 	UnitPrice float64                             `json:"unit_price,required"`
+	InvoiceID string                              `json:"invoice_id,nullable" format:"uuid"`
 	JSON      schedulePointInTimeScheduleItemJSON `json:"-"`
 }
 
@@ -4288,10 +4288,10 @@ type SchedulePointInTimeScheduleItem struct {
 type schedulePointInTimeScheduleItemJSON struct {
 	ID          apijson.Field
 	Amount      apijson.Field
-	InvoiceID   apijson.Field
 	Quantity    apijson.Field
 	Timestamp   apijson.Field
 	UnitPrice   apijson.Field
+	InvoiceID   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
