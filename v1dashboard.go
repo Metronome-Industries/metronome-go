@@ -103,14 +103,15 @@ func (r V1DashboardGetEmbeddableURLParams) MarshalJSON() (data []byte, err error
 type V1DashboardGetEmbeddableURLParamsDashboard string
 
 const (
-	V1DashboardGetEmbeddableURLParamsDashboardInvoices V1DashboardGetEmbeddableURLParamsDashboard = "invoices"
-	V1DashboardGetEmbeddableURLParamsDashboardUsage    V1DashboardGetEmbeddableURLParamsDashboard = "usage"
-	V1DashboardGetEmbeddableURLParamsDashboardCredits  V1DashboardGetEmbeddableURLParamsDashboard = "credits"
+	V1DashboardGetEmbeddableURLParamsDashboardInvoices          V1DashboardGetEmbeddableURLParamsDashboard = "invoices"
+	V1DashboardGetEmbeddableURLParamsDashboardUsage             V1DashboardGetEmbeddableURLParamsDashboard = "usage"
+	V1DashboardGetEmbeddableURLParamsDashboardCredits           V1DashboardGetEmbeddableURLParamsDashboard = "credits"
+	V1DashboardGetEmbeddableURLParamsDashboardCommitsAndCredits V1DashboardGetEmbeddableURLParamsDashboard = "commits_and_credits"
 )
 
 func (r V1DashboardGetEmbeddableURLParamsDashboard) IsKnown() bool {
 	switch r {
-	case V1DashboardGetEmbeddableURLParamsDashboardInvoices, V1DashboardGetEmbeddableURLParamsDashboardUsage, V1DashboardGetEmbeddableURLParamsDashboardCredits:
+	case V1DashboardGetEmbeddableURLParamsDashboardInvoices, V1DashboardGetEmbeddableURLParamsDashboardUsage, V1DashboardGetEmbeddableURLParamsDashboardCredits, V1DashboardGetEmbeddableURLParamsDashboardCommitsAndCredits:
 		return true
 	}
 	return false
