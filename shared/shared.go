@@ -498,6 +498,7 @@ func (r *CommitLedger) UnmarshalJSON(data []byte) (err error) {
 // [CommitLedgerPrepaidCommitExpirationLedgerEntry],
 // [CommitLedgerPrepaidCommitCanceledLedgerEntry],
 // [CommitLedgerPrepaidCommitCreditedLedgerEntry],
+// [CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry],
 // [CommitLedgerPostpaidCommitInitialBalanceLedgerEntry],
 // [CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
 // [CommitLedgerPostpaidCommitRolloverLedgerEntry],
@@ -515,6 +516,7 @@ func (r CommitLedger) AsUnion() CommitLedgerUnion {
 // [CommitLedgerPrepaidCommitExpirationLedgerEntry],
 // [CommitLedgerPrepaidCommitCanceledLedgerEntry],
 // [CommitLedgerPrepaidCommitCreditedLedgerEntry],
+// [CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry],
 // [CommitLedgerPostpaidCommitInitialBalanceLedgerEntry],
 // [CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
 // [CommitLedgerPostpaidCommitRolloverLedgerEntry],
@@ -553,6 +555,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(CommitLedgerPrepaidCommitCreditedLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
@@ -847,6 +853,50 @@ const (
 func (r CommitLedgerPrepaidCommitCreditedLedgerEntryType) IsKnown() bool {
 	switch r {
 	case CommitLedgerPrepaidCommitCreditedLedgerEntryTypePrepaidCommitCredited:
+		return true
+	}
+	return false
+}
+
+type CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry struct {
+	Amount    float64                                                     `json:"amount,required"`
+	SegmentID string                                                      `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                                   `json:"timestamp,required" format:"date-time"`
+	Type      CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType `json:"type,required"`
+	JSON      commitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON `json:"-"`
+}
+
+// commitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON contains the JSON
+// metadata for the struct
+// [CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry]
+type commitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry) implementsCommitLedger() {}
+
+type CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType string
+
+const (
+	CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType = "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT"
+)
+
+func (r CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType) IsKnown() bool {
+	switch r {
+	case CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment:
 		return true
 	}
 	return false
@@ -1163,6 +1213,7 @@ const (
 	CommitLedgerTypePrepaidCommitExpiration                 CommitLedgerType = "PREPAID_COMMIT_EXPIRATION"
 	CommitLedgerTypePrepaidCommitCanceled                   CommitLedgerType = "PREPAID_COMMIT_CANCELED"
 	CommitLedgerTypePrepaidCommitCredited                   CommitLedgerType = "PREPAID_COMMIT_CREDITED"
+	CommitLedgerTypePrepaidCommitSeatBasedAdjustment        CommitLedgerType = "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT"
 	CommitLedgerTypePostpaidCommitInitialBalance            CommitLedgerType = "POSTPAID_COMMIT_INITIAL_BALANCE"
 	CommitLedgerTypePostpaidCommitAutomatedInvoiceDeduction CommitLedgerType = "POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION"
 	CommitLedgerTypePostpaidCommitRollover                  CommitLedgerType = "POSTPAID_COMMIT_ROLLOVER"
@@ -1174,7 +1225,7 @@ const (
 
 func (r CommitLedgerType) IsKnown() bool {
 	switch r {
-	case CommitLedgerTypePrepaidCommitSegmentStart, CommitLedgerTypePrepaidCommitAutomatedInvoiceDeduction, CommitLedgerTypePrepaidCommitRollover, CommitLedgerTypePrepaidCommitExpiration, CommitLedgerTypePrepaidCommitCanceled, CommitLedgerTypePrepaidCommitCredited, CommitLedgerTypePostpaidCommitInitialBalance, CommitLedgerTypePostpaidCommitAutomatedInvoiceDeduction, CommitLedgerTypePostpaidCommitRollover, CommitLedgerTypePostpaidCommitTrueup, CommitLedgerTypePrepaidCommitManual, CommitLedgerTypePostpaidCommitManual, CommitLedgerTypePostpaidCommitExpiration:
+	case CommitLedgerTypePrepaidCommitSegmentStart, CommitLedgerTypePrepaidCommitAutomatedInvoiceDeduction, CommitLedgerTypePrepaidCommitRollover, CommitLedgerTypePrepaidCommitExpiration, CommitLedgerTypePrepaidCommitCanceled, CommitLedgerTypePrepaidCommitCredited, CommitLedgerTypePrepaidCommitSeatBasedAdjustment, CommitLedgerTypePostpaidCommitInitialBalance, CommitLedgerTypePostpaidCommitAutomatedInvoiceDeduction, CommitLedgerTypePostpaidCommitRollover, CommitLedgerTypePostpaidCommitTrueup, CommitLedgerTypePrepaidCommitManual, CommitLedgerTypePostpaidCommitManual, CommitLedgerTypePostpaidCommitExpiration:
 		return true
 	}
 	return false
@@ -3180,7 +3231,8 @@ func (r *CreditLedger) UnmarshalJSON(data []byte) (err error) {
 // [CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
 // [CreditLedgerCreditExpirationLedgerEntry],
 // [CreditLedgerCreditCanceledLedgerEntry],
-// [CreditLedgerCreditCreditedLedgerEntry], [CreditLedgerCreditManualLedgerEntry].
+// [CreditLedgerCreditCreditedLedgerEntry], [CreditLedgerCreditManualLedgerEntry],
+// [CreditLedgerCreditSeatBasedAdjustmentLedgerEntry].
 func (r CreditLedger) AsUnion() CreditLedgerUnion {
 	return r.union
 }
@@ -3188,8 +3240,9 @@ func (r CreditLedger) AsUnion() CreditLedgerUnion {
 // Union satisfied by [CreditLedgerCreditSegmentStartLedgerEntry],
 // [CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
 // [CreditLedgerCreditExpirationLedgerEntry],
-// [CreditLedgerCreditCanceledLedgerEntry], [CreditLedgerCreditCreditedLedgerEntry]
-// or [CreditLedgerCreditManualLedgerEntry].
+// [CreditLedgerCreditCanceledLedgerEntry],
+// [CreditLedgerCreditCreditedLedgerEntry], [CreditLedgerCreditManualLedgerEntry]
+// or [CreditLedgerCreditSeatBasedAdjustmentLedgerEntry].
 type CreditLedgerUnion interface {
 	implementsCreditLedger()
 }
@@ -3221,6 +3274,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(CreditLedgerCreditManualLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CreditLedgerCreditSeatBasedAdjustmentLedgerEntry{}),
 		},
 	)
 }
@@ -3489,6 +3546,49 @@ func (r CreditLedgerCreditManualLedgerEntryType) IsKnown() bool {
 	return false
 }
 
+type CreditLedgerCreditSeatBasedAdjustmentLedgerEntry struct {
+	Amount    float64                                              `json:"amount,required"`
+	SegmentID string                                               `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                            `json:"timestamp,required" format:"date-time"`
+	Type      CreditLedgerCreditSeatBasedAdjustmentLedgerEntryType `json:"type,required"`
+	JSON      creditLedgerCreditSeatBasedAdjustmentLedgerEntryJSON `json:"-"`
+}
+
+// creditLedgerCreditSeatBasedAdjustmentLedgerEntryJSON contains the JSON metadata
+// for the struct [CreditLedgerCreditSeatBasedAdjustmentLedgerEntry]
+type creditLedgerCreditSeatBasedAdjustmentLedgerEntryJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r creditLedgerCreditSeatBasedAdjustmentLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) implementsCreditLedger() {}
+
+type CreditLedgerCreditSeatBasedAdjustmentLedgerEntryType string
+
+const (
+	CreditLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment CreditLedgerCreditSeatBasedAdjustmentLedgerEntryType = "CREDIT_SEAT_BASED_ADJUSTMENT"
+)
+
+func (r CreditLedgerCreditSeatBasedAdjustmentLedgerEntryType) IsKnown() bool {
+	switch r {
+	case CreditLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment:
+		return true
+	}
+	return false
+}
+
 type CreditLedgerType string
 
 const (
@@ -3498,11 +3598,12 @@ const (
 	CreditLedgerTypeCreditCanceled                  CreditLedgerType = "CREDIT_CANCELED"
 	CreditLedgerTypeCreditCredited                  CreditLedgerType = "CREDIT_CREDITED"
 	CreditLedgerTypeCreditManual                    CreditLedgerType = "CREDIT_MANUAL"
+	CreditLedgerTypeCreditSeatBasedAdjustment       CreditLedgerType = "CREDIT_SEAT_BASED_ADJUSTMENT"
 )
 
 func (r CreditLedgerType) IsKnown() bool {
 	switch r {
-	case CreditLedgerTypeCreditSegmentStart, CreditLedgerTypeCreditAutomatedInvoiceDeduction, CreditLedgerTypeCreditExpiration, CreditLedgerTypeCreditCanceled, CreditLedgerTypeCreditCredited, CreditLedgerTypeCreditManual:
+	case CreditLedgerTypeCreditSegmentStart, CreditLedgerTypeCreditAutomatedInvoiceDeduction, CreditLedgerTypeCreditExpiration, CreditLedgerTypeCreditCanceled, CreditLedgerTypeCreditCredited, CreditLedgerTypeCreditManual, CreditLedgerTypeCreditSeatBasedAdjustment:
 		return true
 	}
 	return false

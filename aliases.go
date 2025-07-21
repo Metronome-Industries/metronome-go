@@ -143,6 +143,15 @@ type CommitLedgerPrepaidCommitCreditedLedgerEntryType = shared.CommitLedgerPrepa
 const CommitLedgerPrepaidCommitCreditedLedgerEntryTypePrepaidCommitCredited = shared.CommitLedgerPrepaidCommitCreditedLedgerEntryTypePrepaidCommitCredited
 
 // This is an alias to an internal type.
+type CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry = shared.CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry
+
+// This is an alias to an internal type.
+type CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType = shared.CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType
+
+// This is an alias to an internal value.
+const CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment = shared.CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment
+
+// This is an alias to an internal type.
 type CommitLedgerPostpaidCommitInitialBalanceLedgerEntry = shared.CommitLedgerPostpaidCommitInitialBalanceLedgerEntry
 
 // This is an alias to an internal type.
@@ -225,6 +234,9 @@ const CommitLedgerTypePrepaidCommitCanceled = shared.CommitLedgerTypePrepaidComm
 
 // This is an alias to an internal value.
 const CommitLedgerTypePrepaidCommitCredited = shared.CommitLedgerTypePrepaidCommitCredited
+
+// This is an alias to an internal value.
+const CommitLedgerTypePrepaidCommitSeatBasedAdjustment = shared.CommitLedgerTypePrepaidCommitSeatBasedAdjustment
 
 // This is an alias to an internal value.
 const CommitLedgerTypePostpaidCommitInitialBalance = shared.CommitLedgerTypePostpaidCommitInitialBalance
@@ -767,6 +779,15 @@ type CreditLedgerCreditManualLedgerEntryType = shared.CreditLedgerCreditManualLe
 const CreditLedgerCreditManualLedgerEntryTypeCreditManual = shared.CreditLedgerCreditManualLedgerEntryTypeCreditManual
 
 // This is an alias to an internal type.
+type CreditLedgerCreditSeatBasedAdjustmentLedgerEntry = shared.CreditLedgerCreditSeatBasedAdjustmentLedgerEntry
+
+// This is an alias to an internal type.
+type CreditLedgerCreditSeatBasedAdjustmentLedgerEntryType = shared.CreditLedgerCreditSeatBasedAdjustmentLedgerEntryType
+
+// This is an alias to an internal value.
+const CreditLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment = shared.CreditLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment
+
+// This is an alias to an internal type.
 type CreditLedgerType = shared.CreditLedgerType
 
 // This is an alias to an internal value.
@@ -786,6 +807,9 @@ const CreditLedgerTypeCreditCredited = shared.CreditLedgerTypeCreditCredited
 
 // This is an alias to an internal value.
 const CreditLedgerTypeCreditManual = shared.CreditLedgerTypeCreditManual
+
+// This is an alias to an internal value.
+const CreditLedgerTypeCreditSeatBasedAdjustment = shared.CreditLedgerTypeCreditSeatBasedAdjustment
 
 // This is an alias to an internal type.
 type CreditRateType = shared.CreditRateType

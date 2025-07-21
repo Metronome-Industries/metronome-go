@@ -667,6 +667,7 @@ func (r *V2ContractGetResponseDataCommitsLedger) UnmarshalJSON(data []byte) (err
 // [V2ContractGetResponseDataCommitsLedgerPrepaidCommitExpirationLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPrepaidCommitCanceledLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntry],
+// [V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPostpaidCommitInitialBalanceLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPostpaidCommitRolloverLedgerEntry],
@@ -685,6 +686,7 @@ func (r V2ContractGetResponseDataCommitsLedger) AsUnion() V2ContractGetResponseD
 // [V2ContractGetResponseDataCommitsLedgerPrepaidCommitExpirationLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPrepaidCommitCanceledLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntry],
+// [V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPostpaidCommitInitialBalanceLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
 // [V2ContractGetResponseDataCommitsLedgerPostpaidCommitRolloverLedgerEntry],
@@ -723,6 +725,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(V2ContractGetResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
@@ -1028,6 +1034,51 @@ const (
 func (r V2ContractGetResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntryType) IsKnown() bool {
 	switch r {
 	case V2ContractGetResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntryTypePrepaidCommitCredited:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry struct {
+	Amount    float64                                                                               `json:"amount,required"`
+	SegmentID string                                                                                `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                                                             `json:"timestamp,required" format:"date-time"`
+	Type      V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType `json:"type,required"`
+	JSON      v2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry]
+type v2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry) implementsV2ContractGetResponseDataCommitsLedger() {
+}
+
+type V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType string
+
+const (
+	V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType = "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT"
+)
+
+func (r V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType) IsKnown() bool {
+	switch r {
+	case V2ContractGetResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment:
 		return true
 	}
 	return false
@@ -1357,6 +1408,7 @@ const (
 	V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitExpiration                 V2ContractGetResponseDataCommitsLedgerType = "PREPAID_COMMIT_EXPIRATION"
 	V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitCanceled                   V2ContractGetResponseDataCommitsLedgerType = "PREPAID_COMMIT_CANCELED"
 	V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitCredited                   V2ContractGetResponseDataCommitsLedgerType = "PREPAID_COMMIT_CREDITED"
+	V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitSeatBasedAdjustment        V2ContractGetResponseDataCommitsLedgerType = "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT"
 	V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitInitialBalance            V2ContractGetResponseDataCommitsLedgerType = "POSTPAID_COMMIT_INITIAL_BALANCE"
 	V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitAutomatedInvoiceDeduction V2ContractGetResponseDataCommitsLedgerType = "POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION"
 	V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitRollover                  V2ContractGetResponseDataCommitsLedgerType = "POSTPAID_COMMIT_ROLLOVER"
@@ -1368,7 +1420,7 @@ const (
 
 func (r V2ContractGetResponseDataCommitsLedgerType) IsKnown() bool {
 	switch r {
-	case V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitSegmentStart, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitAutomatedInvoiceDeduction, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitRollover, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitExpiration, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitCanceled, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitCredited, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitInitialBalance, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitAutomatedInvoiceDeduction, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitRollover, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitTrueup, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitManual, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitManual, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitExpiration:
+	case V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitSegmentStart, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitAutomatedInvoiceDeduction, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitRollover, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitExpiration, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitCanceled, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitCredited, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitSeatBasedAdjustment, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitInitialBalance, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitAutomatedInvoiceDeduction, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitRollover, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitTrueup, V2ContractGetResponseDataCommitsLedgerTypePrepaidCommitManual, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitManual, V2ContractGetResponseDataCommitsLedgerTypePostpaidCommitExpiration:
 		return true
 	}
 	return false
@@ -2195,7 +2247,8 @@ func (r *V2ContractGetResponseDataCreditsLedger) UnmarshalJSON(data []byte) (err
 // [V2ContractGetResponseDataCreditsLedgerCreditExpirationLedgerEntry],
 // [V2ContractGetResponseDataCreditsLedgerCreditCanceledLedgerEntry],
 // [V2ContractGetResponseDataCreditsLedgerCreditCreditedLedgerEntry],
-// [V2ContractGetResponseDataCreditsLedgerCreditManualLedgerEntry].
+// [V2ContractGetResponseDataCreditsLedgerCreditManualLedgerEntry],
+// [V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry].
 func (r V2ContractGetResponseDataCreditsLedger) AsUnion() V2ContractGetResponseDataCreditsLedgerUnion {
 	return r.union
 }
@@ -2205,8 +2258,9 @@ func (r V2ContractGetResponseDataCreditsLedger) AsUnion() V2ContractGetResponseD
 // [V2ContractGetResponseDataCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
 // [V2ContractGetResponseDataCreditsLedgerCreditExpirationLedgerEntry],
 // [V2ContractGetResponseDataCreditsLedgerCreditCanceledLedgerEntry],
-// [V2ContractGetResponseDataCreditsLedgerCreditCreditedLedgerEntry] or
-// [V2ContractGetResponseDataCreditsLedgerCreditManualLedgerEntry].
+// [V2ContractGetResponseDataCreditsLedgerCreditCreditedLedgerEntry],
+// [V2ContractGetResponseDataCreditsLedgerCreditManualLedgerEntry] or
+// [V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry].
 type V2ContractGetResponseDataCreditsLedgerUnion interface {
 	implementsV2ContractGetResponseDataCreditsLedger()
 }
@@ -2238,6 +2292,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(V2ContractGetResponseDataCreditsLedgerCreditManualLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry{}),
 		},
 	)
 }
@@ -2518,6 +2576,51 @@ func (r V2ContractGetResponseDataCreditsLedgerCreditManualLedgerEntryType) IsKno
 	return false
 }
 
+type V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry struct {
+	Amount    float64                                                                        `json:"amount,required"`
+	SegmentID string                                                                         `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                                                      `json:"timestamp,required" format:"date-time"`
+	Type      V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryType `json:"type,required"`
+	JSON      v2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry]
+type v2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry) implementsV2ContractGetResponseDataCreditsLedger() {
+}
+
+type V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryType string
+
+const (
+	V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryType = "CREDIT_SEAT_BASED_ADJUSTMENT"
+)
+
+func (r V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryType) IsKnown() bool {
+	switch r {
+	case V2ContractGetResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment:
+		return true
+	}
+	return false
+}
+
 type V2ContractGetResponseDataCreditsLedgerType string
 
 const (
@@ -2527,11 +2630,12 @@ const (
 	V2ContractGetResponseDataCreditsLedgerTypeCreditCanceled                  V2ContractGetResponseDataCreditsLedgerType = "CREDIT_CANCELED"
 	V2ContractGetResponseDataCreditsLedgerTypeCreditCredited                  V2ContractGetResponseDataCreditsLedgerType = "CREDIT_CREDITED"
 	V2ContractGetResponseDataCreditsLedgerTypeCreditManual                    V2ContractGetResponseDataCreditsLedgerType = "CREDIT_MANUAL"
+	V2ContractGetResponseDataCreditsLedgerTypeCreditSeatBasedAdjustment       V2ContractGetResponseDataCreditsLedgerType = "CREDIT_SEAT_BASED_ADJUSTMENT"
 )
 
 func (r V2ContractGetResponseDataCreditsLedgerType) IsKnown() bool {
 	switch r {
-	case V2ContractGetResponseDataCreditsLedgerTypeCreditSegmentStart, V2ContractGetResponseDataCreditsLedgerTypeCreditAutomatedInvoiceDeduction, V2ContractGetResponseDataCreditsLedgerTypeCreditExpiration, V2ContractGetResponseDataCreditsLedgerTypeCreditCanceled, V2ContractGetResponseDataCreditsLedgerTypeCreditCredited, V2ContractGetResponseDataCreditsLedgerTypeCreditManual:
+	case V2ContractGetResponseDataCreditsLedgerTypeCreditSegmentStart, V2ContractGetResponseDataCreditsLedgerTypeCreditAutomatedInvoiceDeduction, V2ContractGetResponseDataCreditsLedgerTypeCreditExpiration, V2ContractGetResponseDataCreditsLedgerTypeCreditCanceled, V2ContractGetResponseDataCreditsLedgerTypeCreditCredited, V2ContractGetResponseDataCreditsLedgerTypeCreditManual, V2ContractGetResponseDataCreditsLedgerTypeCreditSeatBasedAdjustment:
 		return true
 	}
 	return false
@@ -4768,6 +4872,7 @@ func (r *V2ContractListResponseDataCommitsLedger) UnmarshalJSON(data []byte) (er
 // [V2ContractListResponseDataCommitsLedgerPrepaidCommitExpirationLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPrepaidCommitCanceledLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntry],
+// [V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPostpaidCommitInitialBalanceLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPostpaidCommitRolloverLedgerEntry],
@@ -4786,6 +4891,7 @@ func (r V2ContractListResponseDataCommitsLedger) AsUnion() V2ContractListRespons
 // [V2ContractListResponseDataCommitsLedgerPrepaidCommitExpirationLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPrepaidCommitCanceledLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntry],
+// [V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPostpaidCommitInitialBalanceLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry],
 // [V2ContractListResponseDataCommitsLedgerPostpaidCommitRolloverLedgerEntry],
@@ -4824,6 +4930,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(V2ContractListResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
@@ -5129,6 +5239,51 @@ const (
 func (r V2ContractListResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntryType) IsKnown() bool {
 	switch r {
 	case V2ContractListResponseDataCommitsLedgerPrepaidCommitCreditedLedgerEntryTypePrepaidCommitCredited:
+		return true
+	}
+	return false
+}
+
+type V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry struct {
+	Amount    float64                                                                                `json:"amount,required"`
+	SegmentID string                                                                                 `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                                                              `json:"timestamp,required" format:"date-time"`
+	Type      V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType `json:"type,required"`
+	JSON      v2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON `json:"-"`
+}
+
+// v2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry]
+type v2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry) implementsV2ContractListResponseDataCommitsLedger() {
+}
+
+type V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType string
+
+const (
+	V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType = "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT"
+)
+
+func (r V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType) IsKnown() bool {
+	switch r {
+	case V2ContractListResponseDataCommitsLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment:
 		return true
 	}
 	return false
@@ -5458,6 +5613,7 @@ const (
 	V2ContractListResponseDataCommitsLedgerTypePrepaidCommitExpiration                 V2ContractListResponseDataCommitsLedgerType = "PREPAID_COMMIT_EXPIRATION"
 	V2ContractListResponseDataCommitsLedgerTypePrepaidCommitCanceled                   V2ContractListResponseDataCommitsLedgerType = "PREPAID_COMMIT_CANCELED"
 	V2ContractListResponseDataCommitsLedgerTypePrepaidCommitCredited                   V2ContractListResponseDataCommitsLedgerType = "PREPAID_COMMIT_CREDITED"
+	V2ContractListResponseDataCommitsLedgerTypePrepaidCommitSeatBasedAdjustment        V2ContractListResponseDataCommitsLedgerType = "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT"
 	V2ContractListResponseDataCommitsLedgerTypePostpaidCommitInitialBalance            V2ContractListResponseDataCommitsLedgerType = "POSTPAID_COMMIT_INITIAL_BALANCE"
 	V2ContractListResponseDataCommitsLedgerTypePostpaidCommitAutomatedInvoiceDeduction V2ContractListResponseDataCommitsLedgerType = "POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION"
 	V2ContractListResponseDataCommitsLedgerTypePostpaidCommitRollover                  V2ContractListResponseDataCommitsLedgerType = "POSTPAID_COMMIT_ROLLOVER"
@@ -5469,7 +5625,7 @@ const (
 
 func (r V2ContractListResponseDataCommitsLedgerType) IsKnown() bool {
 	switch r {
-	case V2ContractListResponseDataCommitsLedgerTypePrepaidCommitSegmentStart, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitAutomatedInvoiceDeduction, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitRollover, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitExpiration, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitCanceled, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitCredited, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitInitialBalance, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitAutomatedInvoiceDeduction, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitRollover, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitTrueup, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitManual, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitManual, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitExpiration:
+	case V2ContractListResponseDataCommitsLedgerTypePrepaidCommitSegmentStart, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitAutomatedInvoiceDeduction, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitRollover, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitExpiration, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitCanceled, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitCredited, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitSeatBasedAdjustment, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitInitialBalance, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitAutomatedInvoiceDeduction, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitRollover, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitTrueup, V2ContractListResponseDataCommitsLedgerTypePrepaidCommitManual, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitManual, V2ContractListResponseDataCommitsLedgerTypePostpaidCommitExpiration:
 		return true
 	}
 	return false
@@ -6297,7 +6453,8 @@ func (r *V2ContractListResponseDataCreditsLedger) UnmarshalJSON(data []byte) (er
 // [V2ContractListResponseDataCreditsLedgerCreditExpirationLedgerEntry],
 // [V2ContractListResponseDataCreditsLedgerCreditCanceledLedgerEntry],
 // [V2ContractListResponseDataCreditsLedgerCreditCreditedLedgerEntry],
-// [V2ContractListResponseDataCreditsLedgerCreditManualLedgerEntry].
+// [V2ContractListResponseDataCreditsLedgerCreditManualLedgerEntry],
+// [V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry].
 func (r V2ContractListResponseDataCreditsLedger) AsUnion() V2ContractListResponseDataCreditsLedgerUnion {
 	return r.union
 }
@@ -6307,8 +6464,9 @@ func (r V2ContractListResponseDataCreditsLedger) AsUnion() V2ContractListRespons
 // [V2ContractListResponseDataCreditsLedgerCreditAutomatedInvoiceDeductionLedgerEntry],
 // [V2ContractListResponseDataCreditsLedgerCreditExpirationLedgerEntry],
 // [V2ContractListResponseDataCreditsLedgerCreditCanceledLedgerEntry],
-// [V2ContractListResponseDataCreditsLedgerCreditCreditedLedgerEntry] or
-// [V2ContractListResponseDataCreditsLedgerCreditManualLedgerEntry].
+// [V2ContractListResponseDataCreditsLedgerCreditCreditedLedgerEntry],
+// [V2ContractListResponseDataCreditsLedgerCreditManualLedgerEntry] or
+// [V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry].
 type V2ContractListResponseDataCreditsLedgerUnion interface {
 	implementsV2ContractListResponseDataCreditsLedger()
 }
@@ -6340,6 +6498,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(V2ContractListResponseDataCreditsLedgerCreditManualLedgerEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry{}),
 		},
 	)
 }
@@ -6620,6 +6782,51 @@ func (r V2ContractListResponseDataCreditsLedgerCreditManualLedgerEntryType) IsKn
 	return false
 }
 
+type V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry struct {
+	Amount    float64                                                                         `json:"amount,required"`
+	SegmentID string                                                                          `json:"segment_id,required" format:"uuid"`
+	Timestamp time.Time                                                                       `json:"timestamp,required" format:"date-time"`
+	Type      V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryType `json:"type,required"`
+	JSON      v2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryJSON `json:"-"`
+}
+
+// v2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry]
+type v2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryJSON struct {
+	Amount      apijson.Field
+	SegmentID   apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntry) implementsV2ContractListResponseDataCreditsLedger() {
+}
+
+type V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryType string
+
+const (
+	V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryType = "CREDIT_SEAT_BASED_ADJUSTMENT"
+)
+
+func (r V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryType) IsKnown() bool {
+	switch r {
+	case V2ContractListResponseDataCreditsLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment:
+		return true
+	}
+	return false
+}
+
 type V2ContractListResponseDataCreditsLedgerType string
 
 const (
@@ -6629,11 +6836,12 @@ const (
 	V2ContractListResponseDataCreditsLedgerTypeCreditCanceled                  V2ContractListResponseDataCreditsLedgerType = "CREDIT_CANCELED"
 	V2ContractListResponseDataCreditsLedgerTypeCreditCredited                  V2ContractListResponseDataCreditsLedgerType = "CREDIT_CREDITED"
 	V2ContractListResponseDataCreditsLedgerTypeCreditManual                    V2ContractListResponseDataCreditsLedgerType = "CREDIT_MANUAL"
+	V2ContractListResponseDataCreditsLedgerTypeCreditSeatBasedAdjustment       V2ContractListResponseDataCreditsLedgerType = "CREDIT_SEAT_BASED_ADJUSTMENT"
 )
 
 func (r V2ContractListResponseDataCreditsLedgerType) IsKnown() bool {
 	switch r {
-	case V2ContractListResponseDataCreditsLedgerTypeCreditSegmentStart, V2ContractListResponseDataCreditsLedgerTypeCreditAutomatedInvoiceDeduction, V2ContractListResponseDataCreditsLedgerTypeCreditExpiration, V2ContractListResponseDataCreditsLedgerTypeCreditCanceled, V2ContractListResponseDataCreditsLedgerTypeCreditCredited, V2ContractListResponseDataCreditsLedgerTypeCreditManual:
+	case V2ContractListResponseDataCreditsLedgerTypeCreditSegmentStart, V2ContractListResponseDataCreditsLedgerTypeCreditAutomatedInvoiceDeduction, V2ContractListResponseDataCreditsLedgerTypeCreditExpiration, V2ContractListResponseDataCreditsLedgerTypeCreditCanceled, V2ContractListResponseDataCreditsLedgerTypeCreditCredited, V2ContractListResponseDataCreditsLedgerTypeCreditManual, V2ContractListResponseDataCreditsLedgerTypeCreditSeatBasedAdjustment:
 		return true
 	}
 	return false
