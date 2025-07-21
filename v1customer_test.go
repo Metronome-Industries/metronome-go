@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1CustomerNewWithOptionalParams(t *testing.T) {
@@ -126,7 +127,9 @@ func TestV1CustomerArchive(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Archive(context.TODO(), metronome.V1CustomerArchiveParams{
-		ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
+		ID: shared.IDParam{
+			ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
+		},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -183,6 +186,42 @@ func TestV1CustomerListCostsWithOptionalParams(t *testing.T) {
 		StartingOn:   metronome.F(time.Now()),
 		Limit:        metronome.F(int64(1)),
 		NextPage:     metronome.F("next_page"),
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestV1CustomerPreviewEventsWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.V1.Customers.PreviewEvents(context.TODO(), metronome.V1CustomerPreviewEventsParams{
+		CustomerID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		Events: metronome.F([]metronome.V1CustomerPreviewEventsParamsEvent{{
+			EventType:  metronome.F("heartbeat"),
+			CustomerID: metronome.F("x"),
+			Properties: metronome.F(map[string]interface{}{
+				"cpu_hours":       "bar",
+				"memory_gb_hours": "bar",
+			}),
+			Timestamp:     metronome.F("2021-01-01T00:00:00Z"),
+			TransactionID: metronome.F("x"),
+		}}),
+		Mode:                 metronome.F(metronome.V1CustomerPreviewEventsParamsModeReplace),
+		SkipZeroQtyLineItems: metronome.F(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error

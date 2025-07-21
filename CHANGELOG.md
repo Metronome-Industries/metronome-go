@@ -1,5 +1,44 @@
 # Changelog
 
+## 0.1.0-beta.10 (2025-07-15)
+
+Full Changelog: [v0.1.0-beta.9...v0.1.0-beta.10](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.9...v0.1.0-beta.10)
+
+### Features
+
+* **api:** Add Event Search API for finding events to match to customers and billable metrics ([25c419f](https://github.com/Metronome-Industries/metronome-go/commit/25c419f98a132a86d3231305d01e05b8283f2be2))
+* **api:** add previewEvents API for generating draft invoices with provided events ([fe1821e](https://github.com/Metronome-Industries/metronome-go/commit/fe1821ef081398fcabf045d49f8118c8d5010a91))
+* **api:** add support for Anrok and Precalculated tax types in payment gateway configuration ([64985e8](https://github.com/Metronome-Industries/metronome-go/commit/64985e8288143e110a600fb44a3662202f94bd20))
+* **api:** add UUID format annotations to credit type IDs ([7697c03](https://github.com/Metronome-Industries/metronome-go/commit/7697c03b0d64bb0059808c7b1856bd4da7f04dac))
+* **api:** add custom credit type support to prepaid balance thresholds ([4c11f2f](https://github.com/Metronome-Industries/metronome-go/commit/4c11f2fdb146d17523fc3997d0745f3c79af2abb))
+* **api:** add contract priority field ([e62737e](https://github.com/Metronome-Industries/metronome-go/commit/e62737eadd941e1718a58f915bd3087715c40771))
+* **api:** remove previewEvents API ([c959e5c](https://github.com/Metronome-Industries/metronome-go/commit/c959e5c6a2ea1b6bb2aa096c65b96449bf17d85b))
+* **api:** add contract name update functionality to v2 contracts ([2e728fe](https://github.com/Metronome-Industries/metronome-go/commit/2e728fe262aa17188a99ac7a41d1dab8697ca58e))
+* **api:** add hierarchy configuration to v1 contracts ([af56da3](https://github.com/Metronome-Industries/metronome-go/commit/af56da3d7231fe7cffb76b2048cf1ee84c947c3a))
+* **api:** add hierarchy configuration to v2 contracts ([21433c2](https://github.com/Metronome-Industries/metronome-go/commit/21433c2f88155d470180c0f0126351f00e37142e))
+* **api:** add shared type aliases for commit/credit types ([cfc1d4d](https://github.com/Metronome-Industries/metronome-go/commit/cfc1d4db02ff32e650b52382ec0911987a5e8051))
+* **api:** remove shared type aliases for commit/credit types ([3019739](https://github.com/Metronome-Industries/metronome-go/commit/3019739253ba835e81e9c77bf39d4db031a73e9e))
+* **api:** add contract hierarchy configuration to shared types ([d18807f](https://github.com/Metronome-Industries/metronome-go/commit/d18807f041b837a1afd9c1fb184ea48e1adfbc89))
+* **api:** change recurring commit/credit access amount quantity field from required to optional ([1553750](https://github.com/Metronome-Industries/metronome-go/commit/1553750f458e67088a73c2f04453e49b9b5b8eb5))
+* **api:** add sort parameter to credit grant list entries API ([7793347](https://github.com/Metronome-Industries/metronome-go/commit/77933470076683148375ee38bfd939875c411448))
+* **client:** add debug log helper ([971b349](https://github.com/Metronome-Industries/metronome-go/commit/971b349c13b3876439f8e2e6bd5223b297223bee))
+
+
+### Bug Fixes
+
+* don't try to deserialize as json when ResponseBodyInto is []byte ([210d41d](https://github.com/Metronome-Industries/metronome-go/commit/210d41db721dc29e54a56566f3c3b839241de1a4))
+* **pagination:** check if page data is empty in GetNextPage ([c9d18f6](https://github.com/Metronome-Industries/metronome-go/commit/c9d18f68935a58f68d2f6729a7502ed01740abd0))
+
+
+### Chores
+
+* **ci:** enable for pull requests ([3c45346](https://github.com/Metronome-Industries/metronome-go/commit/3c453464e971438bf4fa1b8d195656210fb230e7))
+* **ci:** only run for pushes and fork pull requests ([3816420](https://github.com/Metronome-Industries/metronome-go/commit/3816420c2b5d9812ed3825c2639a93b38f769aa6))
+* **internal:** fix lint script for tests ([1c082d2](https://github.com/Metronome-Industries/metronome-go/commit/1c082d27d54ee5bf85ec26c28759087cd4a4e551))
+* lint tests ([6ffa076](https://github.com/Metronome-Industries/metronome-go/commit/6ffa0760ae9826b305a6d18d9f610767d7f41c55))
+* lint tests in subpackages ([c53ee94](https://github.com/Metronome-Industries/metronome-go/commit/c53ee941bc29e4db429c3fa2117e8263eb9ca305))
+* make go mod tidy continue on error ([6b9c643](https://github.com/Metronome-Industries/metronome-go/commit/6b9c64342d35d360bfe63c00fc53fe0a8ceb166d))
+
 ## 0.1.0-beta.9 (2025-05-30)
 
 Full Changelog: [v0.1.0-beta.8...v0.1.0-beta.9](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.8...v0.1.0-beta.9)
