@@ -2183,6 +2183,9 @@ type V1ContractListBalancesResponseData struct {
 	// This field can have the runtime type of [map[string]string].
 	CustomFields interface{} `json:"custom_fields"`
 	Description  string      `json:"description"`
+	// This field can have the runtime type of [shared.CommitHierarchyConfiguration],
+	// [shared.CreditHierarchyConfiguration].
+	HierarchyConfiguration interface{} `json:"hierarchy_configuration"`
 	// This field can have the runtime type of [shared.CommitInvoiceContract].
 	InvoiceContract interface{} `json:"invoice_contract"`
 	// The schedule that the customer will be invoiced for this commit.
@@ -2230,6 +2233,7 @@ type v1ContractListBalancesResponseDataJSON struct {
 	Contract                apijson.Field
 	CustomFields            apijson.Field
 	Description             apijson.Field
+	HierarchyConfiguration  apijson.Field
 	InvoiceContract         apijson.Field
 	InvoiceSchedule         apijson.Field
 	Ledger                  apijson.Field
@@ -2594,7 +2598,8 @@ type V1ContractNewParams struct {
 	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
 	// inclusive contract start time
 	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
-	// The billing provider configuration associated with a contract.
+	// The billing provider configuration associated with a contract. Provide either an
+	// ID or the provider and delivery method.
 	BillingProviderConfiguration param.Field[V1ContractNewParamsBillingProviderConfiguration] `json:"billing_provider_configuration"`
 	Commits                      param.Field[[]V1ContractNewParamsCommit]                     `json:"commits"`
 	Credits                      param.Field[[]V1ContractNewParamsCredit]                     `json:"credits"`
@@ -2656,18 +2661,24 @@ func (r V1ContractNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The billing provider configuration associated with a contract.
+// The billing provider configuration associated with a contract. Provide either an
+// ID or the provider and delivery method.
 type V1ContractNewParamsBillingProviderConfiguration struct {
+	// Do not specify if using billing_provider_configuration_id.
 	BillingProvider param.Field[V1ContractNewParamsBillingProviderConfigurationBillingProvider] `json:"billing_provider"`
-	// The Metronome ID of the billing provider configuration
-	BillingProviderConfigurationID param.Field[string]                                                        `json:"billing_provider_configuration_id" format:"uuid"`
-	DeliveryMethod                 param.Field[V1ContractNewParamsBillingProviderConfigurationDeliveryMethod] `json:"delivery_method"`
+	// The Metronome ID of the billing provider configuration. Use when a customer has
+	// multiple configurations with the same billing provider and delivery method.
+	// Otherwise, specify the billing_provider and delivery_method.
+	BillingProviderConfigurationID param.Field[string] `json:"billing_provider_configuration_id" format:"uuid"`
+	// Do not specify if using billing_provider_configuration_id.
+	DeliveryMethod param.Field[V1ContractNewParamsBillingProviderConfigurationDeliveryMethod] `json:"delivery_method"`
 }
 
 func (r V1ContractNewParamsBillingProviderConfiguration) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// Do not specify if using billing_provider_configuration_id.
 type V1ContractNewParamsBillingProviderConfigurationBillingProvider string
 
 const (
@@ -2686,6 +2697,7 @@ func (r V1ContractNewParamsBillingProviderConfigurationBillingProvider) IsKnown(
 	return false
 }
 
+// Do not specify if using billing_provider_configuration_id.
 type V1ContractNewParamsBillingProviderConfigurationDeliveryMethod string
 
 const (

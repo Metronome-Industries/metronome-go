@@ -105,7 +105,10 @@ type V1AlertNewParams struct {
 	// applies to, by looking at the credit_grant_type field on the credit grant. This
 	// field is only defined for CreditPercentage and CreditBalance alerts
 	CreditGrantTypeFilters param.Field[[]string] `json:"credit_grant_type_filters"`
-	CreditTypeID           param.Field[string]   `json:"credit_type_id" format:"uuid"`
+	// ID of the credit's currency, defaults to USD. If the specific alert type
+	// requires a pricing unit/currency, find the ID in the
+	// [Metronome app](https://app.metronome.com/offering/pricing-units).
+	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// A list of custom field filters for alert types that support advanced filtering.
 	// Only present for contract invoices.
 	CustomFieldFilters param.Field[[]V1AlertNewParamsCustomFieldFilter] `json:"custom_field_filters"`
