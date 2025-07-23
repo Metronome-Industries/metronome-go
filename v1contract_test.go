@@ -295,11 +295,6 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
-			HierarchyConfiguration: metronome.F(metronome.V1ContractNewParamsRecurringCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion](metronome.V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
-				}),
-			}),
 			InvoiceAmount: metronome.F(metronome.V1ContractNewParamsRecurringCommitsInvoiceAmount{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.F(0.000000),
@@ -340,17 +335,12 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
-			HierarchyConfiguration: metronome.F(metronome.V1ContractNewParamsRecurringCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion](metronome.V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
-				}),
-			}),
-			Name:                 metronome.F("x"),
-			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
-			Proration:            metronome.F(metronome.V1ContractNewParamsRecurringCreditsProrationNone),
-			RateType:             metronome.F(metronome.V1ContractNewParamsRecurringCreditsRateTypeCommitRate),
-			RecurrenceFrequency:  metronome.F(metronome.V1ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly),
-			RolloverFraction:     metronome.F(0.000000),
+			Name:                  metronome.F("x"),
+			NetsuiteSalesOrderID:  metronome.F("netsuite_sales_order_id"),
+			Proration:             metronome.F(metronome.V1ContractNewParamsRecurringCreditsProrationNone),
+			RateType:              metronome.F(metronome.V1ContractNewParamsRecurringCreditsRateTypeCommitRate),
+			RecurrenceFrequency:   metronome.F(metronome.V1ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly),
+			RolloverFraction:      metronome.F(0.000000),
 			Specifiers: metronome.F([]metronome.V1ContractNewParamsRecurringCreditsSpecifier{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
@@ -929,7 +919,6 @@ func TestV1ContractListBalancesWithOptionalParams(t *testing.T) {
 		IncludeBalance:          metronome.F(true),
 		IncludeContractBalances: metronome.F(true),
 		IncludeLedgers:          metronome.F(true),
-		Limit:                   metronome.F(int64(1)),
 		NextPage:                metronome.F("next_page"),
 		StartingAt:              metronome.F(time.Now()),
 	})

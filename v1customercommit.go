@@ -368,8 +368,6 @@ type V1CustomerCommitListParams struct {
 	// Include commit ledgers in the response. Setting this flag may cause the query to
 	// be slower.
 	IncludeLedgers param.Field[bool] `json:"include_ledgers"`
-	// The maximum number of commits to return. Defaults to 25.
-	Limit param.Field[int64] `json:"limit"`
 	// The next page token from a previous response.
 	NextPage param.Field[string] `json:"next_page"`
 	// Include only commits that have any access on or after the provided date
