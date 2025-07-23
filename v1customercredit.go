@@ -235,6 +235,8 @@ type V1CustomerCreditListParams struct {
 	// Include credit ledgers in the response. Setting this flag may cause the query to
 	// be slower.
 	IncludeLedgers param.Field[bool] `json:"include_ledgers"`
+	// The maximum number of commits to return. Defaults to 25.
+	Limit param.Field[int64] `json:"limit"`
 	// The next page token from a previous response.
 	NextPage param.Field[string] `json:"next_page"`
 	// Include only credits that have any access on or after the provided date
