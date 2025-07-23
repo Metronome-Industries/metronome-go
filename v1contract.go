@@ -3905,8 +3905,6 @@ type V1ContractNewParamsRecurringCommit struct {
 	Description param.Field[string] `json:"description"`
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount param.Field[V1ContractNewParamsRecurringCommitsInvoiceAmount] `json:"invoice_amount"`
 	// displayed on invoices. will be passed through to the individual commits
@@ -3976,128 +3974,6 @@ const (
 func (r V1ContractNewParamsRecurringCommitsCommitDurationUnit) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsRecurringCommitsCommitDurationUnitPeriods:
-		return true
-	}
-	return false
-}
-
-// Optional configuration for recurring commit/credit hierarchy access control
-type V1ContractNewParamsRecurringCommitsHierarchyConfiguration struct {
-	ChildAccess param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                              `json:"contract_ids"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccess) implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccess].
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion()
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                      `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeAll         V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeNone        V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeAll, V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeNone, V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs:
 		return true
 	}
 	return false
@@ -4205,8 +4081,6 @@ type V1ContractNewParamsRecurringCredit struct {
 	Description param.Field[string] `json:"description"`
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// displayed on invoices. will be passed through to the individual commits
 	Name param.Field[string] `json:"name"`
 	// Will be passed down to the individual commits
@@ -4274,128 +4148,6 @@ const (
 func (r V1ContractNewParamsRecurringCreditsCommitDurationUnit) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsRecurringCreditsCommitDurationUnitPeriods:
-		return true
-	}
-	return false
-}
-
-// Optional configuration for recurring commit/credit hierarchy access control
-type V1ContractNewParamsRecurringCreditsHierarchyConfiguration struct {
-	ChildAccess param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                              `json:"contract_ids"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccess) implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccess].
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion()
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                      `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeAll         V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeNone        V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeAll, V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeNone, V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs:
 		return true
 	}
 	return false
@@ -6341,8 +6093,6 @@ type V1ContractListBalancesParams struct {
 	// Include ledgers in the response. Setting this flag may cause the query to be
 	// slower.
 	IncludeLedgers param.Field[bool] `json:"include_ledgers"`
-	// The maximum number of commits to return. Defaults to 25.
-	Limit param.Field[int64] `json:"limit"`
 	// The next page token from a previous response.
 	NextPage param.Field[string] `json:"next_page"`
 	// Include only balances that have any access on or after the provided date

@@ -40,9 +40,6 @@ func (r cursorPageJSON) RawJSON() string {
 // there is no next page, this function will return a 'nil' for the page value, but
 // will not return an error
 func (r *CursorPage[T]) GetNextPage() (res *CursorPage[T], err error) {
-	if len(r.Data) == 0 {
-		return nil, nil
-	}
 	next := r.NextPage
 	if len(next) == 0 {
 		return nil, nil
@@ -87,13 +84,23 @@ func NewCursorPageAutoPager[T any](page *CursorPage[T], err error) *CursorPageAu
 }
 
 func (r *CursorPageAutoPager[T]) Next() bool {
-	if r.page == nil || len(r.page.Data) == 0 {
+	if r.page == nil {
 		return false
 	}
 	if r.idx >= len(r.page.Data) {
 		r.idx = 0
 		r.page, r.err = r.page.GetNextPage()
-		if r.err != nil || r.page == nil || len(r.page.Data) == 0 {
+		if r.err != nil || r.page == nil {
+			return false
+		}
+	}
+	// if the API returned empty data then keep iterating
+	// until we either get more data or there are no more pages
+	// to fetch
+	for len(r.page.Data) == 0 {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil {
 			return false
 		}
 	}

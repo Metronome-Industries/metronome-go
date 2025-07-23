@@ -111,7 +111,6 @@ func TestV1CustomerCommitListWithOptionalParams(t *testing.T) {
 		IncludeBalance:         metronome.F(true),
 		IncludeContractCommits: metronome.F(true),
 		IncludeLedgers:         metronome.F(true),
-		Limit:                  metronome.F(int64(1)),
 		NextPage:               metronome.F("next_page"),
 		StartingAt:             metronome.F(time.Now()),
 	})

@@ -1923,8 +1923,6 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount ContractWithoutAmendmentsRecurringCommitsInvoiceAmount `json:"invoice_amount"`
 	// Displayed on invoices. Will be passed through to the individual commits
@@ -1954,28 +1952,27 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 // contractWithoutAmendmentsRecurringCommitJSON contains the JSON metadata for the
 // struct [ContractWithoutAmendmentsRecurringCommit]
 type contractWithoutAmendmentsRecurringCommitJSON struct {
-	ID                     apijson.Field
-	AccessAmount           apijson.Field
-	CommitDuration         apijson.Field
-	Priority               apijson.Field
-	Product                apijson.Field
-	RateType               apijson.Field
-	StartingAt             apijson.Field
-	ApplicableProductIDs   apijson.Field
-	ApplicableProductTags  apijson.Field
-	Contract               apijson.Field
-	Description            apijson.Field
-	EndingBefore           apijson.Field
-	HierarchyConfiguration apijson.Field
-	InvoiceAmount          apijson.Field
-	Name                   apijson.Field
-	NetsuiteSalesOrderID   apijson.Field
-	Proration              apijson.Field
-	RecurrenceFrequency    apijson.Field
-	RolloverFraction       apijson.Field
-	Specifiers             apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
+	ID                    apijson.Field
+	AccessAmount          apijson.Field
+	CommitDuration        apijson.Field
+	Priority              apijson.Field
+	Product               apijson.Field
+	RateType              apijson.Field
+	StartingAt            apijson.Field
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Contract              apijson.Field
+	Description           apijson.Field
+	EndingBefore          apijson.Field
+	InvoiceAmount         apijson.Field
+	Name                  apijson.Field
+	NetsuiteSalesOrderID  apijson.Field
+	Proration             apijson.Field
+	RecurrenceFrequency   apijson.Field
+	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *ContractWithoutAmendmentsRecurringCommit) UnmarshalJSON(data []byte) (err error) {
@@ -2111,235 +2108,6 @@ func (r contractWithoutAmendmentsRecurringCommitsContractJSON) RawJSON() string 
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration struct {
-	ChildAccess ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess struct {
-	Type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                    `json:"contract_ids"`
-	JSON        contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess) AsUnion() ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                            `json:"contract_ids,required" format:"uuid"`
-	Type        ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeAll         ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType = "ALL"
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeNone        ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType = "NONE"
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeAll, ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeNone, ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 // The amount the customer should be billed for the commit. Not required.
 type ContractWithoutAmendmentsRecurringCommitsInvoiceAmount struct {
 	CreditTypeID string                                                     `json:"credit_type_id,required" format:"uuid"`
@@ -2459,8 +2227,6 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Displayed on invoices. Will be passed through to the individual commits
 	Name string `json:"name"`
 	// Will be passed down to the individual commits
@@ -2488,27 +2254,26 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 // contractWithoutAmendmentsRecurringCreditJSON contains the JSON metadata for the
 // struct [ContractWithoutAmendmentsRecurringCredit]
 type contractWithoutAmendmentsRecurringCreditJSON struct {
-	ID                     apijson.Field
-	AccessAmount           apijson.Field
-	CommitDuration         apijson.Field
-	Priority               apijson.Field
-	Product                apijson.Field
-	RateType               apijson.Field
-	StartingAt             apijson.Field
-	ApplicableProductIDs   apijson.Field
-	ApplicableProductTags  apijson.Field
-	Contract               apijson.Field
-	Description            apijson.Field
-	EndingBefore           apijson.Field
-	HierarchyConfiguration apijson.Field
-	Name                   apijson.Field
-	NetsuiteSalesOrderID   apijson.Field
-	Proration              apijson.Field
-	RecurrenceFrequency    apijson.Field
-	RolloverFraction       apijson.Field
-	Specifiers             apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
+	ID                    apijson.Field
+	AccessAmount          apijson.Field
+	CommitDuration        apijson.Field
+	Priority              apijson.Field
+	Product               apijson.Field
+	RateType              apijson.Field
+	StartingAt            apijson.Field
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Contract              apijson.Field
+	Description           apijson.Field
+	EndingBefore          apijson.Field
+	Name                  apijson.Field
+	NetsuiteSalesOrderID  apijson.Field
+	Proration             apijson.Field
+	RecurrenceFrequency   apijson.Field
+	RolloverFraction      apijson.Field
+	Specifiers            apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *ContractWithoutAmendmentsRecurringCredit) UnmarshalJSON(data []byte) (err error) {
@@ -2642,235 +2407,6 @@ func (r *ContractWithoutAmendmentsRecurringCreditsContract) UnmarshalJSON(data [
 
 func (r contractWithoutAmendmentsRecurringCreditsContractJSON) RawJSON() string {
 	return r.raw
-}
-
-// Optional configuration for recurring commit/credit hierarchy access control
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration struct {
-	ChildAccess ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess struct {
-	Type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                    `json:"contract_ids"`
-	JSON        contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess) AsUnion() ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                            `json:"contract_ids,required" format:"uuid"`
-	Type        ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeAll         ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType = "ALL"
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeNone        ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType = "NONE"
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeAll, ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeNone, ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 // Determines whether the first and last commit will be prorated. If not provided,
