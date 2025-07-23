@@ -330,6 +330,11 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
+			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfiguration{
+				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
+					Type: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+				}),
+			}),
 			InvoiceAmount: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsInvoiceAmount{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.F(0.000000),
@@ -370,12 +375,17 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
-			Name:                  metronome.F("x"),
-			NetsuiteSalesOrderID:  metronome.F("netsuite_sales_order_id"),
-			Proration:             metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsProrationNone),
-			RateType:              metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsRateTypeCommitRate),
-			RecurrenceFrequency:   metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsRecurrenceFrequencyMonthly),
-			RolloverFraction:      metronome.F(0.000000),
+			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfiguration{
+				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
+					Type: metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+				}),
+			}),
+			Name:                 metronome.F("x"),
+			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
+			Proration:            metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsProrationNone),
+			RateType:             metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsRateTypeCommitRate),
+			RecurrenceFrequency:  metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsRecurrenceFrequencyMonthly),
+			RolloverFraction:     metronome.F(0.000000),
 			Specifiers: metronome.F([]metronome.V2ContractEditParamsAddRecurringCreditsSpecifier{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
