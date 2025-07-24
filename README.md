@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Metronome-Industries/metronome-go@v0.1.0-beta.10'
+go get -u 'github.com/Metronome-Industries/metronome-go@v0.1.0'
 ```
 
 <!-- x-release-please-end -->
