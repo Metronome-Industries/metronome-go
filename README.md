@@ -1,8 +1,7 @@
 # Metronome Go API Library
 
 > [!WARNING]
-> This is prerelease software that is not ready for production use. There may be bugs and
-> there will be breaking changes version to version. Use at your own risk.
+> This is in beta so there may be breaking changes version to version.
 
 <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go"><img src="https://pkg.go.dev/badge/github.com/Metronome-Industries/metronome-go.svg" alt="Go Reference"></a>
 
