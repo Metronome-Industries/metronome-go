@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.1.0 (2025-07-24)
+
+Full Changelog: [v0.1.0-beta.10...v0.1.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.10...v0.1.0)
+
+### Features
+
+* **api:** Allow for Pagination past empty pages ([dfff94d](https://github.com/Metronome-Industries/metronome-go/commit/dfff94dc6e5c630df25cf9a731dbaeac4acdd3b1))
+* **api:** api update ([b19a2eb](https://github.com/Metronome-Industries/metronome-go/commit/b19a2ebc38deb5b44e09b7cc6185c610328be775))
+* **api:** api update ([d2cbcc4](https://github.com/Metronome-Industries/metronome-go/commit/d2cbcc4445bc4a1fad5298b693ff455d9606c2fe))
+* **api:** api update ([5e1d838](https://github.com/Metronome-Industries/metronome-go/commit/5e1d838dddee7780448312a27d40667dcfd13c90))
+* **api:** api update ([40960be](https://github.com/Metronome-Industries/metronome-go/commit/40960be01fa60c5004ef175eb95c248f43fa163e))
+
+
+### Bug Fixes
+
+* **client:** process custom base url ahead of time ([f5b1bfc](https://github.com/Metronome-Industries/metronome-go/commit/f5b1bfc46f7a051a8e2c0ab58cc7ebe848021228))
+
 ## 0.1.0-beta.10 (2025-07-15)
 
 Full Changelog: [v0.1.0-beta.9...v0.1.0-beta.10](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0-beta.9...v0.1.0-beta.10)

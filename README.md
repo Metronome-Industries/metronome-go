@@ -1,8 +1,5 @@
 # Metronome Go API Library
 
-> [!WARNING]
-> This is in beta so there may be breaking changes version to version.
-
 <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go"><img src="https://pkg.go.dev/badge/github.com/Metronome-Industries/metronome-go.svg" alt="Go Reference"></a>
 
 The Metronome Go library provides convenient access to the [Metronome REST API](https://docs.metronome.com)
@@ -25,7 +22,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Metronome-Industries/metronome-go@v0.1.0-beta.10'
+go get -u 'github.com/Metronome-Industries/metronome-go@v0.1.0'
 ```
 
 <!-- x-release-please-end -->

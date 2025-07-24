@@ -143,6 +143,15 @@ type CommitLedgerPrepaidCommitCreditedLedgerEntryType = shared.CommitLedgerPrepa
 const CommitLedgerPrepaidCommitCreditedLedgerEntryTypePrepaidCommitCredited = shared.CommitLedgerPrepaidCommitCreditedLedgerEntryTypePrepaidCommitCredited
 
 // This is an alias to an internal type.
+type CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry = shared.CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry
+
+// This is an alias to an internal type.
+type CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType = shared.CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryType
+
+// This is an alias to an internal value.
+const CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment = shared.CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntryTypePrepaidCommitSeatBasedAdjustment
+
+// This is an alias to an internal type.
 type CommitLedgerPostpaidCommitInitialBalanceLedgerEntry = shared.CommitLedgerPostpaidCommitInitialBalanceLedgerEntry
 
 // This is an alias to an internal type.
@@ -225,6 +234,9 @@ const CommitLedgerTypePrepaidCommitCanceled = shared.CommitLedgerTypePrepaidComm
 
 // This is an alias to an internal value.
 const CommitLedgerTypePrepaidCommitCredited = shared.CommitLedgerTypePrepaidCommitCredited
+
+// This is an alias to an internal value.
+const CommitLedgerTypePrepaidCommitSeatBasedAdjustment = shared.CommitLedgerTypePrepaidCommitSeatBasedAdjustment
 
 // This is an alias to an internal value.
 const CommitLedgerTypePostpaidCommitInitialBalance = shared.CommitLedgerTypePostpaidCommitInitialBalance
@@ -420,6 +432,53 @@ const ContractWithoutAmendmentsRecurringCommitsRateTypeListRate = shared.Contrac
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCommitsContract = shared.ContractWithoutAmendmentsRecurringCommitsContract
 
+// Optional configuration for recurring commit/credit hierarchy access control
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeAll = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeAll
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeNone = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeNone
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs
+
 // The amount the customer should be billed for the commit. Not required.
 //
 // This is an alias to an internal type.
@@ -502,6 +561,53 @@ const ContractWithoutAmendmentsRecurringCreditsRateTypeListRate = shared.Contrac
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCreditsContract = shared.ContractWithoutAmendmentsRecurringCreditsContract
+
+// Optional configuration for recurring commit/credit hierarchy access control
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeAll = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeAll
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeNone = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeNone
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs
 
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
@@ -767,6 +873,15 @@ type CreditLedgerCreditManualLedgerEntryType = shared.CreditLedgerCreditManualLe
 const CreditLedgerCreditManualLedgerEntryTypeCreditManual = shared.CreditLedgerCreditManualLedgerEntryTypeCreditManual
 
 // This is an alias to an internal type.
+type CreditLedgerCreditSeatBasedAdjustmentLedgerEntry = shared.CreditLedgerCreditSeatBasedAdjustmentLedgerEntry
+
+// This is an alias to an internal type.
+type CreditLedgerCreditSeatBasedAdjustmentLedgerEntryType = shared.CreditLedgerCreditSeatBasedAdjustmentLedgerEntryType
+
+// This is an alias to an internal value.
+const CreditLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment = shared.CreditLedgerCreditSeatBasedAdjustmentLedgerEntryTypeCreditSeatBasedAdjustment
+
+// This is an alias to an internal type.
 type CreditLedgerType = shared.CreditLedgerType
 
 // This is an alias to an internal value.
@@ -786,6 +901,9 @@ const CreditLedgerTypeCreditCredited = shared.CreditLedgerTypeCreditCredited
 
 // This is an alias to an internal value.
 const CreditLedgerTypeCreditManual = shared.CreditLedgerTypeCreditManual
+
+// This is an alias to an internal value.
+const CreditLedgerTypeCreditSeatBasedAdjustment = shared.CreditLedgerTypeCreditSeatBasedAdjustment
 
 // This is an alias to an internal type.
 type CreditRateType = shared.CreditRateType
