@@ -3019,6 +3019,8 @@ type V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommit struct 
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers []V2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
 	JSON       v2ContractGetResponseDataPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
 }
@@ -7721,6 +7723,8 @@ type V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommit struct
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers []V2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
 	JSON       v2ContractListResponseDataPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
 }
@@ -9689,6 +9693,8 @@ type V2ContractGetEditHistoryResponseDataAddCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers []V2ContractGetEditHistoryResponseDataAddCommitsSpecifier `json:"specifiers"`
 	JSON       v2ContractGetEditHistoryResponseDataAddCommitJSON         `json:"-"`
 }
@@ -10060,6 +10066,8 @@ type V2ContractGetEditHistoryResponseDataAddCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers []V2ContractGetEditHistoryResponseDataAddCreditsSpecifier `json:"specifiers"`
 	JSON       v2ContractGetEditHistoryResponseDataAddCreditJSON         `json:"-"`
 }
@@ -10688,6 +10696,8 @@ type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers []V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
 	JSON       v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
 }
@@ -12603,6 +12613,8 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers []V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier `json:"specifiers,nullable"`
 	JSON       v2ContractGetEditHistoryResponseDataUpdateCommitJSON         `json:"-"`
 }
@@ -13713,6 +13725,8 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers []V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers,nullable"`
 	JSON       v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
 }
@@ -14611,6 +14625,8 @@ type V2ContractEditParamsAddCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditParamsAddCommitsSpecifier] `json:"specifiers"`
 	// A temporary ID for the commit that can be used to reference the commit for
 	// commit specific overrides.
@@ -15044,6 +15060,8 @@ type V2ContractEditParamsAddCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditParamsAddCreditsSpecifier] `json:"specifiers"`
 }
 
@@ -15555,6 +15573,8 @@ type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier] `json:"specifiers"`
 }
 
@@ -15746,6 +15766,8 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditParamsAddRecurringCommitsSpecifier] `json:"specifiers"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
@@ -16044,6 +16066,8 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditParamsAddRecurringCreditsSpecifier] `json:"specifiers"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
@@ -17166,6 +17190,8 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier] `json:"specifiers"`
 }
 
@@ -17572,6 +17598,8 @@ type V2ContractEditCommitParams struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditCommitParamsSpecifier] `json:"specifiers"`
 }
 
@@ -17690,6 +17718,8 @@ type V2ContractEditCreditParams struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditCreditParamsSpecifier] `json:"specifiers"`
 }
 
