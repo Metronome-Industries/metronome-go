@@ -43,6 +43,10 @@ func TestV1AlertNewWithOptionalParams(t *testing.T) {
 			Key:   metronome.F("key"),
 			Value: metronome.F("value"),
 		}),
+		GroupValues: metronome.F([]metronome.V1AlertNewParamsGroupValue{{
+			Key:   metronome.F("key"),
+			Value: metronome.F("value"),
+		}}),
 		InvoiceTypesFilter: metronome.F([]string{"PLAN_ARREARS, SCHEDULED, USAGE, CORRECTION, CREDIT_PURCHASE, or SEAT_PURCHASE"}),
 		PlanID:             metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		UniquenessKey:      metronome.F("x"),
