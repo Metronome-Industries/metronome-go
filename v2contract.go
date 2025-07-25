@@ -3248,7 +3248,7 @@ type V2ContractGetResponseDataRecurringCommit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
+	// Optional configuration for recurring credit hierarchy access control
 	HierarchyConfiguration V2ContractGetResponseDataRecurringCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount V2ContractGetResponseDataRecurringCommitsInvoiceAmount `json:"invoice_amount"`
@@ -3436,7 +3436,7 @@ func (r v2ContractGetResponseDataRecurringCommitsContractJSON) RawJSON() string 
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
+// Optional configuration for recurring credit hierarchy access control
 type V2ContractGetResponseDataRecurringCommitsHierarchyConfiguration struct {
 	ChildAccess V2ContractGetResponseDataRecurringCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
 	JSON        v2ContractGetResponseDataRecurringCommitsHierarchyConfigurationJSON        `json:"-"`
@@ -3784,7 +3784,7 @@ type V2ContractGetResponseDataRecurringCredit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
+	// Optional configuration for recurring credit hierarchy access control
 	HierarchyConfiguration V2ContractGetResponseDataRecurringCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Displayed on invoices. Will be passed through to the individual commits
 	Name string `json:"name"`
@@ -3969,7 +3969,7 @@ func (r v2ContractGetResponseDataRecurringCreditsContractJSON) RawJSON() string 
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
+// Optional configuration for recurring credit hierarchy access control
 type V2ContractGetResponseDataRecurringCreditsHierarchyConfiguration struct {
 	ChildAccess V2ContractGetResponseDataRecurringCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
 	JSON        v2ContractGetResponseDataRecurringCreditsHierarchyConfigurationJSON        `json:"-"`
@@ -7950,7 +7950,7 @@ type V2ContractListResponseDataRecurringCommit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
+	// Optional configuration for recurring credit hierarchy access control
 	HierarchyConfiguration V2ContractListResponseDataRecurringCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount V2ContractListResponseDataRecurringCommitsInvoiceAmount `json:"invoice_amount"`
@@ -8138,7 +8138,7 @@ func (r v2ContractListResponseDataRecurringCommitsContractJSON) RawJSON() string
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
+// Optional configuration for recurring credit hierarchy access control
 type V2ContractListResponseDataRecurringCommitsHierarchyConfiguration struct {
 	ChildAccess V2ContractListResponseDataRecurringCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
 	JSON        v2ContractListResponseDataRecurringCommitsHierarchyConfigurationJSON        `json:"-"`
@@ -8487,7 +8487,7 @@ type V2ContractListResponseDataRecurringCredit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
+	// Optional configuration for recurring credit hierarchy access control
 	HierarchyConfiguration V2ContractListResponseDataRecurringCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Displayed on invoices. Will be passed through to the individual commits
 	Name string `json:"name"`
@@ -8672,7 +8672,7 @@ func (r v2ContractListResponseDataRecurringCreditsContractJSON) RawJSON() string
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
+// Optional configuration for recurring credit hierarchy access control
 type V2ContractListResponseDataRecurringCreditsHierarchyConfiguration struct {
 	ChildAccess V2ContractListResponseDataRecurringCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
 	JSON        v2ContractListResponseDataRecurringCreditsHierarchyConfigurationJSON        `json:"-"`
@@ -9671,6 +9671,8 @@ type V2ContractGetEditHistoryResponseDataAddCommit struct {
 	ApplicableProductIDs  []string                `json:"applicable_product_ids" format:"uuid"`
 	ApplicableProductTags []string                `json:"applicable_product_tags"`
 	Description           string                  `json:"description"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The schedule that the customer will be invoiced for this commit.
 	InvoiceSchedule shared.SchedulePointInTime `json:"invoice_schedule"`
 	Name            string                     `json:"name"`
@@ -9701,6 +9703,7 @@ type v2ContractGetEditHistoryResponseDataAddCommitJSON struct {
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
 	Description             apijson.Field
+	HierarchyConfiguration  apijson.Field
 	InvoiceSchedule         apijson.Field
 	Name                    apijson.Field
 	NetsuiteSalesOrderID    apijson.Field
@@ -9754,6 +9757,235 @@ const (
 func (r V2ContractGetEditHistoryResponseDataAddCommitsType) IsKnown() bool {
 	switch r {
 	case V2ContractGetEditHistoryResponseDataAddCommitsTypePrepaid, V2ContractGetEditHistoryResponseDataAddCommitsTypePostpaid:
+		return true
+	}
+	return false
+}
+
+// Optional configuration for commit hierarchy access control
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfiguration struct {
+	ChildAccess V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
+	JSON        v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationJSON        `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfiguration]
+type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationJSON struct {
+	ChildAccess apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess struct {
+	Type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType `json:"type,required"`
+	// This field can have the runtime type of [[]string].
+	ContractIDs interface{}                                                                         `json:"contract_ids"`
+	JSON        v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessJSON `json:"-"`
+	union       V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion
+}
+
+// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess]
+type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessJSON struct {
+	Type        apijson.Field
+	ContractIDs apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
+	*r = V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion]
+// interface which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion {
+	return r.union
+}
+
+// Union satisfied by
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+// or
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion interface {
+	implementsV2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
+		},
+	)
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
+	JSON v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
+type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
+	JSON v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs []string                                                                                                                 `json:"contract_ids,required" format:"uuid"`
+	Type        V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
+	JSON        v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
+type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
+	ContractIDs apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType = "ALL"
+	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType = "NONE"
+	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeContractIDs:
 		return true
 	}
 	return false
@@ -9814,7 +10046,9 @@ type V2ContractGetEditHistoryResponseDataAddCredit struct {
 	ApplicableProductIDs  []string                `json:"applicable_product_ids" format:"uuid"`
 	ApplicableProductTags []string                `json:"applicable_product_tags"`
 	Description           string                  `json:"description"`
-	Name                  string                  `json:"name"`
+	// Optional configuration for recurring credit hierarchy access control
+	HierarchyConfiguration V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
+	Name                   string                                                               `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// If multiple credits or commits are applicable, the one with the lower priority
@@ -9840,6 +10074,7 @@ type v2ContractGetEditHistoryResponseDataAddCreditJSON struct {
 	ApplicableProductIDs    apijson.Field
 	ApplicableProductTags   apijson.Field
 	Description             apijson.Field
+	HierarchyConfiguration  apijson.Field
 	Name                    apijson.Field
 	NetsuiteSalesOrderID    apijson.Field
 	Priority                apijson.Field
@@ -9889,6 +10124,235 @@ const (
 func (r V2ContractGetEditHistoryResponseDataAddCreditsType) IsKnown() bool {
 	switch r {
 	case V2ContractGetEditHistoryResponseDataAddCreditsTypeCredit:
+		return true
+	}
+	return false
+}
+
+// Optional configuration for recurring credit hierarchy access control
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfiguration struct {
+	ChildAccess V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
+	JSON        v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationJSON        `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfiguration]
+type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationJSON struct {
+	ChildAccess apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess struct {
+	Type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType `json:"type,required"`
+	// This field can have the runtime type of [[]string].
+	ContractIDs interface{}                                                                         `json:"contract_ids"`
+	JSON        v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessJSON `json:"-"`
+	union       V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion
+}
+
+// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess]
+type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessJSON struct {
+	Type        apijson.Field
+	ContractIDs apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
+	*r = V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion]
+// interface which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion {
+	return r.union
+}
+
+// Union satisfied by
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+// or
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion interface {
+	implementsV2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
+		},
+	)
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
+	JSON v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
+type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
+	JSON v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs []string                                                                                                                 `json:"contract_ids,required" format:"uuid"`
+	Type        V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
+	JSON        v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
+type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
+	ContractIDs apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType = "ALL"
+	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType = "NONE"
+	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeContractIDs:
 		return true
 	}
 	return false
@@ -10453,7 +10917,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
+	// Optional configuration for recurring credit hierarchy access control
 	HierarchyConfiguration V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount V2ContractGetEditHistoryResponseDataAddRecurringCommitsInvoiceAmount `json:"invoice_amount"`
@@ -10644,7 +11108,7 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsContractJSON) Raw
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
+// Optional configuration for recurring credit hierarchy access control
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfiguration struct {
 	ChildAccess V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
 	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationJSON        `json:"-"`
@@ -10994,7 +11458,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	Description string `json:"description"`
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
+	// Optional configuration for recurring credit hierarchy access control
 	HierarchyConfiguration V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Displayed on invoices. Will be passed through to the individual commits
 	Name string `json:"name"`
@@ -11182,7 +11646,7 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsContractJSON) Raw
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
+// Optional configuration for recurring credit hierarchy access control
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfiguration struct {
 	ChildAccess V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
 	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationJSON        `json:"-"`
@@ -12127,12 +12591,14 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	// Which tags the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
-	ApplicableProductTags []string                                                         `json:"applicable_product_tags,nullable"`
-	InvoiceSchedule       V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceSchedule `json:"invoice_schedule"`
-	Name                  string                                                           `json:"name"`
-	NetsuiteSalesOrderID  string                                                           `json:"netsuite_sales_order_id,nullable"`
-	ProductID             string                                                           `json:"product_id" format:"uuid"`
-	RolloverFraction      float64                                                          `json:"rollover_fraction,nullable"`
+	ApplicableProductTags []string `json:"applicable_product_tags,nullable"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
+	InvoiceSchedule        V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceSchedule        `json:"invoice_schedule"`
+	Name                   string                                                                  `json:"name"`
+	NetsuiteSalesOrderID   string                                                                  `json:"netsuite_sales_order_id,nullable"`
+	ProductID              string                                                                  `json:"product_id" format:"uuid"`
+	RolloverFraction       float64                                                                 `json:"rollover_fraction,nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -12144,18 +12610,19 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 // v2ContractGetEditHistoryResponseDataUpdateCommitJSON contains the JSON metadata
 // for the struct [V2ContractGetEditHistoryResponseDataUpdateCommit]
 type v2ContractGetEditHistoryResponseDataUpdateCommitJSON struct {
-	ID                    apijson.Field
-	AccessSchedule        apijson.Field
-	ApplicableProductIDs  apijson.Field
-	ApplicableProductTags apijson.Field
-	InvoiceSchedule       apijson.Field
-	Name                  apijson.Field
-	NetsuiteSalesOrderID  apijson.Field
-	ProductID             apijson.Field
-	RolloverFraction      apijson.Field
-	Specifiers            apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
+	ID                     apijson.Field
+	AccessSchedule         apijson.Field
+	ApplicableProductIDs   apijson.Field
+	ApplicableProductTags  apijson.Field
+	HierarchyConfiguration apijson.Field
+	InvoiceSchedule        apijson.Field
+	Name                   apijson.Field
+	NetsuiteSalesOrderID   apijson.Field
+	ProductID              apijson.Field
+	RolloverFraction       apijson.Field
+	Specifiers             apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
 }
 
 func (r *V2ContractGetEditHistoryResponseDataUpdateCommit) UnmarshalJSON(data []byte) (err error) {
@@ -12270,6 +12737,235 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsAccessScheduleUpdateSc
 
 func (r v2ContractGetEditHistoryResponseDataUpdateCommitsAccessScheduleUpdateScheduleItemJSON) RawJSON() string {
 	return r.raw
+}
+
+// Optional configuration for commit hierarchy access control
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfiguration struct {
+	ChildAccess V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
+	JSON        v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationJSON        `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfiguration]
+type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationJSON struct {
+	ChildAccess apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess struct {
+	Type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType `json:"type,required"`
+	// This field can have the runtime type of [[]string].
+	ContractIDs interface{}                                                                            `json:"contract_ids"`
+	JSON        v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessJSON `json:"-"`
+	union       V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess]
+type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessJSON struct {
+	Type        apijson.Field
+	ContractIDs apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
+	*r = V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion]
+// interface which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion {
+	return r.union
+}
+
+// Union satisfied by
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+// or
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion interface {
+	implementsV2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
+		},
+	)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
+	JSON v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
+type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
+	JSON v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs []string                                                                                                                    `json:"contract_ids,required" format:"uuid"`
+	Type        V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
+	JSON        v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
+type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
+	ContractIDs apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType string
+
+const (
+	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType = "ALL"
+	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType = "NONE"
+	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceSchedule struct {
@@ -12410,24 +13106,27 @@ func (r v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON) RawJSON(
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
-	ID                   string                                                          `json:"id,required" format:"uuid"`
-	AccessSchedule       V2ContractGetEditHistoryResponseDataUpdateCreditsAccessSchedule `json:"access_schedule"`
-	Name                 string                                                          `json:"name"`
-	NetsuiteSalesOrderID string                                                          `json:"netsuite_sales_order_id,nullable"`
-	RolloverFraction     float64                                                         `json:"rollover_fraction,nullable"`
-	JSON                 v2ContractGetEditHistoryResponseDataUpdateCreditJSON            `json:"-"`
+	ID             string                                                          `json:"id,required" format:"uuid"`
+	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCreditsAccessSchedule `json:"access_schedule"`
+	// Optional configuration for credit hierarchy access control
+	HierarchyConfiguration V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
+	Name                   string                                                                  `json:"name"`
+	NetsuiteSalesOrderID   string                                                                  `json:"netsuite_sales_order_id,nullable"`
+	RolloverFraction       float64                                                                 `json:"rollover_fraction,nullable"`
+	JSON                   v2ContractGetEditHistoryResponseDataUpdateCreditJSON                    `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataUpdateCreditJSON contains the JSON metadata
 // for the struct [V2ContractGetEditHistoryResponseDataUpdateCredit]
 type v2ContractGetEditHistoryResponseDataUpdateCreditJSON struct {
-	ID                   apijson.Field
-	AccessSchedule       apijson.Field
-	Name                 apijson.Field
-	NetsuiteSalesOrderID apijson.Field
-	RolloverFraction     apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
+	ID                     apijson.Field
+	AccessSchedule         apijson.Field
+	HierarchyConfiguration apijson.Field
+	Name                   apijson.Field
+	NetsuiteSalesOrderID   apijson.Field
+	RolloverFraction       apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
 }
 
 func (r *V2ContractGetEditHistoryResponseDataUpdateCredit) UnmarshalJSON(data []byte) (err error) {
@@ -12542,6 +13241,235 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsAccessScheduleUpdateSc
 
 func (r v2ContractGetEditHistoryResponseDataUpdateCreditsAccessScheduleUpdateScheduleItemJSON) RawJSON() string {
 	return r.raw
+}
+
+// Optional configuration for credit hierarchy access control
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration struct {
+	ChildAccess V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
+	JSON        v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationJSON        `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration]
+type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationJSON struct {
+	ChildAccess apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess struct {
+	Type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType `json:"type,required"`
+	// This field can have the runtime type of [[]string].
+	ContractIDs interface{}                                                                            `json:"contract_ids"`
+	JSON        v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessJSON `json:"-"`
+	union       V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess]
+type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessJSON struct {
+	Type        apijson.Field
+	ContractIDs apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
+	*r = V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion]
+// interface which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion {
+	return r.union
+}
+
+// Union satisfied by
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+// or
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion interface {
+	implementsV2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
+		},
+	)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
+	JSON v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
+type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
+	JSON v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs []string                                                                                                                    `json:"contract_ids,required" format:"uuid"`
+	Type        V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
+	JSON        v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
+type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
+	ContractIDs apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess() {
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType string
+
+const (
+	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType = "ALL"
+	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType = "NONE"
+	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateDiscount struct {
@@ -14791,7 +15719,7 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	Description param.Field[string] `json:"description"`
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
+	// Optional configuration for recurring credit hierarchy access control
 	HierarchyConfiguration param.Field[V2ContractEditParamsAddRecurringCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount param.Field[V2ContractEditParamsAddRecurringCommitsInvoiceAmount] `json:"invoice_amount"`
@@ -14867,7 +15795,7 @@ func (r V2ContractEditParamsAddRecurringCommitsCommitDurationUnit) IsKnown() boo
 	return false
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
+// Optional configuration for recurring credit hierarchy access control
 type V2ContractEditParamsAddRecurringCommitsHierarchyConfiguration struct {
 	ChildAccess param.Field[V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
 }
@@ -15091,7 +16019,7 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	Description param.Field[string] `json:"description"`
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
+	// Optional configuration for recurring credit hierarchy access control
 	HierarchyConfiguration param.Field[V2ContractEditParamsAddRecurringCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	// displayed on invoices. will be passed through to the individual commits
 	Name param.Field[string] `json:"name"`
@@ -15165,7 +16093,7 @@ func (r V2ContractEditParamsAddRecurringCreditsCommitDurationUnit) IsKnown() boo
 	return false
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
+// Optional configuration for recurring credit hierarchy access control
 type V2ContractEditParamsAddRecurringCreditsHierarchyConfiguration struct {
 	ChildAccess param.Field[V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
 }
