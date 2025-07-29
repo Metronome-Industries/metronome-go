@@ -11,6 +11,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -42,11 +43,26 @@ func (r *V1CustomerCreditService) New(ctx context.Context, body V1CustomerCredit
 }
 
 // List credits.
-func (r *V1CustomerCreditService) List(ctx context.Context, body V1CustomerCreditListParams, opts ...option.RequestOption) (res *V1CustomerCreditListResponse, err error) {
+func (r *V1CustomerCreditService) List(ctx context.Context, body V1CustomerCreditListParams, opts ...option.RequestOption) (res *pagination.CursorPage[shared.Credit], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contracts/customerCredits/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, body, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List credits.
+func (r *V1CustomerCreditService) ListAutoPaging(ctx context.Context, body V1CustomerCreditListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[shared.Credit] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, body, opts...))
 }
 
 // Pull forward the end date of a credit. Use the "edit a credit" endpoint to
@@ -76,29 +92,6 @@ func (r *V1CustomerCreditNewResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerCreditNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCreditListResponse struct {
-	Data     []shared.Credit                  `json:"data,required"`
-	NextPage string                           `json:"next_page,required,nullable"`
-	JSON     v1CustomerCreditListResponseJSON `json:"-"`
-}
-
-// v1CustomerCreditListResponseJSON contains the JSON metadata for the struct
-// [V1CustomerCreditListResponse]
-type v1CustomerCreditListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCreditListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCreditListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
