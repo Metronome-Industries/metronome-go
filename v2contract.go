@@ -2677,6 +2677,8 @@ func (r v2ContractGetResponseDataCreditsSpecifierJSON) RawJSON() string {
 
 // This field's availability is dependent on your client's configuration.
 type V2ContractGetResponseDataCustomerBillingProviderConfiguration struct {
+	// ID of Customer's billing provider configuration.
+	ID              string                                                                       `json:"id,required" format:"uuid"`
 	BillingProvider V2ContractGetResponseDataCustomerBillingProviderConfigurationBillingProvider `json:"billing_provider,required"`
 	DeliveryMethod  V2ContractGetResponseDataCustomerBillingProviderConfigurationDeliveryMethod  `json:"delivery_method,required"`
 	JSON            v2ContractGetResponseDataCustomerBillingProviderConfigurationJSON            `json:"-"`
@@ -2686,6 +2688,7 @@ type V2ContractGetResponseDataCustomerBillingProviderConfiguration struct {
 // JSON metadata for the struct
 // [V2ContractGetResponseDataCustomerBillingProviderConfiguration]
 type v2ContractGetResponseDataCustomerBillingProviderConfigurationJSON struct {
+	ID              apijson.Field
 	BillingProvider apijson.Field
 	DeliveryMethod  apijson.Field
 	raw             string
@@ -7380,6 +7383,8 @@ func (r v2ContractListResponseDataCreditsSpecifierJSON) RawJSON() string {
 
 // This field's availability is dependent on your client's configuration.
 type V2ContractListResponseDataCustomerBillingProviderConfiguration struct {
+	// ID of Customer's billing provider configuration.
+	ID              string                                                                        `json:"id,required" format:"uuid"`
 	BillingProvider V2ContractListResponseDataCustomerBillingProviderConfigurationBillingProvider `json:"billing_provider,required"`
 	DeliveryMethod  V2ContractListResponseDataCustomerBillingProviderConfigurationDeliveryMethod  `json:"delivery_method,required"`
 	JSON            v2ContractListResponseDataCustomerBillingProviderConfigurationJSON            `json:"-"`
@@ -7389,6 +7394,7 @@ type V2ContractListResponseDataCustomerBillingProviderConfiguration struct {
 // JSON metadata for the struct
 // [V2ContractListResponseDataCustomerBillingProviderConfiguration]
 type v2ContractListResponseDataCustomerBillingProviderConfigurationJSON struct {
+	ID              apijson.Field
 	BillingProvider apijson.Field
 	DeliveryMethod  apijson.Field
 	raw             string
