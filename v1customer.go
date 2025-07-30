@@ -16,6 +16,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1CustomerService contains methods and other services that help with interacting
@@ -72,7 +73,7 @@ func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, 
 }
 
 // List all customers.
-func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerListResponse], err error) {
+func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerDetail], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -90,7 +91,7 @@ func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams
 }
 
 // List all customers.
-func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerListResponse] {
+func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerDetail] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -216,8 +217,147 @@ func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerU
 	return
 }
 
+type Customer struct {
+	// the Metronome ID of the customer
+	ID string `json:"id,required" format:"uuid"`
+	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
+	// alias) that can be used in usage events
+	ExternalID string `json:"external_id,required"`
+	// aliases for this customer that can be used instead of the Metronome customer ID
+	// in usage events
+	IngestAliases []string          `json:"ingest_aliases,required"`
+	Name          string            `json:"name,required"`
+	CustomFields  map[string]string `json:"custom_fields"`
+	JSON          customerJSON      `json:"-"`
+}
+
+// customerJSON contains the JSON metadata for the struct [Customer]
+type customerJSON struct {
+	ID            apijson.Field
+	ExternalID    apijson.Field
+	IngestAliases apijson.Field
+	Name          apijson.Field
+	CustomFields  apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *Customer) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerDetail struct {
+	// the Metronome ID of the customer
+	ID string `json:"id,required" format:"uuid"`
+	// RFC 3339 timestamp indicating when the customer was created.
+	CreatedAt      time.Time                    `json:"created_at,required" format:"date-time"`
+	CustomFields   map[string]string            `json:"custom_fields,required"`
+	CustomerConfig CustomerDetailCustomerConfig `json:"customer_config,required"`
+	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
+	// alias) that can be used in usage events
+	ExternalID string `json:"external_id,required"`
+	// aliases for this customer that can be used instead of the Metronome customer ID
+	// in usage events
+	IngestAliases []string `json:"ingest_aliases,required"`
+	Name          string   `json:"name,required"`
+	// RFC 3339 timestamp indicating when the customer was archived. Null if the
+	// customer is active.
+	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
+	// This field's availability is dependent on your client's configuration.
+	CurrentBillableStatus CustomerDetailCurrentBillableStatus `json:"current_billable_status"`
+	JSON                  customerDetailJSON                  `json:"-"`
+}
+
+// customerDetailJSON contains the JSON metadata for the struct [CustomerDetail]
+type customerDetailJSON struct {
+	ID                    apijson.Field
+	CreatedAt             apijson.Field
+	CustomFields          apijson.Field
+	CustomerConfig        apijson.Field
+	ExternalID            apijson.Field
+	IngestAliases         apijson.Field
+	Name                  apijson.Field
+	ArchivedAt            apijson.Field
+	CurrentBillableStatus apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *CustomerDetail) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerDetailJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerDetailCustomerConfig struct {
+	// The Salesforce account ID for the customer
+	SalesforceAccountID string                           `json:"salesforce_account_id,required,nullable"`
+	JSON                customerDetailCustomerConfigJSON `json:"-"`
+}
+
+// customerDetailCustomerConfigJSON contains the JSON metadata for the struct
+// [CustomerDetailCustomerConfig]
+type customerDetailCustomerConfigJSON struct {
+	SalesforceAccountID apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *CustomerDetailCustomerConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerDetailCustomerConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// This field's availability is dependent on your client's configuration.
+type CustomerDetailCurrentBillableStatus struct {
+	Value       CustomerDetailCurrentBillableStatusValue `json:"value,required"`
+	EffectiveAt time.Time                                `json:"effective_at,nullable" format:"date-time"`
+	JSON        customerDetailCurrentBillableStatusJSON  `json:"-"`
+}
+
+// customerDetailCurrentBillableStatusJSON contains the JSON metadata for the
+// struct [CustomerDetailCurrentBillableStatus]
+type customerDetailCurrentBillableStatusJSON struct {
+	Value       apijson.Field
+	EffectiveAt apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerDetailCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerDetailCurrentBillableStatusJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerDetailCurrentBillableStatusValue string
+
+const (
+	CustomerDetailCurrentBillableStatusValueBillable   CustomerDetailCurrentBillableStatusValue = "billable"
+	CustomerDetailCurrentBillableStatusValueUnbillable CustomerDetailCurrentBillableStatusValue = "unbillable"
+)
+
+func (r CustomerDetailCurrentBillableStatusValue) IsKnown() bool {
+	switch r {
+	case CustomerDetailCurrentBillableStatusValueBillable, CustomerDetailCurrentBillableStatusValueUnbillable:
+		return true
+	}
+	return false
+}
+
 type V1CustomerNewResponse struct {
-	Data V1CustomerNewResponseData `json:"data,required"`
+	Data Customer                  `json:"data,required"`
 	JSON v1CustomerNewResponseJSON `json:"-"`
 }
 
@@ -237,42 +377,8 @@ func (r v1CustomerNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CustomerNewResponseData struct {
-	// the Metronome ID of the customer
-	ID string `json:"id,required" format:"uuid"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string                      `json:"ingest_aliases,required"`
-	Name          string                        `json:"name,required"`
-	CustomFields  map[string]string             `json:"custom_fields"`
-	JSON          v1CustomerNewResponseDataJSON `json:"-"`
-}
-
-// v1CustomerNewResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerNewResponseData]
-type v1CustomerNewResponseDataJSON struct {
-	ID            apijson.Field
-	ExternalID    apijson.Field
-	IngestAliases apijson.Field
-	Name          apijson.Field
-	CustomFields  apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *V1CustomerNewResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerNewResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1CustomerGetResponse struct {
-	Data V1CustomerGetResponseData `json:"data,required"`
+	Data CustomerDetail            `json:"data,required"`
 	JSON v1CustomerGetResponseJSON `json:"-"`
 }
 
@@ -292,222 +398,8 @@ func (r v1CustomerGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CustomerGetResponseData struct {
-	// the Metronome ID of the customer
-	ID string `json:"id,required" format:"uuid"`
-	// RFC 3339 timestamp indicating when the customer was created.
-	CreatedAt      time.Time                               `json:"created_at,required" format:"date-time"`
-	CustomFields   map[string]string                       `json:"custom_fields,required"`
-	CustomerConfig V1CustomerGetResponseDataCustomerConfig `json:"customer_config,required"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string `json:"ingest_aliases,required"`
-	Name          string   `json:"name,required"`
-	// RFC 3339 timestamp indicating when the customer was archived. Null if the
-	// customer is active.
-	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
-	// This field's availability is dependent on your client's configuration.
-	CurrentBillableStatus V1CustomerGetResponseDataCurrentBillableStatus `json:"current_billable_status"`
-	JSON                  v1CustomerGetResponseDataJSON                  `json:"-"`
-}
-
-// v1CustomerGetResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerGetResponseData]
-type v1CustomerGetResponseDataJSON struct {
-	ID                    apijson.Field
-	CreatedAt             apijson.Field
-	CustomFields          apijson.Field
-	CustomerConfig        apijson.Field
-	ExternalID            apijson.Field
-	IngestAliases         apijson.Field
-	Name                  apijson.Field
-	ArchivedAt            apijson.Field
-	CurrentBillableStatus apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V1CustomerGetResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerGetResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerGetResponseDataCustomerConfig struct {
-	// The Salesforce account ID for the customer
-	SalesforceAccountID string                                      `json:"salesforce_account_id,required,nullable"`
-	JSON                v1CustomerGetResponseDataCustomerConfigJSON `json:"-"`
-}
-
-// v1CustomerGetResponseDataCustomerConfigJSON contains the JSON metadata for the
-// struct [V1CustomerGetResponseDataCustomerConfig]
-type v1CustomerGetResponseDataCustomerConfigJSON struct {
-	SalesforceAccountID apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1CustomerGetResponseDataCustomerConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerGetResponseDataCustomerConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// This field's availability is dependent on your client's configuration.
-type V1CustomerGetResponseDataCurrentBillableStatus struct {
-	Value       V1CustomerGetResponseDataCurrentBillableStatusValue `json:"value,required"`
-	EffectiveAt time.Time                                           `json:"effective_at,nullable" format:"date-time"`
-	JSON        v1CustomerGetResponseDataCurrentBillableStatusJSON  `json:"-"`
-}
-
-// v1CustomerGetResponseDataCurrentBillableStatusJSON contains the JSON metadata
-// for the struct [V1CustomerGetResponseDataCurrentBillableStatus]
-type v1CustomerGetResponseDataCurrentBillableStatusJSON struct {
-	Value       apijson.Field
-	EffectiveAt apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerGetResponseDataCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerGetResponseDataCurrentBillableStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerGetResponseDataCurrentBillableStatusValue string
-
-const (
-	V1CustomerGetResponseDataCurrentBillableStatusValueBillable   V1CustomerGetResponseDataCurrentBillableStatusValue = "billable"
-	V1CustomerGetResponseDataCurrentBillableStatusValueUnbillable V1CustomerGetResponseDataCurrentBillableStatusValue = "unbillable"
-)
-
-func (r V1CustomerGetResponseDataCurrentBillableStatusValue) IsKnown() bool {
-	switch r {
-	case V1CustomerGetResponseDataCurrentBillableStatusValueBillable, V1CustomerGetResponseDataCurrentBillableStatusValueUnbillable:
-		return true
-	}
-	return false
-}
-
-type V1CustomerListResponse struct {
-	// the Metronome ID of the customer
-	ID string `json:"id,required" format:"uuid"`
-	// RFC 3339 timestamp indicating when the customer was created.
-	CreatedAt      time.Time                            `json:"created_at,required" format:"date-time"`
-	CustomFields   map[string]string                    `json:"custom_fields,required"`
-	CustomerConfig V1CustomerListResponseCustomerConfig `json:"customer_config,required"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string `json:"ingest_aliases,required"`
-	Name          string   `json:"name,required"`
-	// RFC 3339 timestamp indicating when the customer was archived. Null if the
-	// customer is active.
-	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
-	// This field's availability is dependent on your client's configuration.
-	CurrentBillableStatus V1CustomerListResponseCurrentBillableStatus `json:"current_billable_status"`
-	JSON                  v1CustomerListResponseJSON                  `json:"-"`
-}
-
-// v1CustomerListResponseJSON contains the JSON metadata for the struct
-// [V1CustomerListResponse]
-type v1CustomerListResponseJSON struct {
-	ID                    apijson.Field
-	CreatedAt             apijson.Field
-	CustomFields          apijson.Field
-	CustomerConfig        apijson.Field
-	ExternalID            apijson.Field
-	IngestAliases         apijson.Field
-	Name                  apijson.Field
-	ArchivedAt            apijson.Field
-	CurrentBillableStatus apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V1CustomerListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerListResponseCustomerConfig struct {
-	// The Salesforce account ID for the customer
-	SalesforceAccountID string                                   `json:"salesforce_account_id,required,nullable"`
-	JSON                v1CustomerListResponseCustomerConfigJSON `json:"-"`
-}
-
-// v1CustomerListResponseCustomerConfigJSON contains the JSON metadata for the
-// struct [V1CustomerListResponseCustomerConfig]
-type v1CustomerListResponseCustomerConfigJSON struct {
-	SalesforceAccountID apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1CustomerListResponseCustomerConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListResponseCustomerConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// This field's availability is dependent on your client's configuration.
-type V1CustomerListResponseCurrentBillableStatus struct {
-	Value       V1CustomerListResponseCurrentBillableStatusValue `json:"value,required"`
-	EffectiveAt time.Time                                        `json:"effective_at,nullable" format:"date-time"`
-	JSON        v1CustomerListResponseCurrentBillableStatusJSON  `json:"-"`
-}
-
-// v1CustomerListResponseCurrentBillableStatusJSON contains the JSON metadata for
-// the struct [V1CustomerListResponseCurrentBillableStatus]
-type v1CustomerListResponseCurrentBillableStatusJSON struct {
-	Value       apijson.Field
-	EffectiveAt apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerListResponseCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListResponseCurrentBillableStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerListResponseCurrentBillableStatusValue string
-
-const (
-	V1CustomerListResponseCurrentBillableStatusValueBillable   V1CustomerListResponseCurrentBillableStatusValue = "billable"
-	V1CustomerListResponseCurrentBillableStatusValueUnbillable V1CustomerListResponseCurrentBillableStatusValue = "unbillable"
-)
-
-func (r V1CustomerListResponseCurrentBillableStatusValue) IsKnown() bool {
-	switch r {
-	case V1CustomerListResponseCurrentBillableStatusValueBillable, V1CustomerListResponseCurrentBillableStatusValueUnbillable:
-		return true
-	}
-	return false
-}
-
 type V1CustomerArchiveResponse struct {
-	Data V1CustomerArchiveResponseData `json:"data,required"`
+	Data shared.ID                     `json:"data,required"`
 	JSON v1CustomerArchiveResponseJSON `json:"-"`
 }
 
@@ -524,27 +416,6 @@ func (r *V1CustomerArchiveResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerArchiveResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerArchiveResponseData struct {
-	ID   string                            `json:"id,required" format:"uuid"`
-	JSON v1CustomerArchiveResponseDataJSON `json:"-"`
-}
-
-// v1CustomerArchiveResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerArchiveResponseData]
-type v1CustomerArchiveResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerArchiveResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerArchiveResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -566,7 +437,7 @@ type V1CustomerListBillableMetricsResponse struct {
 	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
 	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
-	EventTypeFilter V1CustomerListBillableMetricsResponseEventTypeFilter `json:"event_type_filter"`
+	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// (DEPRECATED) use property_filters & event_type_filter instead
 	Filter map[string]interface{} `json:"filter"`
 	// (DEPRECATED) use group_keys instead
@@ -577,7 +448,7 @@ type V1CustomerListBillableMetricsResponse struct {
 	// A list of filters to match events to this billable metric. Each filter defines a
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
-	PropertyFilters []V1CustomerListBillableMetricsResponsePropertyFilter `json:"property_filters"`
+	PropertyFilters []shared.PropertyFilter `json:"property_filters"`
 	// The SQL query associated with the billable metric
 	Sql  string                                    `json:"sql"`
 	JSON v1CustomerListBillableMetricsResponseJSON `json:"-"`
@@ -629,76 +500,6 @@ func (r V1CustomerListBillableMetricsResponseAggregationType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// An optional filtering rule to match the 'event_type' property of an event.
-type V1CustomerListBillableMetricsResponseEventTypeFilter struct {
-	// A list of event types that are explicitly included in the billable metric. If
-	// specified, only events of these types will match the billable metric. Must be
-	// non-empty if present.
-	InValues []string `json:"in_values"`
-	// A list of event types that are explicitly excluded from the billable metric. If
-	// specified, events of these types will not match the billable metric. Must be
-	// non-empty if present.
-	NotInValues []string                                                 `json:"not_in_values"`
-	JSON        v1CustomerListBillableMetricsResponseEventTypeFilterJSON `json:"-"`
-}
-
-// v1CustomerListBillableMetricsResponseEventTypeFilterJSON contains the JSON
-// metadata for the struct [V1CustomerListBillableMetricsResponseEventTypeFilter]
-type v1CustomerListBillableMetricsResponseEventTypeFilterJSON struct {
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerListBillableMetricsResponseEventTypeFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListBillableMetricsResponseEventTypeFilterJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerListBillableMetricsResponsePropertyFilter struct {
-	// The name of the event property.
-	Name string `json:"name,required"`
-	// Determines whether the property must exist in the event. If true, only events
-	// with this property will pass the filter. If false, only events without this
-	// property will pass the filter. If null or omitted, the existence of the property
-	// is optional.
-	Exists bool `json:"exists"`
-	// Specifies the allowed values for the property to match an event. An event will
-	// pass the filter only if its property value is included in this list. If
-	// undefined, all property values will pass the filter. Must be non-empty if
-	// present.
-	InValues []string `json:"in_values"`
-	// Specifies the values that prevent an event from matching the filter. An event
-	// will not pass the filter if its property value is included in this list. If null
-	// or empty, all property values will pass the filter. Must be non-empty if
-	// present.
-	NotInValues []string                                                `json:"not_in_values"`
-	JSON        v1CustomerListBillableMetricsResponsePropertyFilterJSON `json:"-"`
-}
-
-// v1CustomerListBillableMetricsResponsePropertyFilterJSON contains the JSON
-// metadata for the struct [V1CustomerListBillableMetricsResponsePropertyFilter]
-type v1CustomerListBillableMetricsResponsePropertyFilterJSON struct {
-	Name        apijson.Field
-	Exists      apijson.Field
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerListBillableMetricsResponsePropertyFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListBillableMetricsResponsePropertyFilterJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerListCostsResponse struct {
@@ -780,7 +581,7 @@ func (r v1CustomerListCostsResponseCreditTypesLineItemBreakdownJSON) RawJSON() s
 }
 
 type V1CustomerPreviewEventsResponse struct {
-	Data V1CustomerPreviewEventsResponseData `json:"data,required"`
+	Data Invoice                             `json:"data,required"`
 	JSON v1CustomerPreviewEventsResponseJSON `json:"-"`
 }
 
@@ -800,938 +601,8 @@ func (r v1CustomerPreviewEventsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CustomerPreviewEventsResponseData struct {
-	ID          string                                        `json:"id,required" format:"uuid"`
-	CreditType  V1CustomerPreviewEventsResponseDataCreditType `json:"credit_type,required"`
-	CustomerID  string                                        `json:"customer_id,required" format:"uuid"`
-	LineItems   []V1CustomerPreviewEventsResponseDataLineItem `json:"line_items,required"`
-	Status      string                                        `json:"status,required"`
-	Total       float64                                       `json:"total,required"`
-	Type        string                                        `json:"type,required"`
-	AmendmentID string                                        `json:"amendment_id" format:"uuid"`
-	// This field's availability is dependent on your client's configuration.
-	BillableStatus       V1CustomerPreviewEventsResponseDataBillableStatus   `json:"billable_status"`
-	ContractCustomFields map[string]string                                   `json:"contract_custom_fields"`
-	ContractID           string                                              `json:"contract_id" format:"uuid"`
-	CorrectionRecord     V1CustomerPreviewEventsResponseDataCorrectionRecord `json:"correction_record"`
-	// When the invoice was created (UTC). This field is present for correction
-	// invoices only.
-	CreatedAt            time.Time              `json:"created_at" format:"date-time"`
-	CustomFields         map[string]interface{} `json:"custom_fields"`
-	CustomerCustomFields map[string]string      `json:"customer_custom_fields"`
-	// End of the usage period this invoice covers (UTC)
-	EndTimestamp       time.Time                                              `json:"end_timestamp" format:"date-time"`
-	ExternalInvoice    V1CustomerPreviewEventsResponseDataExternalInvoice     `json:"external_invoice,nullable"`
-	InvoiceAdjustments []V1CustomerPreviewEventsResponseDataInvoiceAdjustment `json:"invoice_adjustments"`
-	// When the invoice was issued (UTC)
-	IssuedAt            time.Time `json:"issued_at" format:"date-time"`
-	NetPaymentTermsDays float64   `json:"net_payment_terms_days"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string            `json:"netsuite_sales_order_id"`
-	PlanCustomFields     map[string]string `json:"plan_custom_fields"`
-	PlanID               string            `json:"plan_id" format:"uuid"`
-	PlanName             string            `json:"plan_name"`
-	// Only present for contract invoices with reseller royalties.
-	ResellerRoyalty V1CustomerPreviewEventsResponseDataResellerRoyalty `json:"reseller_royalty"`
-	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
-	// Beginning of the usage period this invoice covers (UTC)
-	StartTimestamp time.Time                               `json:"start_timestamp" format:"date-time"`
-	Subtotal       float64                                 `json:"subtotal"`
-	JSON           v1CustomerPreviewEventsResponseDataJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataJSON contains the JSON metadata for the
-// struct [V1CustomerPreviewEventsResponseData]
-type v1CustomerPreviewEventsResponseDataJSON struct {
-	ID                      apijson.Field
-	CreditType              apijson.Field
-	CustomerID              apijson.Field
-	LineItems               apijson.Field
-	Status                  apijson.Field
-	Total                   apijson.Field
-	Type                    apijson.Field
-	AmendmentID             apijson.Field
-	BillableStatus          apijson.Field
-	ContractCustomFields    apijson.Field
-	ContractID              apijson.Field
-	CorrectionRecord        apijson.Field
-	CreatedAt               apijson.Field
-	CustomFields            apijson.Field
-	CustomerCustomFields    apijson.Field
-	EndTimestamp            apijson.Field
-	ExternalInvoice         apijson.Field
-	InvoiceAdjustments      apijson.Field
-	IssuedAt                apijson.Field
-	NetPaymentTermsDays     apijson.Field
-	NetsuiteSalesOrderID    apijson.Field
-	PlanCustomFields        apijson.Field
-	PlanID                  apijson.Field
-	PlanName                apijson.Field
-	ResellerRoyalty         apijson.Field
-	SalesforceOpportunityID apijson.Field
-	StartTimestamp          apijson.Field
-	Subtotal                apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataCreditType struct {
-	ID   string                                            `json:"id,required" format:"uuid"`
-	Name string                                            `json:"name,required"`
-	JSON v1CustomerPreviewEventsResponseDataCreditTypeJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataCreditTypeJSON contains the JSON metadata for
-// the struct [V1CustomerPreviewEventsResponseDataCreditType]
-type v1CustomerPreviewEventsResponseDataCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataLineItem struct {
-	CreditType V1CustomerPreviewEventsResponseDataLineItemsCreditType `json:"credit_type,required"`
-	Name       string                                                 `json:"name,required"`
-	Total      float64                                                `json:"total,required"`
-	// Details about the credit or commit that was applied to this line item. Only
-	// present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
-	// types.
-	AppliedCommitOrCredit V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCredit `json:"applied_commit_or_credit"`
-	CommitCustomFields    map[string]string                                                 `json:"commit_custom_fields"`
-	// For line items with product of `USAGE`, `SUBSCRIPTION`, or `COMPOSITE` types,
-	// the ID of the credit or commit that was applied to this line item. For line
-	// items with product type of `FIXED`, the ID of the prepaid or postpaid commit
-	// that is being paid for.
-	CommitID                   string `json:"commit_id" format:"uuid"`
-	CommitNetsuiteItemID       string `json:"commit_netsuite_item_id"`
-	CommitNetsuiteSalesOrderID string `json:"commit_netsuite_sales_order_id"`
-	CommitSegmentID            string `json:"commit_segment_id" format:"uuid"`
-	// `PrepaidCommit` (for commit types `PREPAID` and `CREDIT`) or `PostpaidCommit`
-	// (for commit type `POSTPAID`).
-	CommitType           string            `json:"commit_type"`
-	CustomFields         map[string]string `json:"custom_fields"`
-	DiscountCustomFields map[string]string `json:"discount_custom_fields"`
-	// ID of the discount applied to this line item.
-	DiscountID string `json:"discount_id" format:"uuid"`
-	// The line item's end date (exclusive).
-	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	GroupKey     string    `json:"group_key"`
-	GroupValue   string    `json:"group_value,nullable"`
-	// Indicates whether the line item is prorated for `SUBSCRIPTION` type product.
-	IsProrated bool `json:"is_prorated"`
-	// Only present for contract invoices and when the `include_list_prices` query
-	// parameter is set to true. This will include the list rate for the charge if
-	// applicable. Only present for usage and subscription line items.
-	ListPrice V1CustomerPreviewEventsResponseDataLineItemsListPrice `json:"list_price"`
-	Metadata  string                                                `json:"metadata"`
-	// The end date for the billing period on the invoice.
-	NetsuiteInvoiceBillingEnd time.Time `json:"netsuite_invoice_billing_end" format:"date-time"`
-	// The start date for the billing period on the invoice.
-	NetsuiteInvoiceBillingStart time.Time `json:"netsuite_invoice_billing_start" format:"date-time"`
-	NetsuiteItemID              string    `json:"netsuite_item_id"`
-	// Only present for line items paying for a postpaid commit true-up.
-	PostpaidCommit V1CustomerPreviewEventsResponseDataLineItemsPostpaidCommit `json:"postpaid_commit"`
-	// Includes the presentation group values associated with this line item if
-	// presentation group keys are used.
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	// Includes the pricing group values associated with this line item if dimensional
-	// pricing is used.
-	PricingGroupValues  map[string]string `json:"pricing_group_values"`
-	ProductCustomFields map[string]string `json:"product_custom_fields"`
-	// ID of the product associated with the line item.
-	ProductID string `json:"product_id" format:"uuid"`
-	// The current product tags associated with the line item's `product_id`.
-	ProductTags []string `json:"product_tags"`
-	// The type of the line item's product. Possible values are `FixedProductListItem`
-	// (for `FIXED` type products), `UsageProductListItem` (for `USAGE` type products),
-	// `SubscriptionProductListItem` (for `SUBSCRIPTION` type products) or
-	// `CompositeProductListItem` (for `COMPOSITE` type products). For scheduled
-	// charges, commit and credit payments, the value is `FixedProductListItem`.
-	ProductType                     string            `json:"product_type"`
-	ProfessionalServiceCustomFields map[string]string `json:"professional_service_custom_fields"`
-	ProfessionalServiceID           string            `json:"professional_service_id" format:"uuid"`
-	// The quantity associated with the line item.
-	Quantity                    float64                                                  `json:"quantity"`
-	ResellerType                V1CustomerPreviewEventsResponseDataLineItemsResellerType `json:"reseller_type"`
-	ScheduledChargeCustomFields map[string]string                                        `json:"scheduled_charge_custom_fields"`
-	// ID of scheduled charge.
-	ScheduledChargeID string `json:"scheduled_charge_id" format:"uuid"`
-	// The line item's start date (inclusive).
-	StartingAt               time.Time                                                 `json:"starting_at" format:"date-time"`
-	SubLineItems             []V1CustomerPreviewEventsResponseDataLineItemsSubLineItem `json:"sub_line_items"`
-	SubscriptionCustomFields map[string]string                                         `json:"subscription_custom_fields"`
-	// Populated if the line item has a tiered price.
-	Tier V1CustomerPreviewEventsResponseDataLineItemsTier `json:"tier"`
-	// The unit price associated with the line item.
-	UnitPrice float64                                         `json:"unit_price"`
-	JSON      v1CustomerPreviewEventsResponseDataLineItemJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemJSON contains the JSON metadata for
-// the struct [V1CustomerPreviewEventsResponseDataLineItem]
-type v1CustomerPreviewEventsResponseDataLineItemJSON struct {
-	CreditType                      apijson.Field
-	Name                            apijson.Field
-	Total                           apijson.Field
-	AppliedCommitOrCredit           apijson.Field
-	CommitCustomFields              apijson.Field
-	CommitID                        apijson.Field
-	CommitNetsuiteItemID            apijson.Field
-	CommitNetsuiteSalesOrderID      apijson.Field
-	CommitSegmentID                 apijson.Field
-	CommitType                      apijson.Field
-	CustomFields                    apijson.Field
-	DiscountCustomFields            apijson.Field
-	DiscountID                      apijson.Field
-	EndingBefore                    apijson.Field
-	GroupKey                        apijson.Field
-	GroupValue                      apijson.Field
-	IsProrated                      apijson.Field
-	ListPrice                       apijson.Field
-	Metadata                        apijson.Field
-	NetsuiteInvoiceBillingEnd       apijson.Field
-	NetsuiteInvoiceBillingStart     apijson.Field
-	NetsuiteItemID                  apijson.Field
-	PostpaidCommit                  apijson.Field
-	PresentationGroupValues         apijson.Field
-	PricingGroupValues              apijson.Field
-	ProductCustomFields             apijson.Field
-	ProductID                       apijson.Field
-	ProductTags                     apijson.Field
-	ProductType                     apijson.Field
-	ProfessionalServiceCustomFields apijson.Field
-	ProfessionalServiceID           apijson.Field
-	Quantity                        apijson.Field
-	ResellerType                    apijson.Field
-	ScheduledChargeCustomFields     apijson.Field
-	ScheduledChargeID               apijson.Field
-	StartingAt                      apijson.Field
-	SubLineItems                    apijson.Field
-	SubscriptionCustomFields        apijson.Field
-	Tier                            apijson.Field
-	UnitPrice                       apijson.Field
-	raw                             string
-	ExtraFields                     map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataLineItemsCreditType struct {
-	ID   string                                                     `json:"id,required" format:"uuid"`
-	Name string                                                     `json:"name,required"`
-	JSON v1CustomerPreviewEventsResponseDataLineItemsCreditTypeJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsCreditTypeJSON contains the JSON
-// metadata for the struct [V1CustomerPreviewEventsResponseDataLineItemsCreditType]
-type v1CustomerPreviewEventsResponseDataLineItemsCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-// Details about the credit or commit that was applied to this line item. Only
-// present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
-// types.
-type V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCredit struct {
-	ID   string                                                                `json:"id,required" format:"uuid"`
-	Type V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditType `json:"type,required"`
-	JSON v1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditJSON contains
-// the JSON metadata for the struct
-// [V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCredit]
-type v1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditJSON struct {
-	ID          apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCredit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditType string
-
-const (
-	V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditTypePrepaid  V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditType = "PREPAID"
-	V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditTypePostpaid V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditType = "POSTPAID"
-	V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditTypeCredit   V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditType = "CREDIT"
-)
-
-func (r V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditType) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditTypePrepaid, V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditTypePostpaid, V1CustomerPreviewEventsResponseDataLineItemsAppliedCommitOrCreditTypeCredit:
-		return true
-	}
-	return false
-}
-
-// Only present for contract invoices and when the `include_list_prices` query
-// parameter is set to true. This will include the list rate for the charge if
-// applicable. Only present for usage and subscription line items.
-type V1CustomerPreviewEventsResponseDataLineItemsListPrice struct {
-	RateType   V1CustomerPreviewEventsResponseDataLineItemsListPriceRateType   `json:"rate_type,required"`
-	CreditType V1CustomerPreviewEventsResponseDataLineItemsListPriceCreditType `json:"credit_type"`
-	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
-	// processors.
-	CustomRate map[string]interface{} `json:"custom_rate"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
-	// set to true.
-	IsProrated bool `json:"is_prorated"`
-	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
-	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-	Price float64 `json:"price"`
-	// if pricing groups are used, this will contain the values used to calculate the
-	// price
-	PricingGroupValues map[string]string `json:"pricing_group_values"`
-	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-	Quantity float64 `json:"quantity"`
-	// Only set for TIERED rate_type.
-	Tiers []V1CustomerPreviewEventsResponseDataLineItemsListPriceTier `json:"tiers"`
-	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
-	// using list prices rather than the standard rates for this product on the
-	// contract.
-	UseListPrices bool                                                      `json:"use_list_prices"`
-	JSON          v1CustomerPreviewEventsResponseDataLineItemsListPriceJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsListPriceJSON contains the JSON
-// metadata for the struct [V1CustomerPreviewEventsResponseDataLineItemsListPrice]
-type v1CustomerPreviewEventsResponseDataLineItemsListPriceJSON struct {
-	RateType           apijson.Field
-	CreditType         apijson.Field
-	CustomRate         apijson.Field
-	IsProrated         apijson.Field
-	Price              apijson.Field
-	PricingGroupValues apijson.Field
-	Quantity           apijson.Field
-	Tiers              apijson.Field
-	UseListPrices      apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsListPrice) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsListPriceJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataLineItemsListPriceRateType string
-
-const (
-	V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypeFlat         V1CustomerPreviewEventsResponseDataLineItemsListPriceRateType = "FLAT"
-	V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypePercentage   V1CustomerPreviewEventsResponseDataLineItemsListPriceRateType = "PERCENTAGE"
-	V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypeSubscription V1CustomerPreviewEventsResponseDataLineItemsListPriceRateType = "SUBSCRIPTION"
-	V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypeCustom       V1CustomerPreviewEventsResponseDataLineItemsListPriceRateType = "CUSTOM"
-	V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypeTiered       V1CustomerPreviewEventsResponseDataLineItemsListPriceRateType = "TIERED"
-)
-
-func (r V1CustomerPreviewEventsResponseDataLineItemsListPriceRateType) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypeFlat, V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypePercentage, V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypeSubscription, V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypeCustom, V1CustomerPreviewEventsResponseDataLineItemsListPriceRateTypeTiered:
-		return true
-	}
-	return false
-}
-
-type V1CustomerPreviewEventsResponseDataLineItemsListPriceCreditType struct {
-	ID   string                                                              `json:"id,required" format:"uuid"`
-	Name string                                                              `json:"name,required"`
-	JSON v1CustomerPreviewEventsResponseDataLineItemsListPriceCreditTypeJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsListPriceCreditTypeJSON contains the
-// JSON metadata for the struct
-// [V1CustomerPreviewEventsResponseDataLineItemsListPriceCreditType]
-type v1CustomerPreviewEventsResponseDataLineItemsListPriceCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsListPriceCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsListPriceCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataLineItemsListPriceTier struct {
-	Price float64                                                       `json:"price,required"`
-	Size  float64                                                       `json:"size"`
-	JSON  v1CustomerPreviewEventsResponseDataLineItemsListPriceTierJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsListPriceTierJSON contains the JSON
-// metadata for the struct
-// [V1CustomerPreviewEventsResponseDataLineItemsListPriceTier]
-type v1CustomerPreviewEventsResponseDataLineItemsListPriceTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsListPriceTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsListPriceTierJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only present for line items paying for a postpaid commit true-up.
-type V1CustomerPreviewEventsResponseDataLineItemsPostpaidCommit struct {
-	ID   string                                                         `json:"id,required" format:"uuid"`
-	JSON v1CustomerPreviewEventsResponseDataLineItemsPostpaidCommitJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsPostpaidCommitJSON contains the JSON
-// metadata for the struct
-// [V1CustomerPreviewEventsResponseDataLineItemsPostpaidCommit]
-type v1CustomerPreviewEventsResponseDataLineItemsPostpaidCommitJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsPostpaidCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsPostpaidCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataLineItemsResellerType string
-
-const (
-	V1CustomerPreviewEventsResponseDataLineItemsResellerTypeAws           V1CustomerPreviewEventsResponseDataLineItemsResellerType = "AWS"
-	V1CustomerPreviewEventsResponseDataLineItemsResellerTypeAwsProService V1CustomerPreviewEventsResponseDataLineItemsResellerType = "AWS_PRO_SERVICE"
-	V1CustomerPreviewEventsResponseDataLineItemsResellerTypeGcp           V1CustomerPreviewEventsResponseDataLineItemsResellerType = "GCP"
-	V1CustomerPreviewEventsResponseDataLineItemsResellerTypeGcpProService V1CustomerPreviewEventsResponseDataLineItemsResellerType = "GCP_PRO_SERVICE"
-)
-
-func (r V1CustomerPreviewEventsResponseDataLineItemsResellerType) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataLineItemsResellerTypeAws, V1CustomerPreviewEventsResponseDataLineItemsResellerTypeAwsProService, V1CustomerPreviewEventsResponseDataLineItemsResellerTypeGcp, V1CustomerPreviewEventsResponseDataLineItemsResellerTypeGcpProService:
-		return true
-	}
-	return false
-}
-
-type V1CustomerPreviewEventsResponseDataLineItemsSubLineItem struct {
-	CustomFields  map[string]string `json:"custom_fields,required"`
-	Name          string            `json:"name,required"`
-	Quantity      float64           `json:"quantity,required"`
-	Subtotal      float64           `json:"subtotal,required"`
-	ChargeID      string            `json:"charge_id" format:"uuid"`
-	CreditGrantID string            `json:"credit_grant_id" format:"uuid"`
-	// The end date for the charge (for seats charges only).
-	EndDate time.Time `json:"end_date" format:"date-time"`
-	// the unit price for this charge, present only if the charge is not tiered and the
-	// quantity is nonzero
-	Price float64 `json:"price"`
-	// The start date for the charge (for seats charges only).
-	StartDate time.Time `json:"start_date" format:"date-time"`
-	// when the current tier started and ends (for tiered charges only)
-	TierPeriod V1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierPeriod `json:"tier_period"`
-	Tiers      []V1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTier     `json:"tiers"`
-	JSON       v1CustomerPreviewEventsResponseDataLineItemsSubLineItemJSON        `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsSubLineItemJSON contains the JSON
-// metadata for the struct
-// [V1CustomerPreviewEventsResponseDataLineItemsSubLineItem]
-type v1CustomerPreviewEventsResponseDataLineItemsSubLineItemJSON struct {
-	CustomFields  apijson.Field
-	Name          apijson.Field
-	Quantity      apijson.Field
-	Subtotal      apijson.Field
-	ChargeID      apijson.Field
-	CreditGrantID apijson.Field
-	EndDate       apijson.Field
-	Price         apijson.Field
-	StartDate     apijson.Field
-	TierPeriod    apijson.Field
-	Tiers         apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsSubLineItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsSubLineItemJSON) RawJSON() string {
-	return r.raw
-}
-
-// when the current tier started and ends (for tiered charges only)
-type V1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierPeriod struct {
-	StartingAt   time.Time                                                              `json:"starting_at,required" format:"date-time"`
-	EndingBefore time.Time                                                              `json:"ending_before" format:"date-time"`
-	JSON         v1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierPeriodJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierPeriodJSON contains
-// the JSON metadata for the struct
-// [V1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierPeriod]
-type v1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierPeriodJSON struct {
-	StartingAt   apijson.Field
-	EndingBefore apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierPeriod) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierPeriodJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTier struct {
-	Price    float64 `json:"price,required"`
-	Quantity float64 `json:"quantity,required"`
-	// at what metric amount this tier begins
-	StartingAt float64                                                          `json:"starting_at,required"`
-	Subtotal   float64                                                          `json:"subtotal,required"`
-	JSON       v1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierJSON contains the
-// JSON metadata for the struct
-// [V1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTier]
-type v1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierJSON struct {
-	Price       apijson.Field
-	Quantity    apijson.Field
-	StartingAt  apijson.Field
-	Subtotal    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsSubLineItemsTierJSON) RawJSON() string {
-	return r.raw
-}
-
-// Populated if the line item has a tiered price.
-type V1CustomerPreviewEventsResponseDataLineItemsTier struct {
-	Level      float64                                              `json:"level,required"`
-	StartingAt string                                               `json:"starting_at,required"`
-	Size       string                                               `json:"size,nullable"`
-	JSON       v1CustomerPreviewEventsResponseDataLineItemsTierJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataLineItemsTierJSON contains the JSON metadata
-// for the struct [V1CustomerPreviewEventsResponseDataLineItemsTier]
-type v1CustomerPreviewEventsResponseDataLineItemsTierJSON struct {
-	Level       apijson.Field
-	StartingAt  apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataLineItemsTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataLineItemsTierJSON) RawJSON() string {
-	return r.raw
-}
-
-// This field's availability is dependent on your client's configuration.
-type V1CustomerPreviewEventsResponseDataBillableStatus string
-
-const (
-	V1CustomerPreviewEventsResponseDataBillableStatusBillable   V1CustomerPreviewEventsResponseDataBillableStatus = "billable"
-	V1CustomerPreviewEventsResponseDataBillableStatusUnbillable V1CustomerPreviewEventsResponseDataBillableStatus = "unbillable"
-)
-
-func (r V1CustomerPreviewEventsResponseDataBillableStatus) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataBillableStatusBillable, V1CustomerPreviewEventsResponseDataBillableStatusUnbillable:
-		return true
-	}
-	return false
-}
-
-type V1CustomerPreviewEventsResponseDataCorrectionRecord struct {
-	CorrectedInvoiceID       string                                                                      `json:"corrected_invoice_id,required" format:"uuid"`
-	Memo                     string                                                                      `json:"memo,required"`
-	Reason                   string                                                                      `json:"reason,required"`
-	CorrectedExternalInvoice V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoice `json:"corrected_external_invoice"`
-	JSON                     v1CustomerPreviewEventsResponseDataCorrectionRecordJSON                     `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataCorrectionRecordJSON contains the JSON
-// metadata for the struct [V1CustomerPreviewEventsResponseDataCorrectionRecord]
-type v1CustomerPreviewEventsResponseDataCorrectionRecordJSON struct {
-	CorrectedInvoiceID       apijson.Field
-	Memo                     apijson.Field
-	Reason                   apijson.Field
-	CorrectedExternalInvoice apijson.Field
-	raw                      string
-	ExtraFields              map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataCorrectionRecord) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataCorrectionRecordJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoice struct {
-	BillingProviderType V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType `json:"billing_provider_type,required"`
-	ExternalStatus      V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus      `json:"external_status"`
-	InvoiceID           string                                                                                         `json:"invoice_id"`
-	IssuedAtTimestamp   time.Time                                                                                      `json:"issued_at_timestamp" format:"date-time"`
-	JSON                v1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceJSON                `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceJSON
-// contains the JSON metadata for the struct
-// [V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoice]
-type v1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceJSON struct {
-	BillingProviderType apijson.Field
-	ExternalStatus      apijson.Field
-	InvoiceID           apijson.Field
-	IssuedAtTimestamp   apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoice) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType string
-
-const (
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeAwsMarketplace   V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType = "aws_marketplace"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeStripe           V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType = "stripe"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeNetsuite         V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType = "netsuite"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeCustom           V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType = "custom"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeAzureMarketplace V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType = "azure_marketplace"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeQuickbooksOnline V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType = "quickbooks_online"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeWorkday          V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType = "workday"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeGcpMarketplace   V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType = "gcp_marketplace"
-)
-
-func (r V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderType) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeAwsMarketplace, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeStripe, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeNetsuite, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeCustom, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeAzureMarketplace, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeQuickbooksOnline, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeWorkday, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceBillingProviderTypeGcpMarketplace:
-		return true
-	}
-	return false
-}
-
-type V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus string
-
-const (
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusDraft               V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "DRAFT"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusFinalized           V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "FINALIZED"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusPaid                V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "PAID"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusUncollectible       V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "UNCOLLECTIBLE"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusVoid                V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "VOID"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusDeleted             V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "DELETED"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusPaymentFailed       V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "PAYMENT_FAILED"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusInvalidRequestError V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "INVALID_REQUEST_ERROR"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusSkipped             V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "SKIPPED"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusSent                V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "SENT"
-	V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusQueued              V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus = "QUEUED"
-)
-
-func (r V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatus) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusDraft, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusFinalized, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusPaid, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusUncollectible, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusVoid, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusDeleted, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusPaymentFailed, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusInvalidRequestError, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusSkipped, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusSent, V1CustomerPreviewEventsResponseDataCorrectionRecordCorrectedExternalInvoiceExternalStatusQueued:
-		return true
-	}
-	return false
-}
-
-type V1CustomerPreviewEventsResponseDataExternalInvoice struct {
-	BillingProviderType V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType `json:"billing_provider_type,required"`
-	ExternalStatus      V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus      `json:"external_status"`
-	InvoiceID           string                                                                `json:"invoice_id"`
-	IssuedAtTimestamp   time.Time                                                             `json:"issued_at_timestamp" format:"date-time"`
-	JSON                v1CustomerPreviewEventsResponseDataExternalInvoiceJSON                `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataExternalInvoiceJSON contains the JSON
-// metadata for the struct [V1CustomerPreviewEventsResponseDataExternalInvoice]
-type v1CustomerPreviewEventsResponseDataExternalInvoiceJSON struct {
-	BillingProviderType apijson.Field
-	ExternalStatus      apijson.Field
-	InvoiceID           apijson.Field
-	IssuedAtTimestamp   apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataExternalInvoice) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataExternalInvoiceJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType string
-
-const (
-	V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeAwsMarketplace   V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType = "aws_marketplace"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeStripe           V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType = "stripe"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeNetsuite         V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType = "netsuite"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeCustom           V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType = "custom"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeAzureMarketplace V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType = "azure_marketplace"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeQuickbooksOnline V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType = "quickbooks_online"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeWorkday          V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType = "workday"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeGcpMarketplace   V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType = "gcp_marketplace"
-)
-
-func (r V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderType) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeAwsMarketplace, V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeStripe, V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeNetsuite, V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeCustom, V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeAzureMarketplace, V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeQuickbooksOnline, V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeWorkday, V1CustomerPreviewEventsResponseDataExternalInvoiceBillingProviderTypeGcpMarketplace:
-		return true
-	}
-	return false
-}
-
-type V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus string
-
-const (
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusDraft               V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "DRAFT"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusFinalized           V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "FINALIZED"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusPaid                V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "PAID"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusUncollectible       V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "UNCOLLECTIBLE"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusVoid                V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "VOID"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusDeleted             V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "DELETED"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusPaymentFailed       V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "PAYMENT_FAILED"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusInvalidRequestError V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "INVALID_REQUEST_ERROR"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusSkipped             V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "SKIPPED"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusSent                V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "SENT"
-	V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusQueued              V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus = "QUEUED"
-)
-
-func (r V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatus) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusDraft, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusFinalized, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusPaid, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusUncollectible, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusVoid, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusDeleted, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusPaymentFailed, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusInvalidRequestError, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusSkipped, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusSent, V1CustomerPreviewEventsResponseDataExternalInvoiceExternalStatusQueued:
-		return true
-	}
-	return false
-}
-
-type V1CustomerPreviewEventsResponseDataInvoiceAdjustment struct {
-	CreditType              V1CustomerPreviewEventsResponseDataInvoiceAdjustmentsCreditType `json:"credit_type,required"`
-	Name                    string                                                          `json:"name,required"`
-	Total                   float64                                                         `json:"total,required"`
-	CreditGrantCustomFields map[string]string                                               `json:"credit_grant_custom_fields"`
-	CreditGrantID           string                                                          `json:"credit_grant_id"`
-	JSON                    v1CustomerPreviewEventsResponseDataInvoiceAdjustmentJSON        `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataInvoiceAdjustmentJSON contains the JSON
-// metadata for the struct [V1CustomerPreviewEventsResponseDataInvoiceAdjustment]
-type v1CustomerPreviewEventsResponseDataInvoiceAdjustmentJSON struct {
-	CreditType              apijson.Field
-	Name                    apijson.Field
-	Total                   apijson.Field
-	CreditGrantCustomFields apijson.Field
-	CreditGrantID           apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataInvoiceAdjustment) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataInvoiceAdjustmentJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataInvoiceAdjustmentsCreditType struct {
-	ID   string                                                              `json:"id,required" format:"uuid"`
-	Name string                                                              `json:"name,required"`
-	JSON v1CustomerPreviewEventsResponseDataInvoiceAdjustmentsCreditTypeJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataInvoiceAdjustmentsCreditTypeJSON contains the
-// JSON metadata for the struct
-// [V1CustomerPreviewEventsResponseDataInvoiceAdjustmentsCreditType]
-type v1CustomerPreviewEventsResponseDataInvoiceAdjustmentsCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataInvoiceAdjustmentsCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataInvoiceAdjustmentsCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only present for contract invoices with reseller royalties.
-type V1CustomerPreviewEventsResponseDataResellerRoyalty struct {
-	Fraction           string                                                         `json:"fraction,required"`
-	NetsuiteResellerID string                                                         `json:"netsuite_reseller_id,required"`
-	ResellerType       V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerType `json:"reseller_type,required"`
-	AwsOptions         V1CustomerPreviewEventsResponseDataResellerRoyaltyAwsOptions   `json:"aws_options"`
-	GcpOptions         V1CustomerPreviewEventsResponseDataResellerRoyaltyGcpOptions   `json:"gcp_options"`
-	JSON               v1CustomerPreviewEventsResponseDataResellerRoyaltyJSON         `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataResellerRoyaltyJSON contains the JSON
-// metadata for the struct [V1CustomerPreviewEventsResponseDataResellerRoyalty]
-type v1CustomerPreviewEventsResponseDataResellerRoyaltyJSON struct {
-	Fraction           apijson.Field
-	NetsuiteResellerID apijson.Field
-	ResellerType       apijson.Field
-	AwsOptions         apijson.Field
-	GcpOptions         apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataResellerRoyalty) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataResellerRoyaltyJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerType string
-
-const (
-	V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerTypeAws           V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerType = "AWS"
-	V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerTypeAwsProService V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerType = "AWS_PRO_SERVICE"
-	V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerTypeGcp           V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerType = "GCP"
-	V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerTypeGcpProService V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerType = "GCP_PRO_SERVICE"
-)
-
-func (r V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerType) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerTypeAws, V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerTypeAwsProService, V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerTypeGcp, V1CustomerPreviewEventsResponseDataResellerRoyaltyResellerTypeGcpProService:
-		return true
-	}
-	return false
-}
-
-type V1CustomerPreviewEventsResponseDataResellerRoyaltyAwsOptions struct {
-	AwsAccountNumber    string                                                           `json:"aws_account_number"`
-	AwsOfferID          string                                                           `json:"aws_offer_id"`
-	AwsPayerReferenceID string                                                           `json:"aws_payer_reference_id"`
-	JSON                v1CustomerPreviewEventsResponseDataResellerRoyaltyAwsOptionsJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataResellerRoyaltyAwsOptionsJSON contains the
-// JSON metadata for the struct
-// [V1CustomerPreviewEventsResponseDataResellerRoyaltyAwsOptions]
-type v1CustomerPreviewEventsResponseDataResellerRoyaltyAwsOptionsJSON struct {
-	AwsAccountNumber    apijson.Field
-	AwsOfferID          apijson.Field
-	AwsPayerReferenceID apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataResellerRoyaltyAwsOptions) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataResellerRoyaltyAwsOptionsJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerPreviewEventsResponseDataResellerRoyaltyGcpOptions struct {
-	GcpAccountID string                                                           `json:"gcp_account_id"`
-	GcpOfferID   string                                                           `json:"gcp_offer_id"`
-	JSON         v1CustomerPreviewEventsResponseDataResellerRoyaltyGcpOptionsJSON `json:"-"`
-}
-
-// v1CustomerPreviewEventsResponseDataResellerRoyaltyGcpOptionsJSON contains the
-// JSON metadata for the struct
-// [V1CustomerPreviewEventsResponseDataResellerRoyaltyGcpOptions]
-type v1CustomerPreviewEventsResponseDataResellerRoyaltyGcpOptionsJSON struct {
-	GcpAccountID apijson.Field
-	GcpOfferID   apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponseDataResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerPreviewEventsResponseDataResellerRoyaltyGcpOptionsJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1CustomerSetNameResponse struct {
-	Data V1CustomerSetNameResponseData `json:"data,required"`
+	Data Customer                      `json:"data,required"`
 	JSON v1CustomerSetNameResponseJSON `json:"-"`
 }
 
@@ -1748,40 +619,6 @@ func (r *V1CustomerSetNameResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerSetNameResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerSetNameResponseData struct {
-	// the Metronome ID of the customer
-	ID string `json:"id,required" format:"uuid"`
-	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
-	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
-	// aliases for this customer that can be used instead of the Metronome customer ID
-	// in usage events
-	IngestAliases []string                          `json:"ingest_aliases,required"`
-	Name          string                            `json:"name,required"`
-	CustomFields  map[string]string                 `json:"custom_fields"`
-	JSON          v1CustomerSetNameResponseDataJSON `json:"-"`
-}
-
-// v1CustomerSetNameResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerSetNameResponseData]
-type v1CustomerSetNameResponseDataJSON struct {
-	ID            apijson.Field
-	ExternalID    apijson.Field
-	IngestAliases apijson.Field
-	Name          apijson.Field
-	CustomFields  apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *V1CustomerSetNameResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerSetNameResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1978,11 +815,11 @@ func (r V1CustomerListParams) URLQuery() (v url.Values) {
 }
 
 type V1CustomerArchiveParams struct {
-	ID param.Field[string] `json:"id,required" format:"uuid"`
+	ID shared.IDParam `json:"id,required"`
 }
 
 func (r V1CustomerArchiveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.ID)
 }
 
 type V1CustomerListBillableMetricsParams struct {
