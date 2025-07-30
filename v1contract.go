@@ -3926,6 +3926,8 @@ type V1ContractNewParamsRecurringCommit struct {
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	Specifiers param.Field[[]V1ContractNewParamsRecurringCommitsSpecifier] `json:"specifiers"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig param.Field[V1ContractNewParamsRecurringCommitsSubscriptionConfig] `json:"subscription_config"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -4178,6 +4180,43 @@ func (r V1ContractNewParamsRecurringCommitsSpecifier) MarshalJSON() (data []byte
 	return apijson.MarshalRoot(r)
 }
 
+// Attach a subscription to the recurring commit/credit.
+type V1ContractNewParamsRecurringCommitsSubscriptionConfig struct {
+	ApplySeatIncreaseConfig param.Field[V1ContractNewParamsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig] `json:"apply_seat_increase_config,required"`
+	// ID of the subscription to configure on the recurring commit/credit.
+	SubscriptionID param.Field[string] `json:"subscription_id,required"`
+	// If set to POOLED, allocation added per seat is pooled across the account.
+	Allocation param.Field[V1ContractNewParamsRecurringCommitsSubscriptionConfigAllocation] `json:"allocation"`
+}
+
+func (r V1ContractNewParamsRecurringCommitsSubscriptionConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated param.Field[bool] `json:"is_prorated,required"`
+}
+
+func (r V1ContractNewParamsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If set to POOLED, allocation added per seat is pooled across the account.
+type V1ContractNewParamsRecurringCommitsSubscriptionConfigAllocation string
+
+const (
+	V1ContractNewParamsRecurringCommitsSubscriptionConfigAllocationPooled V1ContractNewParamsRecurringCommitsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V1ContractNewParamsRecurringCommitsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsRecurringCommitsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
 type V1ContractNewParamsRecurringCredit struct {
 	// The amount of commit to grant.
 	AccessAmount param.Field[V1ContractNewParamsRecurringCreditsAccessAmount] `json:"access_amount,required"`
@@ -4224,6 +4263,8 @@ type V1ContractNewParamsRecurringCredit struct {
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	Specifiers param.Field[[]V1ContractNewParamsRecurringCreditsSpecifier] `json:"specifiers"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig param.Field[V1ContractNewParamsRecurringCreditsSubscriptionConfig] `json:"subscription_config"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -4463,6 +4504,43 @@ type V1ContractNewParamsRecurringCreditsSpecifier struct {
 
 func (r V1ContractNewParamsRecurringCreditsSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Attach a subscription to the recurring commit/credit.
+type V1ContractNewParamsRecurringCreditsSubscriptionConfig struct {
+	ApplySeatIncreaseConfig param.Field[V1ContractNewParamsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig] `json:"apply_seat_increase_config,required"`
+	// ID of the subscription to configure on the recurring commit/credit.
+	SubscriptionID param.Field[string] `json:"subscription_id,required"`
+	// If set to POOLED, allocation added per seat is pooled across the account.
+	Allocation param.Field[V1ContractNewParamsRecurringCreditsSubscriptionConfigAllocation] `json:"allocation"`
+}
+
+func (r V1ContractNewParamsRecurringCreditsSubscriptionConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1ContractNewParamsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated param.Field[bool] `json:"is_prorated,required"`
+}
+
+func (r V1ContractNewParamsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If set to POOLED, allocation added per seat is pooled across the account.
+type V1ContractNewParamsRecurringCreditsSubscriptionConfigAllocation string
+
+const (
+	V1ContractNewParamsRecurringCreditsSubscriptionConfigAllocationPooled V1ContractNewParamsRecurringCreditsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V1ContractNewParamsRecurringCreditsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V1ContractNewParamsRecurringCreditsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
 }
 
 type V1ContractNewParamsResellerRoyalty struct {
@@ -4799,6 +4877,9 @@ type V1ContractNewParamsSubscription struct {
 	// Inclusive start time for the subscription. If not provided, defaults to contract
 	// start date
 	StartingAt param.Field[time.Time] `json:"starting_at" format:"date-time"`
+	// A temporary ID used to reference the subscription in recurring commit/credit
+	// subscription configs created within the same payload.
+	TemporaryID param.Field[string] `json:"temporary_id"`
 }
 
 func (r V1ContractNewParamsSubscription) MarshalJSON() (data []byte, err error) {
