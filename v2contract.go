@@ -3278,7 +3278,9 @@ type V2ContractGetResponseDataRecurringCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []V2ContractGetResponseDataRecurringCommitsSpecifier `json:"specifiers"`
-	JSON       v2ContractGetResponseDataRecurringCommitJSON         `json:"-"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig V2ContractGetResponseDataRecurringCommitsSubscriptionConfig `json:"subscription_config"`
+	JSON               v2ContractGetResponseDataRecurringCommitJSON                `json:"-"`
 }
 
 // v2ContractGetResponseDataRecurringCommitJSON contains the JSON metadata for the
@@ -3304,6 +3306,7 @@ type v2ContractGetResponseDataRecurringCommitJSON struct {
 	RecurrenceFrequency    apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
+	SubscriptionConfig     apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -3767,6 +3770,71 @@ func (r v2ContractGetResponseDataRecurringCommitsSpecifierJSON) RawJSON() string
 	return r.raw
 }
 
+// Attach a subscription to the recurring commit/credit.
+type V2ContractGetResponseDataRecurringCommitsSubscriptionConfig struct {
+	Allocation              V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocation              `json:"allocation,required"`
+	ApplySeatIncreaseConfig V2ContractGetResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
+	SubscriptionID          string                                                                             `json:"subscription_id,required" format:"uuid"`
+	JSON                    v2ContractGetResponseDataRecurringCommitsSubscriptionConfigJSON                    `json:"-"`
+}
+
+// v2ContractGetResponseDataRecurringCommitsSubscriptionConfigJSON contains the
+// JSON metadata for the struct
+// [V2ContractGetResponseDataRecurringCommitsSubscriptionConfig]
+type v2ContractGetResponseDataRecurringCommitsSubscriptionConfigJSON struct {
+	Allocation              apijson.Field
+	ApplySeatIncreaseConfig apijson.Field
+	SubscriptionID          apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataRecurringCommitsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataRecurringCommitsSubscriptionConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocation string
+
+const (
+	V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocationIndividual V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocation = "INDIVIDUAL"
+	V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocationPooled     V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocationIndividual, V2ContractGetResponseDataRecurringCommitsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool                                                                                   `json:"is_prorated,required"`
+	JSON       v2ContractGetResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig]
+type v2ContractGetResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
+	IsProrated  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetResponseDataRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -3812,7 +3880,9 @@ type V2ContractGetResponseDataRecurringCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []V2ContractGetResponseDataRecurringCreditsSpecifier `json:"specifiers"`
-	JSON       v2ContractGetResponseDataRecurringCreditJSON         `json:"-"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig V2ContractGetResponseDataRecurringCreditsSubscriptionConfig `json:"subscription_config"`
+	JSON               v2ContractGetResponseDataRecurringCreditJSON                `json:"-"`
 }
 
 // v2ContractGetResponseDataRecurringCreditJSON contains the JSON metadata for the
@@ -3837,6 +3907,7 @@ type v2ContractGetResponseDataRecurringCreditJSON struct {
 	RecurrenceFrequency    apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
+	SubscriptionConfig     apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -4271,6 +4342,71 @@ func (r *V2ContractGetResponseDataRecurringCreditsSpecifier) UnmarshalJSON(data 
 }
 
 func (r v2ContractGetResponseDataRecurringCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
+// Attach a subscription to the recurring commit/credit.
+type V2ContractGetResponseDataRecurringCreditsSubscriptionConfig struct {
+	Allocation              V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocation              `json:"allocation,required"`
+	ApplySeatIncreaseConfig V2ContractGetResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
+	SubscriptionID          string                                                                             `json:"subscription_id,required" format:"uuid"`
+	JSON                    v2ContractGetResponseDataRecurringCreditsSubscriptionConfigJSON                    `json:"-"`
+}
+
+// v2ContractGetResponseDataRecurringCreditsSubscriptionConfigJSON contains the
+// JSON metadata for the struct
+// [V2ContractGetResponseDataRecurringCreditsSubscriptionConfig]
+type v2ContractGetResponseDataRecurringCreditsSubscriptionConfigJSON struct {
+	Allocation              apijson.Field
+	ApplySeatIncreaseConfig apijson.Field
+	SubscriptionID          apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataRecurringCreditsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataRecurringCreditsSubscriptionConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocation string
+
+const (
+	V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocationIndividual V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocation = "INDIVIDUAL"
+	V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocationPooled     V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocationIndividual, V2ContractGetResponseDataRecurringCreditsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool                                                                                   `json:"is_prorated,required"`
+	JSON       v2ContractGetResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
+}
+
+// v2ContractGetResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig]
+type v2ContractGetResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
+	IsProrated  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -7985,7 +8121,9 @@ type V2ContractListResponseDataRecurringCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []V2ContractListResponseDataRecurringCommitsSpecifier `json:"specifiers"`
-	JSON       v2ContractListResponseDataRecurringCommitJSON         `json:"-"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig V2ContractListResponseDataRecurringCommitsSubscriptionConfig `json:"subscription_config"`
+	JSON               v2ContractListResponseDataRecurringCommitJSON                `json:"-"`
 }
 
 // v2ContractListResponseDataRecurringCommitJSON contains the JSON metadata for the
@@ -8011,6 +8149,7 @@ type v2ContractListResponseDataRecurringCommitJSON struct {
 	RecurrenceFrequency    apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
+	SubscriptionConfig     apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -8475,6 +8614,71 @@ func (r v2ContractListResponseDataRecurringCommitsSpecifierJSON) RawJSON() strin
 	return r.raw
 }
 
+// Attach a subscription to the recurring commit/credit.
+type V2ContractListResponseDataRecurringCommitsSubscriptionConfig struct {
+	Allocation              V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocation              `json:"allocation,required"`
+	ApplySeatIncreaseConfig V2ContractListResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
+	SubscriptionID          string                                                                              `json:"subscription_id,required" format:"uuid"`
+	JSON                    v2ContractListResponseDataRecurringCommitsSubscriptionConfigJSON                    `json:"-"`
+}
+
+// v2ContractListResponseDataRecurringCommitsSubscriptionConfigJSON contains the
+// JSON metadata for the struct
+// [V2ContractListResponseDataRecurringCommitsSubscriptionConfig]
+type v2ContractListResponseDataRecurringCommitsSubscriptionConfigJSON struct {
+	Allocation              apijson.Field
+	ApplySeatIncreaseConfig apijson.Field
+	SubscriptionID          apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataRecurringCommitsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataRecurringCommitsSubscriptionConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocation string
+
+const (
+	V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocationIndividual V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocation = "INDIVIDUAL"
+	V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocationPooled     V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocationIndividual, V2ContractListResponseDataRecurringCommitsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
+type V2ContractListResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool                                                                                    `json:"is_prorated,required"`
+	JSON       v2ContractListResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
+}
+
+// v2ContractListResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig]
+type v2ContractListResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
+	IsProrated  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractListResponseDataRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -8520,7 +8724,9 @@ type V2ContractListResponseDataRecurringCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []V2ContractListResponseDataRecurringCreditsSpecifier `json:"specifiers"`
-	JSON       v2ContractListResponseDataRecurringCreditJSON         `json:"-"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig V2ContractListResponseDataRecurringCreditsSubscriptionConfig `json:"subscription_config"`
+	JSON               v2ContractListResponseDataRecurringCreditJSON                `json:"-"`
 }
 
 // v2ContractListResponseDataRecurringCreditJSON contains the JSON metadata for the
@@ -8545,6 +8751,7 @@ type v2ContractListResponseDataRecurringCreditJSON struct {
 	RecurrenceFrequency    apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
+	SubscriptionConfig     apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -8979,6 +9186,71 @@ func (r *V2ContractListResponseDataRecurringCreditsSpecifier) UnmarshalJSON(data
 }
 
 func (r v2ContractListResponseDataRecurringCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
+// Attach a subscription to the recurring commit/credit.
+type V2ContractListResponseDataRecurringCreditsSubscriptionConfig struct {
+	Allocation              V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocation              `json:"allocation,required"`
+	ApplySeatIncreaseConfig V2ContractListResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
+	SubscriptionID          string                                                                              `json:"subscription_id,required" format:"uuid"`
+	JSON                    v2ContractListResponseDataRecurringCreditsSubscriptionConfigJSON                    `json:"-"`
+}
+
+// v2ContractListResponseDataRecurringCreditsSubscriptionConfigJSON contains the
+// JSON metadata for the struct
+// [V2ContractListResponseDataRecurringCreditsSubscriptionConfig]
+type v2ContractListResponseDataRecurringCreditsSubscriptionConfigJSON struct {
+	Allocation              apijson.Field
+	ApplySeatIncreaseConfig apijson.Field
+	SubscriptionID          apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataRecurringCreditsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataRecurringCreditsSubscriptionConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocation string
+
+const (
+	V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocationIndividual V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocation = "INDIVIDUAL"
+	V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocationPooled     V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocationIndividual, V2ContractListResponseDataRecurringCreditsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
+type V2ContractListResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool                                                                                    `json:"is_prorated,required"`
+	JSON       v2ContractListResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
+}
+
+// v2ContractListResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractListResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig]
+type v2ContractListResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
+	IsProrated  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractListResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractListResponseDataRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -10958,7 +11230,9 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier `json:"specifiers"`
-	JSON       v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON         `json:"-"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig `json:"subscription_config"`
+	JSON               v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON                `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON contains the JSON
@@ -10984,6 +11258,7 @@ type v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON struct {
 	RecurrenceFrequency    apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
+	SubscriptionConfig     apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -11452,6 +11727,71 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON) Ra
 	return r.raw
 }
 
+// Attach a subscription to the recurring commit/credit.
+type V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig struct {
+	Allocation              V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation              `json:"allocation,required"`
+	ApplySeatIncreaseConfig V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
+	SubscriptionID          string                                                                                           `json:"subscription_id,required" format:"uuid"`
+	JSON                    v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigJSON                    `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig]
+type v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigJSON struct {
+	Allocation              apijson.Field
+	ApplySeatIncreaseConfig apijson.Field
+	SubscriptionID          apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocationIndividual V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation = "INDIVIDUAL"
+	V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocationPooled     V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocationIndividual, V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool                                                                                                 `json:"is_prorated,required"`
+	JSON       v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig]
+type v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
+	IsProrated  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
+	return r.raw
+}
+
 type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -11497,7 +11837,9 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier `json:"specifiers"`
-	JSON       v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON         `json:"-"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig `json:"subscription_config"`
+	JSON               v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON                `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON contains the JSON
@@ -11522,6 +11864,7 @@ type v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON struct {
 	RecurrenceFrequency    apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
+	SubscriptionConfig     apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -11960,6 +12303,71 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier) Unmar
 }
 
 func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
+// Attach a subscription to the recurring commit/credit.
+type V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig struct {
+	Allocation              V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation              `json:"allocation,required"`
+	ApplySeatIncreaseConfig V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
+	SubscriptionID          string                                                                                           `json:"subscription_id,required" format:"uuid"`
+	JSON                    v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigJSON                    `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig]
+type v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigJSON struct {
+	Allocation              apijson.Field
+	ApplySeatIncreaseConfig apijson.Field
+	SubscriptionID          apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+type V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation string
+
+const (
+	V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocationIndividual V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation = "INDIVIDUAL"
+	V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocationPooled     V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocationIndividual, V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
+type V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool                                                                                                 `json:"is_prorated,required"`
+	JSON       v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
+}
+
+// v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON
+// contains the JSON metadata for the struct
+// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig]
+type v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
+	IsProrated  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -13522,7 +13930,7 @@ func (r v2ContractGetEditHistoryResponseDataUpdateDiscountJSON) RawJSON() string
 
 // Must provide either schedule_items or recurring_schedule.
 type V2ContractGetEditHistoryResponseDataUpdateDiscountsSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID string `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -14809,7 +15217,7 @@ func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType) IsK
 // amount. Optional for "PREPAID" commits: if not provided, this will be a
 // "complimentary" commit with no invoice.
 type V2ContractEditParamsAddCommitsInvoiceSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -15265,7 +15673,7 @@ func (r V2ContractEditParamsAddDiscount) MarshalJSON() (data []byte, err error) 
 
 // Must provide either schedule_items or recurring_schedule.
 type V2ContractEditParamsAddDiscountsSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -15775,6 +16183,8 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditParamsAddRecurringCommitsSpecifier] `json:"specifiers"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig param.Field[V2ContractEditParamsAddRecurringCommitsSubscriptionConfig] `json:"subscription_config"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -16027,6 +16437,43 @@ func (r V2ContractEditParamsAddRecurringCommitsSpecifier) MarshalJSON() (data []
 	return apijson.MarshalRoot(r)
 }
 
+// Attach a subscription to the recurring commit/credit.
+type V2ContractEditParamsAddRecurringCommitsSubscriptionConfig struct {
+	ApplySeatIncreaseConfig param.Field[V2ContractEditParamsAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig] `json:"apply_seat_increase_config,required"`
+	// ID of the subscription to configure on the recurring commit/credit.
+	SubscriptionID param.Field[string] `json:"subscription_id,required"`
+	// If set to POOLED, allocation added per seat is pooled across the account.
+	Allocation param.Field[V2ContractEditParamsAddRecurringCommitsSubscriptionConfigAllocation] `json:"allocation"`
+}
+
+func (r V2ContractEditParamsAddRecurringCommitsSubscriptionConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated param.Field[bool] `json:"is_prorated,required"`
+}
+
+func (r V2ContractEditParamsAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If set to POOLED, allocation added per seat is pooled across the account.
+type V2ContractEditParamsAddRecurringCommitsSubscriptionConfigAllocation string
+
+const (
+	V2ContractEditParamsAddRecurringCommitsSubscriptionConfigAllocationPooled V2ContractEditParamsAddRecurringCommitsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V2ContractEditParamsAddRecurringCommitsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsAddRecurringCommitsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
 type V2ContractEditParamsAddRecurringCredit struct {
 	// The amount of commit to grant.
 	AccessAmount param.Field[V2ContractEditParamsAddRecurringCreditsAccessAmount] `json:"access_amount,required"`
@@ -16075,6 +16522,8 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
 	Specifiers param.Field[[]V2ContractEditParamsAddRecurringCreditsSpecifier] `json:"specifiers"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig param.Field[V2ContractEditParamsAddRecurringCreditsSubscriptionConfig] `json:"subscription_config"`
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -16316,6 +16765,43 @@ func (r V2ContractEditParamsAddRecurringCreditsSpecifier) MarshalJSON() (data []
 	return apijson.MarshalRoot(r)
 }
 
+// Attach a subscription to the recurring commit/credit.
+type V2ContractEditParamsAddRecurringCreditsSubscriptionConfig struct {
+	ApplySeatIncreaseConfig param.Field[V2ContractEditParamsAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig] `json:"apply_seat_increase_config,required"`
+	// ID of the subscription to configure on the recurring commit/credit.
+	SubscriptionID param.Field[string] `json:"subscription_id,required"`
+	// If set to POOLED, allocation added per seat is pooled across the account.
+	Allocation param.Field[V2ContractEditParamsAddRecurringCreditsSubscriptionConfigAllocation] `json:"allocation"`
+}
+
+func (r V2ContractEditParamsAddRecurringCreditsSubscriptionConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V2ContractEditParamsAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated param.Field[bool] `json:"is_prorated,required"`
+}
+
+func (r V2ContractEditParamsAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If set to POOLED, allocation added per seat is pooled across the account.
+type V2ContractEditParamsAddRecurringCreditsSubscriptionConfigAllocation string
+
+const (
+	V2ContractEditParamsAddRecurringCreditsSubscriptionConfigAllocationPooled V2ContractEditParamsAddRecurringCreditsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r V2ContractEditParamsAddRecurringCreditsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsAddRecurringCreditsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
 type V2ContractEditParamsAddResellerRoyalty struct {
 	ResellerType param.Field[V2ContractEditParamsAddResellerRoyaltiesResellerType] `json:"reseller_type,required"`
 	// Must provide at least one of applicable_product_ids or applicable_product_tags.
@@ -16388,7 +16874,7 @@ func (r V2ContractEditParamsAddScheduledCharge) MarshalJSON() (data []byte, err 
 
 // Must provide either schedule_items or recurring_schedule.
 type V2ContractEditParamsAddScheduledChargesSchedule struct {
-	// Defaults to USD if not passed. Only USD is supported at this time.
+	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
@@ -16632,6 +17118,9 @@ type V2ContractEditParamsAddSubscription struct {
 	// Inclusive start time for the subscription. If not provided, defaults to contract
 	// start date
 	StartingAt param.Field[time.Time] `json:"starting_at" format:"date-time"`
+	// A temporary ID used to reference the subscription in recurring commit/credit
+	// subscription configs created within the same payload.
+	TemporaryID param.Field[string] `json:"temporary_id"`
 }
 
 func (r V2ContractEditParamsAddSubscription) MarshalJSON() (data []byte, err error) {

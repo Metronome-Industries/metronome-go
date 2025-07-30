@@ -1948,7 +1948,9 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []ContractWithoutAmendmentsRecurringCommitsSpecifier `json:"specifiers"`
-	JSON       contractWithoutAmendmentsRecurringCommitJSON         `json:"-"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig `json:"subscription_config"`
+	JSON               contractWithoutAmendmentsRecurringCommitJSON                `json:"-"`
 }
 
 // contractWithoutAmendmentsRecurringCommitJSON contains the JSON metadata for the
@@ -1974,6 +1976,7 @@ type contractWithoutAmendmentsRecurringCommitJSON struct {
 	RecurrenceFrequency    apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
+	SubscriptionConfig     apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -2437,6 +2440,71 @@ func (r contractWithoutAmendmentsRecurringCommitsSpecifierJSON) RawJSON() string
 	return r.raw
 }
 
+// Attach a subscription to the recurring commit/credit.
+type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig struct {
+	Allocation              ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation              `json:"allocation,required"`
+	ApplySeatIncreaseConfig ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
+	SubscriptionID          string                                                                             `json:"subscription_id,required" format:"uuid"`
+	JSON                    contractWithoutAmendmentsRecurringCommitsSubscriptionConfigJSON                    `json:"-"`
+}
+
+// contractWithoutAmendmentsRecurringCommitsSubscriptionConfigJSON contains the
+// JSON metadata for the struct
+// [ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig]
+type contractWithoutAmendmentsRecurringCommitsSubscriptionConfigJSON struct {
+	Allocation              apijson.Field
+	ApplySeatIncreaseConfig apijson.Field
+	SubscriptionID          apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsRecurringCommitsSubscriptionConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation string
+
+const (
+	ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationIndividual ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation = "INDIVIDUAL"
+	ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationPooled     ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationIndividual, ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
+type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool                                                                                   `json:"is_prorated,required"`
+	JSON       contractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig]
+type contractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
+	IsProrated  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
+	return r.raw
+}
+
 type ContractWithoutAmendmentsRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -2482,7 +2550,9 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []ContractWithoutAmendmentsRecurringCreditsSpecifier `json:"specifiers"`
-	JSON       contractWithoutAmendmentsRecurringCreditJSON         `json:"-"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig `json:"subscription_config"`
+	JSON               contractWithoutAmendmentsRecurringCreditJSON                `json:"-"`
 }
 
 // contractWithoutAmendmentsRecurringCreditJSON contains the JSON metadata for the
@@ -2507,6 +2577,7 @@ type contractWithoutAmendmentsRecurringCreditJSON struct {
 	RecurrenceFrequency    apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
+	SubscriptionConfig     apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -2941,6 +3012,71 @@ func (r *ContractWithoutAmendmentsRecurringCreditsSpecifier) UnmarshalJSON(data 
 }
 
 func (r contractWithoutAmendmentsRecurringCreditsSpecifierJSON) RawJSON() string {
+	return r.raw
+}
+
+// Attach a subscription to the recurring commit/credit.
+type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig struct {
+	Allocation              ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation              `json:"allocation,required"`
+	ApplySeatIncreaseConfig ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
+	SubscriptionID          string                                                                             `json:"subscription_id,required" format:"uuid"`
+	JSON                    contractWithoutAmendmentsRecurringCreditsSubscriptionConfigJSON                    `json:"-"`
+}
+
+// contractWithoutAmendmentsRecurringCreditsSubscriptionConfigJSON contains the
+// JSON metadata for the struct
+// [ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig]
+type contractWithoutAmendmentsRecurringCreditsSubscriptionConfigJSON struct {
+	Allocation              apijson.Field
+	ApplySeatIncreaseConfig apijson.Field
+	SubscriptionID          apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsRecurringCreditsSubscriptionConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation string
+
+const (
+	ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationIndividual ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation = "INDIVIDUAL"
+	ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationPooled     ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation = "POOLED"
+)
+
+func (r ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation) IsKnown() bool {
+	switch r {
+	case ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationIndividual, ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationPooled:
+		return true
+	}
+	return false
+}
+
+type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool                                                                                   `json:"is_prorated,required"`
+	JSON       contractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
+}
+
+// contractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON
+// contains the JSON metadata for the struct
+// [ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig]
+type contractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
+	IsProrated  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
 	return r.raw
 }
 
