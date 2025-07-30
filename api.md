@@ -1,3 +1,30 @@
+# Shared Params Types
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseUsageFilterParam">BaseUsageFilterParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#EventTypeFilterParam">EventTypeFilterParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#IDParam">IDParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PropertyFilterParam">PropertyFilterParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#TierParam">TierParam</a>
+
+# Shared Response Types
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseUsageFilter">BaseUsageFilter</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Commit">Commit</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ContractWithoutAmendments">ContractWithoutAmendments</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Credit">Credit</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CreditTypeData">CreditTypeData</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Discount">Discount</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#EventTypeFilter">EventTypeFilter</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ID">ID</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Override">Override</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PropertyFilter">PropertyFilter</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ProService">ProService</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Rate">Rate</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ScheduledCharge">ScheduledCharge</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ScheduleDuration">ScheduleDuration</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#SchedulePointInTime">SchedulePointInTime</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Tier">Tier</a>
+
 # V2
 
 ## Contracts
@@ -38,6 +65,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PlanDetail">PlanDetail</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1PlanListResponse">V1PlanListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1PlanGetDetailsResponse">V1PlanGetDetailsResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1PlanListChargesResponse">V1PlanListChargesResponse</a>
@@ -52,8 +80,14 @@ Methods:
 
 ## CreditGrants
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#RolloverAmountMaxAmountParam">RolloverAmountMaxAmountParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#RolloverAmountMaxPercentageParam">RolloverAmountMaxPercentageParam</a>
+
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CreditLedgerEntry">CreditLedgerEntry</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CreditGrantNewResponse">V1CreditGrantNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CreditGrantListResponse">V1CreditGrantListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CreditGrantEditResponse">V1CreditGrantEditResponse</a>
@@ -82,9 +116,10 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#Customer">Customer</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerDetail">CustomerDetail</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerNewResponse">V1CustomerNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerGetResponse">V1CustomerGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListResponse">V1CustomerListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerArchiveResponse">V1CustomerArchiveResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListBillableMetricsResponse">V1CustomerListBillableMetricsResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListCostsResponse">V1CustomerListCostsResponse</a>
@@ -95,7 +130,7 @@ Methods:
 
 - <code title="post /v1/customers">client.V1.Customers.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerNewParams">V1CustomerNewParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerNewResponse">V1CustomerNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /v1/customers/{customer_id}">client.V1.Customers.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerGetParams">V1CustomerGetParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerGetResponse">V1CustomerGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /v1/customers">client.V1.Customers.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListParams">V1CustomerListParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#CursorPage">CursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListResponse">V1CustomerListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v1/customers">client.V1.Customers.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListParams">V1CustomerListParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#CursorPage">CursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerDetail">CustomerDetail</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v1/customers/archive">client.V1.Customers.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerService.Archive">Archive</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerArchiveParams">V1CustomerArchiveParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerArchiveResponse">V1CustomerArchiveResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /v1/customers/{customer_id}/billable-metrics">client.V1.Customers.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerService.ListBillableMetrics">ListBillableMetrics</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListBillableMetricsParams">V1CustomerListBillableMetricsParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#CursorPage">CursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListBillableMetricsResponse">V1CustomerListBillableMetricsResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /v1/customers/{customer_id}/costs">client.V1.Customers.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerService.ListCosts">ListCosts</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListCostsParams">V1CustomerListCostsParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#CursorPage">CursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerListCostsResponse">V1CustomerListCostsResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -108,6 +143,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#CustomerAlert">CustomerAlert</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerAlertGetResponse">V1CustomerAlertGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerAlertListResponse">V1CustomerAlertListResponse</a>
 
@@ -137,15 +173,15 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#Invoice">Invoice</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceGetResponse">V1CustomerInvoiceGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceListResponse">V1CustomerInvoiceListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceAddChargeResponse">V1CustomerInvoiceAddChargeResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceListBreakdownsResponse">V1CustomerInvoiceListBreakdownsResponse</a>
 
 Methods:
 
 - <code title="get /v1/customers/{customer_id}/invoices/{invoice_id}">client.V1.Customers.Invoices.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceGetParams">V1CustomerInvoiceGetParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceGetResponse">V1CustomerInvoiceGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /v1/customers/{customer_id}/invoices">client.V1.Customers.Invoices.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceListParams">V1CustomerInvoiceListParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#CursorPage">CursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceListResponse">V1CustomerInvoiceListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v1/customers/{customer_id}/invoices">client.V1.Customers.Invoices.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceListParams">V1CustomerInvoiceListParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#CursorPage">CursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#Invoice">Invoice</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v1/customers/{customer_id}/addCharge">client.V1.Customers.Invoices.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceService.AddCharge">AddCharge</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceAddChargeParams">V1CustomerInvoiceAddChargeParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceAddChargeResponse">V1CustomerInvoiceAddChargeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /v1/customers/{customer_id}/invoices/breakdowns">client.V1.Customers.Invoices.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceService.ListBreakdowns">ListBreakdowns</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceListBreakdownsParams">V1CustomerInvoiceListBreakdownsParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#CursorPage">CursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1CustomerInvoiceListBreakdownsResponse">V1CustomerInvoiceListBreakdownsResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
@@ -321,8 +357,16 @@ Methods:
 
 ### Products
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#QuantityConversionParam">QuantityConversionParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#QuantityRoundingParam">QuantityRoundingParam</a>
+
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#ProductListItemState">ProductListItemState</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#QuantityConversion">QuantityConversion</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#QuantityRounding">QuantityRounding</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1ContractProductNewResponse">V1ContractProductNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1ContractProductGetResponse">V1ContractProductGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1ContractProductUpdateResponse">V1ContractProductUpdateResponse</a>

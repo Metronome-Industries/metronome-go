@@ -39,10 +39,6 @@ func TestV1AlertNewWithOptionalParams(t *testing.T) {
 		}}),
 		CustomerID:       metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
 		EvaluateOnCreate: metronome.F(true),
-		GroupKeyFilter: metronome.F(metronome.V1AlertNewParamsGroupKeyFilter{
-			Key:   metronome.F("key"),
-			Value: metronome.F("value"),
-		}),
 		GroupValues: metronome.F([]metronome.V1AlertNewParamsGroupValue{{
 			Key:   metronome.F("key"),
 			Value: metronome.F("value"),
