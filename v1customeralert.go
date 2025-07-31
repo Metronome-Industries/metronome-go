@@ -111,6 +111,9 @@ type CustomerAlertAlert struct {
 	// Scopes alert evaluation to a specific presentation group key on individual line
 	// items. Only present for spend alerts.
 	GroupKeyFilter CustomerAlertAlertGroupKeyFilter `json:"group_key_filter"`
+	// Only present for `spend_threshold_reached` alerts. Scope alert to a specific
+	// group key on individual line items.
+	GroupValues []CustomerAlertAlertGroupValue `json:"group_values"`
 	// Only supported for invoice_total_reached alerts. A list of invoice types to
 	// evaluate.
 	InvoiceTypesFilter []string `json:"invoice_types_filter"`
@@ -134,6 +137,7 @@ type customerAlertAlertJSON struct {
 	CreditType             apijson.Field
 	CustomFieldFilters     apijson.Field
 	GroupKeyFilter         apijson.Field
+	GroupValues            apijson.Field
 	InvoiceTypesFilter     apijson.Field
 	UniquenessKey          apijson.Field
 	raw                    string
@@ -256,6 +260,29 @@ func (r *CustomerAlertAlertGroupKeyFilter) UnmarshalJSON(data []byte) (err error
 }
 
 func (r customerAlertAlertGroupKeyFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+type CustomerAlertAlertGroupValue struct {
+	Key   string                           `json:"key,required"`
+	Value string                           `json:"value,required"`
+	JSON  customerAlertAlertGroupValueJSON `json:"-"`
+}
+
+// customerAlertAlertGroupValueJSON contains the JSON metadata for the struct
+// [CustomerAlertAlertGroupValue]
+type customerAlertAlertGroupValueJSON struct {
+	Key         apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomerAlertAlertGroupValue) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customerAlertAlertGroupValueJSON) RawJSON() string {
 	return r.raw
 }
 

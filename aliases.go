@@ -526,6 +526,23 @@ const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly = share
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCommitsSpecifier = shared.ContractWithoutAmendmentsRecurringCommitsSpecifier
 
+// Attach a subscription to the recurring commit/credit.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationIndividual = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationIndividual
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationPooled = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationPooled
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig
+
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCredit = shared.ContractWithoutAmendmentsRecurringCredit
 
@@ -650,6 +667,23 @@ const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly = share
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCreditsSpecifier = shared.ContractWithoutAmendmentsRecurringCreditsSpecifier
+
+// Attach a subscription to the recurring commit/credit.
+//
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationIndividual = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationIndividual
+
+// This is an alias to an internal value.
+const ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationPooled = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationPooled
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty

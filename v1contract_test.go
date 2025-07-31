@@ -321,6 +321,13 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string"}),
 			}}),
+			SubscriptionConfig: metronome.F(metronome.V1ContractNewParamsRecurringCommitsSubscriptionConfig{
+				ApplySeatIncreaseConfig: metronome.F(metronome.V1ContractNewParamsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig{
+					IsProrated: metronome.F(true),
+				}),
+				SubscriptionID: metronome.F("subscription_id"),
+				Allocation:     metronome.F(metronome.V1ContractNewParamsRecurringCommitsSubscriptionConfigAllocationPooled),
+			}),
 			TemporaryID: metronome.F("temporary_id"),
 		}}),
 		RecurringCredits: metronome.F([]metronome.V1ContractNewParamsRecurringCredit{{
@@ -361,6 +368,13 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: metronome.F([]string{"string"}),
 			}}),
+			SubscriptionConfig: metronome.F(metronome.V1ContractNewParamsRecurringCreditsSubscriptionConfig{
+				ApplySeatIncreaseConfig: metronome.F(metronome.V1ContractNewParamsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig{
+					IsProrated: metronome.F(true),
+				}),
+				SubscriptionID: metronome.F("subscription_id"),
+				Allocation:     metronome.F(metronome.V1ContractNewParamsRecurringCreditsSubscriptionConfigAllocationPooled),
+			}),
 			TemporaryID: metronome.F("temporary_id"),
 		}}),
 		ResellerRoyalties: metronome.F([]metronome.V1ContractNewParamsResellerRoyalty{{
@@ -448,6 +462,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			EndingBefore: metronome.F(time.Now()),
 			Name:         metronome.F("name"),
 			StartingAt:   metronome.F(time.Now()),
+			TemporaryID:  metronome.F("temporary_id"),
 		}}),
 		TotalContractValue: metronome.F(0.000000),
 		Transition: metronome.F(metronome.V1ContractNewParamsTransition{

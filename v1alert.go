@@ -119,9 +119,9 @@ type V1AlertNewParams struct {
 	// alert threshold. If false, it will only evaluate on future customers that
 	// trigger the alert threshold. Defaults to true.
 	EvaluateOnCreate param.Field[bool] `json:"evaluate_on_create"`
-	// Scopes alert evaluation to a specific presentation group key on individual line
-	// items. Only present for spend alerts.
-	GroupKeyFilter param.Field[V1AlertNewParamsGroupKeyFilter] `json:"group_key_filter"`
+	// Only present for `spend_threshold_reached` alerts. Scope alert to a specific
+	// group key on individual line items.
+	GroupValues param.Field[[]V1AlertNewParamsGroupValue] `json:"group_values"`
 	// Only supported for invoice_total_reached alerts. A list of invoice types to
 	// evaluate.
 	InvoiceTypesFilter param.Field[[]string] `json:"invoice_types_filter"`
@@ -192,14 +192,12 @@ func (r V1AlertNewParamsCustomFieldFiltersEntity) IsKnown() bool {
 	return false
 }
 
-// Scopes alert evaluation to a specific presentation group key on individual line
-// items. Only present for spend alerts.
-type V1AlertNewParamsGroupKeyFilter struct {
+type V1AlertNewParamsGroupValue struct {
 	Key   param.Field[string] `json:"key,required"`
 	Value param.Field[string] `json:"value,required"`
 }
 
-func (r V1AlertNewParamsGroupKeyFilter) MarshalJSON() (data []byte, err error) {
+func (r V1AlertNewParamsGroupValue) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
