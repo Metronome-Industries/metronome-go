@@ -13972,6 +13972,9 @@ func (r v2ContractGetEditHistoryResponseDataUpdateDiscountJSON) RawJSON() string
 type V2ContractGetEditHistoryResponseDataUpdateDiscountsSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID string `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice bool `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -13986,6 +13989,7 @@ type V2ContractGetEditHistoryResponseDataUpdateDiscountsSchedule struct {
 // [V2ContractGetEditHistoryResponseDataUpdateDiscountsSchedule]
 type v2ContractGetEditHistoryResponseDataUpdateDiscountsScheduleJSON struct {
 	CreditTypeID      apijson.Field
+	DoNotInvoice      apijson.Field
 	RecurringSchedule apijson.Field
 	ScheduleItems     apijson.Field
 	raw               string
@@ -15259,6 +15263,9 @@ func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType) IsK
 type V2ContractEditParamsAddCommitsInvoiceSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -15715,6 +15722,9 @@ func (r V2ContractEditParamsAddDiscount) MarshalJSON() (data []byte, err error) 
 type V2ContractEditParamsAddDiscountsSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -16238,8 +16248,8 @@ func (r V2ContractEditParamsAddRecurringCommit) MarshalJSON() (data []byte, err 
 type V2ContractEditParamsAddRecurringCommitsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
-	// This field is currently required. Upcoming recurring commit/credit configuration
-	// options will allow it to be optional.
+	// This field is required unless a subscription is attached via
+	// `subscription_config`.
 	Quantity param.Field[float64] `json:"quantity"`
 }
 
@@ -16577,8 +16587,8 @@ func (r V2ContractEditParamsAddRecurringCredit) MarshalJSON() (data []byte, err 
 type V2ContractEditParamsAddRecurringCreditsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
-	// This field is currently required. Upcoming recurring commit/credit configuration
-	// options will allow it to be optional.
+	// This field is required unless a subscription is attached via
+	// `subscription_config`.
 	Quantity param.Field[float64] `json:"quantity"`
 }
 
@@ -16916,6 +16926,9 @@ func (r V2ContractEditParamsAddScheduledCharge) MarshalJSON() (data []byte, err 
 type V2ContractEditParamsAddScheduledChargesSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.

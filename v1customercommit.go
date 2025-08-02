@@ -228,6 +228,9 @@ func (r V1CustomerCommitNewParamsType) IsKnown() bool {
 type V1CustomerCommitNewParamsInvoiceSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.

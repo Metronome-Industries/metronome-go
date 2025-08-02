@@ -2937,6 +2937,9 @@ func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType) IsKnown
 type V1ContractNewParamsCommitsInvoiceSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -3391,6 +3394,9 @@ func (r V1ContractNewParamsDiscount) MarshalJSON() (data []byte, err error) {
 type V1ContractNewParamsDiscountsSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -3948,8 +3954,8 @@ func (r V1ContractNewParamsRecurringCommit) MarshalJSON() (data []byte, err erro
 type V1ContractNewParamsRecurringCommitsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
-	// This field is currently required. Upcoming recurring commit/credit configuration
-	// options will allow it to be optional.
+	// This field is required unless a subscription is attached via
+	// `subscription_config`.
 	Quantity param.Field[float64] `json:"quantity"`
 }
 
@@ -4285,8 +4291,8 @@ func (r V1ContractNewParamsRecurringCredit) MarshalJSON() (data []byte, err erro
 type V1ContractNewParamsRecurringCreditsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
-	// This field is currently required. Upcoming recurring commit/credit configuration
-	// options will allow it to be optional.
+	// This field is required unless a subscription is attached via
+	// `subscription_config`.
 	Quantity param.Field[float64] `json:"quantity"`
 }
 
@@ -4623,6 +4629,9 @@ func (r V1ContractNewParamsScheduledCharge) MarshalJSON() (data []byte, err erro
 type V1ContractNewParamsScheduledChargesSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -5396,6 +5405,9 @@ func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType) IsKno
 type V1ContractAmendParamsCommitsInvoiceSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -5850,6 +5862,9 @@ func (r V1ContractAmendParamsDiscount) MarshalJSON() (data []byte, err error) {
 type V1ContractAmendParamsDiscountsSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -6217,6 +6232,9 @@ func (r V1ContractAmendParamsScheduledCharge) MarshalJSON() (data []byte, err er
 type V1ContractAmendParamsScheduledChargesSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
