@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0 (2025-08-02)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** api update ([2295bb0](https://github.com/Metronome-Industries/metronome-go/commit/2295bb01b55ce6f63cb20bd300d6a928764cc597))
+* **api:** api update ([4546915](https://github.com/Metronome-Industries/metronome-go/commit/45469153a90e95b0b2fb7b31bed1c640dff29746))
+
 ## 0.2.0 (2025-07-30)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0...v0.2.0)
