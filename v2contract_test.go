@@ -12,7 +12,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV2ContractGetWithOptionalParams(t *testing.T) {
@@ -106,8 +105,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			Description: metronome.F("description"),
 			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType{
+					Type: metronome.F(metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessTypeTypeAll),
 				}),
 			}),
 			InvoiceSchedule: metronome.F(metronome.V2ContractEditParamsAddCommitsInvoiceSchedule{
@@ -177,8 +176,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			Description: metronome.F("description"),
 			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessType{
+					Type: metronome.F(metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessTypeTypeAll),
 				}),
 			}),
 			Name:                 metronome.F("x"),
@@ -253,7 +252,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				IsProrated: metronome.F(true),
 				Price:      metronome.F(0.000000),
 				Quantity:   metronome.F(0.000000),
-				Tiers: metronome.F([]shared.TierParam{{
+				Tiers: metronome.F([]metronome.V2ContractEditParamsAddOverridesOverwriteRateTier{{
 					Price: metronome.F(0.000000),
 					Size:  metronome.F(0.000000),
 				}}),
@@ -333,8 +332,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
 			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessType{
+					Type: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessTypeTypeAll),
 				}),
 			}),
 			InvoiceAmount: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsInvoiceAmount{
@@ -385,8 +384,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
 			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessType{
+					Type: metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessTypeTypeAll),
 				}),
 			}),
 			Name:                 metronome.F("x"),
@@ -534,8 +533,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsUpdateCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+				ChildAccess: metronome.F[metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessType{
+					Type: metronome.F(metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessTypeTypeAll),
 				}),
 			}),
 			InvoiceSchedule: metronome.F(metronome.V2ContractEditParamsUpdateCommitsInvoiceSchedule{
@@ -557,6 +556,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				}}),
 			}),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
+			Priority:             metronome.F(0.000000),
 			ProductID:            metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			RolloverFraction:     metronome.F(0.000000),
 		}}),
@@ -583,8 +583,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsUpdateCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+				ChildAccess: metronome.F[metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessType{
+					Type: metronome.F(metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessTypeTypeAll),
 				}),
 			}),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
@@ -763,6 +763,7 @@ func TestV2ContractEditCommitWithOptionalParams(t *testing.T) {
 				UnitPrice: metronome.F(0.000000),
 			}}),
 		}),
+		Priority:  metronome.F(0.000000),
 		ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		Specifiers: metronome.F([]metronome.V2ContractEditCommitParamsSpecifier{{
 			PresentationGroupValues: metronome.F(map[string]string{
@@ -817,6 +818,7 @@ func TestV2ContractEditCreditWithOptionalParams(t *testing.T) {
 		}),
 		ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 		ApplicableProductTags: metronome.F([]string{"string"}),
+		Priority:              metronome.F(0.000000),
 		ProductID:             metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		Specifiers: metronome.F([]metronome.V2ContractEditCreditParamsSpecifier{{
 			PresentationGroupValues: metronome.F(map[string]string{
