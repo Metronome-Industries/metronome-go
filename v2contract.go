@@ -17541,6 +17541,7 @@ type V2ContractEditParamsUpdateCredit struct {
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration param.Field[V2ContractEditParamsUpdateCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	NetsuiteSalesOrderID   param.Field[string]                                                  `json:"netsuite_sales_order_id"`
+	Priority               param.Field[float64]                                                 `json:"priority"`
 	ProductID              param.Field[string]                                                  `json:"product_id" format:"uuid"`
 }
 

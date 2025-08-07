@@ -589,6 +589,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				}),
 			}),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
+			Priority:             metronome.F(0.000000),
 			ProductID:            metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}}),
 		UpdatePrepaidBalanceThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration{
