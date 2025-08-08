@@ -60,6 +60,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			}),
 			InvoiceSchedule: metronome.F(metronome.V1ContractNewParamsCommitsInvoiceSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V1ContractNewParamsCommitsInvoiceScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V1ContractNewParamsCommitsInvoiceScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),
@@ -150,6 +151,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Schedule: metronome.F(metronome.V1ContractNewParamsDiscountsSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V1ContractNewParamsDiscountsScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V1ContractNewParamsDiscountsScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),
@@ -401,6 +403,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Schedule: metronome.F(metronome.V1ContractNewParamsScheduledChargesSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V1ContractNewParamsScheduledChargesScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V1ContractNewParamsScheduledChargesScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),
@@ -621,6 +624,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			}),
 			InvoiceSchedule: metronome.F(metronome.V1ContractAmendParamsCommitsInvoiceSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V1ContractAmendParamsCommitsInvoiceScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V1ContractAmendParamsCommitsInvoiceScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),
@@ -711,6 +715,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Schedule: metronome.F(metronome.V1ContractAmendParamsDiscountsSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V1ContractAmendParamsDiscountsScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V1ContractAmendParamsDiscountsScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),
@@ -813,6 +818,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Schedule: metronome.F(metronome.V1ContractAmendParamsScheduledChargesSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V1ContractAmendParamsScheduledChargesScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V1ContractAmendParamsScheduledChargesScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),

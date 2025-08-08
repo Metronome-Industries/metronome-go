@@ -4972,7 +4972,10 @@ func (r scheduleDurationScheduleItemJSON) RawJSON() string {
 }
 
 type SchedulePointInTime struct {
-	CreditType    CreditTypeData                    `json:"credit_type"`
+	CreditType CreditTypeData `json:"credit_type"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice  bool                              `json:"do_not_invoice"`
 	ScheduleItems []SchedulePointInTimeScheduleItem `json:"schedule_items"`
 	JSON          schedulePointInTimeJSON           `json:"-"`
 }
@@ -4981,6 +4984,7 @@ type SchedulePointInTime struct {
 // [SchedulePointInTime]
 type schedulePointInTimeJSON struct {
 	CreditType    apijson.Field
+	DoNotInvoice  apijson.Field
 	ScheduleItems apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field

@@ -112,6 +112,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			InvoiceSchedule: metronome.F(metronome.V2ContractEditParamsAddCommitsInvoiceSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V2ContractEditParamsAddCommitsInvoiceScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V2ContractEditParamsAddCommitsInvoiceScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),
@@ -199,6 +200,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Schedule: metronome.F(metronome.V2ContractEditParamsAddDiscountsSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V2ContractEditParamsAddDiscountsScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V2ContractEditParamsAddDiscountsScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),
@@ -435,6 +437,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ProductID: metronome.F("2e30f074-d04c-412e-a134-851ebfa5ceb2"),
 			Schedule: metronome.F(metronome.V2ContractEditParamsAddScheduledChargesSchedule{
 				CreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DoNotInvoice: metronome.F(true),
 				RecurringSchedule: metronome.F(metronome.V2ContractEditParamsAddScheduledChargesScheduleRecurringSchedule{
 					AmountDistribution: metronome.F(metronome.V2ContractEditParamsAddScheduledChargesScheduleRecurringScheduleAmountDistributionDivided),
 					EndingBefore:       metronome.F(time.Now()),
@@ -554,6 +557,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				}}),
 			}),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
+			Priority:             metronome.F(0.000000),
 			ProductID:            metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			RolloverFraction:     metronome.F(0.000000),
 		}}),
@@ -585,6 +589,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				}),
 			}),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
+			Priority:             metronome.F(0.000000),
 			ProductID:            metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}}),
 		UpdatePrepaidBalanceThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration{
@@ -760,6 +765,7 @@ func TestV2ContractEditCommitWithOptionalParams(t *testing.T) {
 				UnitPrice: metronome.F(0.000000),
 			}}),
 		}),
+		Priority:  metronome.F(0.000000),
 		ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		Specifiers: metronome.F([]metronome.V2ContractEditCommitParamsSpecifier{{
 			PresentationGroupValues: metronome.F(map[string]string{
@@ -814,6 +820,7 @@ func TestV2ContractEditCreditWithOptionalParams(t *testing.T) {
 		}),
 		ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 		ApplicableProductTags: metronome.F([]string{"string"}),
+		Priority:              metronome.F(0.000000),
 		ProductID:             metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		Specifiers: metronome.F([]metronome.V2ContractEditCreditParamsSpecifier{{
 			PresentationGroupValues: metronome.F(map[string]string{

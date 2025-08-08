@@ -49,6 +49,7 @@ func TestV1CustomerCommitNewWithOptionalParams(t *testing.T) {
 		InvoiceContractID: metronome.F("e57d6929-c2f1-4796-a9a8-63cedefe848d"),
 		InvoiceSchedule: metronome.F(metronome.V1CustomerCommitNewParamsInvoiceSchedule{
 			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+			DoNotInvoice: metronome.F(false),
 			RecurringSchedule: metronome.F(metronome.V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule{
 				AmountDistribution: metronome.F(metronome.V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionDivided),
 				EndingBefore:       metronome.F(time.Now()),

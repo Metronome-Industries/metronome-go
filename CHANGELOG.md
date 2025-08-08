@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.3.0 (2025-08-08)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** api update ([3eb0762](https://github.com/Metronome-Industries/metronome-go/commit/3eb07629e2d510a1ddb3d25dccd9208e99dfe581))
+* **api:** api update ([2de2d64](https://github.com/Metronome-Industries/metronome-go/commit/2de2d647abb73ea6717bdcbe0bb83fa98d19be8e))
+* **api:** api update ([3fe3f12](https://github.com/Metronome-Industries/metronome-go/commit/3fe3f1233eb65546d34b5b02e777d80fe541df8c))
+* **api:** api update ([975d16e](https://github.com/Metronome-Industries/metronome-go/commit/975d16eacd59efb6c190554f776381e85f6f61bf))
+* **api:** api update ([2295bb0](https://github.com/Metronome-Industries/metronome-go/commit/2295bb01b55ce6f63cb20bd300d6a928764cc597))
+* **api:** api update ([4546915](https://github.com/Metronome-Industries/metronome-go/commit/45469153a90e95b0b2fb7b31bed1c640dff29746))
+* **client:** support optional json html escaping ([426d574](https://github.com/Metronome-Industries/metronome-go/commit/426d574f53b801db32918a754e0e4f552e2fc652))
+
+
+### Chores
+
+* **internal:** update comment in script ([81a55cf](https://github.com/Metronome-Industries/metronome-go/commit/81a55cf9239a18076ddf6e63b90ec9df490bb081))
+* update @stainless-api/prism-cli to v5.15.0 ([5c0e8ce](https://github.com/Metronome-Industries/metronome-go/commit/5c0e8ce448842208ed2685fc6948fc7a4dcd83ac))
+
 ## 0.2.0 (2025-07-30)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.1.0...v0.2.0)
