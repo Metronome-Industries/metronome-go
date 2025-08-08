@@ -627,7 +627,8 @@ type V1ContractProductNewParams struct {
 	// Required for COMPOSITE products
 	CompositeProductIDs param.Field[[]string] `json:"composite_product_ids" format:"uuid"`
 	// Required for COMPOSITE products
-	CompositeTags param.Field[[]string] `json:"composite_tags"`
+	CompositeTags param.Field[[]string]          `json:"composite_tags"`
+	CustomFields  param.Field[map[string]string] `json:"custom_fields"`
 	// Beta feature only available for composite products. If true, products with $0
 	// will not be included when computing composite usage. Defaults to false
 	ExcludeFreeUsage param.Field[bool] `json:"exclude_free_usage"`
