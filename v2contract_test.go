@@ -142,6 +142,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
+					OnSessionPayment: metronome.F(true),
 				}),
 				TaxType: metronome.F(metronome.V2ContractEditParamsAddCommitsPaymentGateConfigTaxTypeNone),
 			}),
