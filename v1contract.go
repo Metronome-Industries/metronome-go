@@ -3096,6 +3096,15 @@ type V1ContractNewParamsCommitsPaymentGateConfigStripeConfig struct {
 	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
 	// your payment type.
 	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
+	// If true, the payment will be made assuming the customer is present (i.e. on
+	// session).
+	//
+	// If false, the payment will be made assuming the customer is not present (i.e.
+	// off session). For cardholders from a country with an e-mandate requirement (e.g.
+	// India), the payment may be declined.
+	//
+	// If left blank, will default to false.
+	OnSessionPayment param.Field[bool] `json:"on_session_payment"`
 }
 
 func (r V1ContractNewParamsCommitsPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
@@ -5564,6 +5573,15 @@ type V1ContractAmendParamsCommitsPaymentGateConfigStripeConfig struct {
 	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
 	// your payment type.
 	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
+	// If true, the payment will be made assuming the customer is present (i.e. on
+	// session).
+	//
+	// If false, the payment will be made assuming the customer is not present (i.e.
+	// off session). For cardholders from a country with an e-mandate requirement (e.g.
+	// India), the payment may be declined.
+	//
+	// If left blank, will default to false.
+	OnSessionPayment param.Field[bool] `json:"on_session_payment"`
 }
 
 func (r V1ContractAmendParamsCommitsPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {

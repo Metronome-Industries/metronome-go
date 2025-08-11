@@ -90,6 +90,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
+					OnSessionPayment: metronome.F(true),
 				}),
 				TaxType: metronome.F(metronome.V1ContractNewParamsCommitsPaymentGateConfigTaxTypeNone),
 			}),
@@ -654,6 +655,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
+					OnSessionPayment: metronome.F(true),
 				}),
 				TaxType: metronome.F(metronome.V1ContractAmendParamsCommitsPaymentGateConfigTaxTypeNone),
 			}),
