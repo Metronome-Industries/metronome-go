@@ -14,7 +14,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1UsageService contains methods and other services that help with interacting
@@ -240,7 +239,7 @@ type V1UsageSearchResponseMatchedBillableMetric struct {
 	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
 	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
-	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
+	EventTypeFilter V1UsageSearchResponseMatchedBillableMetricsEventTypeFilter `json:"event_type_filter"`
 	// (DEPRECATED) use property_filters & event_type_filter instead
 	Filter map[string]interface{} `json:"filter"`
 	// (DEPRECATED) use group_keys instead
@@ -251,7 +250,7 @@ type V1UsageSearchResponseMatchedBillableMetric struct {
 	// A list of filters to match events to this billable metric. Each filter defines a
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
-	PropertyFilters []shared.PropertyFilter `json:"property_filters"`
+	PropertyFilters []V1UsageSearchResponseMatchedBillableMetricsPropertyFilter `json:"property_filters"`
 	// The SQL query associated with the billable metric
 	Sql  string                                         `json:"sql"`
 	JSON v1UsageSearchResponseMatchedBillableMetricJSON `json:"-"`
@@ -303,6 +302,78 @@ func (r V1UsageSearchResponseMatchedBillableMetricsAggregationType) IsKnown() bo
 		return true
 	}
 	return false
+}
+
+// An optional filtering rule to match the 'event_type' property of an event.
+type V1UsageSearchResponseMatchedBillableMetricsEventTypeFilter struct {
+	// A list of event types that are explicitly included in the billable metric. If
+	// specified, only events of these types will match the billable metric. Must be
+	// non-empty if present.
+	InValues []string `json:"in_values"`
+	// A list of event types that are explicitly excluded from the billable metric. If
+	// specified, events of these types will not match the billable metric. Must be
+	// non-empty if present.
+	NotInValues []string                                                       `json:"not_in_values"`
+	JSON        v1UsageSearchResponseMatchedBillableMetricsEventTypeFilterJSON `json:"-"`
+}
+
+// v1UsageSearchResponseMatchedBillableMetricsEventTypeFilterJSON contains the JSON
+// metadata for the struct
+// [V1UsageSearchResponseMatchedBillableMetricsEventTypeFilter]
+type v1UsageSearchResponseMatchedBillableMetricsEventTypeFilterJSON struct {
+	InValues    apijson.Field
+	NotInValues apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1UsageSearchResponseMatchedBillableMetricsEventTypeFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1UsageSearchResponseMatchedBillableMetricsEventTypeFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1UsageSearchResponseMatchedBillableMetricsPropertyFilter struct {
+	// The name of the event property.
+	Name string `json:"name,required"`
+	// Determines whether the property must exist in the event. If true, only events
+	// with this property will pass the filter. If false, only events without this
+	// property will pass the filter. If null or omitted, the existence of the property
+	// is optional.
+	Exists bool `json:"exists"`
+	// Specifies the allowed values for the property to match an event. An event will
+	// pass the filter only if its property value is included in this list. If
+	// undefined, all property values will pass the filter. Must be non-empty if
+	// present.
+	InValues []string `json:"in_values"`
+	// Specifies the values that prevent an event from matching the filter. An event
+	// will not pass the filter if its property value is included in this list. If null
+	// or empty, all property values will pass the filter. Must be non-empty if
+	// present.
+	NotInValues []string                                                      `json:"not_in_values"`
+	JSON        v1UsageSearchResponseMatchedBillableMetricsPropertyFilterJSON `json:"-"`
+}
+
+// v1UsageSearchResponseMatchedBillableMetricsPropertyFilterJSON contains the JSON
+// metadata for the struct
+// [V1UsageSearchResponseMatchedBillableMetricsPropertyFilter]
+type v1UsageSearchResponseMatchedBillableMetricsPropertyFilterJSON struct {
+	Name        apijson.Field
+	Exists      apijson.Field
+	InValues    apijson.Field
+	NotInValues apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1UsageSearchResponseMatchedBillableMetricsPropertyFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1UsageSearchResponseMatchedBillableMetricsPropertyFilterJSON) RawJSON() string {
+	return r.raw
 }
 
 // The customer the event was matched to if a match was found
