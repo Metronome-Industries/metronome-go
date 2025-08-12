@@ -4623,7 +4623,8 @@ func (r V1ContractNewParamsResellerRoyaltiesGcpOptions) MarshalJSON() (data []by
 type V1ContractNewParamsScheduledCharge struct {
 	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule param.Field[V1ContractNewParamsScheduledChargesSchedule] `json:"schedule,required"`
+	Schedule     param.Field[V1ContractNewParamsScheduledChargesSchedule] `json:"schedule,required"`
+	CustomFields param.Field[map[string]string]                           `json:"custom_fields"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -6235,7 +6236,8 @@ func (r V1ContractAmendParamsResellerRoyaltiesGcpOptions) MarshalJSON() (data []
 type V1ContractAmendParamsScheduledCharge struct {
 	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule param.Field[V1ContractAmendParamsScheduledChargesSchedule] `json:"schedule,required"`
+	Schedule     param.Field[V1ContractAmendParamsScheduledChargesSchedule] `json:"schedule,required"`
+	CustomFields param.Field[map[string]string]                             `json:"custom_fields"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.

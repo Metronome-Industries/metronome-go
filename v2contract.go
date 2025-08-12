@@ -16928,7 +16928,8 @@ func (r V2ContractEditParamsAddResellerRoyaltiesGcpOptions) MarshalJSON() (data 
 type V2ContractEditParamsAddScheduledCharge struct {
 	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule param.Field[V2ContractEditParamsAddScheduledChargesSchedule] `json:"schedule,required"`
+	Schedule     param.Field[V2ContractEditParamsAddScheduledChargesSchedule] `json:"schedule,required"`
+	CustomFields param.Field[map[string]string]                               `json:"custom_fields"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
