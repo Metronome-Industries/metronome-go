@@ -28,11 +28,14 @@ func TestV1ContractProductNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.Products.New(context.TODO(), metronome.V1ContractProductNewParams{
-		Name:                   metronome.F("My Product"),
-		Type:                   metronome.F(metronome.V1ContractProductNewParamsTypeUsage),
-		BillableMetricID:       metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		CompositeProductIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		CompositeTags:          metronome.F([]string{"string"}),
+		Name:                metronome.F("My Product"),
+		Type:                metronome.F(metronome.V1ContractProductNewParamsTypeUsage),
+		BillableMetricID:    metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		CompositeProductIDs: metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
+		CompositeTags:       metronome.F([]string{"string"}),
+		CustomFields: metronome.F(map[string]string{
+			"foo": "string",
+		}),
 		ExcludeFreeUsage:       metronome.F(true),
 		IsRefundable:           metronome.F(true),
 		NetsuiteInternalItemID: metronome.F("netsuite_internal_item_id"),

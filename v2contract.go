@@ -13061,8 +13061,11 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	InvoiceSchedule        V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceSchedule        `json:"invoice_schedule"`
 	Name                   string                                                                  `json:"name"`
 	NetsuiteSalesOrderID   string                                                                  `json:"netsuite_sales_order_id,nullable"`
-	ProductID              string                                                                  `json:"product_id" format:"uuid"`
-	RolloverFraction       float64                                                                 `json:"rollover_fraction,nullable"`
+	// If multiple commits are applicable, the one with the lower priority will apply
+	// first.
+	Priority         float64 `json:"priority,nullable"`
+	ProductID        string  `json:"product_id" format:"uuid"`
+	RolloverFraction float64 `json:"rollover_fraction,nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -13084,6 +13087,7 @@ type v2ContractGetEditHistoryResponseDataUpdateCommitJSON struct {
 	InvoiceSchedule        apijson.Field
 	Name                   apijson.Field
 	NetsuiteSalesOrderID   apijson.Field
+	Priority               apijson.Field
 	ProductID              apijson.Field
 	RolloverFraction       apijson.Field
 	Specifiers             apijson.Field
@@ -13578,8 +13582,11 @@ type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 	HierarchyConfiguration V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
 	Name                   string                                                                  `json:"name"`
 	NetsuiteSalesOrderID   string                                                                  `json:"netsuite_sales_order_id,nullable"`
-	RolloverFraction       float64                                                                 `json:"rollover_fraction,nullable"`
-	JSON                   v2ContractGetEditHistoryResponseDataUpdateCreditJSON                    `json:"-"`
+	// If multiple credits are applicable, the one with the lower priority will apply
+	// first.
+	Priority         float64                                              `json:"priority,nullable"`
+	RolloverFraction float64                                              `json:"rollover_fraction,nullable"`
+	JSON             v2ContractGetEditHistoryResponseDataUpdateCreditJSON `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataUpdateCreditJSON contains the JSON metadata
@@ -13590,6 +13597,7 @@ type v2ContractGetEditHistoryResponseDataUpdateCreditJSON struct {
 	HierarchyConfiguration apijson.Field
 	Name                   apijson.Field
 	NetsuiteSalesOrderID   apijson.Field
+	Priority               apijson.Field
 	RolloverFraction       apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
@@ -13972,6 +13980,9 @@ func (r v2ContractGetEditHistoryResponseDataUpdateDiscountJSON) RawJSON() string
 type V2ContractGetEditHistoryResponseDataUpdateDiscountsSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID string `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice bool `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -13986,6 +13997,7 @@ type V2ContractGetEditHistoryResponseDataUpdateDiscountsSchedule struct {
 // [V2ContractGetEditHistoryResponseDataUpdateDiscountsSchedule]
 type v2ContractGetEditHistoryResponseDataUpdateDiscountsScheduleJSON struct {
 	CreditTypeID      apijson.Field
+	DoNotInvoice      apijson.Field
 	RecurringSchedule apijson.Field
 	ScheduleItems     apijson.Field
 	raw               string
@@ -15259,6 +15271,9 @@ func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType) IsK
 type V2ContractEditParamsAddCommitsInvoiceSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -15416,6 +15431,15 @@ type V2ContractEditParamsAddCommitsPaymentGateConfigStripeConfig struct {
 	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
 	// your payment type.
 	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
+	// If true, the payment will be made assuming the customer is present (i.e. on
+	// session).
+	//
+	// If false, the payment will be made assuming the customer is not present (i.e.
+	// off session). For cardholders from a country with an e-mandate requirement (e.g.
+	// India), the payment may be declined.
+	//
+	// If left blank, will default to false.
+	OnSessionPayment param.Field[bool] `json:"on_session_payment"`
 }
 
 func (r V2ContractEditParamsAddCommitsPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
@@ -15715,6 +15739,9 @@ func (r V2ContractEditParamsAddDiscount) MarshalJSON() (data []byte, err error) 
 type V2ContractEditParamsAddDiscountsSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -16238,8 +16265,8 @@ func (r V2ContractEditParamsAddRecurringCommit) MarshalJSON() (data []byte, err 
 type V2ContractEditParamsAddRecurringCommitsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
-	// This field is currently required. Upcoming recurring commit/credit configuration
-	// options will allow it to be optional.
+	// This field is required unless a subscription is attached via
+	// `subscription_config`.
 	Quantity param.Field[float64] `json:"quantity"`
 }
 
@@ -16577,8 +16604,8 @@ func (r V2ContractEditParamsAddRecurringCredit) MarshalJSON() (data []byte, err 
 type V2ContractEditParamsAddRecurringCreditsAccessAmount struct {
 	CreditTypeID param.Field[string]  `json:"credit_type_id,required" format:"uuid"`
 	UnitPrice    param.Field[float64] `json:"unit_price,required"`
-	// This field is currently required. Upcoming recurring commit/credit configuration
-	// options will allow it to be optional.
+	// This field is required unless a subscription is attached via
+	// `subscription_config`.
 	Quantity param.Field[float64] `json:"quantity"`
 }
 
@@ -16901,7 +16928,8 @@ func (r V2ContractEditParamsAddResellerRoyaltiesGcpOptions) MarshalJSON() (data 
 type V2ContractEditParamsAddScheduledCharge struct {
 	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule param.Field[V2ContractEditParamsAddScheduledChargesSchedule] `json:"schedule,required"`
+	Schedule     param.Field[V2ContractEditParamsAddScheduledChargesSchedule] `json:"schedule,required"`
+	CustomFields param.Field[map[string]string]                               `json:"custom_fields"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -16916,6 +16944,9 @@ func (r V2ContractEditParamsAddScheduledCharge) MarshalJSON() (data []byte, err 
 type V2ContractEditParamsAddScheduledChargesSchedule struct {
 	// Defaults to USD (cents) if not passed.
 	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
@@ -17295,6 +17326,7 @@ type V2ContractEditParamsUpdateCommit struct {
 	HierarchyConfiguration param.Field[V2ContractEditParamsUpdateCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	InvoiceSchedule        param.Field[V2ContractEditParamsUpdateCommitsInvoiceSchedule]        `json:"invoice_schedule"`
 	NetsuiteSalesOrderID   param.Field[string]                                                  `json:"netsuite_sales_order_id"`
+	Priority               param.Field[float64]                                                 `json:"priority"`
 	ProductID              param.Field[string]                                                  `json:"product_id" format:"uuid"`
 	RolloverFraction       param.Field[float64]                                                 `json:"rollover_fraction"`
 }
@@ -17519,6 +17551,7 @@ type V2ContractEditParamsUpdateCredit struct {
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration param.Field[V2ContractEditParamsUpdateCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
 	NetsuiteSalesOrderID   param.Field[string]                                                  `json:"netsuite_sales_order_id"`
+	Priority               param.Field[float64]                                                 `json:"priority"`
 	ProductID              param.Field[string]                                                  `json:"product_id" format:"uuid"`
 }
 
@@ -18130,7 +18163,10 @@ type V2ContractEditCommitParams struct {
 	// ID of contract to use for invoicing
 	InvoiceContractID param.Field[string]                                    `json:"invoice_contract_id" format:"uuid"`
 	InvoiceSchedule   param.Field[V2ContractEditCommitParamsInvoiceSchedule] `json:"invoice_schedule"`
-	ProductID         param.Field[string]                                    `json:"product_id" format:"uuid"`
+	// If multiple commits are applicable, the one with the lower priority will apply
+	// first.
+	Priority  param.Field[float64] `json:"priority"`
+	ProductID param.Field[string]  `json:"product_id" format:"uuid"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -18250,7 +18286,10 @@ type V2ContractEditCreditParams struct {
 	// Which tags the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
-	ProductID             param.Field[string]   `json:"product_id" format:"uuid"`
+	// If multiple commits are applicable, the one with the lower priority will apply
+	// first.
+	Priority  param.Field[float64] `json:"priority"`
+	ProductID param.Field[string]  `json:"product_id" format:"uuid"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
