@@ -14,6 +14,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
 	"github.com/Metronome-Industries/metronome-go/shared"
 	"github.com/tidwall/gjson"
 )
@@ -107,11 +108,26 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 }
 
 // List balances (commits and credits).
-func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) (res *V1ContractListBalancesResponse, err error) {
+func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) (res *pagination.BodyCursorPage[V1ContractListBalancesResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contracts/customerBalances/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, body, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List balances (commits and credits).
+func (r *V1ContractService) ListBalancesAutoPaging(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) *pagination.BodyCursorPageAutoPager[V1ContractListBalancesResponse] {
+	return pagination.NewBodyCursorPageAutoPager(r.ListBalances(ctx, body, opts...))
 }
 
 // Get the rate schedule for the rate card on a given contract.
@@ -2126,34 +2142,11 @@ func (r v1ContractNewHistoricalInvoicesResponseJSON) RawJSON() string {
 }
 
 type V1ContractListBalancesResponse struct {
-	Data     []V1ContractListBalancesResponseData `json:"data,required"`
-	NextPage string                               `json:"next_page,required,nullable"`
-	JSON     v1ContractListBalancesResponseJSON   `json:"-"`
-}
-
-// v1ContractListBalancesResponseJSON contains the JSON metadata for the struct
-// [V1ContractListBalancesResponse]
-type v1ContractListBalancesResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractListBalancesResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractListBalancesResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractListBalancesResponseData struct {
 	ID string `json:"id,required" format:"uuid"`
 	// This field can have the runtime type of [shared.CommitProduct],
 	// [shared.CreditProduct].
-	Product interface{}                            `json:"product,required"`
-	Type    V1ContractListBalancesResponseDataType `json:"type,required"`
+	Product interface{}                        `json:"product,required"`
+	Type    V1ContractListBalancesResponseType `json:"type,required"`
 	// The schedule that the customer will gain access to the credits purposed with
 	// this commit.
 	AccessSchedule shared.ScheduleDuration `json:"access_schedule"`
@@ -2198,8 +2191,8 @@ type V1ContractListBalancesResponseData struct {
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
-	Priority float64                                    `json:"priority"`
-	RateType V1ContractListBalancesResponseDataRateType `json:"rate_type"`
+	Priority float64                                `json:"priority"`
+	RateType V1ContractListBalancesResponseRateType `json:"rate_type"`
 	// This field can have the runtime type of [shared.CommitRolledOverFrom].
 	RolledOverFrom   interface{} `json:"rolled_over_from"`
 	RolloverFraction float64     `json:"rollover_fraction"`
@@ -2212,14 +2205,14 @@ type V1ContractListBalancesResponseData struct {
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
 	// error.
-	UniquenessKey string                                 `json:"uniqueness_key"`
-	JSON          v1ContractListBalancesResponseDataJSON `json:"-"`
-	union         V1ContractListBalancesResponseDataUnion
+	UniquenessKey string                             `json:"uniqueness_key"`
+	JSON          v1ContractListBalancesResponseJSON `json:"-"`
+	union         V1ContractListBalancesResponseUnion
 }
 
-// v1ContractListBalancesResponseDataJSON contains the JSON metadata for the struct
-// [V1ContractListBalancesResponseData]
-type v1ContractListBalancesResponseDataJSON struct {
+// v1ContractListBalancesResponseJSON contains the JSON metadata for the struct
+// [V1ContractListBalancesResponse]
+type v1ContractListBalancesResponseJSON struct {
 	ID                      apijson.Field
 	Product                 apijson.Field
 	Type                    apijson.Field
@@ -2250,12 +2243,12 @@ type v1ContractListBalancesResponseDataJSON struct {
 	ExtraFields             map[string]apijson.Field
 }
 
-func (r v1ContractListBalancesResponseDataJSON) RawJSON() string {
+func (r v1ContractListBalancesResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r *V1ContractListBalancesResponseData) UnmarshalJSON(data []byte) (err error) {
-	*r = V1ContractListBalancesResponseData{}
+func (r *V1ContractListBalancesResponse) UnmarshalJSON(data []byte) (err error) {
+	*r = V1ContractListBalancesResponse{}
 	err = apijson.UnmarshalRoot(data, &r.union)
 	if err != nil {
 		return err
@@ -2263,22 +2256,22 @@ func (r *V1ContractListBalancesResponseData) UnmarshalJSON(data []byte) (err err
 	return apijson.Port(r.union, &r)
 }
 
-// AsUnion returns a [V1ContractListBalancesResponseDataUnion] interface which you
-// can cast to the specific types for more type safety.
+// AsUnion returns a [V1ContractListBalancesResponseUnion] interface which you can
+// cast to the specific types for more type safety.
 //
 // Possible runtime types of the union are [shared.Commit], [shared.Credit].
-func (r V1ContractListBalancesResponseData) AsUnion() V1ContractListBalancesResponseDataUnion {
+func (r V1ContractListBalancesResponse) AsUnion() V1ContractListBalancesResponseUnion {
 	return r.union
 }
 
 // Union satisfied by [shared.Commit] or [shared.Credit].
-type V1ContractListBalancesResponseDataUnion interface {
-	ImplementsV1ContractListBalancesResponseData()
+type V1ContractListBalancesResponseUnion interface {
+	ImplementsV1ContractListBalancesResponse()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*V1ContractListBalancesResponseDataUnion)(nil)).Elem(),
+		reflect.TypeOf((*V1ContractListBalancesResponseUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
@@ -2291,32 +2284,32 @@ func init() {
 	)
 }
 
-type V1ContractListBalancesResponseDataType string
+type V1ContractListBalancesResponseType string
 
 const (
-	V1ContractListBalancesResponseDataTypePrepaid  V1ContractListBalancesResponseDataType = "PREPAID"
-	V1ContractListBalancesResponseDataTypePostpaid V1ContractListBalancesResponseDataType = "POSTPAID"
-	V1ContractListBalancesResponseDataTypeCredit   V1ContractListBalancesResponseDataType = "CREDIT"
+	V1ContractListBalancesResponseTypePrepaid  V1ContractListBalancesResponseType = "PREPAID"
+	V1ContractListBalancesResponseTypePostpaid V1ContractListBalancesResponseType = "POSTPAID"
+	V1ContractListBalancesResponseTypeCredit   V1ContractListBalancesResponseType = "CREDIT"
 )
 
-func (r V1ContractListBalancesResponseDataType) IsKnown() bool {
+func (r V1ContractListBalancesResponseType) IsKnown() bool {
 	switch r {
-	case V1ContractListBalancesResponseDataTypePrepaid, V1ContractListBalancesResponseDataTypePostpaid, V1ContractListBalancesResponseDataTypeCredit:
+	case V1ContractListBalancesResponseTypePrepaid, V1ContractListBalancesResponseTypePostpaid, V1ContractListBalancesResponseTypeCredit:
 		return true
 	}
 	return false
 }
 
-type V1ContractListBalancesResponseDataRateType string
+type V1ContractListBalancesResponseRateType string
 
 const (
-	V1ContractListBalancesResponseDataRateTypeCommitRate V1ContractListBalancesResponseDataRateType = "COMMIT_RATE"
-	V1ContractListBalancesResponseDataRateTypeListRate   V1ContractListBalancesResponseDataRateType = "LIST_RATE"
+	V1ContractListBalancesResponseRateTypeCommitRate V1ContractListBalancesResponseRateType = "COMMIT_RATE"
+	V1ContractListBalancesResponseRateTypeListRate   V1ContractListBalancesResponseRateType = "LIST_RATE"
 )
 
-func (r V1ContractListBalancesResponseDataRateType) IsKnown() bool {
+func (r V1ContractListBalancesResponseRateType) IsKnown() bool {
 	switch r {
-	case V1ContractListBalancesResponseDataRateTypeCommitRate, V1ContractListBalancesResponseDataRateTypeListRate:
+	case V1ContractListBalancesResponseRateTypeCommitRate, V1ContractListBalancesResponseRateTypeListRate:
 		return true
 	}
 	return false
