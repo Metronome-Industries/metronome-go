@@ -11,6 +11,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -42,11 +43,26 @@ func (r *V1CustomerCommitService) New(ctx context.Context, body V1CustomerCommit
 }
 
 // List commits.
-func (r *V1CustomerCommitService) List(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) (res *V1CustomerCommitListResponse, err error) {
+func (r *V1CustomerCommitService) List(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) (res *pagination.BodyCursorPage[shared.Commit], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contracts/customerCommits/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, body, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List commits.
+func (r *V1CustomerCommitService) ListAutoPaging(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) *pagination.BodyCursorPageAutoPager[shared.Commit] {
+	return pagination.NewBodyCursorPageAutoPager(r.List(ctx, body, opts...))
 }
 
 // Pull forward the end date of a prepaid commit. Use the "edit a commit" endpoint
@@ -77,29 +93,6 @@ func (r *V1CustomerCommitNewResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerCommitNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponse struct {
-	Data     []shared.Commit                  `json:"data,required"`
-	NextPage string                           `json:"next_page,required,nullable"`
-	JSON     v1CustomerCommitListResponseJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseJSON contains the JSON metadata for the struct
-// [V1CustomerCommitListResponse]
-type v1CustomerCommitListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseJSON) RawJSON() string {
 	return r.raw
 }
 

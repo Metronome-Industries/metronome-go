@@ -517,6 +517,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		RemoveOverrides: metronome.F([]metronome.V2ContractEditParamsRemoveOverride{{
 			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}}),
+		UniquenessKey: metronome.F("x"),
 		UpdateCommits: metronome.F([]metronome.V2ContractEditParamsUpdateCommit{{
 			CommitID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			AccessSchedule: metronome.F(metronome.V2ContractEditParamsUpdateCommitsAccessSchedule{

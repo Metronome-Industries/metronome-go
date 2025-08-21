@@ -166,9 +166,7 @@ type V2ContractGetResponseData struct {
 	// List of subscriptions on the contract.
 	Subscriptions      []V2ContractGetResponseDataSubscription `json:"subscriptions"`
 	TotalContractValue float64                                 `json:"total_contract_value"`
-	// Prevents the creation of duplicates. If a request to create a record is made
-	// with a previously used uniqueness key, a new record will not be created and the
-	// request will fail with a 409 error.
+	// Optional uniqueness key to prevent duplicate contract creations.
 	UniquenessKey string                        `json:"uniqueness_key"`
 	JSON          v2ContractGetResponseDataJSON `json:"-"`
 }
@@ -5026,9 +5024,7 @@ type V2ContractListResponseData struct {
 	// List of subscriptions on the contract.
 	Subscriptions      []V2ContractListResponseDataSubscription `json:"subscriptions"`
 	TotalContractValue float64                                  `json:"total_contract_value"`
-	// Prevents the creation of duplicates. If a request to create a record is made
-	// with a previously used uniqueness key, a new record will not be created and the
-	// request will fail with a 409 error.
+	// Optional uniqueness key to prevent duplicate contract creations.
 	UniquenessKey string                         `json:"uniqueness_key"`
 	JSON          v2ContractListResponseDataJSON `json:"-"`
 }
@@ -9919,8 +9915,12 @@ type V2ContractGetEditHistoryResponseData struct {
 	ArchiveScheduledCharges []V2ContractGetEditHistoryResponseDataArchiveScheduledCharge `json:"archive_scheduled_charges"`
 	RemoveOverrides         []V2ContractGetEditHistoryResponseDataRemoveOverride         `json:"remove_overrides"`
 	Timestamp               time.Time                                                    `json:"timestamp" format:"date-time"`
-	UpdateCommits           []V2ContractGetEditHistoryResponseDataUpdateCommit           `json:"update_commits"`
-	UpdateContractEndDate   time.Time                                                    `json:"update_contract_end_date" format:"date-time"`
+	// Prevents the creation of duplicates. If a request to create a record is made
+	// with a previously used uniqueness key, a new record will not be created and the
+	// request will fail with a 409 error.
+	UniquenessKey         string                                             `json:"uniqueness_key"`
+	UpdateCommits         []V2ContractGetEditHistoryResponseDataUpdateCommit `json:"update_commits"`
+	UpdateContractEndDate time.Time                                          `json:"update_contract_end_date" format:"date-time"`
 	// Value to update the contract name to. If not provided, the contract name will
 	// remain unchanged.
 	UpdateContractName                         string                                                                         `json:"update_contract_name,nullable"`
@@ -9959,6 +9959,7 @@ type v2ContractGetEditHistoryResponseDataJSON struct {
 	ArchiveScheduledCharges                    apijson.Field
 	RemoveOverrides                            apijson.Field
 	Timestamp                                  apijson.Field
+	UniquenessKey                              apijson.Field
 	UpdateCommits                              apijson.Field
 	UpdateContractEndDate                      apijson.Field
 	UpdateContractName                         apijson.Field
@@ -15022,7 +15023,9 @@ type V2ContractEditParams struct {
 	ArchiveScheduledCharges param.Field[[]V2ContractEditParamsArchiveScheduledCharge] `json:"archive_scheduled_charges"`
 	// IDs of overrides to remove
 	RemoveOverrides param.Field[[]V2ContractEditParamsRemoveOverride] `json:"remove_overrides"`
-	UpdateCommits   param.Field[[]V2ContractEditParamsUpdateCommit]   `json:"update_commits"`
+	// Optional uniqueness key to prevent duplicate contract edits.
+	UniquenessKey param.Field[string]                             `json:"uniqueness_key"`
+	UpdateCommits param.Field[[]V2ContractEditParamsUpdateCommit] `json:"update_commits"`
 	// RFC 3339 timestamp indicating when the contract will end (exclusive).
 	UpdateContractEndDate param.Field[time.Time] `json:"update_contract_end_date" format:"date-time"`
 	// Value to update the contract name to. If not provided, the contract name will
