@@ -38,11 +38,27 @@ func NewV1UsageService(opts ...option.RequestOption) (r *V1UsageService) {
 
 // Fetch aggregated usage data for multiple customers and billable-metrics, broken
 // into intervals of the specified length.
-func (r *V1UsageService) List(ctx context.Context, params V1UsageListParams, opts ...option.RequestOption) (res *V1UsageListResponse, err error) {
+func (r *V1UsageService) List(ctx context.Context, params V1UsageListParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1UsageListResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/usage"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Fetch aggregated usage data for multiple customers and billable-metrics, broken
+// into intervals of the specified length.
+func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[V1UsageListResponse] {
+	return pagination.NewCursorPageWithoutLimitAutoPager(r.List(ctx, params, opts...))
 }
 
 // Send usage events to Metronome. The body of this request is expected to be a
@@ -95,29 +111,6 @@ func (r *V1UsageService) Search(ctx context.Context, body V1UsageSearchParams, o
 }
 
 type V1UsageListResponse struct {
-	Data     []V1UsageListResponseData `json:"data,required"`
-	NextPage string                    `json:"next_page,required,nullable"`
-	JSON     v1UsageListResponseJSON   `json:"-"`
-}
-
-// v1UsageListResponseJSON contains the JSON metadata for the struct
-// [V1UsageListResponse]
-type v1UsageListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1UsageListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1UsageListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1UsageListResponseData struct {
 	BillableMetricID   string    `json:"billable_metric_id,required" format:"uuid"`
 	BillableMetricName string    `json:"billable_metric_name,required"`
 	CustomerID         string    `json:"customer_id,required" format:"uuid"`
@@ -126,13 +119,13 @@ type V1UsageListResponseData struct {
 	Value              float64   `json:"value,required,nullable"`
 	// Values will be either a number or null. Null indicates that there were no
 	// matches for the group_by value.
-	Groups map[string]float64          `json:"groups"`
-	JSON   v1UsageListResponseDataJSON `json:"-"`
+	Groups map[string]float64      `json:"groups"`
+	JSON   v1UsageListResponseJSON `json:"-"`
 }
 
-// v1UsageListResponseDataJSON contains the JSON metadata for the struct
-// [V1UsageListResponseData]
-type v1UsageListResponseDataJSON struct {
+// v1UsageListResponseJSON contains the JSON metadata for the struct
+// [V1UsageListResponse]
+type v1UsageListResponseJSON struct {
 	BillableMetricID   apijson.Field
 	BillableMetricName apijson.Field
 	CustomerID         apijson.Field
@@ -144,11 +137,11 @@ type v1UsageListResponseDataJSON struct {
 	ExtraFields        map[string]apijson.Field
 }
 
-func (r *V1UsageListResponseData) UnmarshalJSON(data []byte) (err error) {
+func (r *V1UsageListResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1UsageListResponseDataJSON) RawJSON() string {
+func (r v1UsageListResponseJSON) RawJSON() string {
 	return r.raw
 }
 

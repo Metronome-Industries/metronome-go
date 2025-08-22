@@ -78,11 +78,28 @@ func (r *V1CreditGrantService) Edit(ctx context.Context, body V1CreditGrantEditP
 // Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
 // Ledger entries are returned in chronological order. Ledger entries associated
 // with voided credit grants are not included.
-func (r *V1CreditGrantService) ListEntries(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) (res *V1CreditGrantListEntriesResponse, err error) {
+func (r *V1CreditGrantService) ListEntries(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1CreditGrantListEntriesResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/credits/listEntries"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
+// Ledger entries are returned in chronological order. Ledger entries associated
+// with voided credit grants are not included.
+func (r *V1CreditGrantService) ListEntriesAutoPaging(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[V1CreditGrantListEntriesResponse] {
+	return pagination.NewCursorPageWithoutLimitAutoPager(r.ListEntries(ctx, params, opts...))
 }
 
 // Void a credit grant
@@ -408,16 +425,16 @@ func (r v1CreditGrantEditResponseJSON) RawJSON() string {
 }
 
 type V1CreditGrantListEntriesResponse struct {
-	Data     []V1CreditGrantListEntriesResponseData `json:"data,required"`
-	NextPage string                                 `json:"next_page,required,nullable"`
-	JSON     v1CreditGrantListEntriesResponseJSON   `json:"-"`
+	CustomerID string                                   `json:"customer_id,required" format:"uuid"`
+	Ledgers    []V1CreditGrantListEntriesResponseLedger `json:"ledgers,required"`
+	JSON       v1CreditGrantListEntriesResponseJSON     `json:"-"`
 }
 
 // v1CreditGrantListEntriesResponseJSON contains the JSON metadata for the struct
 // [V1CreditGrantListEntriesResponse]
 type v1CreditGrantListEntriesResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
+	CustomerID  apijson.Field
+	Ledgers     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -430,42 +447,19 @@ func (r v1CreditGrantListEntriesResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CreditGrantListEntriesResponseData struct {
-	CustomerID string                                       `json:"customer_id,required" format:"uuid"`
-	Ledgers    []V1CreditGrantListEntriesResponseDataLedger `json:"ledgers,required"`
-	JSON       v1CreditGrantListEntriesResponseDataJSON     `json:"-"`
-}
-
-// v1CreditGrantListEntriesResponseDataJSON contains the JSON metadata for the
-// struct [V1CreditGrantListEntriesResponseData]
-type v1CreditGrantListEntriesResponseDataJSON struct {
-	CustomerID  apijson.Field
-	Ledgers     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListEntriesResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListEntriesResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CreditGrantListEntriesResponseDataLedger struct {
+type V1CreditGrantListEntriesResponseLedger struct {
 	CreditType shared.CreditTypeData `json:"credit_type,required"`
 	// the effective balances at the end of the specified time window
-	EndingBalance   V1CreditGrantListEntriesResponseDataLedgersEndingBalance   `json:"ending_balance,required"`
-	Entries         []CreditLedgerEntry                                        `json:"entries,required"`
-	PendingEntries  []CreditLedgerEntry                                        `json:"pending_entries,required"`
-	StartingBalance V1CreditGrantListEntriesResponseDataLedgersStartingBalance `json:"starting_balance,required"`
-	JSON            v1CreditGrantListEntriesResponseDataLedgerJSON             `json:"-"`
+	EndingBalance   V1CreditGrantListEntriesResponseLedgersEndingBalance   `json:"ending_balance,required"`
+	Entries         []CreditLedgerEntry                                    `json:"entries,required"`
+	PendingEntries  []CreditLedgerEntry                                    `json:"pending_entries,required"`
+	StartingBalance V1CreditGrantListEntriesResponseLedgersStartingBalance `json:"starting_balance,required"`
+	JSON            v1CreditGrantListEntriesResponseLedgerJSON             `json:"-"`
 }
 
-// v1CreditGrantListEntriesResponseDataLedgerJSON contains the JSON metadata for
-// the struct [V1CreditGrantListEntriesResponseDataLedger]
-type v1CreditGrantListEntriesResponseDataLedgerJSON struct {
+// v1CreditGrantListEntriesResponseLedgerJSON contains the JSON metadata for the
+// struct [V1CreditGrantListEntriesResponseLedger]
+type v1CreditGrantListEntriesResponseLedgerJSON struct {
 	CreditType      apijson.Field
 	EndingBalance   apijson.Field
 	Entries         apijson.Field
@@ -475,16 +469,16 @@ type v1CreditGrantListEntriesResponseDataLedgerJSON struct {
 	ExtraFields     map[string]apijson.Field
 }
 
-func (r *V1CreditGrantListEntriesResponseDataLedger) UnmarshalJSON(data []byte) (err error) {
+func (r *V1CreditGrantListEntriesResponseLedger) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CreditGrantListEntriesResponseDataLedgerJSON) RawJSON() string {
+func (r v1CreditGrantListEntriesResponseLedgerJSON) RawJSON() string {
 	return r.raw
 }
 
 // the effective balances at the end of the specified time window
-type V1CreditGrantListEntriesResponseDataLedgersEndingBalance struct {
+type V1CreditGrantListEntriesResponseLedgersEndingBalance struct {
 	// the ending_before request parameter (if supplied) or the current billing
 	// period's end date
 	EffectiveAt time.Time `json:"effective_at,required" format:"date-time"`
@@ -494,14 +488,13 @@ type V1CreditGrantListEntriesResponseDataLedgersEndingBalance struct {
 	ExcludingPending float64 `json:"excluding_pending,required"`
 	// the excluding_pending balance plus any pending invoice deductions and
 	// expirations that will happen by the effective_at date
-	IncludingPending float64                                                      `json:"including_pending,required"`
-	JSON             v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON `json:"-"`
+	IncludingPending float64                                                  `json:"including_pending,required"`
+	JSON             v1CreditGrantListEntriesResponseLedgersEndingBalanceJSON `json:"-"`
 }
 
-// v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON contains the JSON
-// metadata for the struct
-// [V1CreditGrantListEntriesResponseDataLedgersEndingBalance]
-type v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON struct {
+// v1CreditGrantListEntriesResponseLedgersEndingBalanceJSON contains the JSON
+// metadata for the struct [V1CreditGrantListEntriesResponseLedgersEndingBalance]
+type v1CreditGrantListEntriesResponseLedgersEndingBalanceJSON struct {
 	EffectiveAt      apijson.Field
 	ExcludingPending apijson.Field
 	IncludingPending apijson.Field
@@ -509,15 +502,15 @@ type v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON struct {
 	ExtraFields      map[string]apijson.Field
 }
 
-func (r *V1CreditGrantListEntriesResponseDataLedgersEndingBalance) UnmarshalJSON(data []byte) (err error) {
+func (r *V1CreditGrantListEntriesResponseLedgersEndingBalance) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON) RawJSON() string {
+func (r v1CreditGrantListEntriesResponseLedgersEndingBalanceJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CreditGrantListEntriesResponseDataLedgersStartingBalance struct {
+type V1CreditGrantListEntriesResponseLedgersStartingBalance struct {
 	// the starting_on request parameter (if supplied) or the first credit grant's
 	// effective_at date
 	EffectiveAt time.Time `json:"effective_at,required" format:"date-time"`
@@ -526,14 +519,13 @@ type V1CreditGrantListEntriesResponseDataLedgersStartingBalance struct {
 	ExcludingPending float64 `json:"excluding_pending,required"`
 	// the excluding_pending balance plus any pending activity that has not been posted
 	// at the time of the query
-	IncludingPending float64                                                        `json:"including_pending,required"`
-	JSON             v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON `json:"-"`
+	IncludingPending float64                                                    `json:"including_pending,required"`
+	JSON             v1CreditGrantListEntriesResponseLedgersStartingBalanceJSON `json:"-"`
 }
 
-// v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON contains the JSON
-// metadata for the struct
-// [V1CreditGrantListEntriesResponseDataLedgersStartingBalance]
-type v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON struct {
+// v1CreditGrantListEntriesResponseLedgersStartingBalanceJSON contains the JSON
+// metadata for the struct [V1CreditGrantListEntriesResponseLedgersStartingBalance]
+type v1CreditGrantListEntriesResponseLedgersStartingBalanceJSON struct {
 	EffectiveAt      apijson.Field
 	ExcludingPending apijson.Field
 	IncludingPending apijson.Field
@@ -541,11 +533,11 @@ type v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON struct {
 	ExtraFields      map[string]apijson.Field
 }
 
-func (r *V1CreditGrantListEntriesResponseDataLedgersStartingBalance) UnmarshalJSON(data []byte) (err error) {
+func (r *V1CreditGrantListEntriesResponseLedgersStartingBalance) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON) RawJSON() string {
+func (r v1CreditGrantListEntriesResponseLedgersStartingBalanceJSON) RawJSON() string {
 	return r.raw
 }
 

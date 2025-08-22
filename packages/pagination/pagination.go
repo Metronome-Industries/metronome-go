@@ -233,3 +233,116 @@ func (r *BodyCursorPageAutoPager[T]) Err() error {
 func (r *BodyCursorPageAutoPager[T]) Index() int {
 	return r.run
 }
+
+type CursorPageWithoutLimit[T any] struct {
+	// Cursor to fetch the next page
+	NextPage string `json:"next_page"`
+	// Items of the page
+	Data []T                        `json:"data"`
+	JSON cursorPageWithoutLimitJSON `json:"-"`
+	cfg  *requestconfig.RequestConfig
+	res  *http.Response
+}
+
+// cursorPageWithoutLimitJSON contains the JSON metadata for the struct
+// [CursorPageWithoutLimit[T]]
+type cursorPageWithoutLimitJSON struct {
+	NextPage    apijson.Field
+	Data        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CursorPageWithoutLimit[T]) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r cursorPageWithoutLimitJSON) RawJSON() string {
+	return r.raw
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *CursorPageWithoutLimit[T]) GetNextPage() (res *CursorPageWithoutLimit[T], err error) {
+	next := r.NextPage
+	if len(next) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+	err = cfg.Apply(option.WithQuery("next_page", next))
+	if err != nil {
+		return nil, err
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *CursorPageWithoutLimit[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &CursorPageWithoutLimit[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type CursorPageWithoutLimitAutoPager[T any] struct {
+	page *CursorPageWithoutLimit[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+}
+
+func NewCursorPageWithoutLimitAutoPager[T any](page *CursorPageWithoutLimit[T], err error) *CursorPageWithoutLimitAutoPager[T] {
+	return &CursorPageWithoutLimitAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *CursorPageWithoutLimitAutoPager[T]) Next() bool {
+	if r.page == nil {
+		return false
+	}
+	if r.idx >= len(r.page.Data) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil {
+			return false
+		}
+	}
+	// if the API returned empty data then keep iterating
+	// until we either get more data or there are no more pages
+	// to fetch
+	for len(r.page.Data) == 0 {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil {
+			return false
+		}
+	}
+	r.cur = r.page.Data[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *CursorPageWithoutLimitAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *CursorPageWithoutLimitAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *CursorPageWithoutLimitAutoPager[T]) Index() int {
+	return r.run
+}
