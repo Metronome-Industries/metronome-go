@@ -334,9 +334,8 @@ type V1ContractListBalancesResponse struct {
 	// This field can have the runtime type of [map[string]string].
 	CustomFields interface{} `json:"custom_fields"`
 	Description  string      `json:"description"`
-	// This field can have the runtime type of [shared.CommitHierarchyConfiguration],
-	// [shared.CreditHierarchyConfiguration].
-	HierarchyConfiguration interface{} `json:"hierarchy_configuration"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// This field can have the runtime type of [shared.CommitInvoiceContract].
 	InvoiceContract interface{} `json:"invoice_contract"`
 	// The schedule that the customer will be invoiced for this commit.
@@ -356,8 +355,7 @@ type V1ContractListBalancesResponse struct {
 	RolloverFraction float64     `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
-	// This field can have the runtime type of [[]shared.CommitSpecifier],
-	// [[]shared.CreditSpecifier].
+	// This field can have the runtime type of [[]shared.CommitSpecifier].
 	Specifiers interface{} `json:"specifiers"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
@@ -508,11 +506,11 @@ type V1ContractGetRateScheduleResponseData struct {
 	BillingFrequency    V1ContractGetRateScheduleResponseDataBillingFrequency `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
-	CommitRate         V1ContractGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
-	EndingBefore       time.Time                                       `json:"ending_before" format:"date-time"`
-	OverrideRate       shared.Rate                                     `json:"override_rate"`
-	PricingGroupValues map[string]string                               `json:"pricing_group_values"`
-	JSON               v1ContractGetRateScheduleResponseDataJSON       `json:"-"`
+	CommitRate         shared.CommitRate                         `json:"commit_rate"`
+	EndingBefore       time.Time                                 `json:"ending_before" format:"date-time"`
+	OverrideRate       shared.Rate                               `json:"override_rate"`
+	PricingGroupValues map[string]string                         `json:"pricing_group_values"`
+	JSON               v1ContractGetRateScheduleResponseDataJSON `json:"-"`
 }
 
 // v1ContractGetRateScheduleResponseDataJSON contains the JSON metadata for the
@@ -555,53 +553,6 @@ const (
 func (r V1ContractGetRateScheduleResponseDataBillingFrequency) IsKnown() bool {
 	switch r {
 	case V1ContractGetRateScheduleResponseDataBillingFrequencyMonthly, V1ContractGetRateScheduleResponseDataBillingFrequencyQuarterly, V1ContractGetRateScheduleResponseDataBillingFrequencyAnnual, V1ContractGetRateScheduleResponseDataBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-// A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit.
-type V1ContractGetRateScheduleResponseDataCommitRate struct {
-	RateType V1ContractGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
-	Price float64 `json:"price"`
-	// Only set for TIERED rate_type.
-	Tiers []shared.Tier                                       `json:"tiers"`
-	JSON  v1ContractGetRateScheduleResponseDataCommitRateJSON `json:"-"`
-}
-
-// v1ContractGetRateScheduleResponseDataCommitRateJSON contains the JSON metadata
-// for the struct [V1ContractGetRateScheduleResponseDataCommitRate]
-type v1ContractGetRateScheduleResponseDataCommitRateJSON struct {
-	RateType    apijson.Field
-	Price       apijson.Field
-	Tiers       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractGetRateScheduleResponseDataCommitRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractGetRateScheduleResponseDataCommitRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractGetRateScheduleResponseDataCommitRateRateType string
-
-const (
-	V1ContractGetRateScheduleResponseDataCommitRateRateTypeFlat         V1ContractGetRateScheduleResponseDataCommitRateRateType = "FLAT"
-	V1ContractGetRateScheduleResponseDataCommitRateRateTypePercentage   V1ContractGetRateScheduleResponseDataCommitRateRateType = "PERCENTAGE"
-	V1ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription V1ContractGetRateScheduleResponseDataCommitRateRateType = "SUBSCRIPTION"
-	V1ContractGetRateScheduleResponseDataCommitRateRateTypeTiered       V1ContractGetRateScheduleResponseDataCommitRateRateType = "TIERED"
-	V1ContractGetRateScheduleResponseDataCommitRateRateTypeCustom       V1ContractGetRateScheduleResponseDataCommitRateRateType = "CUSTOM"
-)
-
-func (r V1ContractGetRateScheduleResponseDataCommitRateRateType) IsKnown() bool {
-	switch r {
-	case V1ContractGetRateScheduleResponseDataCommitRateRateTypeFlat, V1ContractGetRateScheduleResponseDataCommitRateRateTypePercentage, V1ContractGetRateScheduleResponseDataCommitRateRateTypeSubscription, V1ContractGetRateScheduleResponseDataCommitRateRateTypeTiered, V1ContractGetRateScheduleResponseDataCommitRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -768,9 +719,9 @@ type V1ContractNewParams struct {
 	Name                             param.Field[string]                                              `json:"name"`
 	NetPaymentTermsDays              param.Field[float64]                                             `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID                 param.Field[string]                                                  `json:"netsuite_sales_order_id"`
-	Overrides                            param.Field[[]V1ContractNewParamsOverride]                           `json:"overrides"`
-	PrepaidBalanceThresholdConfiguration param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfiguration] `json:"prepaid_balance_threshold_configuration"`
+	NetsuiteSalesOrderID                 param.Field[string]                                           `json:"netsuite_sales_order_id"`
+	Overrides                            param.Field[[]V1ContractNewParamsOverride]                    `json:"overrides"`
+	PrepaidBalanceThresholdConfiguration param.Field[shared.PrepaidBalanceThresholdConfigurationParam] `json:"prepaid_balance_threshold_configuration"`
 	// Priority of the contract.
 	Priority param.Field[float64] `json:"priority"`
 	// This field's availability is dependent on your client's configuration.
@@ -792,7 +743,7 @@ type V1ContractNewParams struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices param.Field[V1ContractNewParamsScheduledChargesOnUsageInvoices] `json:"scheduled_charges_on_usage_invoices"`
-	SpendThresholdConfiguration     param.Field[V1ContractNewParamsSpendThresholdConfiguration]     `json:"spend_threshold_configuration"`
+	SpendThresholdConfiguration     param.Field[shared.SpendThresholdConfigurationParam]            `json:"spend_threshold_configuration"`
 	// Optional list of
 	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
 	// to add to the contract.
@@ -887,7 +838,7 @@ type V1ContractNewParamsCommit struct {
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration param.Field[V1ContractNewParamsCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// Required for "POSTPAID" commits: the true up invoice will be generated at this
 	// time and only one schedule item is allowed; the total must match access_schedule
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
@@ -909,7 +860,7 @@ type V1ContractNewParamsCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1ContractNewParamsCommitsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// A temporary ID for the commit that can be used to reference the commit for
 	// commit specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -957,128 +908,6 @@ type V1ContractNewParamsCommitsAccessScheduleScheduleItem struct {
 
 func (r V1ContractNewParamsCommitsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Optional configuration for commit hierarchy access control
-type V1ContractNewParamsCommitsHierarchyConfiguration struct {
-	ChildAccess param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                     `json:"contract_ids"`
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccess) implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V1ContractNewParamsCommitsHierarchyConfigurationChildAccess].
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion()
-}
-
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                             `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeAll         V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeNone        V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeContractIDs V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeAll, V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeNone, V1ContractNewParamsCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 // Required for "POSTPAID" commits: the true up invoice will be generated at this
@@ -1313,20 +1142,6 @@ func (r V1ContractNewParamsCommitsRateType) IsKnown() bool {
 	return false
 }
 
-type V1ContractNewParamsCommitsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1ContractNewParamsCommitsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type V1ContractNewParamsCredit struct {
 	// Schedule for distributing the credit to the customer.
 	AccessSchedule param.Field[V1ContractNewParamsCreditsAccessSchedule] `json:"access_schedule,required"`
@@ -1341,7 +1156,7 @@ type V1ContractNewParamsCredit struct {
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// Optional configuration for credit hierarchy access control
-	HierarchyConfiguration param.Field[V1ContractNewParamsCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -1354,7 +1169,7 @@ type V1ContractNewParamsCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1ContractNewParamsCreditsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 }
 
 func (r V1ContractNewParamsCredit) MarshalJSON() (data []byte, err error) {
@@ -1384,128 +1199,6 @@ func (r V1ContractNewParamsCreditsAccessScheduleScheduleItem) MarshalJSON() (dat
 	return apijson.MarshalRoot(r)
 }
 
-// Optional configuration for credit hierarchy access control
-type V1ContractNewParamsCreditsHierarchyConfiguration struct {
-	ChildAccess param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                     `json:"contract_ids"`
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccess) implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V1ContractNewParamsCreditsHierarchyConfigurationChildAccess].
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion()
-}
-
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                             `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeAll         V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeNone        V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeContractIDs V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeAll, V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeNone, V1ContractNewParamsCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 type V1ContractNewParamsCreditsRateType string
 
 const (
@@ -1519,20 +1212,6 @@ func (r V1ContractNewParamsCreditsRateType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type V1ContractNewParamsCreditsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1ContractNewParamsCreditsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type V1ContractNewParamsDiscount struct {
@@ -1866,171 +1545,6 @@ func (r V1ContractNewParamsOverridesType) IsKnown() bool {
 	return false
 }
 
-type V1ContractNewParamsPrepaidBalanceThresholdConfiguration struct {
-	Commit param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommit] `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         param.Field[bool]                                                                     `json:"is_enabled,required"`
-	PaymentGateConfig param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfig] `json:"payment_gate_config,required"`
-	// Specify the amount the balance should be recharged to.
-	RechargeToAmount param.Field[float64] `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's prepaid
-	// balance lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
-	// If provided, the threshold, recharge-to amount, and the resulting threshold
-	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id" format:"uuid"`
-}
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID param.Field[string] `json:"product_id,required"`
-	// Which products the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
-	Description           param.Field[string]   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name param.Field[string] `json:"name"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommitSpecifier] `json:"specifiers"`
-}
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommitSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig] `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
-}
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount param.Field[float64] `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Field[string] `json:"tax_name"`
-}
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-type V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType param.Field[V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
-}
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// If left blank, will default to INVOICE
-type V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone          V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe        V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe, V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
 type V1ContractNewParamsProfessionalService struct {
 	// Maximum amount for the term.
 	MaxAmount param.Field[float64] `json:"max_amount,required"`
@@ -2072,7 +1586,7 @@ type V1ContractNewParamsRecurringCommit struct {
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount param.Field[V1ContractNewParamsRecurringCommitsInvoiceAmount] `json:"invoice_amount"`
 	// displayed on invoices. will be passed through to the individual commits
@@ -2098,7 +1612,7 @@ type V1ContractNewParamsRecurringCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1ContractNewParamsRecurringCommitsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig param.Field[V1ContractNewParamsRecurringCommitsSubscriptionConfig] `json:"subscription_config"`
 	// A temporary ID that can be used to reference the recurring commit for commit
@@ -2144,128 +1658,6 @@ const (
 func (r V1ContractNewParamsRecurringCommitsCommitDurationUnit) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsRecurringCommitsCommitDurationUnitPeriods:
-		return true
-	}
-	return false
-}
-
-// Optional configuration for recurring commit/credit hierarchy access control
-type V1ContractNewParamsRecurringCommitsHierarchyConfiguration struct {
-	ChildAccess param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                              `json:"contract_ids"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccess) implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccess].
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion()
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                      `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeAll         V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeNone        V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeAll, V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeNone, V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs:
 		return true
 	}
 	return false
@@ -2339,20 +1731,6 @@ func (r V1ContractNewParamsRecurringCommitsRecurrenceFrequency) IsKnown() bool {
 	return false
 }
 
-type V1ContractNewParamsRecurringCommitsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1ContractNewParamsRecurringCommitsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 // Attach a subscription to the recurring commit/credit.
 type V1ContractNewParamsRecurringCommitsSubscriptionConfig struct {
 	ApplySeatIncreaseConfig param.Field[V1ContractNewParamsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig] `json:"apply_seat_increase_config,required"`
@@ -2411,7 +1789,7 @@ type V1ContractNewParamsRecurringCredit struct {
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// displayed on invoices. will be passed through to the individual commits
 	Name param.Field[string] `json:"name"`
 	// Will be passed down to the individual commits
@@ -2435,7 +1813,7 @@ type V1ContractNewParamsRecurringCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1ContractNewParamsRecurringCreditsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig param.Field[V1ContractNewParamsRecurringCreditsSubscriptionConfig] `json:"subscription_config"`
 	// A temporary ID that can be used to reference the recurring commit for commit
@@ -2481,128 +1859,6 @@ const (
 func (r V1ContractNewParamsRecurringCreditsCommitDurationUnit) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsRecurringCreditsCommitDurationUnitPeriods:
-		return true
-	}
-	return false
-}
-
-// Optional configuration for recurring commit/credit hierarchy access control
-type V1ContractNewParamsRecurringCreditsHierarchyConfiguration struct {
-	ChildAccess param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                              `json:"contract_ids"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccess) implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccess].
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion()
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                      `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeAll         V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeNone        V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeAll, V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeNone, V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs:
 		return true
 	}
 	return false
@@ -2663,20 +1919,6 @@ func (r V1ContractNewParamsRecurringCreditsRecurrenceFrequency) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type V1ContractNewParamsRecurringCreditsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1ContractNewParamsRecurringCreditsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -2901,139 +2143,6 @@ const (
 func (r V1ContractNewParamsScheduledChargesOnUsageInvoices) IsKnown() bool {
 	switch r {
 	case V1ContractNewParamsScheduledChargesOnUsageInvoicesAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractNewParamsSpendThresholdConfiguration struct {
-	Commit param.Field[V1ContractNewParamsSpendThresholdConfigurationCommit] `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         param.Field[bool]                                                            `json:"is_enabled,required"`
-	PaymentGateConfig param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfig] `json:"payment_gate_config,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
-}
-
-func (r V1ContractNewParamsSpendThresholdConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsSpendThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID   param.Field[string] `json:"product_id,required"`
-	Description param.Field[string] `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name param.Field[string] `json:"name"`
-}
-
-func (r V1ContractNewParamsSpendThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig] `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
-}
-
-func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount param.Field[float64] `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Field[string] `json:"tax_name"`
-}
-
-func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-type V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType param.Field[V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
-}
-
-func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// If left blank, will default to INVOICE
-type V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone          V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe        V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe, V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
 		return true
 	}
 	return false
@@ -3365,7 +2474,7 @@ type V1ContractAmendParamsCommit struct {
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration param.Field[V1ContractAmendParamsCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// Required for "POSTPAID" commits: the true up invoice will be generated at this
 	// time and only one schedule item is allowed; the total must match access_schedule
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
@@ -3387,7 +2496,7 @@ type V1ContractAmendParamsCommit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1ContractAmendParamsCommitsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// A temporary ID for the commit that can be used to reference the commit for
 	// commit specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -3435,128 +2544,6 @@ type V1ContractAmendParamsCommitsAccessScheduleScheduleItem struct {
 
 func (r V1ContractAmendParamsCommitsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Optional configuration for commit hierarchy access control
-type V1ContractAmendParamsCommitsHierarchyConfiguration struct {
-	ChildAccess param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                       `json:"contract_ids"`
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccess) implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V1ContractAmendParamsCommitsHierarchyConfigurationChildAccess].
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion()
-}
-
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                               `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeAll         V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeNone        V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeContractIDs V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeAll, V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeNone, V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 // Required for "POSTPAID" commits: the true up invoice will be generated at this
@@ -3791,20 +2778,6 @@ func (r V1ContractAmendParamsCommitsRateType) IsKnown() bool {
 	return false
 }
 
-type V1ContractAmendParamsCommitsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1ContractAmendParamsCommitsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type V1ContractAmendParamsCredit struct {
 	// Schedule for distributing the credit to the customer.
 	AccessSchedule param.Field[V1ContractAmendParamsCreditsAccessSchedule] `json:"access_schedule,required"`
@@ -3819,7 +2792,7 @@ type V1ContractAmendParamsCredit struct {
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// Optional configuration for credit hierarchy access control
-	HierarchyConfiguration param.Field[V1ContractAmendParamsCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -3832,7 +2805,7 @@ type V1ContractAmendParamsCredit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1ContractAmendParamsCreditsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 }
 
 func (r V1ContractAmendParamsCredit) MarshalJSON() (data []byte, err error) {
@@ -3862,128 +2835,6 @@ func (r V1ContractAmendParamsCreditsAccessScheduleScheduleItem) MarshalJSON() (d
 	return apijson.MarshalRoot(r)
 }
 
-// Optional configuration for credit hierarchy access control
-type V1ContractAmendParamsCreditsHierarchyConfiguration struct {
-	ChildAccess param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                       `json:"contract_ids"`
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccess) implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V1ContractAmendParamsCreditsHierarchyConfigurationChildAccess].
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion()
-}
-
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                               `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeAll         V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeNone        V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeContractIDs V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeAll, V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeNone, V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 type V1ContractAmendParamsCreditsRateType string
 
 const (
@@ -3997,20 +2848,6 @@ func (r V1ContractAmendParamsCreditsRateType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type V1ContractAmendParamsCreditsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1ContractAmendParamsCreditsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type V1ContractAmendParamsDiscount struct {

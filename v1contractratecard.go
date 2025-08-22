@@ -397,10 +397,10 @@ type V1ContractRateCardGetRateScheduleResponseData struct {
 	BillingFrequency    V1ContractRateCardGetRateScheduleResponseDataBillingFrequency `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
-	CommitRate         V1ContractRateCardGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
-	EndingBefore       time.Time                                               `json:"ending_before" format:"date-time"`
-	PricingGroupValues map[string]string                                       `json:"pricing_group_values"`
-	JSON               v1ContractRateCardGetRateScheduleResponseDataJSON       `json:"-"`
+	CommitRate         shared.CommitRate                                 `json:"commit_rate"`
+	EndingBefore       time.Time                                         `json:"ending_before" format:"date-time"`
+	PricingGroupValues map[string]string                                 `json:"pricing_group_values"`
+	JSON               v1ContractRateCardGetRateScheduleResponseDataJSON `json:"-"`
 }
 
 // v1ContractRateCardGetRateScheduleResponseDataJSON contains the JSON metadata for
@@ -441,54 +441,6 @@ const (
 func (r V1ContractRateCardGetRateScheduleResponseDataBillingFrequency) IsKnown() bool {
 	switch r {
 	case V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyMonthly, V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyQuarterly, V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyAnnual, V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-// A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit.
-type V1ContractRateCardGetRateScheduleResponseDataCommitRate struct {
-	RateType V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
-	Price float64 `json:"price"`
-	// Only set for TIERED rate_type.
-	Tiers []shared.Tier                                               `json:"tiers"`
-	JSON  v1ContractRateCardGetRateScheduleResponseDataCommitRateJSON `json:"-"`
-}
-
-// v1ContractRateCardGetRateScheduleResponseDataCommitRateJSON contains the JSON
-// metadata for the struct
-// [V1ContractRateCardGetRateScheduleResponseDataCommitRate]
-type v1ContractRateCardGetRateScheduleResponseDataCommitRateJSON struct {
-	RateType    apijson.Field
-	Price       apijson.Field
-	Tiers       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetRateScheduleResponseDataCommitRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetRateScheduleResponseDataCommitRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType string
-
-const (
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeFlat         V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "FLAT"
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypePercentage   V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "PERCENTAGE"
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeSubscription V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "SUBSCRIPTION"
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeTiered       V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "TIERED"
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeCustom       V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "CUSTOM"
-)
-
-func (r V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeFlat, V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypePercentage, V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeSubscription, V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeTiered, V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeCustom:
 		return true
 	}
 	return false

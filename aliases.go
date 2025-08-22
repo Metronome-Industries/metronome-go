@@ -10,6 +10,12 @@ import (
 type Error = apierror.Error
 
 // This is an alias to an internal type.
+type BaseThresholdCommit = shared.BaseThresholdCommit
+
+// This is an alias to an internal type.
+type BaseThresholdCommitParam = shared.BaseThresholdCommitParam
+
+// This is an alias to an internal type.
 type BaseUsageFilter = shared.BaseUsageFilter
 
 // This is an alias to an internal type.
@@ -32,53 +38,6 @@ const CommitTypePostpaid = shared.CommitTypePostpaid
 
 // This is an alias to an internal type.
 type CommitContract = shared.CommitContract
-
-// Optional configuration for commit hierarchy access control
-//
-// This is an alias to an internal type.
-type CommitHierarchyConfiguration = shared.CommitHierarchyConfiguration
-
-// This is an alias to an internal type.
-type CommitHierarchyConfigurationChildAccess = shared.CommitHierarchyConfigurationChildAccess
-
-// This is an alias to an internal type.
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
-
-// This is an alias to an internal type.
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
-
-// This is an alias to an internal value.
-const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
-
-// This is an alias to an internal type.
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
-
-// This is an alias to an internal type.
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
-
-// This is an alias to an internal value.
-const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
-
-// This is an alias to an internal type.
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
-
-// This is an alias to an internal type.
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
-
-// This is an alias to an internal value.
-const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
-
-// This is an alias to an internal type.
-type CommitHierarchyConfigurationChildAccessType = shared.CommitHierarchyConfigurationChildAccessType
-
-// This is an alias to an internal value.
-const CommitHierarchyConfigurationChildAccessTypeAll = shared.CommitHierarchyConfigurationChildAccessTypeAll
-
-// This is an alias to an internal value.
-const CommitHierarchyConfigurationChildAccessTypeNone = shared.CommitHierarchyConfigurationChildAccessTypeNone
-
-// This is an alias to an internal value.
-const CommitHierarchyConfigurationChildAccessTypeContractIDs = shared.CommitHierarchyConfigurationChildAccessTypeContractIDs
 
 // The contract that this commit will be billed on.
 //
@@ -272,7 +231,103 @@ const CommitRateTypeListRate = shared.CommitRateTypeListRate
 type CommitRolledOverFrom = shared.CommitRolledOverFrom
 
 // This is an alias to an internal type.
+type CommitHierarchyConfiguration = shared.CommitHierarchyConfiguration
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccess = shared.CommitHierarchyConfigurationChildAccess
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessType = shared.CommitHierarchyConfigurationChildAccessType
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessTypeAll = shared.CommitHierarchyConfigurationChildAccessTypeAll
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessTypeNone = shared.CommitHierarchyConfigurationChildAccessTypeNone
+
+// This is an alias to an internal value.
+const CommitHierarchyConfigurationChildAccessTypeContractIDs = shared.CommitHierarchyConfigurationChildAccessTypeContractIDs
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationParam = shared.CommitHierarchyConfigurationParam
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessUnionParam = shared.CommitHierarchyConfigurationChildAccessUnionParam
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneParam = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneParam
+
+// This is an alias to an internal type.
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsParam = shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsParam
+
+// A distinct rate on the rate card. You can choose to use this rate rather than
+// list rate when consuming a credit or commit.
+//
+// This is an alias to an internal type.
+type CommitRate = shared.CommitRate
+
+// This is an alias to an internal type.
+type CommitRateRateType = shared.CommitRateRateType
+
+// This is an alias to an internal value.
+const CommitRateRateTypeFlat = shared.CommitRateRateTypeFlat
+
+// This is an alias to an internal value.
+const CommitRateRateTypePercentage = shared.CommitRateRateTypePercentage
+
+// This is an alias to an internal value.
+const CommitRateRateTypeSubscription = shared.CommitRateRateTypeSubscription
+
+// This is an alias to an internal value.
+const CommitRateRateTypeTiered = shared.CommitRateRateTypeTiered
+
+// This is an alias to an internal value.
+const CommitRateRateTypeCustom = shared.CommitRateRateTypeCustom
+
+// A distinct rate on the rate card. You can choose to use this rate rather than
+// list rate when consuming a credit or commit.
+//
+// This is an alias to an internal type.
+type CommitRateParam = shared.CommitRateParam
+
+// This is an alias to an internal type.
 type CommitSpecifier = shared.CommitSpecifier
+
+// This is an alias to an internal type.
+type CommitSpecifierInput = shared.CommitSpecifierInput
+
+// This is an alias to an internal type.
+type CommitSpecifierInputParam = shared.CommitSpecifierInputParam
 
 // This is an alias to an internal type.
 type Contract = shared.Contract
@@ -345,75 +400,6 @@ const ContractCustomerBillingProviderConfigurationDeliveryMethodTackle = shared.
 // This is an alias to an internal value.
 const ContractCustomerBillingProviderConfigurationDeliveryMethodAwsSns = shared.ContractCustomerBillingProviderConfigurationDeliveryMethodAwsSns
 
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfiguration = shared.ContractPrepaidBalanceThresholdConfiguration
-
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfigurationCommit = shared.ContractPrepaidBalanceThresholdConfigurationCommit
-
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfigurationCommitSpecifier = shared.ContractPrepaidBalanceThresholdConfigurationCommitSpecifier
-
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfig = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfig
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-//
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig
-
-// Only applicable if using STRIPE as your payment gate type.
-//
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig
-
-// If left blank, will default to INVOICE
-//
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-//
-// This is an alias to an internal type.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok
-
-// This is an alias to an internal value.
-const ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated = shared.ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated
-
 // Determines which scheduled and commit charges to consolidate onto the Contract's
 // usage invoice. The charge's `timestamp` must match the usage invoice's
 // `ending_before` date for consolidation to occur. This field cannot be modified
@@ -425,120 +411,6 @@ type ContractScheduledChargesOnUsageInvoices = shared.ContractScheduledChargesOn
 
 // This is an alias to an internal value.
 const ContractScheduledChargesOnUsageInvoicesAll = shared.ContractScheduledChargesOnUsageInvoicesAll
-
-// This is an alias to an internal type.
-type ContractSpendThresholdConfiguration = shared.ContractSpendThresholdConfiguration
-
-// This is an alias to an internal type.
-type ContractSpendThresholdConfigurationCommit = shared.ContractSpendThresholdConfigurationCommit
-
-// This is an alias to an internal type.
-type ContractSpendThresholdConfigurationPaymentGateConfig = shared.ContractSpendThresholdConfigurationPaymentGateConfig
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-//
-// This is an alias to an internal type.
-type ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateType = shared.ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateType
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone = shared.ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe = shared.ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// This is an alias to an internal type.
-type ContractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig = shared.ContractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig
-
-// Only applicable if using STRIPE as your payment gate type.
-//
-// This is an alias to an internal type.
-type ContractSpendThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractSpendThresholdConfigurationPaymentGateConfigStripeConfig
-
-// If left blank, will default to INVOICE
-//
-// This is an alias to an internal type.
-type ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = shared.ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice = shared.ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-//
-// This is an alias to an internal type.
-type ContractSpendThresholdConfigurationPaymentGateConfigTaxType = shared.ContractSpendThresholdConfigurationPaymentGateConfigTaxType
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeNone = shared.ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeNone
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok = shared.ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok
-
-// This is an alias to an internal value.
-const ContractSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated = shared.ContractSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated
-
-// This is an alias to an internal type.
-type ContractSubscription = shared.ContractSubscription
-
-// This is an alias to an internal type.
-type ContractSubscriptionsCollectionSchedule = shared.ContractSubscriptionsCollectionSchedule
-
-// This is an alias to an internal value.
-const ContractSubscriptionsCollectionScheduleAdvance = shared.ContractSubscriptionsCollectionScheduleAdvance
-
-// This is an alias to an internal value.
-const ContractSubscriptionsCollectionScheduleArrears = shared.ContractSubscriptionsCollectionScheduleArrears
-
-// This is an alias to an internal type.
-type ContractSubscriptionsProration = shared.ContractSubscriptionsProration
-
-// This is an alias to an internal type.
-type ContractSubscriptionsProrationInvoiceBehavior = shared.ContractSubscriptionsProrationInvoiceBehavior
-
-// This is an alias to an internal value.
-const ContractSubscriptionsProrationInvoiceBehaviorBillImmediately = shared.ContractSubscriptionsProrationInvoiceBehaviorBillImmediately
-
-// This is an alias to an internal value.
-const ContractSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate = shared.ContractSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate
-
-// This is an alias to an internal type.
-type ContractSubscriptionsQuantitySchedule = shared.ContractSubscriptionsQuantitySchedule
-
-// This is an alias to an internal type.
-type ContractSubscriptionsSubscriptionRate = shared.ContractSubscriptionsSubscriptionRate
-
-// This is an alias to an internal type.
-type ContractSubscriptionsSubscriptionRateBillingFrequency = shared.ContractSubscriptionsSubscriptionRateBillingFrequency
-
-// This is an alias to an internal value.
-const ContractSubscriptionsSubscriptionRateBillingFrequencyMonthly = shared.ContractSubscriptionsSubscriptionRateBillingFrequencyMonthly
-
-// This is an alias to an internal value.
-const ContractSubscriptionsSubscriptionRateBillingFrequencyQuarterly = shared.ContractSubscriptionsSubscriptionRateBillingFrequencyQuarterly
-
-// This is an alias to an internal value.
-const ContractSubscriptionsSubscriptionRateBillingFrequencyAnnual = shared.ContractSubscriptionsSubscriptionRateBillingFrequencyAnnual
-
-// This is an alias to an internal value.
-const ContractSubscriptionsSubscriptionRateBillingFrequencyWeekly = shared.ContractSubscriptionsSubscriptionRateBillingFrequencyWeekly
-
-// This is an alias to an internal type.
-type ContractSubscriptionsSubscriptionRateProduct = shared.ContractSubscriptionsSubscriptionRateProduct
 
 // This is an alias to an internal type.
 type ContractV2 = shared.ContractV2
@@ -560,53 +432,6 @@ const ContractV2CommitsTypePostpaid = shared.ContractV2CommitsTypePostpaid
 
 // This is an alias to an internal type.
 type ContractV2CommitsContract = shared.ContractV2CommitsContract
-
-// Optional configuration for commit hierarchy access control
-//
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfiguration = shared.ContractV2CommitsHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfigurationChildAccess = shared.ContractV2CommitsHierarchyConfigurationChildAccess
-
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
-
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
-
-// This is an alias to an internal value.
-const ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
-
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
-
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
-
-// This is an alias to an internal value.
-const ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
-
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
-
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
-
-// This is an alias to an internal value.
-const ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
-
-// This is an alias to an internal type.
-type ContractV2CommitsHierarchyConfigurationChildAccessType = shared.ContractV2CommitsHierarchyConfigurationChildAccessType
-
-// This is an alias to an internal value.
-const ContractV2CommitsHierarchyConfigurationChildAccessTypeAll = shared.ContractV2CommitsHierarchyConfigurationChildAccessTypeAll
-
-// This is an alias to an internal value.
-const ContractV2CommitsHierarchyConfigurationChildAccessTypeNone = shared.ContractV2CommitsHierarchyConfigurationChildAccessTypeNone
-
-// This is an alias to an internal value.
-const ContractV2CommitsHierarchyConfigurationChildAccessTypeContractIDs = shared.ContractV2CommitsHierarchyConfigurationChildAccessTypeContractIDs
 
 // The contract that this commit will be billed on.
 //
@@ -800,9 +625,6 @@ const ContractV2CommitsRateTypeListRate = shared.ContractV2CommitsRateTypeListRa
 type ContractV2CommitsRolledOverFrom = shared.ContractV2CommitsRolledOverFrom
 
 // This is an alias to an internal type.
-type ContractV2CommitsSpecifier = shared.ContractV2CommitsSpecifier
-
-// This is an alias to an internal type.
 type ContractV2Override = shared.ContractV2Override
 
 // This is an alias to an internal type.
@@ -822,9 +644,6 @@ const ContractV2OverridesOverrideSpecifiersBillingFrequencyAnnual = shared.Contr
 
 // This is an alias to an internal value.
 const ContractV2OverridesOverrideSpecifiersBillingFrequencyWeekly = shared.ContractV2OverridesOverrideSpecifiersBillingFrequencyWeekly
-
-// This is an alias to an internal type.
-type ContractV2OverridesOverrideTier = shared.ContractV2OverridesOverrideTier
 
 // This is an alias to an internal type.
 type ContractV2OverridesOverwriteRate = shared.ContractV2OverridesOverwriteRate
@@ -919,53 +738,6 @@ const ContractV2CreditsTypeCredit = shared.ContractV2CreditsTypeCredit
 // This is an alias to an internal type.
 type ContractV2CreditsContract = shared.ContractV2CreditsContract
 
-// Optional configuration for credit hierarchy access control
-//
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfiguration = shared.ContractV2CreditsHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfigurationChildAccess = shared.ContractV2CreditsHierarchyConfigurationChildAccess
-
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
-
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
-
-// This is an alias to an internal value.
-const ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
-
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
-
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
-
-// This is an alias to an internal value.
-const ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
-
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
-
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
-
-// This is an alias to an internal value.
-const ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
-
-// This is an alias to an internal type.
-type ContractV2CreditsHierarchyConfigurationChildAccessType = shared.ContractV2CreditsHierarchyConfigurationChildAccessType
-
-// This is an alias to an internal value.
-const ContractV2CreditsHierarchyConfigurationChildAccessTypeAll = shared.ContractV2CreditsHierarchyConfigurationChildAccessTypeAll
-
-// This is an alias to an internal value.
-const ContractV2CreditsHierarchyConfigurationChildAccessTypeNone = shared.ContractV2CreditsHierarchyConfigurationChildAccessTypeNone
-
-// This is an alias to an internal value.
-const ContractV2CreditsHierarchyConfigurationChildAccessTypeContractIDs = shared.ContractV2CreditsHierarchyConfigurationChildAccessTypeContractIDs
-
 // This is an alias to an internal type.
 type ContractV2CreditsLedger = shared.ContractV2CreditsLedger
 
@@ -1056,9 +828,6 @@ const ContractV2CreditsLedgerTypeCreditManual = shared.ContractV2CreditsLedgerTy
 // This is an alias to an internal value.
 const ContractV2CreditsLedgerTypeCreditSeatBasedAdjustment = shared.ContractV2CreditsLedgerTypeCreditSeatBasedAdjustment
 
-// This is an alias to an internal type.
-type ContractV2CreditsSpecifier = shared.ContractV2CreditsSpecifier
-
 // This field's availability is dependent on your client's configuration.
 //
 // This is an alias to an internal type.
@@ -1112,26 +881,6 @@ const ContractV2CustomerBillingProviderConfigurationDeliveryMethodAwsSns = share
 // This is an alias to an internal type.
 type ContractV2HasMore = shared.ContractV2HasMore
 
-// Either a **parent** configuration with a list of children or a **child**
-// configuration with a single parent.
-//
-// This is an alias to an internal type.
-type ContractV2HierarchyConfiguration = shared.ContractV2HierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractV2HierarchyConfigurationParentHierarchyConfiguration = shared.ContractV2HierarchyConfigurationParentHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractV2HierarchyConfigurationParentHierarchyConfigurationChild = shared.ContractV2HierarchyConfigurationParentHierarchyConfigurationChild
-
-// This is an alias to an internal type.
-type ContractV2HierarchyConfigurationChildHierarchyConfiguration = shared.ContractV2HierarchyConfigurationChildHierarchyConfiguration
-
-// The single parent contract/customer for this child.
-//
-// This is an alias to an internal type.
-type ContractV2HierarchyConfigurationChildHierarchyConfigurationParent = shared.ContractV2HierarchyConfigurationChildHierarchyConfigurationParent
-
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 // prices automatically. EXPLICIT prioritization requires specifying priorities for
 // each multiplier; the one with the lowest priority value will be prioritized
@@ -1145,75 +894,6 @@ const ContractV2MultiplierOverridePrioritizationLowestMultiplier = shared.Contra
 
 // This is an alias to an internal value.
 const ContractV2MultiplierOverridePrioritizationExplicit = shared.ContractV2MultiplierOverridePrioritizationExplicit
-
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfiguration = shared.ContractV2PrepaidBalanceThresholdConfiguration
-
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfigurationCommit = shared.ContractV2PrepaidBalanceThresholdConfigurationCommit
-
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfigurationCommitSpecifier = shared.ContractV2PrepaidBalanceThresholdConfigurationCommitSpecifier
-
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfig = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfig
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-//
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig
-
-// Only applicable if using STRIPE as your payment gateway type.
-//
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig
-
-// If left blank, will default to INVOICE
-//
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-//
-// This is an alias to an internal type.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok
-
-// This is an alias to an internal value.
-const ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated = shared.ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated
 
 // This is an alias to an internal type.
 type ContractV2RecurringCommit = shared.ContractV2RecurringCommit
@@ -1250,53 +930,6 @@ const ContractV2RecurringCommitsRateTypeListRate = shared.ContractV2RecurringCom
 
 // This is an alias to an internal type.
 type ContractV2RecurringCommitsContract = shared.ContractV2RecurringCommitsContract
-
-// Optional configuration for recurring credit hierarchy access control
-//
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfiguration = shared.ContractV2RecurringCommitsHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccess = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccess
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
-
-// This is an alias to an internal value.
-const ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
-
-// This is an alias to an internal value.
-const ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
-
-// This is an alias to an internal value.
-const ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessType = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessType
-
-// This is an alias to an internal value.
-const ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeAll = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeAll
-
-// This is an alias to an internal value.
-const ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeNone = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeNone
-
-// This is an alias to an internal value.
-const ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs = shared.ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs
 
 // The amount the customer should be billed for the commit. Not required.
 //
@@ -1341,9 +974,6 @@ const ContractV2RecurringCommitsRecurrenceFrequencyAnnual = shared.ContractV2Rec
 
 // This is an alias to an internal value.
 const ContractV2RecurringCommitsRecurrenceFrequencyWeekly = shared.ContractV2RecurringCommitsRecurrenceFrequencyWeekly
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsSpecifier = shared.ContractV2RecurringCommitsSpecifier
 
 // Attach a subscription to the recurring commit/credit.
 //
@@ -1398,53 +1028,6 @@ const ContractV2RecurringCreditsRateTypeListRate = shared.ContractV2RecurringCre
 // This is an alias to an internal type.
 type ContractV2RecurringCreditsContract = shared.ContractV2RecurringCreditsContract
 
-// Optional configuration for recurring credit hierarchy access control
-//
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfiguration = shared.ContractV2RecurringCreditsHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccess = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccess
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
-
-// This is an alias to an internal value.
-const ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
-
-// This is an alias to an internal value.
-const ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
-
-// This is an alias to an internal value.
-const ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessType = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessType
-
-// This is an alias to an internal value.
-const ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeAll = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeAll
-
-// This is an alias to an internal value.
-const ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeNone = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeNone
-
-// This is an alias to an internal value.
-const ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs = shared.ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs
-
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
 //
@@ -1483,9 +1066,6 @@ const ContractV2RecurringCreditsRecurrenceFrequencyAnnual = shared.ContractV2Rec
 
 // This is an alias to an internal value.
 const ContractV2RecurringCreditsRecurrenceFrequencyWeekly = shared.ContractV2RecurringCreditsRecurrenceFrequencyWeekly
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsSpecifier = shared.ContractV2RecurringCreditsSpecifier
 
 // Attach a subscription to the recurring commit/credit.
 //
@@ -1553,120 +1133,6 @@ type ContractV2ScheduledChargesOnUsageInvoices = shared.ContractV2ScheduledCharg
 const ContractV2ScheduledChargesOnUsageInvoicesAll = shared.ContractV2ScheduledChargesOnUsageInvoicesAll
 
 // This is an alias to an internal type.
-type ContractV2SpendThresholdConfiguration = shared.ContractV2SpendThresholdConfiguration
-
-// This is an alias to an internal type.
-type ContractV2SpendThresholdConfigurationCommit = shared.ContractV2SpendThresholdConfigurationCommit
-
-// This is an alias to an internal type.
-type ContractV2SpendThresholdConfigurationPaymentGateConfig = shared.ContractV2SpendThresholdConfigurationPaymentGateConfig
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-//
-// This is an alias to an internal type.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateType = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateType
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// This is an alias to an internal type.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig
-
-// Only applicable if using STRIPE as your payment gateway type.
-//
-// This is an alias to an internal type.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfig
-
-// If left blank, will default to INVOICE
-//
-// This is an alias to an internal type.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-//
-// This is an alias to an internal type.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeNone = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeNone
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeStripe
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok
-
-// This is an alias to an internal value.
-const ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated = shared.ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated
-
-// This is an alias to an internal type.
-type ContractV2Subscription = shared.ContractV2Subscription
-
-// This is an alias to an internal type.
-type ContractV2SubscriptionsCollectionSchedule = shared.ContractV2SubscriptionsCollectionSchedule
-
-// This is an alias to an internal value.
-const ContractV2SubscriptionsCollectionScheduleAdvance = shared.ContractV2SubscriptionsCollectionScheduleAdvance
-
-// This is an alias to an internal value.
-const ContractV2SubscriptionsCollectionScheduleArrears = shared.ContractV2SubscriptionsCollectionScheduleArrears
-
-// This is an alias to an internal type.
-type ContractV2SubscriptionsProration = shared.ContractV2SubscriptionsProration
-
-// This is an alias to an internal type.
-type ContractV2SubscriptionsProrationInvoiceBehavior = shared.ContractV2SubscriptionsProrationInvoiceBehavior
-
-// This is an alias to an internal value.
-const ContractV2SubscriptionsProrationInvoiceBehaviorBillImmediately = shared.ContractV2SubscriptionsProrationInvoiceBehaviorBillImmediately
-
-// This is an alias to an internal value.
-const ContractV2SubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate = shared.ContractV2SubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate
-
-// This is an alias to an internal type.
-type ContractV2SubscriptionsQuantitySchedule = shared.ContractV2SubscriptionsQuantitySchedule
-
-// This is an alias to an internal type.
-type ContractV2SubscriptionsSubscriptionRate = shared.ContractV2SubscriptionsSubscriptionRate
-
-// This is an alias to an internal type.
-type ContractV2SubscriptionsSubscriptionRateBillingFrequency = shared.ContractV2SubscriptionsSubscriptionRateBillingFrequency
-
-// This is an alias to an internal value.
-const ContractV2SubscriptionsSubscriptionRateBillingFrequencyMonthly = shared.ContractV2SubscriptionsSubscriptionRateBillingFrequencyMonthly
-
-// This is an alias to an internal value.
-const ContractV2SubscriptionsSubscriptionRateBillingFrequencyQuarterly = shared.ContractV2SubscriptionsSubscriptionRateBillingFrequencyQuarterly
-
-// This is an alias to an internal value.
-const ContractV2SubscriptionsSubscriptionRateBillingFrequencyAnnual = shared.ContractV2SubscriptionsSubscriptionRateBillingFrequencyAnnual
-
-// This is an alias to an internal value.
-const ContractV2SubscriptionsSubscriptionRateBillingFrequencyWeekly = shared.ContractV2SubscriptionsSubscriptionRateBillingFrequencyWeekly
-
-// This is an alias to an internal type.
-type ContractV2SubscriptionsSubscriptionRateProduct = shared.ContractV2SubscriptionsSubscriptionRateProduct
-
-// This is an alias to an internal type.
 type ContractWithoutAmendments = shared.ContractWithoutAmendments
 
 // This is an alias to an internal type.
@@ -1698,95 +1164,6 @@ const ContractWithoutAmendmentsUsageStatementScheduleFrequencyAnnual = shared.Co
 
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsUsageStatementScheduleFrequencyWeekly = shared.ContractWithoutAmendmentsUsageStatementScheduleFrequencyWeekly
-
-// Either a **parent** configuration with a list of children or a **child**
-// configuration with a single parent.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsHierarchyConfiguration = shared.ContractWithoutAmendmentsHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration = shared.ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild = shared.ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration = shared.ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration
-
-// The single parent contract/customer for this child.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent = shared.ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifier = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifier
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig
-
-// Only applicable if using STRIPE as your payment gate type.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig
-
-// If left blank, will default to INVOICE
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated = shared.ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCommit = shared.ContractWithoutAmendmentsRecurringCommit
@@ -1823,53 +1200,6 @@ const ContractWithoutAmendmentsRecurringCommitsRateTypeListRate = shared.Contrac
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCommitsContract = shared.ContractWithoutAmendmentsRecurringCommitsContract
-
-// Optional configuration for recurring commit/credit hierarchy access control
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeAll = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeAll
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeNone = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeNone
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs = shared.ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs
 
 // The amount the customer should be billed for the commit. Not required.
 //
@@ -1914,9 +1244,6 @@ const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual = share
 
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsSpecifier = shared.ContractWithoutAmendmentsRecurringCommitsSpecifier
 
 // Attach a subscription to the recurring commit/credit.
 //
@@ -1971,53 +1298,6 @@ const ContractWithoutAmendmentsRecurringCreditsRateTypeListRate = shared.Contrac
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCreditsContract = shared.ContractWithoutAmendmentsRecurringCreditsContract
 
-// Optional configuration for recurring commit/credit hierarchy access control
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeAll = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeAll
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeNone = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeNone
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs = shared.ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs
-
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
 //
@@ -2056,9 +1336,6 @@ const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual = share
 
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsSpecifier = shared.ContractWithoutAmendmentsRecurringCreditsSpecifier
 
 // Attach a subscription to the recurring commit/credit.
 //
@@ -2108,72 +1385,6 @@ type ContractWithoutAmendmentsScheduledChargesOnUsageInvoices = shared.ContractW
 const ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll = shared.ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll
 
 // This is an alias to an internal type.
-type ContractWithoutAmendmentsSpendThresholdConfiguration = shared.ContractWithoutAmendmentsSpendThresholdConfiguration
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationCommit = shared.ContractWithoutAmendmentsSpendThresholdConfigurationCommit
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig
-
-// Only applicable if using STRIPE as your payment gate type.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig
-
-// If left blank, will default to INVOICE
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated = shared.ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated
-
-// This is an alias to an internal type.
 type ContractWithoutAmendmentsUsageFilter = shared.ContractWithoutAmendmentsUsageFilter
 
 // This is an alias to an internal type.
@@ -2193,53 +1404,6 @@ const CreditTypeCredit = shared.CreditTypeCredit
 
 // This is an alias to an internal type.
 type CreditContract = shared.CreditContract
-
-// Optional configuration for credit hierarchy access control
-//
-// This is an alias to an internal type.
-type CreditHierarchyConfiguration = shared.CreditHierarchyConfiguration
-
-// This is an alias to an internal type.
-type CreditHierarchyConfigurationChildAccess = shared.CreditHierarchyConfigurationChildAccess
-
-// This is an alias to an internal type.
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll
-
-// This is an alias to an internal type.
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType
-
-// This is an alias to an internal value.
-const CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll
-
-// This is an alias to an internal type.
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone
-
-// This is an alias to an internal type.
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType
-
-// This is an alias to an internal value.
-const CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone
-
-// This is an alias to an internal type.
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs
-
-// This is an alias to an internal type.
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType
-
-// This is an alias to an internal value.
-const CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs = shared.CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs
-
-// This is an alias to an internal type.
-type CreditHierarchyConfigurationChildAccessType = shared.CreditHierarchyConfigurationChildAccessType
-
-// This is an alias to an internal value.
-const CreditHierarchyConfigurationChildAccessTypeAll = shared.CreditHierarchyConfigurationChildAccessTypeAll
-
-// This is an alias to an internal value.
-const CreditHierarchyConfigurationChildAccessTypeNone = shared.CreditHierarchyConfigurationChildAccessTypeNone
-
-// This is an alias to an internal value.
-const CreditHierarchyConfigurationChildAccessTypeContractIDs = shared.CreditHierarchyConfigurationChildAccessTypeContractIDs
 
 // This is an alias to an internal type.
 type CreditLedger = shared.CreditLedger
@@ -2341,9 +1505,6 @@ const CreditRateTypeCommitRate = shared.CreditRateTypeCommitRate
 const CreditRateTypeListRate = shared.CreditRateTypeListRate
 
 // This is an alias to an internal type.
-type CreditSpecifier = shared.CreditSpecifier
-
-// This is an alias to an internal type.
 type CreditTypeData = shared.CreditTypeData
 
 // This is an alias to an internal type.
@@ -2361,6 +1522,26 @@ type EventTypeFilter = shared.EventTypeFilter
 //
 // This is an alias to an internal type.
 type EventTypeFilterParam = shared.EventTypeFilterParam
+
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+//
+// This is an alias to an internal type.
+type HierarchyConfiguration = shared.HierarchyConfiguration
+
+// This is an alias to an internal type.
+type HierarchyConfigurationParentHierarchyConfiguration = shared.HierarchyConfigurationParentHierarchyConfiguration
+
+// This is an alias to an internal type.
+type HierarchyConfigurationParentHierarchyConfigurationChild = shared.HierarchyConfigurationParentHierarchyConfigurationChild
+
+// This is an alias to an internal type.
+type HierarchyConfigurationChildHierarchyConfiguration = shared.HierarchyConfigurationChildHierarchyConfiguration
+
+// The single parent contract/customer for this child.
+//
+// This is an alias to an internal type.
+type HierarchyConfigurationChildHierarchyConfigurationParent = shared.HierarchyConfigurationChildHierarchyConfigurationParent
 
 // This is an alias to an internal type.
 type ID = shared.ID
@@ -2388,9 +1569,6 @@ const OverrideOverrideSpecifiersBillingFrequencyAnnual = shared.OverrideOverride
 
 // This is an alias to an internal value.
 const OverrideOverrideSpecifiersBillingFrequencyWeekly = shared.OverrideOverrideSpecifiersBillingFrequencyWeekly
-
-// This is an alias to an internal type.
-type OverrideOverrideTier = shared.OverrideOverrideTier
 
 // This is an alias to an internal type.
 type OverrideOverwriteRate = shared.OverrideOverwriteRate
@@ -2456,6 +1634,179 @@ const OverrideTypeMultiplier = shared.OverrideTypeMultiplier
 const OverrideTypeTiered = shared.OverrideTypeTiered
 
 // This is an alias to an internal type.
+type OverrideTier = shared.OverrideTier
+
+// This is an alias to an internal type.
+type PaymentGateConfig = shared.PaymentGateConfig
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigPaymentGateType = shared.PaymentGateConfigPaymentGateType
+
+// This is an alias to an internal value.
+const PaymentGateConfigPaymentGateTypeNone = shared.PaymentGateConfigPaymentGateTypeNone
+
+// This is an alias to an internal value.
+const PaymentGateConfigPaymentGateTypeStripe = shared.PaymentGateConfigPaymentGateTypeStripe
+
+// This is an alias to an internal value.
+const PaymentGateConfigPaymentGateTypeExternal = shared.PaymentGateConfigPaymentGateTypeExternal
+
+// Only applicable if using PRECALCULATED as your tax type.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigPrecalculatedTaxConfig = shared.PaymentGateConfigPrecalculatedTaxConfig
+
+// Only applicable if using STRIPE as your payment gate type.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigStripeConfig = shared.PaymentGateConfigStripeConfig
+
+// If left blank, will default to INVOICE
+//
+// This is an alias to an internal type.
+type PaymentGateConfigStripeConfigPaymentType = shared.PaymentGateConfigStripeConfigPaymentType
+
+// This is an alias to an internal value.
+const PaymentGateConfigStripeConfigPaymentTypeInvoice = shared.PaymentGateConfigStripeConfigPaymentTypeInvoice
+
+// This is an alias to an internal value.
+const PaymentGateConfigStripeConfigPaymentTypePaymentIntent = shared.PaymentGateConfigStripeConfigPaymentTypePaymentIntent
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigTaxType = shared.PaymentGateConfigTaxType
+
+// This is an alias to an internal value.
+const PaymentGateConfigTaxTypeNone = shared.PaymentGateConfigTaxTypeNone
+
+// This is an alias to an internal value.
+const PaymentGateConfigTaxTypeStripe = shared.PaymentGateConfigTaxTypeStripe
+
+// This is an alias to an internal value.
+const PaymentGateConfigTaxTypeAnrok = shared.PaymentGateConfigTaxTypeAnrok
+
+// This is an alias to an internal value.
+const PaymentGateConfigTaxTypePrecalculated = shared.PaymentGateConfigTaxTypePrecalculated
+
+// This is an alias to an internal type.
+type PaymentGateConfigParam = shared.PaymentGateConfigParam
+
+// Only applicable if using PRECALCULATED as your tax type.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigPrecalculatedTaxConfigParam = shared.PaymentGateConfigPrecalculatedTaxConfigParam
+
+// Only applicable if using STRIPE as your payment gate type.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigStripeConfigParam = shared.PaymentGateConfigStripeConfigParam
+
+// This is an alias to an internal type.
+type PaymentGateConfigV2 = shared.PaymentGateConfigV2
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigV2PaymentGateType = shared.PaymentGateConfigV2PaymentGateType
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2PaymentGateTypeNone = shared.PaymentGateConfigV2PaymentGateTypeNone
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2PaymentGateTypeStripe = shared.PaymentGateConfigV2PaymentGateTypeStripe
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2PaymentGateTypeExternal = shared.PaymentGateConfigV2PaymentGateTypeExternal
+
+// Only applicable if using PRECALCULATED as your tax type.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigV2PrecalculatedTaxConfig = shared.PaymentGateConfigV2PrecalculatedTaxConfig
+
+// Only applicable if using STRIPE as your payment gateway type.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigV2StripeConfig = shared.PaymentGateConfigV2StripeConfig
+
+// If left blank, will default to INVOICE
+//
+// This is an alias to an internal type.
+type PaymentGateConfigV2StripeConfigPaymentType = shared.PaymentGateConfigV2StripeConfigPaymentType
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2StripeConfigPaymentTypeInvoice = shared.PaymentGateConfigV2StripeConfigPaymentTypeInvoice
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2StripeConfigPaymentTypePaymentIntent = shared.PaymentGateConfigV2StripeConfigPaymentTypePaymentIntent
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigV2TaxType = shared.PaymentGateConfigV2TaxType
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2TaxTypeNone = shared.PaymentGateConfigV2TaxTypeNone
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2TaxTypeStripe = shared.PaymentGateConfigV2TaxTypeStripe
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2TaxTypeAnrok = shared.PaymentGateConfigV2TaxTypeAnrok
+
+// This is an alias to an internal value.
+const PaymentGateConfigV2TaxTypePrecalculated = shared.PaymentGateConfigV2TaxTypePrecalculated
+
+// This is an alias to an internal type.
+type PaymentGateConfigV2Param = shared.PaymentGateConfigV2Param
+
+// Only applicable if using PRECALCULATED as your tax type.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigV2PrecalculatedTaxConfigParam = shared.PaymentGateConfigV2PrecalculatedTaxConfigParam
+
+// Only applicable if using STRIPE as your payment gateway type.
+//
+// This is an alias to an internal type.
+type PaymentGateConfigV2StripeConfigParam = shared.PaymentGateConfigV2StripeConfigParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfiguration = shared.PrepaidBalanceThresholdConfiguration
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationCommit = shared.PrepaidBalanceThresholdConfigurationCommit
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationParam = shared.PrepaidBalanceThresholdConfigurationParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationCommitParam = shared.PrepaidBalanceThresholdConfigurationCommitParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2 = shared.PrepaidBalanceThresholdConfigurationV2
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2Commit = shared.PrepaidBalanceThresholdConfigurationV2Commit
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2Param = shared.PrepaidBalanceThresholdConfigurationV2Param
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2CommitParam = shared.PrepaidBalanceThresholdConfigurationV2CommitParam
+
+// This is an alias to an internal type.
 type PropertyFilter = shared.PropertyFilter
 
 // This is an alias to an internal type.
@@ -2502,6 +1853,72 @@ type SchedulePointInTime = shared.SchedulePointInTime
 
 // This is an alias to an internal type.
 type SchedulePointInTimeScheduleItem = shared.SchedulePointInTimeScheduleItem
+
+// This is an alias to an internal type.
+type SpendThresholdConfiguration = shared.SpendThresholdConfiguration
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationParam = shared.SpendThresholdConfigurationParam
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationV2 = shared.SpendThresholdConfigurationV2
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationV2Commit = shared.SpendThresholdConfigurationV2Commit
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationV2Param = shared.SpendThresholdConfigurationV2Param
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationV2CommitParam = shared.SpendThresholdConfigurationV2CommitParam
+
+// This is an alias to an internal type.
+type Subscription = shared.Subscription
+
+// This is an alias to an internal type.
+type SubscriptionCollectionSchedule = shared.SubscriptionCollectionSchedule
+
+// This is an alias to an internal value.
+const SubscriptionCollectionScheduleAdvance = shared.SubscriptionCollectionScheduleAdvance
+
+// This is an alias to an internal value.
+const SubscriptionCollectionScheduleArrears = shared.SubscriptionCollectionScheduleArrears
+
+// This is an alias to an internal type.
+type SubscriptionProration = shared.SubscriptionProration
+
+// This is an alias to an internal type.
+type SubscriptionProrationInvoiceBehavior = shared.SubscriptionProrationInvoiceBehavior
+
+// This is an alias to an internal value.
+const SubscriptionProrationInvoiceBehaviorBillImmediately = shared.SubscriptionProrationInvoiceBehaviorBillImmediately
+
+// This is an alias to an internal value.
+const SubscriptionProrationInvoiceBehaviorBillOnNextCollectionDate = shared.SubscriptionProrationInvoiceBehaviorBillOnNextCollectionDate
+
+// This is an alias to an internal type.
+type SubscriptionQuantitySchedule = shared.SubscriptionQuantitySchedule
+
+// This is an alias to an internal type.
+type SubscriptionSubscriptionRate = shared.SubscriptionSubscriptionRate
+
+// This is an alias to an internal type.
+type SubscriptionSubscriptionRateBillingFrequency = shared.SubscriptionSubscriptionRateBillingFrequency
+
+// This is an alias to an internal value.
+const SubscriptionSubscriptionRateBillingFrequencyMonthly = shared.SubscriptionSubscriptionRateBillingFrequencyMonthly
+
+// This is an alias to an internal value.
+const SubscriptionSubscriptionRateBillingFrequencyQuarterly = shared.SubscriptionSubscriptionRateBillingFrequencyQuarterly
+
+// This is an alias to an internal value.
+const SubscriptionSubscriptionRateBillingFrequencyAnnual = shared.SubscriptionSubscriptionRateBillingFrequencyAnnual
+
+// This is an alias to an internal value.
+const SubscriptionSubscriptionRateBillingFrequencyWeekly = shared.SubscriptionSubscriptionRateBillingFrequencyWeekly
+
+// This is an alias to an internal type.
+type SubscriptionSubscriptionRateProduct = shared.SubscriptionSubscriptionRateProduct
 
 // This is an alias to an internal type.
 type Tier = shared.Tier

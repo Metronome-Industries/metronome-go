@@ -11,6 +11,49 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+type BaseThresholdCommit struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID   string `json:"product_id,required"`
+	Description string `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name string                  `json:"name"`
+	JSON baseThresholdCommitJSON `json:"-"`
+}
+
+// baseThresholdCommitJSON contains the JSON metadata for the struct
+// [BaseThresholdCommit]
+type baseThresholdCommitJSON struct {
+	ProductID   apijson.Field
+	Description apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BaseThresholdCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r baseThresholdCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type BaseThresholdCommitParam struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID   param.Field[string] `json:"product_id,required"`
+	Description param.Field[string] `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r BaseThresholdCommitParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type BaseUsageFilter struct {
 	GroupKey    string              `json:"group_key,required"`
 	GroupValues []string            `json:"group_values,required"`
@@ -201,231 +244,6 @@ func (r *CommitContract) UnmarshalJSON(data []byte) (err error) {
 
 func (r commitContractJSON) RawJSON() string {
 	return r.raw
-}
-
-// Optional configuration for commit hierarchy access control
-type CommitHierarchyConfiguration struct {
-	ChildAccess CommitHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        commitHierarchyConfigurationJSON        `json:"-"`
-}
-
-// commitHierarchyConfigurationJSON contains the JSON metadata for the struct
-// [CommitHierarchyConfiguration]
-type commitHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommitHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commitHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type CommitHierarchyConfigurationChildAccess struct {
-	Type CommitHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                 `json:"contract_ids"`
-	JSON        commitHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       CommitHierarchyConfigurationChildAccessUnion
-}
-
-// commitHierarchyConfigurationChildAccessJSON contains the JSON metadata for the
-// struct [CommitHierarchyConfigurationChildAccess]
-type commitHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r commitHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *CommitHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = CommitHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [CommitHierarchyConfigurationChildAccessUnion] interface which
-// you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r CommitHierarchyConfigurationChildAccess) AsUnion() CommitHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone] or
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type CommitHierarchyConfigurationChildAccessUnion interface {
-	implementsCommitHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*CommitHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsCommitHierarchyConfigurationChildAccess() {
-}
-
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsCommitHierarchyConfigurationChildAccess() {
-}
-
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                         `json:"contract_ids,required" format:"uuid"`
-	Type        CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsCommitHierarchyConfigurationChildAccess() {
-}
-
-type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type CommitHierarchyConfigurationChildAccessType string
-
-const (
-	CommitHierarchyConfigurationChildAccessTypeAll         CommitHierarchyConfigurationChildAccessType = "ALL"
-	CommitHierarchyConfigurationChildAccessTypeNone        CommitHierarchyConfigurationChildAccessType = "NONE"
-	CommitHierarchyConfigurationChildAccessTypeContractIDs CommitHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r CommitHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case CommitHierarchyConfigurationChildAccessTypeAll, CommitHierarchyConfigurationChildAccessTypeNone, CommitHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 // The contract that this commit will be billed on.
@@ -1281,6 +1099,353 @@ func (r commitRolledOverFromJSON) RawJSON() string {
 	return r.raw
 }
 
+type CommitHierarchyConfiguration struct {
+	ChildAccess CommitHierarchyConfigurationChildAccess `json:"child_access,required"`
+	JSON        commitHierarchyConfigurationJSON        `json:"-"`
+}
+
+// commitHierarchyConfigurationJSON contains the JSON metadata for the struct
+// [CommitHierarchyConfiguration]
+type commitHierarchyConfigurationJSON struct {
+	ChildAccess apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type CommitHierarchyConfigurationChildAccess struct {
+	Type CommitHierarchyConfigurationChildAccessType `json:"type,required"`
+	// This field can have the runtime type of [[]string].
+	ContractIDs interface{}                                 `json:"contract_ids"`
+	JSON        commitHierarchyConfigurationChildAccessJSON `json:"-"`
+	union       CommitHierarchyConfigurationChildAccessUnion
+}
+
+// commitHierarchyConfigurationChildAccessJSON contains the JSON metadata for the
+// struct [CommitHierarchyConfigurationChildAccess]
+type commitHierarchyConfigurationChildAccessJSON struct {
+	Type        apijson.Field
+	ContractIDs apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r commitHierarchyConfigurationChildAccessJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *CommitHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
+	*r = CommitHierarchyConfigurationChildAccess{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [CommitHierarchyConfigurationChildAccessUnion] interface which
+// you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+func (r CommitHierarchyConfigurationChildAccess) AsUnion() CommitHierarchyConfigurationChildAccessUnion {
+	return r.union
+}
+
+// Union satisfied by
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone] or
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
+type CommitHierarchyConfigurationChildAccessUnion interface {
+	implementsCommitHierarchyConfigurationChildAccess()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*CommitHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
+		},
+	)
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
+	Type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
+	JSON commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
+}
+
+// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
+// contains the JSON metadata for the struct
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
+type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsCommitHierarchyConfigurationChildAccess() {
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
+
+const (
+	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
+)
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
+	switch r {
+	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
+		return true
+	}
+	return false
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
+	Type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
+	JSON commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
+}
+
+// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
+// contains the JSON metadata for the struct
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
+type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsCommitHierarchyConfigurationChildAccess() {
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
+
+const (
+	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
+)
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
+	switch r {
+	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
+		return true
+	}
+	return false
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
+	ContractIDs []string                                                                         `json:"contract_ids,required" format:"uuid"`
+	Type        CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
+	JSON        commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
+}
+
+// commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
+// contains the JSON metadata for the struct
+// [CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
+type commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
+	ContractIDs apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsCommitHierarchyConfigurationChildAccess() {
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
+
+const (
+	CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
+)
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
+	switch r {
+	case CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type CommitHierarchyConfigurationChildAccessType string
+
+const (
+	CommitHierarchyConfigurationChildAccessTypeAll         CommitHierarchyConfigurationChildAccessType = "ALL"
+	CommitHierarchyConfigurationChildAccessTypeNone        CommitHierarchyConfigurationChildAccessType = "NONE"
+	CommitHierarchyConfigurationChildAccessTypeContractIDs CommitHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
+)
+
+func (r CommitHierarchyConfigurationChildAccessType) IsKnown() bool {
+	switch r {
+	case CommitHierarchyConfigurationChildAccessTypeAll, CommitHierarchyConfigurationChildAccessTypeNone, CommitHierarchyConfigurationChildAccessTypeContractIDs:
+		return true
+	}
+	return false
+}
+
+type CommitHierarchyConfigurationParam struct {
+	ChildAccess param.Field[CommitHierarchyConfigurationChildAccessUnionParam] `json:"child_access,required"`
+}
+
+func (r CommitHierarchyConfigurationParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type CommitHierarchyConfigurationChildAccessParam struct {
+	Type        param.Field[CommitHierarchyConfigurationChildAccessType] `json:"type,required"`
+	ContractIDs param.Field[interface{}]                                 `json:"contract_ids"`
+}
+
+func (r CommitHierarchyConfigurationChildAccessParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CommitHierarchyConfigurationChildAccessParam) implementsCommitHierarchyConfigurationChildAccessUnionParam() {
+}
+
+// Satisfied by
+// [shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam],
+// [shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneParam],
+// [shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsParam],
+// [CommitHierarchyConfigurationChildAccessParam].
+type CommitHierarchyConfigurationChildAccessUnionParam interface {
+	implementsCommitHierarchyConfigurationChildAccessUnionParam()
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam struct {
+	Type param.Field[CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam) implementsCommitHierarchyConfigurationChildAccessUnionParam() {
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneParam struct {
+	Type param.Field[CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneParam) implementsCommitHierarchyConfigurationChildAccessUnionParam() {
+}
+
+type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsParam struct {
+	ContractIDs param.Field[[]string]                                                                         `json:"contract_ids,required" format:"uuid"`
+	Type        param.Field[CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsParam) implementsCommitHierarchyConfigurationChildAccessUnionParam() {
+}
+
+// A distinct rate on the rate card. You can choose to use this rate rather than
+// list rate when consuming a credit or commit.
+type CommitRate struct {
+	RateType CommitRateRateType `json:"rate_type,required"`
+	// Commit rate price. For FLAT rate_type, this must be >=0.
+	Price float64 `json:"price"`
+	// Only set for TIERED rate_type.
+	Tiers []Tier         `json:"tiers"`
+	JSON  commitRateJSON `json:"-"`
+}
+
+// commitRateJSON contains the JSON metadata for the struct [CommitRate]
+type commitRateJSON struct {
+	RateType    apijson.Field
+	Price       apijson.Field
+	Tiers       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type CommitRateRateType string
+
+const (
+	CommitRateRateTypeFlat         CommitRateRateType = "FLAT"
+	CommitRateRateTypePercentage   CommitRateRateType = "PERCENTAGE"
+	CommitRateRateTypeSubscription CommitRateRateType = "SUBSCRIPTION"
+	CommitRateRateTypeTiered       CommitRateRateType = "TIERED"
+	CommitRateRateTypeCustom       CommitRateRateType = "CUSTOM"
+)
+
+func (r CommitRateRateType) IsKnown() bool {
+	switch r {
+	case CommitRateRateTypeFlat, CommitRateRateTypePercentage, CommitRateRateTypeSubscription, CommitRateRateTypeTiered, CommitRateRateTypeCustom:
+		return true
+	}
+	return false
+}
+
+// A distinct rate on the rate card. You can choose to use this rate rather than
+// list rate when consuming a credit or commit.
+type CommitRateParam struct {
+	RateType param.Field[CommitRateRateType] `json:"rate_type,required"`
+	// Commit rate price. For FLAT rate_type, this must be >=0.
+	Price param.Field[float64] `json:"price"`
+	// Only set for TIERED rate_type.
+	Tiers param.Field[[]TierParam] `json:"tiers"`
+}
+
+func (r CommitRateParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type CommitSpecifier struct {
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
 	PricingGroupValues      map[string]string `json:"pricing_group_values"`
@@ -1310,6 +1475,50 @@ func (r commitSpecifierJSON) RawJSON() string {
 	return r.raw
 }
 
+type CommitSpecifierInput struct {
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID string `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags []string                 `json:"product_tags"`
+	JSON        commitSpecifierInputJSON `json:"-"`
+}
+
+// commitSpecifierInputJSON contains the JSON metadata for the struct
+// [CommitSpecifierInput]
+type commitSpecifierInputJSON struct {
+	PresentationGroupValues apijson.Field
+	PricingGroupValues      apijson.Field
+	ProductID               apijson.Field
+	ProductTags             apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *CommitSpecifierInput) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitSpecifierInputJSON) RawJSON() string {
+	return r.raw
+}
+
+type CommitSpecifierInputParam struct {
+	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
+	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
+	// If provided, the specifier will only apply to the product with the specified ID.
+	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	// If provided, the specifier will only apply to products with all the specified
+	// tags.
+	ProductTags param.Field[[]string] `json:"product_tags"`
+}
+
+func (r CommitSpecifierInputParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type Contract struct {
 	ID         string                    `json:"id,required" format:"uuid"`
 	Amendments []ContractAmendment       `json:"amendments,required"`
@@ -1322,7 +1531,7 @@ type Contract struct {
 	CustomFields map[string]string `json:"custom_fields"`
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration ContractCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
-	PrepaidBalanceThresholdConfiguration ContractPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
+	PrepaidBalanceThresholdConfiguration PrepaidBalanceThresholdConfiguration         `json:"prepaid_balance_threshold_configuration"`
 	// Priority of the contract.
 	Priority float64 `json:"priority"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
@@ -1331,9 +1540,9 @@ type Contract struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices ContractScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
-	SpendThresholdConfiguration     ContractSpendThresholdConfiguration     `json:"spend_threshold_configuration"`
+	SpendThresholdConfiguration     SpendThresholdConfiguration             `json:"spend_threshold_configuration"`
 	// List of subscriptions on the contract.
-	Subscriptions []ContractSubscription `json:"subscriptions"`
+	Subscriptions []Subscription `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -1545,271 +1754,6 @@ func (r ContractCustomerBillingProviderConfigurationDeliveryMethod) IsKnown() bo
 	return false
 }
 
-type ContractPrepaidBalanceThresholdConfiguration struct {
-	Commit ContractPrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         bool                                                          `json:"is_enabled,required"`
-	PaymentGateConfig ContractPrepaidBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
-	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's prepaid
-	// balance lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
-	// If provided, the threshold, recharge-to amount, and the resulting threshold
-	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                           `json:"custom_credit_type_id" format:"uuid"`
-	JSON               contractPrepaidBalanceThresholdConfigurationJSON `json:"-"`
-}
-
-// contractPrepaidBalanceThresholdConfigurationJSON contains the JSON metadata for
-// the struct [ContractPrepaidBalanceThresholdConfiguration]
-type contractPrepaidBalanceThresholdConfigurationJSON struct {
-	Commit             apijson.Field
-	IsEnabled          apijson.Field
-	PaymentGateConfig  apijson.Field
-	RechargeToAmount   apijson.Field
-	ThresholdAmount    apijson.Field
-	CustomCreditTypeID apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *ContractPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractPrepaidBalanceThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractPrepaidBalanceThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags []string `json:"applicable_product_tags"`
-	Description           string   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string `json:"name"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers []ContractPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
-	JSON       contractPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
-}
-
-// contractPrepaidBalanceThresholdConfigurationCommitJSON contains the JSON
-// metadata for the struct [ContractPrepaidBalanceThresholdConfigurationCommit]
-type contractPrepaidBalanceThresholdConfigurationCommitJSON struct {
-	ProductID             apijson.Field
-	ApplicableProductIDs  apijson.Field
-	ApplicableProductTags apijson.Field
-	Description           apijson.Field
-	Name                  apijson.Field
-	Specifiers            apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *ContractPrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                        `json:"product_tags"`
-	JSON        contractPrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
-}
-
-// contractPrepaidBalanceThresholdConfigurationCommitSpecifierJSON contains the
-// JSON metadata for the struct
-// [ContractPrepaidBalanceThresholdConfigurationCommitSpecifier]
-type contractPrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractPrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractPrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    contractPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// contractPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON contains the
-// JSON metadata for the struct
-// [ContractPrepaidBalanceThresholdConfigurationPaymentGateConfig]
-type contractPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractPrepaidBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                                  `json:"tax_name"`
-	JSON    contractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// contractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type contractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                             `json:"invoice_metadata"`
-	JSON            contractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// contractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
-// contains the JSON metadata for the struct
-// [ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
-type contractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone          ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe        ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok         ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe, ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok, ContractPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
 // Determines which scheduled and commit charges to consolidate onto the Contract's
 // usage invoice. The charge's `timestamp` must match the usage invoice's
 // `ending_before` date for consolidation to occur. This field cannot be modified
@@ -1827,400 +1771,6 @@ func (r ContractScheduledChargesOnUsageInvoices) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ContractSpendThresholdConfiguration struct {
-	Commit ContractSpendThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         bool                                                 `json:"is_enabled,required"`
-	PaymentGateConfig ContractSpendThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                 `json:"threshold_amount,required"`
-	JSON            contractSpendThresholdConfigurationJSON `json:"-"`
-}
-
-// contractSpendThresholdConfigurationJSON contains the JSON metadata for the
-// struct [ContractSpendThresholdConfiguration]
-type contractSpendThresholdConfigurationJSON struct {
-	Commit            apijson.Field
-	IsEnabled         apijson.Field
-	PaymentGateConfig apijson.Field
-	ThresholdAmount   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *ContractSpendThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSpendThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractSpendThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID   string `json:"product_id,required"`
-	Description string `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string                                        `json:"name"`
-	JSON contractSpendThresholdConfigurationCommitJSON `json:"-"`
-}
-
-// contractSpendThresholdConfigurationCommitJSON contains the JSON metadata for the
-// struct [ContractSpendThresholdConfigurationCommit]
-type contractSpendThresholdConfigurationCommitJSON struct {
-	ProductID   apijson.Field
-	Description apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractSpendThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSpendThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractSpendThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig ContractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig ContractSpendThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType ContractSpendThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    contractSpendThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// contractSpendThresholdConfigurationPaymentGateConfigJSON contains the JSON
-// metadata for the struct [ContractSpendThresholdConfigurationPaymentGateConfig]
-type contractSpendThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractSpendThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSpendThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, ContractSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type ContractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                         `json:"tax_name"`
-	JSON    contractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// contractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [ContractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type contractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-type ContractSpendThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                    `json:"invoice_metadata"`
-	JSON            contractSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// contractSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON contains
-// the JSON metadata for the struct
-// [ContractSpendThresholdConfigurationPaymentGateConfigStripeConfig]
-type contractSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *ContractSpendThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type ContractSpendThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeNone          ContractSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe        ContractSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok         ContractSpendThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	ContractSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated ContractSpendThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r ContractSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe, ContractSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok, ContractSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
-type ContractSubscription struct {
-	CollectionSchedule ContractSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
-	Proration          ContractSubscriptionsProration          `json:"proration,required"`
-	// List of quantity schedule items for the subscription. Only includes the current
-	// quantity and future quantity changes.
-	QuantitySchedule []ContractSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt       time.Time                               `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate ContractSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	ID               string                                  `json:"id" format:"uuid"`
-	CustomFields     map[string]string                       `json:"custom_fields"`
-	Description      string                                  `json:"description"`
-	EndingBefore     time.Time                               `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                                  `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                                  `json:"name"`
-	JSON             contractSubscriptionJSON                `json:"-"`
-}
-
-// contractSubscriptionJSON contains the JSON metadata for the struct
-// [ContractSubscription]
-type contractSubscriptionJSON struct {
-	CollectionSchedule apijson.Field
-	Proration          apijson.Field
-	QuantitySchedule   apijson.Field
-	StartingAt         apijson.Field
-	SubscriptionRate   apijson.Field
-	ID                 apijson.Field
-	CustomFields       apijson.Field
-	Description        apijson.Field
-	EndingBefore       apijson.Field
-	FiatCreditTypeID   apijson.Field
-	Name               apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *ContractSubscription) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSubscriptionJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractSubscriptionsCollectionSchedule string
-
-const (
-	ContractSubscriptionsCollectionScheduleAdvance ContractSubscriptionsCollectionSchedule = "ADVANCE"
-	ContractSubscriptionsCollectionScheduleArrears ContractSubscriptionsCollectionSchedule = "ARREARS"
-)
-
-func (r ContractSubscriptionsCollectionSchedule) IsKnown() bool {
-	switch r {
-	case ContractSubscriptionsCollectionScheduleAdvance, ContractSubscriptionsCollectionScheduleArrears:
-		return true
-	}
-	return false
-}
-
-type ContractSubscriptionsProration struct {
-	InvoiceBehavior ContractSubscriptionsProrationInvoiceBehavior `json:"invoice_behavior,required"`
-	IsProrated      bool                                          `json:"is_prorated,required"`
-	JSON            contractSubscriptionsProrationJSON            `json:"-"`
-}
-
-// contractSubscriptionsProrationJSON contains the JSON metadata for the struct
-// [ContractSubscriptionsProration]
-type contractSubscriptionsProrationJSON struct {
-	InvoiceBehavior apijson.Field
-	IsProrated      apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *ContractSubscriptionsProration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSubscriptionsProrationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractSubscriptionsProrationInvoiceBehavior string
-
-const (
-	ContractSubscriptionsProrationInvoiceBehaviorBillImmediately          ContractSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
-	ContractSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate ContractSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
-)
-
-func (r ContractSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
-	switch r {
-	case ContractSubscriptionsProrationInvoiceBehaviorBillImmediately, ContractSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
-		return true
-	}
-	return false
-}
-
-type ContractSubscriptionsQuantitySchedule struct {
-	Quantity     float64                                   `json:"quantity,required"`
-	StartingAt   time.Time                                 `json:"starting_at,required" format:"date-time"`
-	EndingBefore time.Time                                 `json:"ending_before" format:"date-time"`
-	JSON         contractSubscriptionsQuantityScheduleJSON `json:"-"`
-}
-
-// contractSubscriptionsQuantityScheduleJSON contains the JSON metadata for the
-// struct [ContractSubscriptionsQuantitySchedule]
-type contractSubscriptionsQuantityScheduleJSON struct {
-	Quantity     apijson.Field
-	StartingAt   apijson.Field
-	EndingBefore apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *ContractSubscriptionsQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSubscriptionsQuantityScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractSubscriptionsSubscriptionRate struct {
-	BillingFrequency ContractSubscriptionsSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
-	Product          ContractSubscriptionsSubscriptionRateProduct          `json:"product,required"`
-	JSON             contractSubscriptionsSubscriptionRateJSON             `json:"-"`
-}
-
-// contractSubscriptionsSubscriptionRateJSON contains the JSON metadata for the
-// struct [ContractSubscriptionsSubscriptionRate]
-type contractSubscriptionsSubscriptionRateJSON struct {
-	BillingFrequency apijson.Field
-	Product          apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *ContractSubscriptionsSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSubscriptionsSubscriptionRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractSubscriptionsSubscriptionRateBillingFrequency string
-
-const (
-	ContractSubscriptionsSubscriptionRateBillingFrequencyMonthly   ContractSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
-	ContractSubscriptionsSubscriptionRateBillingFrequencyQuarterly ContractSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
-	ContractSubscriptionsSubscriptionRateBillingFrequencyAnnual    ContractSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
-	ContractSubscriptionsSubscriptionRateBillingFrequencyWeekly    ContractSubscriptionsSubscriptionRateBillingFrequency = "WEEKLY"
-)
-
-func (r ContractSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
-	switch r {
-	case ContractSubscriptionsSubscriptionRateBillingFrequencyMonthly, ContractSubscriptionsSubscriptionRateBillingFrequencyQuarterly, ContractSubscriptionsSubscriptionRateBillingFrequencyAnnual, ContractSubscriptionsSubscriptionRateBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-type ContractSubscriptionsSubscriptionRateProduct struct {
-	ID   string                                           `json:"id,required" format:"uuid"`
-	Name string                                           `json:"name,required"`
-	JSON contractSubscriptionsSubscriptionRateProductJSON `json:"-"`
-}
-
-// contractSubscriptionsSubscriptionRateProductJSON contains the JSON metadata for
-// the struct [ContractSubscriptionsSubscriptionRateProduct]
-type contractSubscriptionsSubscriptionRateProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractSubscriptionsSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractSubscriptionsSubscriptionRateProductJSON) RawJSON() string {
-	return r.raw
 }
 
 type ContractV2 struct {
@@ -2248,7 +1798,7 @@ type ContractV2 struct {
 	HasMore ContractV2HasMore `json:"has_more"`
 	// Either a **parent** configuration with a list of children or a **child**
 	// configuration with a single parent.
-	HierarchyConfiguration ContractV2HierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration HierarchyConfiguration `json:"hierarchy_configuration"`
 	// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 	// prices automatically. EXPLICIT prioritization requires specifying priorities for
 	// each multiplier; the one with the lowest priority value will be prioritized
@@ -2257,8 +1807,8 @@ type ContractV2 struct {
 	Name                             string                                     `json:"name"`
 	NetPaymentTermsDays              float64                                    `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID                 string                                         `json:"netsuite_sales_order_id"`
-	PrepaidBalanceThresholdConfiguration ContractV2PrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
+	NetsuiteSalesOrderID                 string                                 `json:"netsuite_sales_order_id"`
+	PrepaidBalanceThresholdConfiguration PrepaidBalanceThresholdConfigurationV2 `json:"prepaid_balance_threshold_configuration"`
 	// Priority of the contract.
 	Priority float64 `json:"priority"`
 	// This field's availability is dependent on your client's configuration.
@@ -2276,10 +1826,10 @@ type ContractV2 struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices ContractV2ScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
-	SpendThresholdConfiguration     ContractV2SpendThresholdConfiguration     `json:"spend_threshold_configuration"`
+	SpendThresholdConfiguration     SpendThresholdConfigurationV2             `json:"spend_threshold_configuration"`
 	// List of subscriptions on the contract.
-	Subscriptions      []ContractV2Subscription `json:"subscriptions"`
-	TotalContractValue float64                  `json:"total_contract_value"`
+	Subscriptions      []Subscription `json:"subscriptions"`
+	TotalContractValue float64        `json:"total_contract_value"`
 	// Optional uniqueness key to prevent duplicate contract creations.
 	UniquenessKey string         `json:"uniqueness_key"`
 	JSON          contractV2JSON `json:"-"`
@@ -2359,7 +1909,7 @@ type ContractV2Commit struct {
 	CustomFields map[string]string         `json:"custom_fields"`
 	Description  string                    `json:"description"`
 	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration ContractV2CommitsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The contract that this commit will be billed on.
 	InvoiceContract ContractV2CommitsInvoiceContract `json:"invoice_contract"`
 	// The schedule that the customer will be invoiced for this commit.
@@ -2381,8 +1931,8 @@ type ContractV2Commit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []ContractV2CommitsSpecifier `json:"specifiers"`
-	JSON       contractV2CommitJSON         `json:"-"`
+	Specifiers []CommitSpecifier    `json:"specifiers"`
+	JSON       contractV2CommitJSON `json:"-"`
 }
 
 // contractV2CommitJSON contains the JSON metadata for the struct
@@ -2481,232 +2031,6 @@ func (r *ContractV2CommitsContract) UnmarshalJSON(data []byte) (err error) {
 
 func (r contractV2CommitsContractJSON) RawJSON() string {
 	return r.raw
-}
-
-// Optional configuration for commit hierarchy access control
-type ContractV2CommitsHierarchyConfiguration struct {
-	ChildAccess ContractV2CommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        contractV2CommitsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// contractV2CommitsHierarchyConfigurationJSON contains the JSON metadata for the
-// struct [ContractV2CommitsHierarchyConfiguration]
-type contractV2CommitsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2CommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CommitsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2CommitsHierarchyConfigurationChildAccess struct {
-	Type ContractV2CommitsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                            `json:"contract_ids"`
-	JSON        contractV2CommitsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       ContractV2CommitsHierarchyConfigurationChildAccessUnion
-}
-
-// contractV2CommitsHierarchyConfigurationChildAccessJSON contains the JSON
-// metadata for the struct [ContractV2CommitsHierarchyConfigurationChildAccess]
-type contractV2CommitsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractV2CommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractV2CommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractV2CommitsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [ContractV2CommitsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r ContractV2CommitsHierarchyConfigurationChildAccess) AsUnion() ContractV2CommitsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type ContractV2CommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsContractV2CommitsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractV2CommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsContractV2CommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsContractV2CommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                    `json:"contract_ids,required" format:"uuid"`
-	Type        ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsContractV2CommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case ContractV2CommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type ContractV2CommitsHierarchyConfigurationChildAccessType string
-
-const (
-	ContractV2CommitsHierarchyConfigurationChildAccessTypeAll         ContractV2CommitsHierarchyConfigurationChildAccessType = "ALL"
-	ContractV2CommitsHierarchyConfigurationChildAccessTypeNone        ContractV2CommitsHierarchyConfigurationChildAccessType = "NONE"
-	ContractV2CommitsHierarchyConfigurationChildAccessTypeContractIDs ContractV2CommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r ContractV2CommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case ContractV2CommitsHierarchyConfigurationChildAccessTypeAll, ContractV2CommitsHierarchyConfigurationChildAccessTypeNone, ContractV2CommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 // The contract that this commit will be billed on.
@@ -3583,36 +2907,6 @@ func (r contractV2CommitsRolledOverFromJSON) RawJSON() string {
 	return r.raw
 }
 
-type ContractV2CommitsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                       `json:"product_tags"`
-	JSON        contractV2CommitsSpecifierJSON `json:"-"`
-}
-
-// contractV2CommitsSpecifierJSON contains the JSON metadata for the struct
-// [ContractV2CommitsSpecifier]
-type contractV2CommitsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractV2CommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CommitsSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
 type ContractV2Override struct {
 	ID                    string                                 `json:"id,required" format:"uuid"`
 	StartingAt            time.Time                              `json:"starting_at,required" format:"date-time"`
@@ -3622,7 +2916,7 @@ type ContractV2Override struct {
 	IsCommitSpecific      bool                                   `json:"is_commit_specific"`
 	Multiplier            float64                                `json:"multiplier"`
 	OverrideSpecifiers    []ContractV2OverridesOverrideSpecifier `json:"override_specifiers"`
-	OverrideTiers         []ContractV2OverridesOverrideTier      `json:"override_tiers"`
+	OverrideTiers         []OverrideTier                         `json:"override_tiers"`
 	OverwriteRate         ContractV2OverridesOverwriteRate       `json:"overwrite_rate"`
 	Priority              float64                                `json:"priority"`
 	Product               ContractV2OverridesProduct             `json:"product"`
@@ -3710,29 +3004,6 @@ func (r ContractV2OverridesOverrideSpecifiersBillingFrequency) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ContractV2OverridesOverrideTier struct {
-	Multiplier float64                             `json:"multiplier,required"`
-	Size       float64                             `json:"size"`
-	JSON       contractV2OverridesOverrideTierJSON `json:"-"`
-}
-
-// contractV2OverridesOverrideTierJSON contains the JSON metadata for the struct
-// [ContractV2OverridesOverrideTier]
-type contractV2OverridesOverrideTierJSON struct {
-	Multiplier  apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2OverridesOverrideTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2OverridesOverrideTierJSON) RawJSON() string {
-	return r.raw
 }
 
 type ContractV2OverridesOverwriteRate struct {
@@ -3982,7 +3253,7 @@ type ContractV2Credit struct {
 	CustomFields map[string]string         `json:"custom_fields"`
 	Description  string                    `json:"description"`
 	// Optional configuration for credit hierarchy access control
-	HierarchyConfiguration ContractV2CreditsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// A list of ordered events that impact the balance of a credit. For example, an
 	// invoice deduction or an expiration.
 	Ledger []ContractV2CreditsLedger `json:"ledger"`
@@ -3997,8 +3268,8 @@ type ContractV2Credit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []ContractV2CreditsSpecifier `json:"specifiers"`
-	JSON       contractV2CreditJSON         `json:"-"`
+	Specifiers []CommitSpecifier    `json:"specifiers"`
+	JSON       contractV2CreditJSON `json:"-"`
 }
 
 // contractV2CreditJSON contains the JSON metadata for the struct
@@ -4090,232 +3361,6 @@ func (r *ContractV2CreditsContract) UnmarshalJSON(data []byte) (err error) {
 
 func (r contractV2CreditsContractJSON) RawJSON() string {
 	return r.raw
-}
-
-// Optional configuration for credit hierarchy access control
-type ContractV2CreditsHierarchyConfiguration struct {
-	ChildAccess ContractV2CreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        contractV2CreditsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// contractV2CreditsHierarchyConfigurationJSON contains the JSON metadata for the
-// struct [ContractV2CreditsHierarchyConfiguration]
-type contractV2CreditsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2CreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CreditsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2CreditsHierarchyConfigurationChildAccess struct {
-	Type ContractV2CreditsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                            `json:"contract_ids"`
-	JSON        contractV2CreditsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       ContractV2CreditsHierarchyConfigurationChildAccessUnion
-}
-
-// contractV2CreditsHierarchyConfigurationChildAccessJSON contains the JSON
-// metadata for the struct [ContractV2CreditsHierarchyConfigurationChildAccess]
-type contractV2CreditsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractV2CreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractV2CreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractV2CreditsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [ContractV2CreditsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r ContractV2CreditsHierarchyConfigurationChildAccess) AsUnion() ContractV2CreditsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type ContractV2CreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsContractV2CreditsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractV2CreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsContractV2CreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsContractV2CreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                    `json:"contract_ids,required" format:"uuid"`
-	Type        ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsContractV2CreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case ContractV2CreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type ContractV2CreditsHierarchyConfigurationChildAccessType string
-
-const (
-	ContractV2CreditsHierarchyConfigurationChildAccessTypeAll         ContractV2CreditsHierarchyConfigurationChildAccessType = "ALL"
-	ContractV2CreditsHierarchyConfigurationChildAccessTypeNone        ContractV2CreditsHierarchyConfigurationChildAccessType = "NONE"
-	ContractV2CreditsHierarchyConfigurationChildAccessTypeContractIDs ContractV2CreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r ContractV2CreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case ContractV2CreditsHierarchyConfigurationChildAccessTypeAll, ContractV2CreditsHierarchyConfigurationChildAccessTypeNone, ContractV2CreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 type ContractV2CreditsLedger struct {
@@ -4755,36 +3800,6 @@ func (r ContractV2CreditsLedgerType) IsKnown() bool {
 	return false
 }
 
-type ContractV2CreditsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                       `json:"product_tags"`
-	JSON        contractV2CreditsSpecifierJSON `json:"-"`
-}
-
-// contractV2CreditsSpecifierJSON contains the JSON metadata for the struct
-// [ContractV2CreditsSpecifier]
-type contractV2CreditsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractV2CreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2CreditsSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
 // This field's availability is dependent on your client's configuration.
 type ContractV2CustomerBillingProviderConfiguration struct {
 	// ID of Customer's billing provider configuration.
@@ -4881,177 +3896,6 @@ func (r contractV2HasMoreJSON) RawJSON() string {
 	return r.raw
 }
 
-// Either a **parent** configuration with a list of children or a **child**
-// configuration with a single parent.
-type ContractV2HierarchyConfiguration struct {
-	// This field can have the runtime type of
-	// [[]ContractV2HierarchyConfigurationParentHierarchyConfigurationChild].
-	Children interface{} `json:"children"`
-	// This field can have the runtime type of
-	// [ContractV2HierarchyConfigurationChildHierarchyConfigurationParent].
-	Parent interface{}                          `json:"parent"`
-	JSON   contractV2HierarchyConfigurationJSON `json:"-"`
-	union  ContractV2HierarchyConfigurationUnion
-}
-
-// contractV2HierarchyConfigurationJSON contains the JSON metadata for the struct
-// [ContractV2HierarchyConfiguration]
-type contractV2HierarchyConfigurationJSON struct {
-	Children    apijson.Field
-	Parent      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractV2HierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractV2HierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractV2HierarchyConfiguration{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [ContractV2HierarchyConfigurationUnion] interface which you
-// can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractV2HierarchyConfigurationParentHierarchyConfiguration],
-// [ContractV2HierarchyConfigurationChildHierarchyConfiguration].
-func (r ContractV2HierarchyConfiguration) AsUnion() ContractV2HierarchyConfigurationUnion {
-	return r.union
-}
-
-// Either a **parent** configuration with a list of children or a **child**
-// configuration with a single parent.
-//
-// Union satisfied by
-// [ContractV2HierarchyConfigurationParentHierarchyConfiguration] or
-// [ContractV2HierarchyConfigurationChildHierarchyConfiguration].
-type ContractV2HierarchyConfigurationUnion interface {
-	implementsContractV2HierarchyConfiguration()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractV2HierarchyConfigurationUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2HierarchyConfigurationParentHierarchyConfiguration{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2HierarchyConfigurationChildHierarchyConfiguration{}),
-		},
-	)
-}
-
-type ContractV2HierarchyConfigurationParentHierarchyConfiguration struct {
-	// List of contracts that belong to this parent.
-	Children []ContractV2HierarchyConfigurationParentHierarchyConfigurationChild `json:"children,required"`
-	JSON     contractV2HierarchyConfigurationParentHierarchyConfigurationJSON    `json:"-"`
-}
-
-// contractV2HierarchyConfigurationParentHierarchyConfigurationJSON contains the
-// JSON metadata for the struct
-// [ContractV2HierarchyConfigurationParentHierarchyConfiguration]
-type contractV2HierarchyConfigurationParentHierarchyConfigurationJSON struct {
-	Children    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2HierarchyConfigurationParentHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2HierarchyConfigurationParentHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2HierarchyConfigurationParentHierarchyConfiguration) implementsContractV2HierarchyConfiguration() {
-}
-
-type ContractV2HierarchyConfigurationParentHierarchyConfigurationChild struct {
-	ContractID string                                                                `json:"contract_id,required" format:"uuid"`
-	CustomerID string                                                                `json:"customer_id,required" format:"uuid"`
-	JSON       contractV2HierarchyConfigurationParentHierarchyConfigurationChildJSON `json:"-"`
-}
-
-// contractV2HierarchyConfigurationParentHierarchyConfigurationChildJSON contains
-// the JSON metadata for the struct
-// [ContractV2HierarchyConfigurationParentHierarchyConfigurationChild]
-type contractV2HierarchyConfigurationParentHierarchyConfigurationChildJSON struct {
-	ContractID  apijson.Field
-	CustomerID  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2HierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2HierarchyConfigurationParentHierarchyConfigurationChildJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2HierarchyConfigurationChildHierarchyConfiguration struct {
-	// The single parent contract/customer for this child.
-	Parent ContractV2HierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
-	JSON   contractV2HierarchyConfigurationChildHierarchyConfigurationJSON   `json:"-"`
-}
-
-// contractV2HierarchyConfigurationChildHierarchyConfigurationJSON contains the
-// JSON metadata for the struct
-// [ContractV2HierarchyConfigurationChildHierarchyConfiguration]
-type contractV2HierarchyConfigurationChildHierarchyConfigurationJSON struct {
-	Parent      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2HierarchyConfigurationChildHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2HierarchyConfigurationChildHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2HierarchyConfigurationChildHierarchyConfiguration) implementsContractV2HierarchyConfiguration() {
-}
-
-// The single parent contract/customer for this child.
-type ContractV2HierarchyConfigurationChildHierarchyConfigurationParent struct {
-	ContractID string                                                                `json:"contract_id,required" format:"uuid"`
-	CustomerID string                                                                `json:"customer_id,required" format:"uuid"`
-	JSON       contractV2HierarchyConfigurationChildHierarchyConfigurationParentJSON `json:"-"`
-}
-
-// contractV2HierarchyConfigurationChildHierarchyConfigurationParentJSON contains
-// the JSON metadata for the struct
-// [ContractV2HierarchyConfigurationChildHierarchyConfigurationParent]
-type contractV2HierarchyConfigurationChildHierarchyConfigurationParentJSON struct {
-	ContractID  apijson.Field
-	CustomerID  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2HierarchyConfigurationChildHierarchyConfigurationParent) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2HierarchyConfigurationChildHierarchyConfigurationParentJSON) RawJSON() string {
-	return r.raw
-}
-
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 // prices automatically. EXPLICIT prioritization requires specifying priorities for
 // each multiplier; the one with the lowest priority value will be prioritized
@@ -5066,273 +3910,6 @@ const (
 func (r ContractV2MultiplierOverridePrioritization) IsKnown() bool {
 	switch r {
 	case ContractV2MultiplierOverridePrioritizationLowestMultiplier, ContractV2MultiplierOverridePrioritizationExplicit:
-		return true
-	}
-	return false
-}
-
-type ContractV2PrepaidBalanceThresholdConfiguration struct {
-	Commit ContractV2PrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         bool                                                            `json:"is_enabled,required"`
-	PaymentGateConfig ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
-	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's balance
-	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
-	// If provided, the threshold, recharge-to amount, and the resulting threshold
-	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                             `json:"custom_credit_type_id" format:"uuid"`
-	JSON               contractV2PrepaidBalanceThresholdConfigurationJSON `json:"-"`
-}
-
-// contractV2PrepaidBalanceThresholdConfigurationJSON contains the JSON metadata
-// for the struct [ContractV2PrepaidBalanceThresholdConfiguration]
-type contractV2PrepaidBalanceThresholdConfigurationJSON struct {
-	Commit             apijson.Field
-	IsEnabled          apijson.Field
-	PaymentGateConfig  apijson.Field
-	RechargeToAmount   apijson.Field
-	ThresholdAmount    apijson.Field
-	CustomCreditTypeID apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *ContractV2PrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2PrepaidBalanceThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2PrepaidBalanceThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags []string `json:"applicable_product_tags"`
-	Description           string   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string `json:"name"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	// Instead, to target usage by product or product tag, pass those values in the
-	// body of `specifiers`.
-	Specifiers []ContractV2PrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
-	JSON       contractV2PrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
-}
-
-// contractV2PrepaidBalanceThresholdConfigurationCommitJSON contains the JSON
-// metadata for the struct [ContractV2PrepaidBalanceThresholdConfigurationCommit]
-type contractV2PrepaidBalanceThresholdConfigurationCommitJSON struct {
-	ProductID             apijson.Field
-	ApplicableProductIDs  apijson.Field
-	ApplicableProductTags apijson.Field
-	Description           apijson.Field
-	Name                  apijson.Field
-	Specifiers            apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *ContractV2PrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2PrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2PrepaidBalanceThresholdConfigurationCommitSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                          `json:"product_tags"`
-	JSON        contractV2PrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
-}
-
-// contractV2PrepaidBalanceThresholdConfigurationCommitSpecifierJSON contains the
-// JSON metadata for the struct
-// [ContractV2PrepaidBalanceThresholdConfigurationCommitSpecifier]
-type contractV2PrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractV2PrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2PrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigJSON contains the
-// JSON metadata for the struct
-// [ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfig]
-type contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                                    `json:"tax_name"`
-	JSON    contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                               `json:"invoice_metadata"`
-	JSON            contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
-// contains the JSON metadata for the struct
-// [ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
-type contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone          ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe        ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok         ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe, ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok, ContractV2PrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
 		return true
 	}
 	return false
@@ -5361,7 +3938,7 @@ type ContractV2RecurringCommit struct {
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring credit hierarchy access control
-	HierarchyConfiguration ContractV2RecurringCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount ContractV2RecurringCommitsInvoiceAmount `json:"invoice_amount"`
 	// Displayed on invoices. Will be passed through to the individual commits
@@ -5384,7 +3961,7 @@ type ContractV2RecurringCommit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []ContractV2RecurringCommitsSpecifier `json:"specifiers"`
+	Specifiers []CommitSpecifier `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig ContractV2RecurringCommitsSubscriptionConfig `json:"subscription_config"`
 	JSON               contractV2RecurringCommitJSON                `json:"-"`
@@ -5550,234 +4127,6 @@ func (r contractV2RecurringCommitsContractJSON) RawJSON() string {
 	return r.raw
 }
 
-// Optional configuration for recurring credit hierarchy access control
-type ContractV2RecurringCommitsHierarchyConfiguration struct {
-	ChildAccess ContractV2RecurringCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        contractV2RecurringCommitsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// contractV2RecurringCommitsHierarchyConfigurationJSON contains the JSON metadata
-// for the struct [ContractV2RecurringCommitsHierarchyConfiguration]
-type contractV2RecurringCommitsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCommitsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccess struct {
-	Type ContractV2RecurringCommitsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                     `json:"contract_ids"`
-	JSON        contractV2RecurringCommitsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       ContractV2RecurringCommitsHierarchyConfigurationChildAccessUnion
-}
-
-// contractV2RecurringCommitsHierarchyConfigurationChildAccessJSON contains the
-// JSON metadata for the struct
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccess]
-type contractV2RecurringCommitsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractV2RecurringCommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractV2RecurringCommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractV2RecurringCommitsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessUnion] interface
-// which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r ContractV2RecurringCommitsHierarchyConfigurationChildAccess) AsUnion() ContractV2RecurringCommitsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsContractV2RecurringCommitsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractV2RecurringCommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsContractV2RecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsContractV2RecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                             `json:"contract_ids,required" format:"uuid"`
-	Type        ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsContractV2RecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case ContractV2RecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type ContractV2RecurringCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeAll         ContractV2RecurringCommitsHierarchyConfigurationChildAccessType = "ALL"
-	ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeNone        ContractV2RecurringCommitsHierarchyConfigurationChildAccessType = "NONE"
-	ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs ContractV2RecurringCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r ContractV2RecurringCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeAll, ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeNone, ContractV2RecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 // The amount the customer should be billed for the commit. Not required.
 type ContractV2RecurringCommitsInvoiceAmount struct {
 	CreditTypeID string                                      `json:"credit_type_id,required" format:"uuid"`
@@ -5843,36 +4192,6 @@ func (r ContractV2RecurringCommitsRecurrenceFrequency) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ContractV2RecurringCommitsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                `json:"product_tags"`
-	JSON        contractV2RecurringCommitsSpecifierJSON `json:"-"`
-}
-
-// contractV2RecurringCommitsSpecifierJSON contains the JSON metadata for the
-// struct [ContractV2RecurringCommitsSpecifier]
-type contractV2RecurringCommitsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCommitsSpecifierJSON) RawJSON() string {
-	return r.raw
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -5962,7 +4281,7 @@ type ContractV2RecurringCredit struct {
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring credit hierarchy access control
-	HierarchyConfiguration ContractV2RecurringCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Displayed on invoices. Will be passed through to the individual commits
 	Name string `json:"name"`
 	// Will be passed down to the individual commits
@@ -5983,7 +4302,7 @@ type ContractV2RecurringCredit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []ContractV2RecurringCreditsSpecifier `json:"specifiers"`
+	Specifiers []CommitSpecifier `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig ContractV2RecurringCreditsSubscriptionConfig `json:"subscription_config"`
 	JSON               contractV2RecurringCreditJSON                `json:"-"`
@@ -6148,234 +4467,6 @@ func (r contractV2RecurringCreditsContractJSON) RawJSON() string {
 	return r.raw
 }
 
-// Optional configuration for recurring credit hierarchy access control
-type ContractV2RecurringCreditsHierarchyConfiguration struct {
-	ChildAccess ContractV2RecurringCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        contractV2RecurringCreditsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// contractV2RecurringCreditsHierarchyConfigurationJSON contains the JSON metadata
-// for the struct [ContractV2RecurringCreditsHierarchyConfiguration]
-type contractV2RecurringCreditsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCreditsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccess struct {
-	Type ContractV2RecurringCreditsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                     `json:"contract_ids"`
-	JSON        contractV2RecurringCreditsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       ContractV2RecurringCreditsHierarchyConfigurationChildAccessUnion
-}
-
-// contractV2RecurringCreditsHierarchyConfigurationChildAccessJSON contains the
-// JSON metadata for the struct
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccess]
-type contractV2RecurringCreditsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractV2RecurringCreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractV2RecurringCreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractV2RecurringCreditsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessUnion] interface
-// which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r ContractV2RecurringCreditsHierarchyConfigurationChildAccess) AsUnion() ContractV2RecurringCreditsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsContractV2RecurringCreditsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractV2RecurringCreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsContractV2RecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsContractV2RecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                             `json:"contract_ids,required" format:"uuid"`
-	Type        ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsContractV2RecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case ContractV2RecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type ContractV2RecurringCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeAll         ContractV2RecurringCreditsHierarchyConfigurationChildAccessType = "ALL"
-	ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeNone        ContractV2RecurringCreditsHierarchyConfigurationChildAccessType = "NONE"
-	ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs ContractV2RecurringCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r ContractV2RecurringCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeAll, ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeNone, ContractV2RecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
 type ContractV2RecurringCreditsProration string
@@ -6415,36 +4506,6 @@ func (r ContractV2RecurringCreditsRecurrenceFrequency) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ContractV2RecurringCreditsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                `json:"product_tags"`
-	JSON        contractV2RecurringCreditsSpecifierJSON `json:"-"`
-}
-
-// contractV2RecurringCreditsSpecifierJSON contains the JSON metadata for the
-// struct [ContractV2RecurringCreditsSpecifier]
-type contractV2RecurringCreditsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractV2RecurringCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2RecurringCreditsSpecifierJSON) RawJSON() string {
-	return r.raw
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -6632,400 +4693,6 @@ func (r ContractV2ScheduledChargesOnUsageInvoices) IsKnown() bool {
 	return false
 }
 
-type ContractV2SpendThresholdConfiguration struct {
-	Commit ContractV2SpendThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         bool                                                   `json:"is_enabled,required"`
-	PaymentGateConfig ContractV2SpendThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                   `json:"threshold_amount,required"`
-	JSON            contractV2SpendThresholdConfigurationJSON `json:"-"`
-}
-
-// contractV2SpendThresholdConfigurationJSON contains the JSON metadata for the
-// struct [ContractV2SpendThresholdConfiguration]
-type contractV2SpendThresholdConfigurationJSON struct {
-	Commit            apijson.Field
-	IsEnabled         apijson.Field
-	PaymentGateConfig apijson.Field
-	ThresholdAmount   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *ContractV2SpendThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SpendThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2SpendThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID   string `json:"product_id,required"`
-	Description string `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string                                          `json:"name"`
-	JSON contractV2SpendThresholdConfigurationCommitJSON `json:"-"`
-}
-
-// contractV2SpendThresholdConfigurationCommitJSON contains the JSON metadata for
-// the struct [ContractV2SpendThresholdConfigurationCommit]
-type contractV2SpendThresholdConfigurationCommitJSON struct {
-	ProductID   apijson.Field
-	Description apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2SpendThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SpendThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2SpendThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig ContractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    contractV2SpendThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// contractV2SpendThresholdConfigurationPaymentGateConfigJSON contains the JSON
-// metadata for the struct [ContractV2SpendThresholdConfigurationPaymentGateConfig]
-type contractV2SpendThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractV2SpendThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SpendThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, ContractV2SpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                           `json:"tax_name"`
-	JSON    contractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// contractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [ContractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type contractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                      `json:"invoice_metadata"`
-	JSON            contractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// contractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigJSON contains
-// the JSON metadata for the struct
-// [ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfig]
-type contractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractV2SpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeNone          ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeStripe        ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok         ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r ContractV2SpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeStripe, ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok, ContractV2SpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
-type ContractV2Subscription struct {
-	CollectionSchedule ContractV2SubscriptionsCollectionSchedule `json:"collection_schedule,required"`
-	Proration          ContractV2SubscriptionsProration          `json:"proration,required"`
-	// List of quantity schedule items for the subscription. Only includes the current
-	// quantity and future quantity changes.
-	QuantitySchedule []ContractV2SubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt       time.Time                                 `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate ContractV2SubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	ID               string                                    `json:"id" format:"uuid"`
-	CustomFields     map[string]string                         `json:"custom_fields"`
-	Description      string                                    `json:"description"`
-	EndingBefore     time.Time                                 `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                                    `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                                    `json:"name"`
-	JSON             contractV2SubscriptionJSON                `json:"-"`
-}
-
-// contractV2SubscriptionJSON contains the JSON metadata for the struct
-// [ContractV2Subscription]
-type contractV2SubscriptionJSON struct {
-	CollectionSchedule apijson.Field
-	Proration          apijson.Field
-	QuantitySchedule   apijson.Field
-	StartingAt         apijson.Field
-	SubscriptionRate   apijson.Field
-	ID                 apijson.Field
-	CustomFields       apijson.Field
-	Description        apijson.Field
-	EndingBefore       apijson.Field
-	FiatCreditTypeID   apijson.Field
-	Name               apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *ContractV2Subscription) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SubscriptionJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2SubscriptionsCollectionSchedule string
-
-const (
-	ContractV2SubscriptionsCollectionScheduleAdvance ContractV2SubscriptionsCollectionSchedule = "ADVANCE"
-	ContractV2SubscriptionsCollectionScheduleArrears ContractV2SubscriptionsCollectionSchedule = "ARREARS"
-)
-
-func (r ContractV2SubscriptionsCollectionSchedule) IsKnown() bool {
-	switch r {
-	case ContractV2SubscriptionsCollectionScheduleAdvance, ContractV2SubscriptionsCollectionScheduleArrears:
-		return true
-	}
-	return false
-}
-
-type ContractV2SubscriptionsProration struct {
-	InvoiceBehavior ContractV2SubscriptionsProrationInvoiceBehavior `json:"invoice_behavior,required"`
-	IsProrated      bool                                            `json:"is_prorated,required"`
-	JSON            contractV2SubscriptionsProrationJSON            `json:"-"`
-}
-
-// contractV2SubscriptionsProrationJSON contains the JSON metadata for the struct
-// [ContractV2SubscriptionsProration]
-type contractV2SubscriptionsProrationJSON struct {
-	InvoiceBehavior apijson.Field
-	IsProrated      apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *ContractV2SubscriptionsProration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SubscriptionsProrationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2SubscriptionsProrationInvoiceBehavior string
-
-const (
-	ContractV2SubscriptionsProrationInvoiceBehaviorBillImmediately          ContractV2SubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
-	ContractV2SubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate ContractV2SubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
-)
-
-func (r ContractV2SubscriptionsProrationInvoiceBehavior) IsKnown() bool {
-	switch r {
-	case ContractV2SubscriptionsProrationInvoiceBehaviorBillImmediately, ContractV2SubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
-		return true
-	}
-	return false
-}
-
-type ContractV2SubscriptionsQuantitySchedule struct {
-	Quantity     float64                                     `json:"quantity,required"`
-	StartingAt   time.Time                                   `json:"starting_at,required" format:"date-time"`
-	EndingBefore time.Time                                   `json:"ending_before" format:"date-time"`
-	JSON         contractV2SubscriptionsQuantityScheduleJSON `json:"-"`
-}
-
-// contractV2SubscriptionsQuantityScheduleJSON contains the JSON metadata for the
-// struct [ContractV2SubscriptionsQuantitySchedule]
-type contractV2SubscriptionsQuantityScheduleJSON struct {
-	Quantity     apijson.Field
-	StartingAt   apijson.Field
-	EndingBefore apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *ContractV2SubscriptionsQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SubscriptionsQuantityScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2SubscriptionsSubscriptionRate struct {
-	BillingFrequency ContractV2SubscriptionsSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
-	Product          ContractV2SubscriptionsSubscriptionRateProduct          `json:"product,required"`
-	JSON             contractV2SubscriptionsSubscriptionRateJSON             `json:"-"`
-}
-
-// contractV2SubscriptionsSubscriptionRateJSON contains the JSON metadata for the
-// struct [ContractV2SubscriptionsSubscriptionRate]
-type contractV2SubscriptionsSubscriptionRateJSON struct {
-	BillingFrequency apijson.Field
-	Product          apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *ContractV2SubscriptionsSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SubscriptionsSubscriptionRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractV2SubscriptionsSubscriptionRateBillingFrequency string
-
-const (
-	ContractV2SubscriptionsSubscriptionRateBillingFrequencyMonthly   ContractV2SubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
-	ContractV2SubscriptionsSubscriptionRateBillingFrequencyQuarterly ContractV2SubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
-	ContractV2SubscriptionsSubscriptionRateBillingFrequencyAnnual    ContractV2SubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
-	ContractV2SubscriptionsSubscriptionRateBillingFrequencyWeekly    ContractV2SubscriptionsSubscriptionRateBillingFrequency = "WEEKLY"
-)
-
-func (r ContractV2SubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
-	switch r {
-	case ContractV2SubscriptionsSubscriptionRateBillingFrequencyMonthly, ContractV2SubscriptionsSubscriptionRateBillingFrequencyQuarterly, ContractV2SubscriptionsSubscriptionRateBillingFrequencyAnnual, ContractV2SubscriptionsSubscriptionRateBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-type ContractV2SubscriptionsSubscriptionRateProduct struct {
-	ID   string                                             `json:"id,required" format:"uuid"`
-	Name string                                             `json:"name,required"`
-	JSON contractV2SubscriptionsSubscriptionRateProductJSON `json:"-"`
-}
-
-// contractV2SubscriptionsSubscriptionRateProductJSON contains the JSON metadata
-// for the struct [ContractV2SubscriptionsSubscriptionRateProduct]
-type contractV2SubscriptionsSubscriptionRateProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractV2SubscriptionsSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractV2SubscriptionsSubscriptionRateProductJSON) RawJSON() string {
-	return r.raw
-}
-
 type ContractWithoutAmendments struct {
 	Commits                []Commit                                        `json:"commits,required"`
 	CreatedAt              time.Time                                       `json:"created_at,required" format:"date-time"`
@@ -7041,12 +4708,12 @@ type ContractWithoutAmendments struct {
 	EndingBefore time.Time  `json:"ending_before" format:"date-time"`
 	// Either a **parent** configuration with a list of children or a **child**
 	// configuration with a single parent.
-	HierarchyConfiguration ContractWithoutAmendmentsHierarchyConfiguration `json:"hierarchy_configuration"`
-	Name                   string                                          `json:"name"`
-	NetPaymentTermsDays    float64                                         `json:"net_payment_terms_days"`
+	HierarchyConfiguration HierarchyConfiguration `json:"hierarchy_configuration"`
+	Name                   string                 `json:"name"`
+	NetPaymentTermsDays    float64                `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID                 string                                                        `json:"netsuite_sales_order_id"`
-	PrepaidBalanceThresholdConfiguration ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
+	NetsuiteSalesOrderID                 string                               `json:"netsuite_sales_order_id"`
+	PrepaidBalanceThresholdConfiguration PrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	ProfessionalServices []ProService                               `json:"professional_services"`
 	RateCardID           string                                     `json:"rate_card_id" format:"uuid"`
@@ -7062,7 +4729,7 @@ type ContractWithoutAmendments struct {
 	// after a Contract has been created. If this field is omitted, charges will appear
 	// on a separate invoice from usage charges.
 	ScheduledChargesOnUsageInvoices ContractWithoutAmendmentsScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
-	SpendThresholdConfiguration     ContractWithoutAmendmentsSpendThresholdConfiguration     `json:"spend_threshold_configuration"`
+	SpendThresholdConfiguration     SpendThresholdConfiguration                              `json:"spend_threshold_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	TotalContractValue float64                              `json:"total_contract_value"`
 	UsageFilter        ContractWithoutAmendmentsUsageFilter `json:"usage_filter"`
@@ -7191,444 +4858,6 @@ func (r ContractWithoutAmendmentsUsageStatementScheduleFrequency) IsKnown() bool
 	return false
 }
 
-// Either a **parent** configuration with a list of children or a **child**
-// configuration with a single parent.
-type ContractWithoutAmendmentsHierarchyConfiguration struct {
-	// This field can have the runtime type of
-	// [[]ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild].
-	Children interface{} `json:"children"`
-	// This field can have the runtime type of
-	// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent].
-	Parent interface{}                                         `json:"parent"`
-	JSON   contractWithoutAmendmentsHierarchyConfigurationJSON `json:"-"`
-	union  ContractWithoutAmendmentsHierarchyConfigurationUnion
-}
-
-// contractWithoutAmendmentsHierarchyConfigurationJSON contains the JSON metadata
-// for the struct [ContractWithoutAmendmentsHierarchyConfiguration]
-type contractWithoutAmendmentsHierarchyConfigurationJSON struct {
-	Children    apijson.Field
-	Parent      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractWithoutAmendmentsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractWithoutAmendmentsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractWithoutAmendmentsHierarchyConfiguration{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [ContractWithoutAmendmentsHierarchyConfigurationUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration],
-// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration].
-func (r ContractWithoutAmendmentsHierarchyConfiguration) AsUnion() ContractWithoutAmendmentsHierarchyConfigurationUnion {
-	return r.union
-}
-
-// Either a **parent** configuration with a list of children or a **child**
-// configuration with a single parent.
-//
-// Union satisfied by
-// [ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration] or
-// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration].
-type ContractWithoutAmendmentsHierarchyConfigurationUnion interface {
-	implementsContractWithoutAmendmentsHierarchyConfiguration()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractWithoutAmendmentsHierarchyConfigurationUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration{}),
-		},
-	)
-}
-
-type ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration struct {
-	// List of contracts that belong to this parent.
-	Children []ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild `json:"children,required"`
-	JSON     contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationJSON    `json:"-"`
-}
-
-// contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration]
-type contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationJSON struct {
-	Children    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfiguration) implementsContractWithoutAmendmentsHierarchyConfiguration() {
-}
-
-type ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild struct {
-	ContractID string                                                                               `json:"contract_id,required" format:"uuid"`
-	CustomerID string                                                                               `json:"customer_id,required" format:"uuid"`
-	JSON       contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChildJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChildJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild]
-type contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChildJSON struct {
-	ContractID  apijson.Field
-	CustomerID  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsHierarchyConfigurationParentHierarchyConfigurationChildJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration struct {
-	// The single parent contract/customer for this child.
-	Parent ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
-	JSON   contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationJSON   `json:"-"`
-}
-
-// contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration]
-type contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationJSON struct {
-	Parent      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfiguration) implementsContractWithoutAmendmentsHierarchyConfiguration() {
-}
-
-// The single parent contract/customer for this child.
-type ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent struct {
-	ContractID string                                                                               `json:"contract_id,required" format:"uuid"`
-	CustomerID string                                                                               `json:"customer_id,required" format:"uuid"`
-	JSON       contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParentJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParentJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent]
-type contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParentJSON struct {
-	ContractID  apijson.Field
-	CustomerID  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParent) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsHierarchyConfigurationChildHierarchyConfigurationParentJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration struct {
-	Commit ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         bool                                                                           `json:"is_enabled,required"`
-	PaymentGateConfig ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
-	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's prepaid
-	// balance lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
-	// If provided, the threshold, recharge-to amount, and the resulting threshold
-	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                                            `json:"custom_credit_type_id" format:"uuid"`
-	JSON               contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration]
-type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON struct {
-	Commit             apijson.Field
-	IsEnabled          apijson.Field
-	PaymentGateConfig  apijson.Field
-	RechargeToAmount   apijson.Field
-	ThresholdAmount    apijson.Field
-	CustomCreditTypeID apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags []string `json:"applicable_product_tags"`
-	Description           string   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string `json:"name"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers []ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
-	JSON       contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
-}
-
-// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitJSON contains
-// the JSON metadata for the struct
-// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit]
-type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitJSON struct {
-	ProductID             apijson.Field
-	ApplicableProductIDs  apijson.Field
-	ApplicableProductTags apijson.Field
-	Description           apijson.Field
-	Name                  apijson.Field
-	Specifiers            apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                                         `json:"product_tags"`
-	JSON        contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifierJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifier]
-type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig]
-type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                                                   `json:"tax_name"`
-	JSON    contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                                              `json:"invoice_metadata"`
-	JSON            contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
-type contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone          ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe        ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok         ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok, ContractWithoutAmendmentsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
 type ContractWithoutAmendmentsRecurringCommit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -7652,7 +4881,7 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount ContractWithoutAmendmentsRecurringCommitsInvoiceAmount `json:"invoice_amount"`
 	// Displayed on invoices. Will be passed through to the individual commits
@@ -7675,7 +4904,7 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []ContractWithoutAmendmentsRecurringCommitsSpecifier `json:"specifiers"`
+	Specifiers []CommitSpecifier `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig `json:"subscription_config"`
 	JSON               contractWithoutAmendmentsRecurringCommitJSON                `json:"-"`
@@ -7842,235 +5071,6 @@ func (r contractWithoutAmendmentsRecurringCommitsContractJSON) RawJSON() string 
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration struct {
-	ChildAccess ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess struct {
-	Type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                    `json:"contract_ids"`
-	JSON        contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess) AsUnion() ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                            `json:"contract_ids,required" format:"uuid"`
-	Type        ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeAll         ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType = "ALL"
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeNone        ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType = "NONE"
-	ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeAll, ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeNone, ContractWithoutAmendmentsRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 // The amount the customer should be billed for the commit. Not required.
 type ContractWithoutAmendmentsRecurringCommitsInvoiceAmount struct {
 	CreditTypeID string                                                     `json:"credit_type_id,required" format:"uuid"`
@@ -8136,36 +5136,6 @@ func (r ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequency) IsKnown() 
 		return true
 	}
 	return false
-}
-
-type ContractWithoutAmendmentsRecurringCommitsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                               `json:"product_tags"`
-	JSON        contractWithoutAmendmentsRecurringCommitsSpecifierJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCommitsSpecifierJSON contains the JSON
-// metadata for the struct [ContractWithoutAmendmentsRecurringCommitsSpecifier]
-type contractWithoutAmendmentsRecurringCommitsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCommitsSpecifierJSON) RawJSON() string {
-	return r.raw
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -8256,7 +5226,7 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Displayed on invoices. Will be passed through to the individual commits
 	Name string `json:"name"`
 	// Will be passed down to the individual commits
@@ -8277,7 +5247,7 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []ContractWithoutAmendmentsRecurringCreditsSpecifier `json:"specifiers"`
+	Specifiers []CommitSpecifier `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig `json:"subscription_config"`
 	JSON               contractWithoutAmendmentsRecurringCreditJSON                `json:"-"`
@@ -8443,235 +5413,6 @@ func (r contractWithoutAmendmentsRecurringCreditsContractJSON) RawJSON() string 
 	return r.raw
 }
 
-// Optional configuration for recurring commit/credit hierarchy access control
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration struct {
-	ChildAccess ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationJSON contains the
-// JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess struct {
-	Type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                    `json:"contract_ids"`
-	JSON        contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess) AsUnion() ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                            `json:"contract_ids,required" format:"uuid"`
-	Type        ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeAll         ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType = "ALL"
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeNone        ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType = "NONE"
-	ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeAll, ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeNone, ContractWithoutAmendmentsRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
 type ContractWithoutAmendmentsRecurringCreditsProration string
@@ -8711,36 +5452,6 @@ func (r ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequency) IsKnown() 
 		return true
 	}
 	return false
-}
-
-type ContractWithoutAmendmentsRecurringCreditsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                               `json:"product_tags"`
-	JSON        contractWithoutAmendmentsRecurringCreditsSpecifierJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsRecurringCreditsSpecifierJSON contains the JSON
-// metadata for the struct [ContractWithoutAmendmentsRecurringCreditsSpecifier]
-type contractWithoutAmendmentsRecurringCreditsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsRecurringCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsRecurringCreditsSpecifierJSON) RawJSON() string {
-	return r.raw
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -8889,218 +5600,6 @@ func (r ContractWithoutAmendmentsScheduledChargesOnUsageInvoices) IsKnown() bool
 	return false
 }
 
-type ContractWithoutAmendmentsSpendThresholdConfiguration struct {
-	Commit ContractWithoutAmendmentsSpendThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         bool                                                                  `json:"is_enabled,required"`
-	PaymentGateConfig ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                  `json:"threshold_amount,required"`
-	JSON            contractWithoutAmendmentsSpendThresholdConfigurationJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsSpendThresholdConfigurationJSON contains the JSON
-// metadata for the struct [ContractWithoutAmendmentsSpendThresholdConfiguration]
-type contractWithoutAmendmentsSpendThresholdConfigurationJSON struct {
-	Commit            apijson.Field
-	IsEnabled         apijson.Field
-	PaymentGateConfig apijson.Field
-	ThresholdAmount   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsSpendThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsSpendThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsSpendThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID   string `json:"product_id,required"`
-	Description string `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string                                                         `json:"name"`
-	JSON contractWithoutAmendmentsSpendThresholdConfigurationCommitJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsSpendThresholdConfigurationCommitJSON contains the JSON
-// metadata for the struct
-// [ContractWithoutAmendmentsSpendThresholdConfigurationCommit]
-type contractWithoutAmendmentsSpendThresholdConfigurationCommitJSON struct {
-	ProductID   apijson.Field
-	Description apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsSpendThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsSpendThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig]
-type contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                                          `json:"tax_name"`
-	JSON    contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                                     `json:"invoice_metadata"`
-	JSON            contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON
-// contains the JSON metadata for the struct
-// [ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig]
-type contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone          ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe        ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok         ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe, ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok, ContractWithoutAmendmentsSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
 type ContractWithoutAmendmentsUsageFilter struct {
 	Current BaseUsageFilter                              `json:"current,required,nullable"`
 	Initial BaseUsageFilter                              `json:"initial,required"`
@@ -9173,7 +5672,7 @@ type Credit struct {
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
 	// Optional configuration for credit hierarchy access control
-	HierarchyConfiguration CreditHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// A list of ordered events that impact the balance of a credit. For example, an
 	// invoice deduction or an expiration.
 	Ledger []CreditLedger `json:"ledger"`
@@ -9189,7 +5688,7 @@ type Credit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []CreditSpecifier `json:"specifiers"`
+	Specifiers []CommitSpecifier `json:"specifiers"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
@@ -9288,231 +5787,6 @@ func (r *CreditContract) UnmarshalJSON(data []byte) (err error) {
 
 func (r creditContractJSON) RawJSON() string {
 	return r.raw
-}
-
-// Optional configuration for credit hierarchy access control
-type CreditHierarchyConfiguration struct {
-	ChildAccess CreditHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        creditHierarchyConfigurationJSON        `json:"-"`
-}
-
-// creditHierarchyConfigurationJSON contains the JSON metadata for the struct
-// [CreditHierarchyConfiguration]
-type creditHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type CreditHierarchyConfigurationChildAccess struct {
-	Type CreditHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                 `json:"contract_ids"`
-	JSON        creditHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       CreditHierarchyConfigurationChildAccessUnion
-}
-
-// creditHierarchyConfigurationChildAccessJSON contains the JSON metadata for the
-// struct [CreditHierarchyConfigurationChildAccess]
-type creditHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r creditHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *CreditHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = CreditHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [CreditHierarchyConfigurationChildAccessUnion] interface which
-// you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r CreditHierarchyConfigurationChildAccess) AsUnion() CreditHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone] or
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type CreditHierarchyConfigurationChildAccessUnion interface {
-	implementsCreditHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*CreditHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsCreditHierarchyConfigurationChildAccess() {
-}
-
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsCreditHierarchyConfigurationChildAccess() {
-}
-
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                         `json:"contract_ids,required" format:"uuid"`
-	Type        CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsCreditHierarchyConfigurationChildAccess() {
-}
-
-type CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case CreditHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type CreditHierarchyConfigurationChildAccessType string
-
-const (
-	CreditHierarchyConfigurationChildAccessTypeAll         CreditHierarchyConfigurationChildAccessType = "ALL"
-	CreditHierarchyConfigurationChildAccessTypeNone        CreditHierarchyConfigurationChildAccessType = "NONE"
-	CreditHierarchyConfigurationChildAccessTypeContractIDs CreditHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r CreditHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case CreditHierarchyConfigurationChildAccessTypeAll, CreditHierarchyConfigurationChildAccessTypeNone, CreditHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 type CreditLedger struct {
@@ -9960,35 +6234,6 @@ func (r CreditRateType) IsKnown() bool {
 	return false
 }
 
-type CreditSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string            `json:"product_tags"`
-	JSON        creditSpecifierJSON `json:"-"`
-}
-
-// creditSpecifierJSON contains the JSON metadata for the struct [CreditSpecifier]
-type creditSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *CreditSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r creditSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
 type CreditTypeData struct {
 	ID   string             `json:"id,required" format:"uuid"`
 	Name string             `json:"name,required"`
@@ -10109,6 +6354,172 @@ func (r EventTypeFilterParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+type HierarchyConfiguration struct {
+	// This field can have the runtime type of
+	// [[]HierarchyConfigurationParentHierarchyConfigurationChild].
+	Children interface{} `json:"children"`
+	// This field can have the runtime type of
+	// [HierarchyConfigurationChildHierarchyConfigurationParent].
+	Parent interface{}                `json:"parent"`
+	JSON   hierarchyConfigurationJSON `json:"-"`
+	union  HierarchyConfigurationUnion
+}
+
+// hierarchyConfigurationJSON contains the JSON metadata for the struct
+// [HierarchyConfiguration]
+type hierarchyConfigurationJSON struct {
+	Children    apijson.Field
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r hierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *HierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	*r = HierarchyConfiguration{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [HierarchyConfigurationUnion] interface which you can cast to
+// the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [HierarchyConfigurationParentHierarchyConfiguration],
+// [HierarchyConfigurationChildHierarchyConfiguration].
+func (r HierarchyConfiguration) AsUnion() HierarchyConfigurationUnion {
+	return r.union
+}
+
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+//
+// Union satisfied by [HierarchyConfigurationParentHierarchyConfiguration] or
+// [HierarchyConfigurationChildHierarchyConfiguration].
+type HierarchyConfigurationUnion interface {
+	implementsHierarchyConfiguration()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*HierarchyConfigurationUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(HierarchyConfigurationParentHierarchyConfiguration{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(HierarchyConfigurationChildHierarchyConfiguration{}),
+		},
+	)
+}
+
+type HierarchyConfigurationParentHierarchyConfiguration struct {
+	// List of contracts that belong to this parent.
+	Children []HierarchyConfigurationParentHierarchyConfigurationChild `json:"children,required"`
+	JSON     hierarchyConfigurationParentHierarchyConfigurationJSON    `json:"-"`
+}
+
+// hierarchyConfigurationParentHierarchyConfigurationJSON contains the JSON
+// metadata for the struct [HierarchyConfigurationParentHierarchyConfiguration]
+type hierarchyConfigurationParentHierarchyConfigurationJSON struct {
+	Children    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HierarchyConfigurationParentHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r hierarchyConfigurationParentHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r HierarchyConfigurationParentHierarchyConfiguration) implementsHierarchyConfiguration() {}
+
+type HierarchyConfigurationParentHierarchyConfigurationChild struct {
+	ContractID string                                                      `json:"contract_id,required" format:"uuid"`
+	CustomerID string                                                      `json:"customer_id,required" format:"uuid"`
+	JSON       hierarchyConfigurationParentHierarchyConfigurationChildJSON `json:"-"`
+}
+
+// hierarchyConfigurationParentHierarchyConfigurationChildJSON contains the JSON
+// metadata for the struct
+// [HierarchyConfigurationParentHierarchyConfigurationChild]
+type hierarchyConfigurationParentHierarchyConfigurationChildJSON struct {
+	ContractID  apijson.Field
+	CustomerID  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r hierarchyConfigurationParentHierarchyConfigurationChildJSON) RawJSON() string {
+	return r.raw
+}
+
+type HierarchyConfigurationChildHierarchyConfiguration struct {
+	// The single parent contract/customer for this child.
+	Parent HierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
+	JSON   hierarchyConfigurationChildHierarchyConfigurationJSON   `json:"-"`
+}
+
+// hierarchyConfigurationChildHierarchyConfigurationJSON contains the JSON metadata
+// for the struct [HierarchyConfigurationChildHierarchyConfiguration]
+type hierarchyConfigurationChildHierarchyConfigurationJSON struct {
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HierarchyConfigurationChildHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r hierarchyConfigurationChildHierarchyConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r HierarchyConfigurationChildHierarchyConfiguration) implementsHierarchyConfiguration() {}
+
+// The single parent contract/customer for this child.
+type HierarchyConfigurationChildHierarchyConfigurationParent struct {
+	ContractID string                                                      `json:"contract_id,required" format:"uuid"`
+	CustomerID string                                                      `json:"customer_id,required" format:"uuid"`
+	JSON       hierarchyConfigurationChildHierarchyConfigurationParentJSON `json:"-"`
+}
+
+// hierarchyConfigurationChildHierarchyConfigurationParentJSON contains the JSON
+// metadata for the struct
+// [HierarchyConfigurationChildHierarchyConfigurationParent]
+type hierarchyConfigurationChildHierarchyConfigurationParentJSON struct {
+	ContractID  apijson.Field
+	CustomerID  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HierarchyConfigurationChildHierarchyConfigurationParent) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r hierarchyConfigurationChildHierarchyConfigurationParentJSON) RawJSON() string {
+	return r.raw
+}
+
 type ID struct {
 	ID   string `json:"id,required" format:"uuid"`
 	JSON idJSON `json:"-"`
@@ -10150,7 +6561,7 @@ type Override struct {
 	IsProrated         bool                        `json:"is_prorated"`
 	Multiplier         float64                     `json:"multiplier"`
 	OverrideSpecifiers []OverrideOverrideSpecifier `json:"override_specifiers"`
-	OverrideTiers      []OverrideOverrideTier      `json:"override_tiers"`
+	OverrideTiers      []OverrideTier              `json:"override_tiers"`
 	OverwriteRate      OverrideOverwriteRate       `json:"overwrite_rate"`
 	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
 	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
@@ -10255,29 +6666,6 @@ func (r OverrideOverrideSpecifiersBillingFrequency) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type OverrideOverrideTier struct {
-	Multiplier float64                  `json:"multiplier,required"`
-	Size       float64                  `json:"size"`
-	JSON       overrideOverrideTierJSON `json:"-"`
-}
-
-// overrideOverrideTierJSON contains the JSON metadata for the struct
-// [OverrideOverrideTier]
-type overrideOverrideTierJSON struct {
-	Multiplier  apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *OverrideOverrideTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r overrideOverrideTierJSON) RawJSON() string {
-	return r.raw
 }
 
 type OverrideOverwriteRate struct {
@@ -10408,6 +6796,669 @@ func (r OverrideType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type OverrideTier struct {
+	Multiplier float64          `json:"multiplier,required"`
+	Size       float64          `json:"size"`
+	JSON       overrideTierJSON `json:"-"`
+}
+
+// overrideTierJSON contains the JSON metadata for the struct [OverrideTier]
+type overrideTierJSON struct {
+	Multiplier  apijson.Field
+	Size        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *OverrideTier) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r overrideTierJSON) RawJSON() string {
+	return r.raw
+}
+
+type PaymentGateConfig struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	PaymentGateType PaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
+	// Only applicable if using PRECALCULATED as your tax type.
+	PrecalculatedTaxConfig PaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
+	// Only applicable if using STRIPE as your payment gate type.
+	StripeConfig PaymentGateConfigStripeConfig `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType PaymentGateConfigTaxType `json:"tax_type"`
+	JSON    paymentGateConfigJSON    `json:"-"`
+}
+
+// paymentGateConfigJSON contains the JSON metadata for the struct
+// [PaymentGateConfig]
+type paymentGateConfigJSON struct {
+	PaymentGateType        apijson.Field
+	PrecalculatedTaxConfig apijson.Field
+	StripeConfig           apijson.Field
+	TaxType                apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *PaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r paymentGateConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+type PaymentGateConfigPaymentGateType string
+
+const (
+	PaymentGateConfigPaymentGateTypeNone     PaymentGateConfigPaymentGateType = "NONE"
+	PaymentGateConfigPaymentGateTypeStripe   PaymentGateConfigPaymentGateType = "STRIPE"
+	PaymentGateConfigPaymentGateTypeExternal PaymentGateConfigPaymentGateType = "EXTERNAL"
+)
+
+func (r PaymentGateConfigPaymentGateType) IsKnown() bool {
+	switch r {
+	case PaymentGateConfigPaymentGateTypeNone, PaymentGateConfigPaymentGateTypeStripe, PaymentGateConfigPaymentGateTypeExternal:
+		return true
+	}
+	return false
+}
+
+// Only applicable if using PRECALCULATED as your tax type.
+type PaymentGateConfigPrecalculatedTaxConfig struct {
+	// Amount of tax to be applied. This should be in the same currency and
+	// denomination as the commit's invoice schedule
+	TaxAmount float64 `json:"tax_amount,required"`
+	// Name of the tax to be applied. This may be used in an invoice line item
+	// description.
+	TaxName string                                      `json:"tax_name"`
+	JSON    paymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
+}
+
+// paymentGateConfigPrecalculatedTaxConfigJSON contains the JSON metadata for the
+// struct [PaymentGateConfigPrecalculatedTaxConfig]
+type paymentGateConfigPrecalculatedTaxConfigJSON struct {
+	TaxAmount   apijson.Field
+	TaxName     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r paymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// Only applicable if using STRIPE as your payment gate type.
+type PaymentGateConfigStripeConfig struct {
+	// If left blank, will default to INVOICE
+	PaymentType PaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
+	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
+	// your payment type.
+	InvoiceMetadata map[string]string                 `json:"invoice_metadata"`
+	JSON            paymentGateConfigStripeConfigJSON `json:"-"`
+}
+
+// paymentGateConfigStripeConfigJSON contains the JSON metadata for the struct
+// [PaymentGateConfigStripeConfig]
+type paymentGateConfigStripeConfigJSON struct {
+	PaymentType     apijson.Field
+	InvoiceMetadata apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *PaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r paymentGateConfigStripeConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// If left blank, will default to INVOICE
+type PaymentGateConfigStripeConfigPaymentType string
+
+const (
+	PaymentGateConfigStripeConfigPaymentTypeInvoice       PaymentGateConfigStripeConfigPaymentType = "INVOICE"
+	PaymentGateConfigStripeConfigPaymentTypePaymentIntent PaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
+)
+
+func (r PaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
+	switch r {
+	case PaymentGateConfigStripeConfigPaymentTypeInvoice, PaymentGateConfigStripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type PaymentGateConfigTaxType string
+
+const (
+	PaymentGateConfigTaxTypeNone          PaymentGateConfigTaxType = "NONE"
+	PaymentGateConfigTaxTypeStripe        PaymentGateConfigTaxType = "STRIPE"
+	PaymentGateConfigTaxTypeAnrok         PaymentGateConfigTaxType = "ANROK"
+	PaymentGateConfigTaxTypePrecalculated PaymentGateConfigTaxType = "PRECALCULATED"
+)
+
+func (r PaymentGateConfigTaxType) IsKnown() bool {
+	switch r {
+	case PaymentGateConfigTaxTypeNone, PaymentGateConfigTaxTypeStripe, PaymentGateConfigTaxTypeAnrok, PaymentGateConfigTaxTypePrecalculated:
+		return true
+	}
+	return false
+}
+
+type PaymentGateConfigParam struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	PaymentGateType param.Field[PaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
+	// Only applicable if using PRECALCULATED as your tax type.
+	PrecalculatedTaxConfig param.Field[PaymentGateConfigPrecalculatedTaxConfigParam] `json:"precalculated_tax_config"`
+	// Only applicable if using STRIPE as your payment gate type.
+	StripeConfig param.Field[PaymentGateConfigStripeConfigParam] `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType param.Field[PaymentGateConfigTaxType] `json:"tax_type"`
+}
+
+func (r PaymentGateConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Only applicable if using PRECALCULATED as your tax type.
+type PaymentGateConfigPrecalculatedTaxConfigParam struct {
+	// Amount of tax to be applied. This should be in the same currency and
+	// denomination as the commit's invoice schedule
+	TaxAmount param.Field[float64] `json:"tax_amount,required"`
+	// Name of the tax to be applied. This may be used in an invoice line item
+	// description.
+	TaxName param.Field[string] `json:"tax_name"`
+}
+
+func (r PaymentGateConfigPrecalculatedTaxConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Only applicable if using STRIPE as your payment gate type.
+type PaymentGateConfigStripeConfigParam struct {
+	// If left blank, will default to INVOICE
+	PaymentType param.Field[PaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
+	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
+	// your payment type.
+	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
+}
+
+func (r PaymentGateConfigStripeConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type PaymentGateConfigV2 struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	PaymentGateType PaymentGateConfigV2PaymentGateType `json:"payment_gate_type,required"`
+	// Only applicable if using PRECALCULATED as your tax type.
+	PrecalculatedTaxConfig PaymentGateConfigV2PrecalculatedTaxConfig `json:"precalculated_tax_config"`
+	// Only applicable if using STRIPE as your payment gateway type.
+	StripeConfig PaymentGateConfigV2StripeConfig `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType PaymentGateConfigV2TaxType `json:"tax_type"`
+	JSON    paymentGateConfigV2JSON    `json:"-"`
+}
+
+// paymentGateConfigV2JSON contains the JSON metadata for the struct
+// [PaymentGateConfigV2]
+type paymentGateConfigV2JSON struct {
+	PaymentGateType        apijson.Field
+	PrecalculatedTaxConfig apijson.Field
+	StripeConfig           apijson.Field
+	TaxType                apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *PaymentGateConfigV2) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r paymentGateConfigV2JSON) RawJSON() string {
+	return r.raw
+}
+
+// Gate access to the commit balance based on successful collection of payment.
+// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+// facilitate payment using your own payment integration. Select NONE if you do not
+// wish to payment gate the commit balance.
+type PaymentGateConfigV2PaymentGateType string
+
+const (
+	PaymentGateConfigV2PaymentGateTypeNone     PaymentGateConfigV2PaymentGateType = "NONE"
+	PaymentGateConfigV2PaymentGateTypeStripe   PaymentGateConfigV2PaymentGateType = "STRIPE"
+	PaymentGateConfigV2PaymentGateTypeExternal PaymentGateConfigV2PaymentGateType = "EXTERNAL"
+)
+
+func (r PaymentGateConfigV2PaymentGateType) IsKnown() bool {
+	switch r {
+	case PaymentGateConfigV2PaymentGateTypeNone, PaymentGateConfigV2PaymentGateTypeStripe, PaymentGateConfigV2PaymentGateTypeExternal:
+		return true
+	}
+	return false
+}
+
+// Only applicable if using PRECALCULATED as your tax type.
+type PaymentGateConfigV2PrecalculatedTaxConfig struct {
+	// Amount of tax to be applied. This should be in the same currency and
+	// denomination as the commit's invoice schedule
+	TaxAmount float64 `json:"tax_amount,required"`
+	// Name of the tax to be applied. This may be used in an invoice line item
+	// description.
+	TaxName string                                        `json:"tax_name"`
+	JSON    paymentGateConfigV2PrecalculatedTaxConfigJSON `json:"-"`
+}
+
+// paymentGateConfigV2PrecalculatedTaxConfigJSON contains the JSON metadata for the
+// struct [PaymentGateConfigV2PrecalculatedTaxConfig]
+type paymentGateConfigV2PrecalculatedTaxConfigJSON struct {
+	TaxAmount   apijson.Field
+	TaxName     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PaymentGateConfigV2PrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r paymentGateConfigV2PrecalculatedTaxConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// Only applicable if using STRIPE as your payment gateway type.
+type PaymentGateConfigV2StripeConfig struct {
+	// If left blank, will default to INVOICE
+	PaymentType PaymentGateConfigV2StripeConfigPaymentType `json:"payment_type,required"`
+	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
+	// your payment type.
+	InvoiceMetadata map[string]string                   `json:"invoice_metadata"`
+	JSON            paymentGateConfigV2StripeConfigJSON `json:"-"`
+}
+
+// paymentGateConfigV2StripeConfigJSON contains the JSON metadata for the struct
+// [PaymentGateConfigV2StripeConfig]
+type paymentGateConfigV2StripeConfigJSON struct {
+	PaymentType     apijson.Field
+	InvoiceMetadata apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *PaymentGateConfigV2StripeConfig) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r paymentGateConfigV2StripeConfigJSON) RawJSON() string {
+	return r.raw
+}
+
+// If left blank, will default to INVOICE
+type PaymentGateConfigV2StripeConfigPaymentType string
+
+const (
+	PaymentGateConfigV2StripeConfigPaymentTypeInvoice       PaymentGateConfigV2StripeConfigPaymentType = "INVOICE"
+	PaymentGateConfigV2StripeConfigPaymentTypePaymentIntent PaymentGateConfigV2StripeConfigPaymentType = "PAYMENT_INTENT"
+)
+
+func (r PaymentGateConfigV2StripeConfigPaymentType) IsKnown() bool {
+	switch r {
+	case PaymentGateConfigV2StripeConfigPaymentTypeInvoice, PaymentGateConfigV2StripeConfigPaymentTypePaymentIntent:
+		return true
+	}
+	return false
+}
+
+// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+// will default to NONE.
+type PaymentGateConfigV2TaxType string
+
+const (
+	PaymentGateConfigV2TaxTypeNone          PaymentGateConfigV2TaxType = "NONE"
+	PaymentGateConfigV2TaxTypeStripe        PaymentGateConfigV2TaxType = "STRIPE"
+	PaymentGateConfigV2TaxTypeAnrok         PaymentGateConfigV2TaxType = "ANROK"
+	PaymentGateConfigV2TaxTypePrecalculated PaymentGateConfigV2TaxType = "PRECALCULATED"
+)
+
+func (r PaymentGateConfigV2TaxType) IsKnown() bool {
+	switch r {
+	case PaymentGateConfigV2TaxTypeNone, PaymentGateConfigV2TaxTypeStripe, PaymentGateConfigV2TaxTypeAnrok, PaymentGateConfigV2TaxTypePrecalculated:
+		return true
+	}
+	return false
+}
+
+type PaymentGateConfigV2Param struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	PaymentGateType param.Field[PaymentGateConfigV2PaymentGateType] `json:"payment_gate_type,required"`
+	// Only applicable if using PRECALCULATED as your tax type.
+	PrecalculatedTaxConfig param.Field[PaymentGateConfigV2PrecalculatedTaxConfigParam] `json:"precalculated_tax_config"`
+	// Only applicable if using STRIPE as your payment gateway type.
+	StripeConfig param.Field[PaymentGateConfigV2StripeConfigParam] `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	TaxType param.Field[PaymentGateConfigV2TaxType] `json:"tax_type"`
+}
+
+func (r PaymentGateConfigV2Param) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Only applicable if using PRECALCULATED as your tax type.
+type PaymentGateConfigV2PrecalculatedTaxConfigParam struct {
+	// Amount of tax to be applied. This should be in the same currency and
+	// denomination as the commit's invoice schedule
+	TaxAmount param.Field[float64] `json:"tax_amount,required"`
+	// Name of the tax to be applied. This may be used in an invoice line item
+	// description.
+	TaxName param.Field[string] `json:"tax_name"`
+}
+
+func (r PaymentGateConfigV2PrecalculatedTaxConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Only applicable if using STRIPE as your payment gateway type.
+type PaymentGateConfigV2StripeConfigParam struct {
+	// If left blank, will default to INVOICE
+	PaymentType param.Field[PaymentGateConfigV2StripeConfigPaymentType] `json:"payment_type,required"`
+	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
+	// your payment type.
+	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
+}
+
+func (r PaymentGateConfigV2StripeConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type PrepaidBalanceThresholdConfiguration struct {
+	Commit PrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         bool              `json:"is_enabled,required"`
+	PaymentGateConfig PaymentGateConfig `json:"payment_gate_config,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's prepaid
+	// balance lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount float64 `json:"threshold_amount,required"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID string                                   `json:"custom_credit_type_id" format:"uuid"`
+	JSON               prepaidBalanceThresholdConfigurationJSON `json:"-"`
+}
+
+// prepaidBalanceThresholdConfigurationJSON contains the JSON metadata for the
+// struct [PrepaidBalanceThresholdConfiguration]
+type prepaidBalanceThresholdConfigurationJSON struct {
+	Commit             apijson.Field
+	IsEnabled          apijson.Field
+	PaymentGateConfig  apijson.Field
+	RechargeToAmount   apijson.Field
+	ThresholdAmount    apijson.Field
+	CustomCreditTypeID apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *PrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r prepaidBalanceThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type PrepaidBalanceThresholdConfigurationCommit struct {
+	// Which products the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductTags []string `json:"applicable_product_tags"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []CommitSpecifierInput                         `json:"specifiers"`
+	JSON       prepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
+	BaseThresholdCommit
+}
+
+// prepaidBalanceThresholdConfigurationCommitJSON contains the JSON metadata for
+// the struct [PrepaidBalanceThresholdConfigurationCommit]
+type prepaidBalanceThresholdConfigurationCommitJSON struct {
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Specifiers            apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *PrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r prepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type PrepaidBalanceThresholdConfigurationParam struct {
+	Commit param.Field[PrepaidBalanceThresholdConfigurationCommitParam] `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         param.Field[bool]                   `json:"is_enabled,required"`
+	PaymentGateConfig param.Field[PaymentGateConfigParam] `json:"payment_gate_config,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount param.Field[float64] `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's prepaid
+	// balance lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id" format:"uuid"`
+}
+
+func (r PrepaidBalanceThresholdConfigurationParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type PrepaidBalanceThresholdConfigurationCommitParam struct {
+	// Which products the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers param.Field[[]CommitSpecifierInputParam] `json:"specifiers"`
+	BaseThresholdCommitParam
+}
+
+func (r PrepaidBalanceThresholdConfigurationCommitParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type PrepaidBalanceThresholdConfigurationV2 struct {
+	Commit PrepaidBalanceThresholdConfigurationV2Commit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         bool                `json:"is_enabled,required"`
+	PaymentGateConfig PaymentGateConfigV2 `json:"payment_gate_config,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount float64 `json:"threshold_amount,required"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID string                                     `json:"custom_credit_type_id" format:"uuid"`
+	JSON               prepaidBalanceThresholdConfigurationV2JSON `json:"-"`
+}
+
+// prepaidBalanceThresholdConfigurationV2JSON contains the JSON metadata for the
+// struct [PrepaidBalanceThresholdConfigurationV2]
+type prepaidBalanceThresholdConfigurationV2JSON struct {
+	Commit             apijson.Field
+	IsEnabled          apijson.Field
+	PaymentGateConfig  apijson.Field
+	RechargeToAmount   apijson.Field
+	ThresholdAmount    apijson.Field
+	CustomCreditTypeID apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *PrepaidBalanceThresholdConfigurationV2) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r prepaidBalanceThresholdConfigurationV2JSON) RawJSON() string {
+	return r.raw
+}
+
+type PrepaidBalanceThresholdConfigurationV2Commit struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID string `json:"product_id,required"`
+	// Which products the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductTags []string `json:"applicable_product_tags"`
+	Description           string   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name string `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
+	Specifiers []CommitSpecifierInput                           `json:"specifiers"`
+	JSON       prepaidBalanceThresholdConfigurationV2CommitJSON `json:"-"`
+}
+
+// prepaidBalanceThresholdConfigurationV2CommitJSON contains the JSON metadata for
+// the struct [PrepaidBalanceThresholdConfigurationV2Commit]
+type prepaidBalanceThresholdConfigurationV2CommitJSON struct {
+	ProductID             apijson.Field
+	ApplicableProductIDs  apijson.Field
+	ApplicableProductTags apijson.Field
+	Description           apijson.Field
+	Name                  apijson.Field
+	Specifiers            apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *PrepaidBalanceThresholdConfigurationV2Commit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r prepaidBalanceThresholdConfigurationV2CommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type PrepaidBalanceThresholdConfigurationV2Param struct {
+	Commit param.Field[PrepaidBalanceThresholdConfigurationV2CommitParam] `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         param.Field[bool]                     `json:"is_enabled,required"`
+	PaymentGateConfig param.Field[PaymentGateConfigV2Param] `json:"payment_gate_config,required"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount param.Field[float64] `json:"recharge_to_amount,required"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id" format:"uuid"`
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2Param) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type PrepaidBalanceThresholdConfigurationV2CommitParam struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID param.Field[string] `json:"product_id,required"`
+	// Which products the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
+	// Which tags the threshold commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	Description           param.Field[string]   `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name param.Field[string] `json:"name"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
+	Specifiers param.Field[[]CommitSpecifierInputParam] `json:"specifiers"`
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type PropertyFilter struct {
@@ -10742,6 +7793,328 @@ func (r *SchedulePointInTimeScheduleItem) UnmarshalJSON(data []byte) (err error)
 }
 
 func (r schedulePointInTimeScheduleItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type SpendThresholdConfiguration struct {
+	Commit BaseThresholdCommit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         bool              `json:"is_enabled,required"`
+	PaymentGateConfig PaymentGateConfig `json:"payment_gate_config,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                         `json:"threshold_amount,required"`
+	JSON            spendThresholdConfigurationJSON `json:"-"`
+}
+
+// spendThresholdConfigurationJSON contains the JSON metadata for the struct
+// [SpendThresholdConfiguration]
+type spendThresholdConfigurationJSON struct {
+	Commit            apijson.Field
+	IsEnabled         apijson.Field
+	PaymentGateConfig apijson.Field
+	ThresholdAmount   apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *SpendThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r spendThresholdConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+type SpendThresholdConfigurationParam struct {
+	Commit param.Field[BaseThresholdCommitParam] `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         param.Field[bool]                   `json:"is_enabled,required"`
+	PaymentGateConfig param.Field[PaymentGateConfigParam] `json:"payment_gate_config,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+}
+
+func (r SpendThresholdConfigurationParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type SpendThresholdConfigurationV2 struct {
+	Commit SpendThresholdConfigurationV2Commit `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         bool                `json:"is_enabled,required"`
+	PaymentGateConfig PaymentGateConfigV2 `json:"payment_gate_config,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount float64                           `json:"threshold_amount,required"`
+	JSON            spendThresholdConfigurationV2JSON `json:"-"`
+}
+
+// spendThresholdConfigurationV2JSON contains the JSON metadata for the struct
+// [SpendThresholdConfigurationV2]
+type spendThresholdConfigurationV2JSON struct {
+	Commit            apijson.Field
+	IsEnabled         apijson.Field
+	PaymentGateConfig apijson.Field
+	ThresholdAmount   apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *SpendThresholdConfigurationV2) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r spendThresholdConfigurationV2JSON) RawJSON() string {
+	return r.raw
+}
+
+type SpendThresholdConfigurationV2Commit struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID   string `json:"product_id,required"`
+	Description string `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name string                                  `json:"name"`
+	JSON spendThresholdConfigurationV2CommitJSON `json:"-"`
+}
+
+// spendThresholdConfigurationV2CommitJSON contains the JSON metadata for the
+// struct [SpendThresholdConfigurationV2Commit]
+type spendThresholdConfigurationV2CommitJSON struct {
+	ProductID   apijson.Field
+	Description apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SpendThresholdConfigurationV2Commit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r spendThresholdConfigurationV2CommitJSON) RawJSON() string {
+	return r.raw
+}
+
+type SpendThresholdConfigurationV2Param struct {
+	Commit param.Field[SpendThresholdConfigurationV2CommitParam] `json:"commit,required"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         param.Field[bool]                     `json:"is_enabled,required"`
+	PaymentGateConfig param.Field[PaymentGateConfigV2Param] `json:"payment_gate_config,required"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
+}
+
+func (r SpendThresholdConfigurationV2Param) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type SpendThresholdConfigurationV2CommitParam struct {
+	// The commit product that will be used to generate the line item for commit
+	// payment.
+	ProductID   param.Field[string] `json:"product_id,required"`
+	Description param.Field[string] `json:"description"`
+	// Specify the name of the line item for the threshold charge. If left blank, it
+	// will default to the commit product name.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r SpendThresholdConfigurationV2CommitParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type Subscription struct {
+	CollectionSchedule SubscriptionCollectionSchedule `json:"collection_schedule,required"`
+	Proration          SubscriptionProration          `json:"proration,required"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []SubscriptionQuantitySchedule `json:"quantity_schedule,required"`
+	StartingAt       time.Time                      `json:"starting_at,required" format:"date-time"`
+	SubscriptionRate SubscriptionSubscriptionRate   `json:"subscription_rate,required"`
+	ID               string                         `json:"id" format:"uuid"`
+	CustomFields     map[string]string              `json:"custom_fields"`
+	Description      string                         `json:"description"`
+	EndingBefore     time.Time                      `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                         `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                         `json:"name"`
+	JSON             subscriptionJSON               `json:"-"`
+}
+
+// subscriptionJSON contains the JSON metadata for the struct [Subscription]
+type subscriptionJSON struct {
+	CollectionSchedule apijson.Field
+	Proration          apijson.Field
+	QuantitySchedule   apijson.Field
+	StartingAt         apijson.Field
+	SubscriptionRate   apijson.Field
+	ID                 apijson.Field
+	CustomFields       apijson.Field
+	Description        apijson.Field
+	EndingBefore       apijson.Field
+	FiatCreditTypeID   apijson.Field
+	Name               apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *Subscription) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r subscriptionJSON) RawJSON() string {
+	return r.raw
+}
+
+type SubscriptionCollectionSchedule string
+
+const (
+	SubscriptionCollectionScheduleAdvance SubscriptionCollectionSchedule = "ADVANCE"
+	SubscriptionCollectionScheduleArrears SubscriptionCollectionSchedule = "ARREARS"
+)
+
+func (r SubscriptionCollectionSchedule) IsKnown() bool {
+	switch r {
+	case SubscriptionCollectionScheduleAdvance, SubscriptionCollectionScheduleArrears:
+		return true
+	}
+	return false
+}
+
+type SubscriptionProration struct {
+	InvoiceBehavior SubscriptionProrationInvoiceBehavior `json:"invoice_behavior,required"`
+	IsProrated      bool                                 `json:"is_prorated,required"`
+	JSON            subscriptionProrationJSON            `json:"-"`
+}
+
+// subscriptionProrationJSON contains the JSON metadata for the struct
+// [SubscriptionProration]
+type subscriptionProrationJSON struct {
+	InvoiceBehavior apijson.Field
+	IsProrated      apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *SubscriptionProration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r subscriptionProrationJSON) RawJSON() string {
+	return r.raw
+}
+
+type SubscriptionProrationInvoiceBehavior string
+
+const (
+	SubscriptionProrationInvoiceBehaviorBillImmediately          SubscriptionProrationInvoiceBehavior = "BILL_IMMEDIATELY"
+	SubscriptionProrationInvoiceBehaviorBillOnNextCollectionDate SubscriptionProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
+)
+
+func (r SubscriptionProrationInvoiceBehavior) IsKnown() bool {
+	switch r {
+	case SubscriptionProrationInvoiceBehaviorBillImmediately, SubscriptionProrationInvoiceBehaviorBillOnNextCollectionDate:
+		return true
+	}
+	return false
+}
+
+type SubscriptionQuantitySchedule struct {
+	Quantity     float64                          `json:"quantity,required"`
+	StartingAt   time.Time                        `json:"starting_at,required" format:"date-time"`
+	EndingBefore time.Time                        `json:"ending_before" format:"date-time"`
+	JSON         subscriptionQuantityScheduleJSON `json:"-"`
+}
+
+// subscriptionQuantityScheduleJSON contains the JSON metadata for the struct
+// [SubscriptionQuantitySchedule]
+type subscriptionQuantityScheduleJSON struct {
+	Quantity     apijson.Field
+	StartingAt   apijson.Field
+	EndingBefore apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *SubscriptionQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r subscriptionQuantityScheduleJSON) RawJSON() string {
+	return r.raw
+}
+
+type SubscriptionSubscriptionRate struct {
+	BillingFrequency SubscriptionSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
+	Product          SubscriptionSubscriptionRateProduct          `json:"product,required"`
+	JSON             subscriptionSubscriptionRateJSON             `json:"-"`
+}
+
+// subscriptionSubscriptionRateJSON contains the JSON metadata for the struct
+// [SubscriptionSubscriptionRate]
+type subscriptionSubscriptionRateJSON struct {
+	BillingFrequency apijson.Field
+	Product          apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SubscriptionSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r subscriptionSubscriptionRateJSON) RawJSON() string {
+	return r.raw
+}
+
+type SubscriptionSubscriptionRateBillingFrequency string
+
+const (
+	SubscriptionSubscriptionRateBillingFrequencyMonthly   SubscriptionSubscriptionRateBillingFrequency = "MONTHLY"
+	SubscriptionSubscriptionRateBillingFrequencyQuarterly SubscriptionSubscriptionRateBillingFrequency = "QUARTERLY"
+	SubscriptionSubscriptionRateBillingFrequencyAnnual    SubscriptionSubscriptionRateBillingFrequency = "ANNUAL"
+	SubscriptionSubscriptionRateBillingFrequencyWeekly    SubscriptionSubscriptionRateBillingFrequency = "WEEKLY"
+)
+
+func (r SubscriptionSubscriptionRateBillingFrequency) IsKnown() bool {
+	switch r {
+	case SubscriptionSubscriptionRateBillingFrequencyMonthly, SubscriptionSubscriptionRateBillingFrequencyQuarterly, SubscriptionSubscriptionRateBillingFrequencyAnnual, SubscriptionSubscriptionRateBillingFrequencyWeekly:
+		return true
+	}
+	return false
+}
+
+type SubscriptionSubscriptionRateProduct struct {
+	ID   string                                  `json:"id,required" format:"uuid"`
+	Name string                                  `json:"name,required"`
+	JSON subscriptionSubscriptionRateProductJSON `json:"-"`
+}
+
+// subscriptionSubscriptionRateProductJSON contains the JSON metadata for the
+// struct [SubscriptionSubscriptionRateProduct]
+type subscriptionSubscriptionRateProductJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SubscriptionSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r subscriptionSubscriptionRateProductJSON) RawJSON() string {
 	return r.raw
 }
 

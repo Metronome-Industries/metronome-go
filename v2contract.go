@@ -5,7 +5,6 @@ package metronome
 import (
 	"context"
 	"net/http"
-	"reflect"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -13,7 +12,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/shared"
-	"github.com/tidwall/gjson"
 )
 
 // V2ContractService contains methods and other services that help with interacting
@@ -215,20 +213,20 @@ func (r v2ContractGetEditHistoryResponseJSON) RawJSON() string {
 }
 
 type V2ContractGetEditHistoryResponseData struct {
-	ID                                      string                                                                      `json:"id,required" format:"uuid"`
-	AddCommits                              []V2ContractGetEditHistoryResponseDataAddCommit                             `json:"add_commits"`
-	AddCredits                              []V2ContractGetEditHistoryResponseDataAddCredit                             `json:"add_credits"`
-	AddDiscounts                            []shared.Discount                                                           `json:"add_discounts"`
-	AddOverrides                            []V2ContractGetEditHistoryResponseDataAddOverride                           `json:"add_overrides"`
-	AddPrepaidBalanceThresholdConfiguration V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration `json:"add_prepaid_balance_threshold_configuration"`
-	AddProServices                          []shared.ProService                                                         `json:"add_pro_services"`
-	AddRecurringCommits                     []V2ContractGetEditHistoryResponseDataAddRecurringCommit                    `json:"add_recurring_commits"`
-	AddRecurringCredits                     []V2ContractGetEditHistoryResponseDataAddRecurringCredit                    `json:"add_recurring_credits"`
-	AddResellerRoyalties                    []V2ContractGetEditHistoryResponseDataAddResellerRoyalty                    `json:"add_reseller_royalties"`
-	AddScheduledCharges                     []V2ContractGetEditHistoryResponseDataAddScheduledCharge                    `json:"add_scheduled_charges"`
-	AddSpendThresholdConfiguration          V2ContractGetEditHistoryResponseDataAddSpendThresholdConfiguration          `json:"add_spend_threshold_configuration"`
+	ID                                      string                                                   `json:"id,required" format:"uuid"`
+	AddCommits                              []V2ContractGetEditHistoryResponseDataAddCommit          `json:"add_commits"`
+	AddCredits                              []V2ContractGetEditHistoryResponseDataAddCredit          `json:"add_credits"`
+	AddDiscounts                            []shared.Discount                                        `json:"add_discounts"`
+	AddOverrides                            []V2ContractGetEditHistoryResponseDataAddOverride        `json:"add_overrides"`
+	AddPrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfigurationV2            `json:"add_prepaid_balance_threshold_configuration"`
+	AddProServices                          []shared.ProService                                      `json:"add_pro_services"`
+	AddRecurringCommits                     []V2ContractGetEditHistoryResponseDataAddRecurringCommit `json:"add_recurring_commits"`
+	AddRecurringCredits                     []V2ContractGetEditHistoryResponseDataAddRecurringCredit `json:"add_recurring_credits"`
+	AddResellerRoyalties                    []V2ContractGetEditHistoryResponseDataAddResellerRoyalty `json:"add_reseller_royalties"`
+	AddScheduledCharges                     []V2ContractGetEditHistoryResponseDataAddScheduledCharge `json:"add_scheduled_charges"`
+	AddSpendThresholdConfiguration          shared.SpendThresholdConfigurationV2                     `json:"add_spend_threshold_configuration"`
 	// List of subscriptions on the contract.
-	AddSubscriptions        []V2ContractGetEditHistoryResponseDataAddSubscription        `json:"add_subscriptions"`
+	AddSubscriptions        []shared.Subscription                                        `json:"add_subscriptions"`
 	AddUsageFilters         []V2ContractGetEditHistoryResponseDataAddUsageFilter         `json:"add_usage_filters"`
 	ArchiveCommits          []V2ContractGetEditHistoryResponseDataArchiveCommit          `json:"archive_commits"`
 	ArchiveCredits          []V2ContractGetEditHistoryResponseDataArchiveCredit          `json:"archive_credits"`
@@ -315,7 +313,7 @@ type V2ContractGetEditHistoryResponseDataAddCommit struct {
 	ApplicableProductTags []string                `json:"applicable_product_tags"`
 	Description           string                  `json:"description"`
 	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The schedule that the customer will be invoiced for this commit.
 	InvoiceSchedule shared.SchedulePointInTime `json:"invoice_schedule"`
 	Name            string                     `json:"name"`
@@ -334,8 +332,8 @@ type V2ContractGetEditHistoryResponseDataAddCommit struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers []V2ContractGetEditHistoryResponseDataAddCommitsSpecifier `json:"specifiers"`
-	JSON       v2ContractGetEditHistoryResponseDataAddCommitJSON         `json:"-"`
+	Specifiers []shared.CommitSpecifierInput                     `json:"specifiers"`
+	JSON       v2ContractGetEditHistoryResponseDataAddCommitJSON `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddCommitJSON contains the JSON metadata for
@@ -407,235 +405,6 @@ func (r V2ContractGetEditHistoryResponseDataAddCommitsType) IsKnown() bool {
 	return false
 }
 
-// Optional configuration for commit hierarchy access control
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfiguration struct {
-	ChildAccess V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfiguration]
-type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess struct {
-	Type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                         `json:"contract_ids"`
-	JSON        v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion
-}
-
-// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess]
-type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                                 `json:"contract_ids,required" format:"uuid"`
-	Type        V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataAddCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 type V2ContractGetEditHistoryResponseDataAddCommitsRateType string
 
 const (
@@ -651,37 +420,6 @@ func (r V2ContractGetEditHistoryResponseDataAddCommitsRateType) IsKnown() bool {
 	return false
 }
 
-type V2ContractGetEditHistoryResponseDataAddCommitsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                    `json:"product_tags"`
-	JSON        v2ContractGetEditHistoryResponseDataAddCommitsSpecifierJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCommitsSpecifierJSON contains the JSON
-// metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCommitsSpecifier]
-type v2ContractGetEditHistoryResponseDataAddCommitsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCommitsSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
 type V2ContractGetEditHistoryResponseDataAddCredit struct {
 	ID      string                                                `json:"id,required" format:"uuid"`
 	Product V2ContractGetEditHistoryResponseDataAddCreditsProduct `json:"product,required"`
@@ -692,8 +430,8 @@ type V2ContractGetEditHistoryResponseDataAddCredit struct {
 	ApplicableProductTags []string                `json:"applicable_product_tags"`
 	Description           string                  `json:"description"`
 	// Optional configuration for recurring credit hierarchy access control
-	HierarchyConfiguration V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
-	Name                   string                                                               `json:"name"`
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+	Name                   string                              `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// If multiple credits or commits are applicable, the one with the lower priority
@@ -707,8 +445,8 @@ type V2ContractGetEditHistoryResponseDataAddCredit struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers []V2ContractGetEditHistoryResponseDataAddCreditsSpecifier `json:"specifiers"`
-	JSON       v2ContractGetEditHistoryResponseDataAddCreditJSON         `json:"-"`
+	Specifiers []shared.CommitSpecifierInput                     `json:"specifiers"`
+	JSON       v2ContractGetEditHistoryResponseDataAddCreditJSON `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddCreditJSON contains the JSON metadata for
@@ -776,266 +514,6 @@ func (r V2ContractGetEditHistoryResponseDataAddCreditsType) IsKnown() bool {
 	return false
 }
 
-// Optional configuration for recurring credit hierarchy access control
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfiguration struct {
-	ChildAccess V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfiguration]
-type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess struct {
-	Type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                         `json:"contract_ids"`
-	JSON        v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion
-}
-
-// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess]
-type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                                 `json:"contract_ids,required" format:"uuid"`
-	Type        V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataAddCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddCreditsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                    `json:"product_tags"`
-	JSON        v2ContractGetEditHistoryResponseDataAddCreditsSpecifierJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddCreditsSpecifierJSON contains the JSON
-// metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddCreditsSpecifier]
-type v2ContractGetEditHistoryResponseDataAddCreditsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddCreditsSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
 type V2ContractGetEditHistoryResponseDataAddOverride struct {
 	ID                    string                                                              `json:"id,required" format:"uuid"`
 	StartingAt            time.Time                                                           `json:"starting_at,required" format:"date-time"`
@@ -1045,7 +523,7 @@ type V2ContractGetEditHistoryResponseDataAddOverride struct {
 	IsCommitSpecific      bool                                                                `json:"is_commit_specific"`
 	Multiplier            float64                                                             `json:"multiplier"`
 	OverrideSpecifiers    []V2ContractGetEditHistoryResponseDataAddOverridesOverrideSpecifier `json:"override_specifiers"`
-	OverrideTiers         []V2ContractGetEditHistoryResponseDataAddOverridesOverrideTier      `json:"override_tiers"`
+	OverrideTiers         []shared.OverrideTier                                               `json:"override_tiers"`
 	OverwriteRate         V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRate       `json:"overwrite_rate"`
 	Priority              float64                                                             `json:"priority"`
 	Product               V2ContractGetEditHistoryResponseDataAddOverridesProduct             `json:"product"`
@@ -1134,30 +612,6 @@ func (r V2ContractGetEditHistoryResponseDataAddOverridesOverrideSpecifiersBillin
 		return true
 	}
 	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddOverridesOverrideTier struct {
-	Multiplier float64                                                          `json:"multiplier,required"`
-	Size       float64                                                          `json:"size"`
-	JSON       v2ContractGetEditHistoryResponseDataAddOverridesOverrideTierJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddOverridesOverrideTierJSON contains the
-// JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddOverridesOverrideTier]
-type v2ContractGetEditHistoryResponseDataAddOverridesOverrideTierJSON struct {
-	Multiplier  apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddOverridesOverrideTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddOverridesOverrideTierJSON) RawJSON() string {
-	return r.raw
 }
 
 type V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRate struct {
@@ -1275,275 +729,6 @@ func (r V2ContractGetEditHistoryResponseDataAddOverridesType) IsKnown() bool {
 	return false
 }
 
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration struct {
-	Commit V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         bool                                                                                         `json:"is_enabled,required"`
-	PaymentGateConfig V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
-	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's balance
-	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
-	// If provided, the threshold, recharge-to amount, and the resulting threshold
-	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string                                                                          `json:"custom_credit_type_id" format:"uuid"`
-	JSON               v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration]
-type v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON struct {
-	Commit             apijson.Field
-	IsEnabled          apijson.Field
-	PaymentGateConfig  apijson.Field
-	RechargeToAmount   apijson.Field
-	ThresholdAmount    apijson.Field
-	CustomCreditTypeID apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID string `json:"product_id,required"`
-	// Which products the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags []string `json:"applicable_product_tags"`
-	Description           string   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string `json:"name"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	// Instead, to target usage by product or product tag, pass those values in the
-	// body of `specifiers`.
-	Specifiers []V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers"`
-	JSON       v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommit]
-type v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitJSON struct {
-	ProductID             apijson.Field
-	ApplicableProductIDs  apijson.Field
-	ApplicableProductTags apijson.Field
-	Description           apijson.Field
-	Name                  apijson.Field
-	Specifiers            apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                                                       `json:"product_tags"`
-	JSON        v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifierJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifier]
-type v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfig]
-type v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                                                                 `json:"tax_name"`
-	JSON    v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                                                            `json:"invoice_metadata"`
-	JSON            v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
-type v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone          V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe        V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe, V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V2ContractGetEditHistoryResponseDataAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
 type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -1567,7 +752,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring credit hierarchy access control
-	HierarchyConfiguration V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount V2ContractGetEditHistoryResponseDataAddRecurringCommitsInvoiceAmount `json:"invoice_amount"`
 	// Displayed on invoices. Will be passed through to the individual commits
@@ -1590,7 +775,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier `json:"specifiers"`
+	Specifiers []shared.CommitSpecifier `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig `json:"subscription_config"`
 	JSON               v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON                `json:"-"`
@@ -1760,235 +945,6 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsContractJSON) Raw
 	return r.raw
 }
 
-// Optional configuration for recurring credit hierarchy access control
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfiguration struct {
-	ChildAccess V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfiguration]
-type v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess struct {
-	Type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                                  `json:"contract_ids"`
-	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessUnion
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess]
-type v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                                          `json:"contract_ids,required" format:"uuid"`
-	Type        V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataAddRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 // The amount the customer should be billed for the commit. Not required.
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitsInvoiceAmount struct {
 	CreditTypeID string                                                                   `json:"credit_type_id,required" format:"uuid"`
@@ -2055,37 +1011,6 @@ func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsRecurrenceFrequen
 		return true
 	}
 	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                             `json:"product_tags"`
-	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON contains
-// the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier]
-type v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsSpecifierJSON) RawJSON() string {
-	return r.raw
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -2176,7 +1101,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// Determines when the contract will stop creating recurring commits. Optional
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring credit hierarchy access control
-	HierarchyConfiguration V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// Displayed on invoices. Will be passed through to the individual commits
 	Name string `json:"name"`
 	// Will be passed down to the individual commits
@@ -2197,7 +1122,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier `json:"specifiers"`
+	Specifiers []shared.CommitSpecifier `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig `json:"subscription_config"`
 	JSON               v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON                `json:"-"`
@@ -2366,235 +1291,6 @@ func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsContractJSON) Raw
 	return r.raw
 }
 
-// Optional configuration for recurring credit hierarchy access control
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfiguration struct {
-	ChildAccess V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfiguration]
-type v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess struct {
-	Type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                                  `json:"contract_ids"`
-	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessUnion
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess]
-type v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                                          `json:"contract_ids,required" format:"uuid"`
-	Type        V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataAddRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 // Determines whether the first and last commit will be prorated. If not provided,
 // the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditsProration string
@@ -2634,37 +1330,6 @@ func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsRecurrenceFrequen
 		return true
 	}
 	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                             `json:"product_tags"`
-	JSON        v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON contains
-// the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier]
-type v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsSpecifierJSON) RawJSON() string {
-	return r.raw
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -2849,407 +1514,6 @@ func (r v2ContractGetEditHistoryResponseDataAddScheduledChargesProductJSON) RawJ
 	return r.raw
 }
 
-type V2ContractGetEditHistoryResponseDataAddSpendThresholdConfiguration struct {
-	Commit V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationCommit `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         bool                                                                                `json:"is_enabled,required"`
-	PaymentGateConfig V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfig `json:"payment_gate_config,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64                                                                `json:"threshold_amount,required"`
-	JSON            v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationJSON contains
-// the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSpendThresholdConfiguration]
-type v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationJSON struct {
-	Commit            apijson.Field
-	IsEnabled         apijson.Field
-	PaymentGateConfig apijson.Field
-	ThresholdAmount   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSpendThresholdConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID   string `json:"product_id,required"`
-	Description string `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string                                                                       `json:"name"`
-	JSON v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationCommitJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationCommitJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationCommit]
-type v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationCommitJSON struct {
-	ProductID   apijson.Field
-	Description apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationCommitJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfig]
-type v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                                                        `json:"tax_name"`
-	JSON    v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                                                   `json:"invoice_metadata"`
-	JSON            v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfig]
-type v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxTypeNone          V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe        V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe, V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V2ContractGetEditHistoryResponseDataAddSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddSubscription struct {
-	CollectionSchedule V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule `json:"collection_schedule,required"`
-	Proration          V2ContractGetEditHistoryResponseDataAddSubscriptionsProration          `json:"proration,required"`
-	// List of quantity schedule items for the subscription. Only includes the current
-	// quantity and future quantity changes.
-	QuantitySchedule []V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt       time.Time                                                              `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate   `json:"subscription_rate,required"`
-	ID               string                                                                 `json:"id" format:"uuid"`
-	CustomFields     map[string]string                                                      `json:"custom_fields"`
-	Description      string                                                                 `json:"description"`
-	EndingBefore     time.Time                                                              `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                                                                 `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                                                                 `json:"name"`
-	JSON             v2ContractGetEditHistoryResponseDataAddSubscriptionJSON                `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSubscriptionJSON contains the JSON
-// metadata for the struct [V2ContractGetEditHistoryResponseDataAddSubscription]
-type v2ContractGetEditHistoryResponseDataAddSubscriptionJSON struct {
-	CollectionSchedule apijson.Field
-	Proration          apijson.Field
-	QuantitySchedule   apijson.Field
-	StartingAt         apijson.Field
-	SubscriptionRate   apijson.Field
-	ID                 apijson.Field
-	CustomFields       apijson.Field
-	Description        apijson.Field
-	EndingBefore       apijson.Field
-	FiatCreditTypeID   apijson.Field
-	Name               apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSubscription) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSubscriptionJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionScheduleAdvance V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule = "ADVANCE"
-	V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionScheduleArrears V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule = "ARREARS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionSchedule) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionScheduleAdvance, V2ContractGetEditHistoryResponseDataAddSubscriptionsCollectionScheduleArrears:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddSubscriptionsProration struct {
-	InvoiceBehavior V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior `json:"invoice_behavior,required"`
-	IsProrated      bool                                                                         `json:"is_prorated,required"`
-	JSON            v2ContractGetEditHistoryResponseDataAddSubscriptionsProrationJSON            `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSubscriptionsProrationJSON contains the
-// JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSubscriptionsProration]
-type v2ContractGetEditHistoryResponseDataAddSubscriptionsProrationJSON struct {
-	InvoiceBehavior apijson.Field
-	IsProrated      apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionsProration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSubscriptionsProrationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehaviorBillImmediately          V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior = "BILL_IMMEDIATELY"
-	V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior = "BILL_ON_NEXT_COLLECTION_DATE"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehavior) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehaviorBillImmediately, V2ContractGetEditHistoryResponseDataAddSubscriptionsProrationInvoiceBehaviorBillOnNextCollectionDate:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule struct {
-	Quantity     float64                                                                  `json:"quantity,required"`
-	StartingAt   time.Time                                                                `json:"starting_at,required" format:"date-time"`
-	EndingBefore time.Time                                                                `json:"ending_before" format:"date-time"`
-	JSON         v2ContractGetEditHistoryResponseDataAddSubscriptionsQuantityScheduleJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSubscriptionsQuantityScheduleJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule]
-type v2ContractGetEditHistoryResponseDataAddSubscriptionsQuantityScheduleJSON struct {
-	Quantity     apijson.Field
-	StartingAt   apijson.Field
-	EndingBefore apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionsQuantitySchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSubscriptionsQuantityScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate struct {
-	BillingFrequency V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency `json:"billing_frequency,required"`
-	Product          V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProduct          `json:"product,required"`
-	JSON             v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateJSON             `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate]
-type v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateJSON struct {
-	BillingFrequency apijson.Field
-	Product          apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyMonthly   V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency = "MONTHLY"
-	V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyQuarterly V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency = "QUARTERLY"
-	V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyAnnual    V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency = "ANNUAL"
-	V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyWeekly    V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency = "WEEKLY"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyMonthly, V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyQuarterly, V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyAnnual, V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProduct struct {
-	ID   string                                                                          `json:"id,required" format:"uuid"`
-	Name string                                                                          `json:"name,required"`
-	JSON v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProductJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProductJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProduct]
-type v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProduct) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddSubscriptionsSubscriptionRateProductJSON) RawJSON() string {
-	return r.raw
-}
-
 type V2ContractGetEditHistoryResponseDataAddUsageFilter struct {
 	GroupKey    string   `json:"group_key,required"`
 	GroupValues []string `json:"group_values,required"`
@@ -3378,10 +1642,10 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,nullable"`
 	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfiguration `json:"hierarchy_configuration"`
-	InvoiceSchedule        V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceSchedule        `json:"invoice_schedule"`
-	Name                   string                                                                  `json:"name"`
-	NetsuiteSalesOrderID   string                                                                  `json:"netsuite_sales_order_id,nullable"`
+	HierarchyConfiguration shared.CommitHierarchyConfiguration                              `json:"hierarchy_configuration"`
+	InvoiceSchedule        V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceSchedule `json:"invoice_schedule"`
+	Name                   string                                                           `json:"name"`
+	NetsuiteSalesOrderID   string                                                           `json:"netsuite_sales_order_id,nullable"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
 	Priority         float64 `json:"priority,nullable"`
@@ -3393,8 +1657,8 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers []V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier `json:"specifiers,nullable"`
-	JSON       v2ContractGetEditHistoryResponseDataUpdateCommitJSON         `json:"-"`
+	Specifiers []shared.CommitSpecifierInput                        `json:"specifiers,nullable"`
+	JSON       v2ContractGetEditHistoryResponseDataUpdateCommitJSON `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataUpdateCommitJSON contains the JSON metadata
@@ -3530,235 +1794,6 @@ func (r v2ContractGetEditHistoryResponseDataUpdateCommitsAccessScheduleUpdateSch
 	return r.raw
 }
 
-// Optional configuration for commit hierarchy access control
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfiguration struct {
-	ChildAccess V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfiguration]
-type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess struct {
-	Type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                            `json:"contract_ids"`
-	JSON        v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess]
-type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                                    `json:"contract_ids,required" format:"uuid"`
-	Type        V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataUpdateCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 type V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceSchedule struct {
 	AddScheduleItems    []V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceScheduleAddScheduleItem    `json:"add_schedule_items"`
 	RemoveScheduleItems []V2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceScheduleRemoveScheduleItem `json:"remove_schedule_items"`
@@ -3865,44 +1900,13 @@ func (r v2ContractGetEditHistoryResponseDataUpdateCommitsInvoiceScheduleUpdateSc
 	return r.raw
 }
 
-type V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                       `json:"product_tags"`
-	JSON        v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON contains the JSON
-// metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier]
-type v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCommitsSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCommitsSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
 type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 	ID             string                                                          `json:"id,required" format:"uuid"`
 	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCreditsAccessSchedule `json:"access_schedule"`
 	// Optional configuration for credit hierarchy access control
-	HierarchyConfiguration V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration `json:"hierarchy_configuration"`
-	Name                   string                                                                  `json:"name"`
-	NetsuiteSalesOrderID   string                                                                  `json:"netsuite_sales_order_id,nullable"`
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+	Name                   string                              `json:"name"`
+	NetsuiteSalesOrderID   string                              `json:"netsuite_sales_order_id,nullable"`
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
 	Priority         float64                                              `json:"priority,nullable"`
@@ -4036,235 +2040,6 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsAccessScheduleUpdateSc
 
 func (r v2ContractGetEditHistoryResponseDataUpdateCreditsAccessScheduleUpdateScheduleItemJSON) RawJSON() string {
 	return r.raw
-}
-
-// Optional configuration for credit hierarchy access control
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration struct {
-	ChildAccess V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationJSON        `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration]
-type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess struct {
-	Type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                                            `json:"contract_ids"`
-	JSON        v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess]
-type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion]
-// interface which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess) AsUnion() V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-// or
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs].
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs{}),
-		},
-	)
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll]
-type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType `json:"type,required"`
-	JSON v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone]
-type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string                                                                                                                    `json:"contract_ids,required" format:"uuid"`
-	Type        V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType `json:"type,required"`
-	JSON        v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs]
-type v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccess() {
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeAll         V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeNone        V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeContractIDs V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeAll, V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeNone, V2ContractGetEditHistoryResponseDataUpdateCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateDiscount struct {
@@ -4461,8 +2236,8 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                                                                                            `json:"is_enabled"`
-	PaymentGateConfig V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig `json:"payment_gate_config"`
+	IsEnabled         bool                       `json:"is_enabled"`
+	PaymentGateConfig shared.PaymentGateConfigV2 `json:"payment_gate_config"`
 	// Specify the amount the balance should be recharged to.
 	RechargeToAmount float64 `json:"recharge_to_amount"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
@@ -4514,8 +2289,8 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers []V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier `json:"specifiers,nullable"`
-	JSON       v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitJSON        `json:"-"`
+	Specifiers []shared.CommitSpecifierInput                                                            `json:"specifiers,nullable"`
+	JSON       v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitJSON
@@ -4538,187 +2313,6 @@ func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfig
 
 func (r v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                                                                          `json:"product_tags"`
-	JSON        v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifierJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifierJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier]
-type v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitSpecifierJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig]
-type v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                                                                    `json:"tax_name"`
-	JSON    v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                                                               `json:"invoice_metadata"`
-	JSON            v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig]
-type v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone          V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe        V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe, V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateRecurringCommit struct {
@@ -5010,8 +2604,8 @@ type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration struc
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                                                                                   `json:"is_enabled"`
-	PaymentGateConfig V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfig `json:"payment_gate_config"`
+	IsEnabled         bool                       `json:"is_enabled"`
+	PaymentGateConfig shared.PaymentGateConfigV2 `json:"payment_gate_config"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
 	ThresholdAmount float64                                                                   `json:"threshold_amount"`
@@ -5066,156 +2660,6 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCo
 
 func (r v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxType `json:"tax_type"`
-	JSON    v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigJSON    `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfig]
-type v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigJSON struct {
-	PaymentGateType        apijson.Field
-	PrecalculatedTaxConfig apijson.Field
-	StripeConfig           apijson.Field
-	TaxType                apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName string                                                                                                           `json:"tax_name"`
-	JSON    v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig]
-type v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON struct {
-	TaxAmount   apijson.Field
-	TaxName     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string                                                                                      `json:"invoice_metadata"`
-	JSON            v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig]
-type v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON struct {
-	PaymentType     apijson.Field
-	InvoiceMetadata apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// If left blank, will default to INVOICE
-type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeNone          V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe        V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe, V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSubscription struct {
@@ -5313,19 +2757,19 @@ type V2ContractEditParams struct {
 	// ID of the contract being edited
 	ContractID param.Field[string] `json:"contract_id,required" format:"uuid"`
 	// ID of the customer whose contract is being edited
-	CustomerID                              param.Field[string]                                                      `json:"customer_id,required" format:"uuid"`
-	AddCommits                              param.Field[[]V2ContractEditParamsAddCommit]                             `json:"add_commits"`
-	AddCredits                              param.Field[[]V2ContractEditParamsAddCredit]                             `json:"add_credits"`
-	AddDiscounts                            param.Field[[]V2ContractEditParamsAddDiscount]                           `json:"add_discounts"`
-	AddOverrides                            param.Field[[]V2ContractEditParamsAddOverride]                           `json:"add_overrides"`
-	AddPrepaidBalanceThresholdConfiguration param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration] `json:"add_prepaid_balance_threshold_configuration"`
+	CustomerID                              param.Field[string]                                             `json:"customer_id,required" format:"uuid"`
+	AddCommits                              param.Field[[]V2ContractEditParamsAddCommit]                    `json:"add_commits"`
+	AddCredits                              param.Field[[]V2ContractEditParamsAddCredit]                    `json:"add_credits"`
+	AddDiscounts                            param.Field[[]V2ContractEditParamsAddDiscount]                  `json:"add_discounts"`
+	AddOverrides                            param.Field[[]V2ContractEditParamsAddOverride]                  `json:"add_overrides"`
+	AddPrepaidBalanceThresholdConfiguration param.Field[shared.PrepaidBalanceThresholdConfigurationV2Param] `json:"add_prepaid_balance_threshold_configuration"`
 	// This field's availability is dependent on your client's configuration.
-	AddProfessionalServices        param.Field[[]V2ContractEditParamsAddProfessionalService]       `json:"add_professional_services"`
-	AddRecurringCommits            param.Field[[]V2ContractEditParamsAddRecurringCommit]           `json:"add_recurring_commits"`
-	AddRecurringCredits            param.Field[[]V2ContractEditParamsAddRecurringCredit]           `json:"add_recurring_credits"`
-	AddResellerRoyalties           param.Field[[]V2ContractEditParamsAddResellerRoyalty]           `json:"add_reseller_royalties"`
-	AddScheduledCharges            param.Field[[]V2ContractEditParamsAddScheduledCharge]           `json:"add_scheduled_charges"`
-	AddSpendThresholdConfiguration param.Field[V2ContractEditParamsAddSpendThresholdConfiguration] `json:"add_spend_threshold_configuration"`
+	AddProfessionalServices        param.Field[[]V2ContractEditParamsAddProfessionalService] `json:"add_professional_services"`
+	AddRecurringCommits            param.Field[[]V2ContractEditParamsAddRecurringCommit]     `json:"add_recurring_commits"`
+	AddRecurringCredits            param.Field[[]V2ContractEditParamsAddRecurringCredit]     `json:"add_recurring_credits"`
+	AddResellerRoyalties           param.Field[[]V2ContractEditParamsAddResellerRoyalty]     `json:"add_reseller_royalties"`
+	AddScheduledCharges            param.Field[[]V2ContractEditParamsAddScheduledCharge]     `json:"add_scheduled_charges"`
+	AddSpendThresholdConfiguration param.Field[shared.SpendThresholdConfigurationV2Param]    `json:"add_spend_threshold_configuration"`
 	// Optional list of
 	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
 	// to add to the contract.
@@ -5392,7 +2836,7 @@ type V2ContractEditParamsAddCommit struct {
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration param.Field[V2ContractEditParamsAddCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// Required for "POSTPAID" commits: the true up invoice will be generated at this
 	// time and only one schedule item is allowed; the total must match access_schedule
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
@@ -5416,7 +2860,7 @@ type V2ContractEditParamsAddCommit struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers param.Field[[]V2ContractEditParamsAddCommitsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// A temporary ID for the commit that can be used to reference the commit for
 	// commit specific overrides.
 	TemporaryID param.Field[string] `json:"temporary_id"`
@@ -5463,128 +2907,6 @@ type V2ContractEditParamsAddCommitsAccessScheduleScheduleItem struct {
 
 func (r V2ContractEditParamsAddCommitsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Optional configuration for commit hierarchy access control
-type V2ContractEditParamsAddCommitsHierarchyConfiguration struct {
-	ChildAccess param.Field[V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                         `json:"contract_ids"`
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccess) implementsV2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccess].
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion()
-}
-
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                 `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessTypeAll         V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessTypeNone        V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessTypeContractIDs V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessTypeAll, V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessTypeNone, V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 // Required for "POSTPAID" commits: the true up invoice will be generated at this
@@ -5820,20 +3142,6 @@ func (r V2ContractEditParamsAddCommitsRateType) IsKnown() bool {
 	return false
 }
 
-type V2ContractEditParamsAddCommitsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V2ContractEditParamsAddCommitsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type V2ContractEditParamsAddCredit struct {
 	// Schedule for distributing the credit to the customer.
 	AccessSchedule param.Field[V2ContractEditParamsAddCreditsAccessSchedule] `json:"access_schedule,required"`
@@ -5848,7 +3156,7 @@ type V2ContractEditParamsAddCredit struct {
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// Optional configuration for credit hierarchy access control
-	HierarchyConfiguration param.Field[V2ContractEditParamsAddCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -5863,7 +3171,7 @@ type V2ContractEditParamsAddCredit struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers param.Field[[]V2ContractEditParamsAddCreditsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 }
 
 func (r V2ContractEditParamsAddCredit) MarshalJSON() (data []byte, err error) {
@@ -5892,128 +3200,6 @@ func (r V2ContractEditParamsAddCreditsAccessScheduleScheduleItem) MarshalJSON() 
 	return apijson.MarshalRoot(r)
 }
 
-// Optional configuration for credit hierarchy access control
-type V2ContractEditParamsAddCreditsHierarchyConfiguration struct {
-	ChildAccess param.Field[V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                         `json:"contract_ids"`
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccess) implementsV2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccess].
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion()
-}
-
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                 `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessTypeAll         V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessTypeNone        V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessTypeContractIDs V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessTypeAll, V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessTypeNone, V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 type V2ContractEditParamsAddCreditsRateType string
 
 const (
@@ -6027,20 +3213,6 @@ func (r V2ContractEditParamsAddCreditsRateType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type V2ContractEditParamsAddCreditsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V2ContractEditParamsAddCreditsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type V2ContractEditParamsAddDiscount struct {
@@ -6336,173 +3508,6 @@ func (r V2ContractEditParamsAddOverridesType) IsKnown() bool {
 	return false
 }
 
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration struct {
-	Commit param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit] `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         param.Field[bool]                                                                         `json:"is_enabled,required"`
-	PaymentGateConfig param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig] `json:"payment_gate_config,required"`
-	// Specify the amount the balance should be recharged to.
-	RechargeToAmount param.Field[float64] `json:"recharge_to_amount,required"`
-	// Specify the threshold amount for the contract. Each time the contract's balance
-	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
-	// If provided, the threshold, recharge-to amount, and the resulting threshold
-	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Field[string] `json:"custom_credit_type_id" format:"uuid"`
-}
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID param.Field[string] `json:"product_id,required"`
-	// Which products the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the threshold commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
-	Description           param.Field[string]   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name param.Field[string] `json:"name"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	// Instead, to target usage by product or product tag, pass those values in the
-	// body of `specifiers`.
-	Specifiers param.Field[[]V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier] `json:"specifiers"`
-}
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig] `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
-}
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount param.Field[float64] `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Field[string] `json:"tax_name"`
-}
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType param.Field[V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
-}
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// If left blank, will default to INVOICE
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone          V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe        V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
 type V2ContractEditParamsAddProfessionalService struct {
 	// Maximum amount for the term.
 	MaxAmount param.Field[float64] `json:"max_amount,required"`
@@ -6544,7 +3549,7 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring credit hierarchy access control
-	HierarchyConfiguration param.Field[V2ContractEditParamsAddRecurringCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// The amount the customer should be billed for the commit. Not required.
 	InvoiceAmount param.Field[V2ContractEditParamsAddRecurringCommitsInvoiceAmount] `json:"invoice_amount"`
 	// displayed on invoices. will be passed through to the individual commits
@@ -6572,7 +3577,7 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers param.Field[[]V2ContractEditParamsAddRecurringCommitsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig param.Field[V2ContractEditParamsAddRecurringCommitsSubscriptionConfig] `json:"subscription_config"`
 	// A temporary ID that can be used to reference the recurring commit for commit
@@ -6618,128 +3623,6 @@ const (
 func (r V2ContractEditParamsAddRecurringCommitsCommitDurationUnit) IsKnown() bool {
 	switch r {
 	case V2ContractEditParamsAddRecurringCommitsCommitDurationUnitPeriods:
-		return true
-	}
-	return false
-}
-
-// Optional configuration for recurring credit hierarchy access control
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfiguration struct {
-	ChildAccess param.Field[V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                                  `json:"contract_ids"`
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccess) implementsV2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccess].
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion()
-}
-
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                          `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessTypeAll         V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessTypeNone        V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessTypeAll, V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessTypeNone, V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessTypeContractIDs:
 		return true
 	}
 	return false
@@ -6813,20 +3696,6 @@ func (r V2ContractEditParamsAddRecurringCommitsRecurrenceFrequency) IsKnown() bo
 	return false
 }
 
-type V2ContractEditParamsAddRecurringCommitsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V2ContractEditParamsAddRecurringCommitsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 // Attach a subscription to the recurring commit/credit.
 type V2ContractEditParamsAddRecurringCommitsSubscriptionConfig struct {
 	ApplySeatIncreaseConfig param.Field[V2ContractEditParamsAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig] `json:"apply_seat_increase_config,required"`
@@ -6885,7 +3754,7 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// Determines when the contract will stop creating recurring commits. optional
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
 	// Optional configuration for recurring credit hierarchy access control
-	HierarchyConfiguration param.Field[V2ContractEditParamsAddRecurringCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
 	// displayed on invoices. will be passed through to the individual commits
 	Name param.Field[string] `json:"name"`
 	// Will be passed down to the individual commits
@@ -6911,7 +3780,7 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers param.Field[[]V2ContractEditParamsAddRecurringCreditsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig param.Field[V2ContractEditParamsAddRecurringCreditsSubscriptionConfig] `json:"subscription_config"`
 	// A temporary ID that can be used to reference the recurring commit for commit
@@ -6957,128 +3826,6 @@ const (
 func (r V2ContractEditParamsAddRecurringCreditsCommitDurationUnit) IsKnown() bool {
 	switch r {
 	case V2ContractEditParamsAddRecurringCreditsCommitDurationUnitPeriods:
-		return true
-	}
-	return false
-}
-
-// Optional configuration for recurring credit hierarchy access control
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfiguration struct {
-	ChildAccess param.Field[V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                                  `json:"contract_ids"`
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccess) implementsV2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccess].
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion()
-}
-
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                          `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessTypeAll         V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessTypeNone        V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessTypeAll, V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessTypeNone, V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessTypeContractIDs:
 		return true
 	}
 	return false
@@ -7139,20 +3886,6 @@ func (r V2ContractEditParamsAddRecurringCreditsRecurrenceFrequency) IsKnown() bo
 		return true
 	}
 	return false
-}
-
-type V2ContractEditParamsAddRecurringCreditsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V2ContractEditParamsAddRecurringCreditsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -7365,139 +4098,6 @@ func (r V2ContractEditParamsAddScheduledChargesScheduleScheduleItem) MarshalJSON
 	return apijson.MarshalRoot(r)
 }
 
-type V2ContractEditParamsAddSpendThresholdConfiguration struct {
-	Commit param.Field[V2ContractEditParamsAddSpendThresholdConfigurationCommit] `json:"commit,required"`
-	// When set to false, the contract will not be evaluated against the
-	// threshold_amount. Toggling to true will result an immediate evaluation,
-	// regardless of prior state.
-	IsEnabled         param.Field[bool]                                                                `json:"is_enabled,required"`
-	PaymentGateConfig param.Field[V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfig] `json:"payment_gate_config,required"`
-	// Specify the threshold amount for the contract. Each time the contract's usage
-	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount param.Field[float64] `json:"threshold_amount,required"`
-}
-
-func (r V2ContractEditParamsAddSpendThresholdConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddSpendThresholdConfigurationCommit struct {
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID   param.Field[string] `json:"product_id,required"`
-	Description param.Field[string] `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name param.Field[string] `json:"name"`
-}
-
-func (r V2ContractEditParamsAddSpendThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType param.Field[V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig param.Field[V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig] `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig param.Field[V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType param.Field[V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
-}
-
-func (r V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount param.Field[float64] `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Field[string] `json:"tax_name"`
-}
-
-func (r V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType param.Field[V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
-}
-
-func (r V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// If left blank, will default to INVOICE
-type V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeNone          V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe        V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe, V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
-}
-
 type V2ContractEditParamsAddSubscription struct {
 	CollectionSchedule param.Field[V2ContractEditParamsAddSubscriptionsCollectionSchedule] `json:"collection_schedule,required"`
 	InitialQuantity    param.Field[float64]                                                `json:"initial_quantity,required"`
@@ -7646,12 +4246,12 @@ type V2ContractEditParamsUpdateCommit struct {
 	// all products.
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
 	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration param.Field[V2ContractEditParamsUpdateCommitsHierarchyConfiguration] `json:"hierarchy_configuration"`
-	InvoiceSchedule        param.Field[V2ContractEditParamsUpdateCommitsInvoiceSchedule]        `json:"invoice_schedule"`
-	NetsuiteSalesOrderID   param.Field[string]                                                  `json:"netsuite_sales_order_id"`
-	Priority               param.Field[float64]                                                 `json:"priority"`
-	ProductID              param.Field[string]                                                  `json:"product_id" format:"uuid"`
-	RolloverFraction       param.Field[float64]                                                 `json:"rollover_fraction"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam]         `json:"hierarchy_configuration"`
+	InvoiceSchedule        param.Field[V2ContractEditParamsUpdateCommitsInvoiceSchedule] `json:"invoice_schedule"`
+	NetsuiteSalesOrderID   param.Field[string]                                           `json:"netsuite_sales_order_id"`
+	Priority               param.Field[float64]                                          `json:"priority"`
+	ProductID              param.Field[string]                                           `json:"product_id" format:"uuid"`
+	RolloverFraction       param.Field[float64]                                          `json:"rollover_fraction"`
 }
 
 func (r V2ContractEditParamsUpdateCommit) MarshalJSON() (data []byte, err error) {
@@ -7695,128 +4295,6 @@ type V2ContractEditParamsUpdateCommitsAccessScheduleUpdateScheduleItem struct {
 
 func (r V2ContractEditParamsUpdateCommitsAccessScheduleUpdateScheduleItem) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Optional configuration for commit hierarchy access control
-type V2ContractEditParamsUpdateCommitsHierarchyConfiguration struct {
-	ChildAccess param.Field[V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                            `json:"contract_ids"`
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccess) implementsV2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccess].
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion()
-}
-
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                    `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessTypeAll         V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessTypeNone        V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessTypeContractIDs V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessTypeAll, V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessTypeNone, V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
 }
 
 type V2ContractEditParamsUpdateCommitsInvoiceSchedule struct {
@@ -7872,10 +4350,10 @@ type V2ContractEditParamsUpdateCredit struct {
 	// all products.
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
 	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration param.Field[V2ContractEditParamsUpdateCreditsHierarchyConfiguration] `json:"hierarchy_configuration"`
-	NetsuiteSalesOrderID   param.Field[string]                                                  `json:"netsuite_sales_order_id"`
-	Priority               param.Field[float64]                                                 `json:"priority"`
-	ProductID              param.Field[string]                                                  `json:"product_id" format:"uuid"`
+	HierarchyConfiguration param.Field[shared.CommitHierarchyConfigurationParam] `json:"hierarchy_configuration"`
+	NetsuiteSalesOrderID   param.Field[string]                                   `json:"netsuite_sales_order_id"`
+	Priority               param.Field[float64]                                  `json:"priority"`
+	ProductID              param.Field[string]                                   `json:"product_id" format:"uuid"`
 }
 
 func (r V2ContractEditParamsUpdateCredit) MarshalJSON() (data []byte, err error) {
@@ -7921,128 +4399,6 @@ func (r V2ContractEditParamsUpdateCreditsAccessScheduleUpdateScheduleItem) Marsh
 	return apijson.MarshalRoot(r)
 }
 
-// Optional configuration for commit hierarchy access control
-type V2ContractEditParamsUpdateCreditsHierarchyConfiguration struct {
-	ChildAccess param.Field[V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion] `json:"child_access,required"`
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccess struct {
-	Type        param.Field[V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessType] `json:"type,required"`
-	ContractIDs param.Field[interface{}]                                                            `json:"contract_ids"`
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccess) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccess) implementsV2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-// Satisfied by
-// [V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll],
-// [V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone],
-// [V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs],
-// [V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccess].
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion interface {
-	implementsV2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion()
-}
-
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
-	Type param.Field[V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) implementsV2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType string
-
-const (
-	V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType = "ALL"
-)
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
-	Type param.Field[V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) implementsV2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType string
-
-const (
-	V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType = "NONE"
-)
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneTypeNone:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs param.Field[[]string]                                                                                                    `json:"contract_ids,required" format:"uuid"`
-	Type        param.Field[V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType] `json:"type,required"`
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs) implementsV2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion() {
-}
-
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType string
-
-const (
-	V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-type V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessType string
-
-const (
-	V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessTypeAll         V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessType = "ALL"
-	V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessTypeNone        V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessType = "NONE"
-	V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessTypeContractIDs V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessType = "CONTRACT_IDS"
-)
-
-func (r V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessTypeAll, V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessTypeNone, V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessTypeContractIDs:
-		return true
-	}
-	return false
-}
-
 type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	Commit param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit] `json:"commit"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
@@ -8051,8 +4407,8 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         param.Field[bool]                                                                            `json:"is_enabled"`
-	PaymentGateConfig param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig] `json:"payment_gate_config"`
+	IsEnabled         param.Field[bool]                            `json:"is_enabled"`
+	PaymentGateConfig param.Field[shared.PaymentGateConfigV2Param] `json:"payment_gate_config"`
 	// Specify the amount the balance should be recharged to.
 	RechargeToAmount param.Field[float64] `json:"recharge_to_amount"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
@@ -8085,128 +4441,11 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers param.Field[[]V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 }
 
 func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig] `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
-}
-
-func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount param.Field[float64] `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Field[string] `json:"tax_name"`
-}
-
-func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType param.Field[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
-}
-
-func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// If left blank, will default to INVOICE
-type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone          V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe        V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeStripe, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
 }
 
 type V2ContractEditParamsUpdateRecurringCommit struct {
@@ -8313,8 +4552,8 @@ type V2ContractEditParamsUpdateSpendThresholdConfiguration struct {
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         param.Field[bool]                                                                   `json:"is_enabled"`
-	PaymentGateConfig param.Field[V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfig] `json:"payment_gate_config"`
+	IsEnabled         param.Field[bool]                            `json:"is_enabled"`
+	PaymentGateConfig param.Field[shared.PaymentGateConfigV2Param] `json:"payment_gate_config"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
 	ThresholdAmount param.Field[float64] `json:"threshold_amount"`
@@ -8336,109 +4575,6 @@ type V2ContractEditParamsUpdateSpendThresholdConfigurationCommit struct {
 
 func (r V2ContractEditParamsUpdateSpendThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	PaymentGateType param.Field[V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType] `json:"payment_gate_type,required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig param.Field[V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig] `json:"precalculated_tax_config"`
-	// Only applicable if using STRIPE as your payment gateway type.
-	StripeConfig param.Field[V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig] `json:"stripe_config"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	TaxType param.Field[V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxType] `json:"tax_type"`
-}
-
-func (r V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Gate access to the commit balance based on successful collection of payment.
-// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-// facilitate payment using your own payment integration. Select NONE if you do not
-// wish to payment gate the commit balance.
-type V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType string
-
-const (
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone     V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "NONE"
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe   V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "STRIPE"
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType = "EXTERNAL"
-)
-
-func (r V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone, V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeStripe, V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeExternal:
-		return true
-	}
-	return false
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-type V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount param.Field[float64] `json:"tax_amount,required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Field[string] `json:"tax_name"`
-}
-
-func (r V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Only applicable if using STRIPE as your payment gateway type.
-type V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	PaymentType param.Field[V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType] `json:"payment_type,required"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata param.Field[map[string]string] `json:"invoice_metadata"`
-}
-
-func (r V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// If left blank, will default to INVOICE
-type V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType string
-
-const (
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice       V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "INVOICE"
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType = "PAYMENT_INTENT"
-)
-
-func (r V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice, V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypePaymentIntent:
-		return true
-	}
-	return false
-}
-
-// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-// will default to NONE.
-type V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxType string
-
-const (
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeNone          V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxType = "NONE"
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe        V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxType = "STRIPE"
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok         V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxType = "ANROK"
-	V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxType = "PRECALCULATED"
-)
-
-func (r V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxType) IsKnown() bool {
-	switch r {
-	case V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeNone, V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeStripe, V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeAnrok, V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypePrecalculated:
-		return true
-	}
-	return false
 }
 
 type V2ContractEditParamsUpdateSubscription struct {
@@ -8496,7 +4632,7 @@ type V2ContractEditCommitParams struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers param.Field[[]V2ContractEditCommitParamsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 }
 
 func (r V2ContractEditCommitParams) MarshalJSON() (data []byte, err error) {
@@ -8583,20 +4719,6 @@ func (r V2ContractEditCommitParamsInvoiceScheduleUpdateScheduleItem) MarshalJSON
 	return apijson.MarshalRoot(r)
 }
 
-type V2ContractEditCommitParamsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V2ContractEditCommitParamsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type V2ContractEditCreditParams struct {
 	// ID of the credit to edit
 	CreditID param.Field[string] `json:"credit_id,required" format:"uuid"`
@@ -8619,7 +4741,7 @@ type V2ContractEditCreditParams struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers param.Field[[]V2ContractEditCreditParamsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 }
 
 func (r V2ContractEditCreditParams) MarshalJSON() (data []byte, err error) {
@@ -8662,20 +4784,6 @@ type V2ContractEditCreditParamsAccessScheduleUpdateScheduleItem struct {
 }
 
 func (r V2ContractEditCreditParamsAccessScheduleUpdateScheduleItem) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditCreditParamsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V2ContractEditCreditParamsSpecifier) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
