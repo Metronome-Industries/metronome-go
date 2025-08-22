@@ -13,6 +13,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -45,11 +46,26 @@ func (r *V1CustomerAlertService) Get(ctx context.Context, body V1CustomerAlertGe
 }
 
 // Fetch all customer alert statuses and alert information for a customer
-func (r *V1CustomerAlertService) List(ctx context.Context, params V1CustomerAlertListParams, opts ...option.RequestOption) (res *V1CustomerAlertListResponse, err error) {
+func (r *V1CustomerAlertService) List(ctx context.Context, params V1CustomerAlertListParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[CustomerAlert], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/customer-alerts/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Fetch all customer alert statuses and alert information for a customer
+func (r *V1CustomerAlertService) ListAutoPaging(ctx context.Context, params V1CustomerAlertListParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[CustomerAlert] {
+	return pagination.NewCursorPageWithoutLimitAutoPager(r.List(ctx, params, opts...))
 }
 
 // Reset state for an alert by customer id and force re-evaluation
@@ -322,29 +338,6 @@ func (r *V1CustomerAlertGetResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerAlertGetResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerAlertListResponse struct {
-	Data     []CustomerAlert                 `json:"data,required"`
-	NextPage string                          `json:"next_page,required,nullable"`
-	JSON     v1CustomerAlertListResponseJSON `json:"-"`
-}
-
-// v1CustomerAlertListResponseJSON contains the JSON metadata for the struct
-// [V1CustomerAlertListResponse]
-type v1CustomerAlertListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerAlertListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerAlertListResponseJSON) RawJSON() string {
 	return r.raw
 }
 

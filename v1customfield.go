@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
 )
 
 // V1CustomFieldService contains methods and other services that help with
@@ -53,11 +54,26 @@ func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFi
 }
 
 // List all active custom field keys, optionally filtered by entity type.
-func (r *V1CustomFieldService) ListKeys(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) (res *V1CustomFieldListKeysResponse, err error) {
+func (r *V1CustomFieldService) ListKeys(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1CustomFieldListKeysResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/customFields/listKeys"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all active custom field keys, optionally filtered by entity type.
+func (r *V1CustomFieldService) ListKeysAutoPaging(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[V1CustomFieldListKeysResponse] {
+	return pagination.NewCursorPageWithoutLimitAutoPager(r.ListKeys(ctx, params, opts...))
 }
 
 // Remove a key from the allow list for a given entity.
@@ -85,18 +101,20 @@ func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomField
 }
 
 type V1CustomFieldListKeysResponse struct {
-	Data     []V1CustomFieldListKeysResponseData `json:"data,required"`
-	NextPage string                              `json:"next_page,required,nullable"`
-	JSON     v1CustomFieldListKeysResponseJSON   `json:"-"`
+	EnforceUniqueness bool                                `json:"enforce_uniqueness,required"`
+	Entity            V1CustomFieldListKeysResponseEntity `json:"entity,required"`
+	Key               string                              `json:"key,required"`
+	JSON              v1CustomFieldListKeysResponseJSON   `json:"-"`
 }
 
 // v1CustomFieldListKeysResponseJSON contains the JSON metadata for the struct
 // [V1CustomFieldListKeysResponse]
 type v1CustomFieldListKeysResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	EnforceUniqueness apijson.Field
+	Entity            apijson.Field
+	Key               apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
 func (r *V1CustomFieldListKeysResponse) UnmarshalJSON(data []byte) (err error) {
@@ -107,57 +125,32 @@ func (r v1CustomFieldListKeysResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CustomFieldListKeysResponseData struct {
-	EnforceUniqueness bool                                    `json:"enforce_uniqueness,required"`
-	Entity            V1CustomFieldListKeysResponseDataEntity `json:"entity,required"`
-	Key               string                                  `json:"key,required"`
-	JSON              v1CustomFieldListKeysResponseDataJSON   `json:"-"`
-}
-
-// v1CustomFieldListKeysResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomFieldListKeysResponseData]
-type v1CustomFieldListKeysResponseDataJSON struct {
-	EnforceUniqueness apijson.Field
-	Entity            apijson.Field
-	Key               apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *V1CustomFieldListKeysResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomFieldListKeysResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomFieldListKeysResponseDataEntity string
+type V1CustomFieldListKeysResponseEntity string
 
 const (
-	V1CustomFieldListKeysResponseDataEntityAlert               V1CustomFieldListKeysResponseDataEntity = "alert"
-	V1CustomFieldListKeysResponseDataEntityBillableMetric      V1CustomFieldListKeysResponseDataEntity = "billable_metric"
-	V1CustomFieldListKeysResponseDataEntityCharge              V1CustomFieldListKeysResponseDataEntity = "charge"
-	V1CustomFieldListKeysResponseDataEntityCommit              V1CustomFieldListKeysResponseDataEntity = "commit"
-	V1CustomFieldListKeysResponseDataEntityContractCredit      V1CustomFieldListKeysResponseDataEntity = "contract_credit"
-	V1CustomFieldListKeysResponseDataEntityContractProduct     V1CustomFieldListKeysResponseDataEntity = "contract_product"
-	V1CustomFieldListKeysResponseDataEntityContract            V1CustomFieldListKeysResponseDataEntity = "contract"
-	V1CustomFieldListKeysResponseDataEntityCreditGrant         V1CustomFieldListKeysResponseDataEntity = "credit_grant"
-	V1CustomFieldListKeysResponseDataEntityCustomerPlan        V1CustomFieldListKeysResponseDataEntity = "customer_plan"
-	V1CustomFieldListKeysResponseDataEntityCustomer            V1CustomFieldListKeysResponseDataEntity = "customer"
-	V1CustomFieldListKeysResponseDataEntityDiscount            V1CustomFieldListKeysResponseDataEntity = "discount"
-	V1CustomFieldListKeysResponseDataEntityInvoice             V1CustomFieldListKeysResponseDataEntity = "invoice"
-	V1CustomFieldListKeysResponseDataEntityPlan                V1CustomFieldListKeysResponseDataEntity = "plan"
-	V1CustomFieldListKeysResponseDataEntityProfessionalService V1CustomFieldListKeysResponseDataEntity = "professional_service"
-	V1CustomFieldListKeysResponseDataEntityProduct             V1CustomFieldListKeysResponseDataEntity = "product"
-	V1CustomFieldListKeysResponseDataEntityRateCard            V1CustomFieldListKeysResponseDataEntity = "rate_card"
-	V1CustomFieldListKeysResponseDataEntityScheduledCharge     V1CustomFieldListKeysResponseDataEntity = "scheduled_charge"
-	V1CustomFieldListKeysResponseDataEntitySubscription        V1CustomFieldListKeysResponseDataEntity = "subscription"
+	V1CustomFieldListKeysResponseEntityAlert               V1CustomFieldListKeysResponseEntity = "alert"
+	V1CustomFieldListKeysResponseEntityBillableMetric      V1CustomFieldListKeysResponseEntity = "billable_metric"
+	V1CustomFieldListKeysResponseEntityCharge              V1CustomFieldListKeysResponseEntity = "charge"
+	V1CustomFieldListKeysResponseEntityCommit              V1CustomFieldListKeysResponseEntity = "commit"
+	V1CustomFieldListKeysResponseEntityContractCredit      V1CustomFieldListKeysResponseEntity = "contract_credit"
+	V1CustomFieldListKeysResponseEntityContractProduct     V1CustomFieldListKeysResponseEntity = "contract_product"
+	V1CustomFieldListKeysResponseEntityContract            V1CustomFieldListKeysResponseEntity = "contract"
+	V1CustomFieldListKeysResponseEntityCreditGrant         V1CustomFieldListKeysResponseEntity = "credit_grant"
+	V1CustomFieldListKeysResponseEntityCustomerPlan        V1CustomFieldListKeysResponseEntity = "customer_plan"
+	V1CustomFieldListKeysResponseEntityCustomer            V1CustomFieldListKeysResponseEntity = "customer"
+	V1CustomFieldListKeysResponseEntityDiscount            V1CustomFieldListKeysResponseEntity = "discount"
+	V1CustomFieldListKeysResponseEntityInvoice             V1CustomFieldListKeysResponseEntity = "invoice"
+	V1CustomFieldListKeysResponseEntityPlan                V1CustomFieldListKeysResponseEntity = "plan"
+	V1CustomFieldListKeysResponseEntityProfessionalService V1CustomFieldListKeysResponseEntity = "professional_service"
+	V1CustomFieldListKeysResponseEntityProduct             V1CustomFieldListKeysResponseEntity = "product"
+	V1CustomFieldListKeysResponseEntityRateCard            V1CustomFieldListKeysResponseEntity = "rate_card"
+	V1CustomFieldListKeysResponseEntityScheduledCharge     V1CustomFieldListKeysResponseEntity = "scheduled_charge"
+	V1CustomFieldListKeysResponseEntitySubscription        V1CustomFieldListKeysResponseEntity = "subscription"
 )
 
-func (r V1CustomFieldListKeysResponseDataEntity) IsKnown() bool {
+func (r V1CustomFieldListKeysResponseEntity) IsKnown() bool {
 	switch r {
-	case V1CustomFieldListKeysResponseDataEntityAlert, V1CustomFieldListKeysResponseDataEntityBillableMetric, V1CustomFieldListKeysResponseDataEntityCharge, V1CustomFieldListKeysResponseDataEntityCommit, V1CustomFieldListKeysResponseDataEntityContractCredit, V1CustomFieldListKeysResponseDataEntityContractProduct, V1CustomFieldListKeysResponseDataEntityContract, V1CustomFieldListKeysResponseDataEntityCreditGrant, V1CustomFieldListKeysResponseDataEntityCustomerPlan, V1CustomFieldListKeysResponseDataEntityCustomer, V1CustomFieldListKeysResponseDataEntityDiscount, V1CustomFieldListKeysResponseDataEntityInvoice, V1CustomFieldListKeysResponseDataEntityPlan, V1CustomFieldListKeysResponseDataEntityProfessionalService, V1CustomFieldListKeysResponseDataEntityProduct, V1CustomFieldListKeysResponseDataEntityRateCard, V1CustomFieldListKeysResponseDataEntityScheduledCharge, V1CustomFieldListKeysResponseDataEntitySubscription:
+	case V1CustomFieldListKeysResponseEntityAlert, V1CustomFieldListKeysResponseEntityBillableMetric, V1CustomFieldListKeysResponseEntityCharge, V1CustomFieldListKeysResponseEntityCommit, V1CustomFieldListKeysResponseEntityContractCredit, V1CustomFieldListKeysResponseEntityContractProduct, V1CustomFieldListKeysResponseEntityContract, V1CustomFieldListKeysResponseEntityCreditGrant, V1CustomFieldListKeysResponseEntityCustomerPlan, V1CustomFieldListKeysResponseEntityCustomer, V1CustomFieldListKeysResponseEntityDiscount, V1CustomFieldListKeysResponseEntityInvoice, V1CustomFieldListKeysResponseEntityPlan, V1CustomFieldListKeysResponseEntityProfessionalService, V1CustomFieldListKeysResponseEntityProduct, V1CustomFieldListKeysResponseEntityRateCard, V1CustomFieldListKeysResponseEntityScheduledCharge, V1CustomFieldListKeysResponseEntitySubscription:
 		return true
 	}
 	return false
