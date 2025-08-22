@@ -163,7 +163,7 @@ type V1CustomerCommitNewParams struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1CustomerCommitNewParamsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
@@ -331,20 +331,6 @@ func (r V1CustomerCommitNewParamsRateType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type V1CustomerCommitNewParamsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1CustomerCommitNewParamsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type V1CustomerCommitListParams struct {

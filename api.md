@@ -1,15 +1,30 @@
 # Shared Params Types
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseThresholdCommitParam">BaseThresholdCommitParam</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseUsageFilterParam">BaseUsageFilterParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CommitHierarchyConfigurationParam">CommitHierarchyConfigurationParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CommitRateParam">CommitRateParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CommitSpecifierInputParam">CommitSpecifierInputParam</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#EventTypeFilterParam">EventTypeFilterParam</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#IDParam">IDParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PaymentGateConfigParam">PaymentGateConfigParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PaymentGateConfigV2Param">PaymentGateConfigV2Param</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PrepaidBalanceThresholdConfigurationParam">PrepaidBalanceThresholdConfigurationParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PrepaidBalanceThresholdConfigurationV2Param">PrepaidBalanceThresholdConfigurationV2Param</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PropertyFilterParam">PropertyFilterParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#SpendThresholdConfigurationParam">SpendThresholdConfigurationParam</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#SpendThresholdConfigurationV2Param">SpendThresholdConfigurationV2Param</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#TierParam">TierParam</a>
 
 # Shared Response Types
 
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseThresholdCommit">BaseThresholdCommit</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#BaseUsageFilter">BaseUsageFilter</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Commit">Commit</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CommitHierarchyConfiguration">CommitHierarchyConfiguration</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CommitRate">CommitRate</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CommitSpecifier">CommitSpecifier</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CommitSpecifierInput">CommitSpecifierInput</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Contract">Contract</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ContractV2">ContractV2</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ContractWithoutAmendments">ContractWithoutAmendments</a>
@@ -17,14 +32,23 @@
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#CreditTypeData">CreditTypeData</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Discount">Discount</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#EventTypeFilter">EventTypeFilter</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#HierarchyConfiguration">HierarchyConfiguration</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ID">ID</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Override">Override</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#OverrideTier">OverrideTier</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PaymentGateConfig">PaymentGateConfig</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PaymentGateConfigV2">PaymentGateConfigV2</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PrepaidBalanceThresholdConfiguration">PrepaidBalanceThresholdConfiguration</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PrepaidBalanceThresholdConfigurationV2">PrepaidBalanceThresholdConfigurationV2</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#PropertyFilter">PropertyFilter</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ProService">ProService</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Rate">Rate</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ScheduledCharge">ScheduledCharge</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#ScheduleDuration">ScheduleDuration</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#SchedulePointInTime">SchedulePointInTime</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#SpendThresholdConfiguration">SpendThresholdConfiguration</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#SpendThresholdConfigurationV2">SpendThresholdConfigurationV2</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Subscription">Subscription</a>
 - <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/shared#Tier">Tier</a>
 
 # V2

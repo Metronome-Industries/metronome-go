@@ -53,9 +53,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				"foo": "string",
 			}),
 			Description: metronome.F("description"),
-			HierarchyConfiguration: metronome.F(metronome.V1ContractNewParamsCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V1ContractNewParamsCommitsHierarchyConfigurationChildAccessUnion](metronome.V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V1ContractNewParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			InvoiceSchedule: metronome.F(metronome.V1ContractNewParamsCommitsInvoiceSchedule{
@@ -97,7 +97,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Priority:         metronome.F(0.000000),
 			RateType:         metronome.F(metronome.V1ContractNewParamsCommitsRateTypeCommitRate),
 			RolloverFraction: metronome.F(0.000000),
-			Specifiers: metronome.F([]metronome.V1ContractNewParamsCommitsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -125,16 +125,16 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				"foo": "string",
 			}),
 			Description: metronome.F("description"),
-			HierarchyConfiguration: metronome.F(metronome.V1ContractNewParamsCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V1ContractNewParamsCreditsHierarchyConfigurationChildAccessUnion](metronome.V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V1ContractNewParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
 			RateType:             metronome.F(metronome.V1ContractNewParamsCreditsRateTypeCommitRate),
-			Specifiers: metronome.F([]metronome.V1ContractNewParamsCreditsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -230,14 +230,16 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			}}),
 			Type: metronome.F(metronome.V1ContractNewParamsOverridesTypeOverwrite),
 		}}),
-		PrepaidBalanceThresholdConfiguration: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfiguration{
-			Commit: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommit{
-				ProductID:             metronome.F("product_id"),
+		PrepaidBalanceThresholdConfiguration: metronome.F(shared.PrepaidBalanceThresholdConfigurationParam{
+			Commit: metronome.F(shared.PrepaidBalanceThresholdConfigurationCommitParam{
+				BaseThresholdCommitParam: shared.BaseThresholdCommitParam{
+					ProductID:   metronome.F("product_id"),
+					Description: metronome.F("description"),
+					Name:        metronome.F("name"),
+				},
 				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 				ApplicableProductTags: metronome.F([]string{"string"}),
-				Description:           metronome.F("description"),
-				Name:                  metronome.F("name"),
-				Specifiers: metronome.F([]metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationCommitSpecifier{{
+				Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 					PresentationGroupValues: metronome.F(map[string]string{
 						"foo": "string",
 					}),
@@ -249,19 +251,19 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				}}),
 			}),
 			IsEnabled: metronome.F(true),
-			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfig{
-				PaymentGateType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
-				PrecalculatedTaxConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+			PaymentGateConfig: metronome.F(shared.PaymentGateConfigParam{
+				PaymentGateType: metronome.F(shared.PaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(shared.PaymentGateConfigPrecalculatedTaxConfigParam{
 					TaxAmount: metronome.F(0.000000),
 					TaxName:   metronome.F("tax_name"),
 				}),
-				StripeConfig: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
-					PaymentType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				StripeConfig: metronome.F(shared.PaymentGateConfigStripeConfigParam{
+					PaymentType: metronome.F(shared.PaymentGateConfigStripeConfigPaymentTypeInvoice),
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
 				}),
-				TaxType: metronome.F(metronome.V1ContractNewParamsPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
+				TaxType: metronome.F(shared.PaymentGateConfigTaxTypeNone),
 			}),
 			RechargeToAmount:   metronome.F(0.000000),
 			ThresholdAmount:    metronome.F(0.000000),
@@ -298,9 +300,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
-			HierarchyConfiguration: metronome.F(metronome.V1ContractNewParamsRecurringCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessUnion](metronome.V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V1ContractNewParamsRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			InvoiceAmount: metronome.F(metronome.V1ContractNewParamsRecurringCommitsInvoiceAmount{
@@ -314,7 +316,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			RateType:             metronome.F(metronome.V1ContractNewParamsRecurringCommitsRateTypeCommitRate),
 			RecurrenceFrequency:  metronome.F(metronome.V1ContractNewParamsRecurringCommitsRecurrenceFrequencyMonthly),
 			RolloverFraction:     metronome.F(0.000000),
-			Specifiers: metronome.F([]metronome.V1ContractNewParamsRecurringCommitsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -350,9 +352,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
-			HierarchyConfiguration: metronome.F(metronome.V1ContractNewParamsRecurringCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessUnion](metronome.V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V1ContractNewParamsRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			Name:                 metronome.F("x"),
@@ -361,7 +363,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			RateType:             metronome.F(metronome.V1ContractNewParamsRecurringCreditsRateTypeCommitRate),
 			RecurrenceFrequency:  metronome.F(metronome.V1ContractNewParamsRecurringCreditsRecurrenceFrequencyMonthly),
 			RolloverFraction:     metronome.F(0.000000),
-			Specifiers: metronome.F([]metronome.V1ContractNewParamsRecurringCreditsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -428,26 +430,26 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
 		ScheduledChargesOnUsageInvoices: metronome.F(metronome.V1ContractNewParamsScheduledChargesOnUsageInvoicesAll),
-		SpendThresholdConfiguration: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfiguration{
-			Commit: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationCommit{
+		SpendThresholdConfiguration: metronome.F(shared.SpendThresholdConfigurationParam{
+			Commit: metronome.F(shared.BaseThresholdCommitParam{
 				ProductID:   metronome.F("product_id"),
 				Description: metronome.F("description"),
 				Name:        metronome.F("name"),
 			}),
 			IsEnabled: metronome.F(true),
-			PaymentGateConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfig{
-				PaymentGateType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
-				PrecalculatedTaxConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+			PaymentGateConfig: metronome.F(shared.PaymentGateConfigParam{
+				PaymentGateType: metronome.F(shared.PaymentGateConfigPaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(shared.PaymentGateConfigPrecalculatedTaxConfigParam{
 					TaxAmount: metronome.F(0.000000),
 					TaxName:   metronome.F("tax_name"),
 				}),
-				StripeConfig: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfig{
-					PaymentType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				StripeConfig: metronome.F(shared.PaymentGateConfigStripeConfigParam{
+					PaymentType: metronome.F(shared.PaymentGateConfigStripeConfigPaymentTypeInvoice),
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
 				}),
-				TaxType: metronome.F(metronome.V1ContractNewParamsSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
+				TaxType: metronome.F(shared.PaymentGateConfigTaxTypeNone),
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
@@ -621,9 +623,9 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 				"foo": "string",
 			}),
 			Description: metronome.F("description"),
-			HierarchyConfiguration: metronome.F(metronome.V1ContractAmendParamsCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessUnion](metronome.V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V1ContractAmendParamsCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			InvoiceSchedule: metronome.F(metronome.V1ContractAmendParamsCommitsInvoiceSchedule{
@@ -665,7 +667,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			Priority:         metronome.F(0.000000),
 			RateType:         metronome.F(metronome.V1ContractAmendParamsCommitsRateTypeCommitRate),
 			RolloverFraction: metronome.F(0.000000),
-			Specifiers: metronome.F([]metronome.V1ContractAmendParamsCommitsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -693,16 +695,16 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 				"foo": "string",
 			}),
 			Description: metronome.F("description"),
-			HierarchyConfiguration: metronome.F(metronome.V1ContractAmendParamsCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessUnion](metronome.V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V1ContractAmendParamsCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
 			RateType:             metronome.F(metronome.V1ContractAmendParamsCreditsRateTypeCommitRate),
-			Specifiers: metronome.F([]metronome.V1ContractAmendParamsCreditsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
