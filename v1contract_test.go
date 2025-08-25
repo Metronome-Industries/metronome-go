@@ -455,7 +455,6 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		}),
 		Subscriptions: metronome.F([]metronome.V1ContractNewParamsSubscription{{
 			CollectionSchedule: metronome.F(metronome.V1ContractNewParamsSubscriptionsCollectionScheduleAdvance),
-			InitialQuantity:    metronome.F(0.000000),
 			Proration: metronome.F(metronome.V1ContractNewParamsSubscriptionsProration{
 				InvoiceBehavior: metronome.F(metronome.V1ContractNewParamsSubscriptionsProrationInvoiceBehaviorBillImmediately),
 				IsProrated:      metronome.F(true),
@@ -467,11 +466,13 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			CustomFields: metronome.F(map[string]string{
 				"foo": "string",
 			}),
-			Description:  metronome.F("description"),
-			EndingBefore: metronome.F(time.Now()),
-			Name:         metronome.F("name"),
-			StartingAt:   metronome.F(time.Now()),
-			TemporaryID:  metronome.F("temporary_id"),
+			Description:            metronome.F("description"),
+			EndingBefore:           metronome.F(time.Now()),
+			InitialQuantity:        metronome.F(0.000000),
+			Name:                   metronome.F("name"),
+			QuantityManagementMode: metronome.F(metronome.V1ContractNewParamsSubscriptionsQuantityManagementModeSeatBased),
+			StartingAt:             metronome.F(time.Now()),
+			TemporaryID:            metronome.F("temporary_id"),
 		}}),
 		TotalContractValue: metronome.F(0.000000),
 		Transition: metronome.F(metronome.V1ContractNewParamsTransition{

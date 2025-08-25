@@ -34,8 +34,35 @@ func NewV1CustomFieldService(opts ...option.RequestOption) (r *V1CustomFieldServ
 	return
 }
 
-// Add a key to the allow list for a given entity. There is a 100 character limit
-// on custom field keys.
+// Creates a new custom field key for a given entity (e.g. billable metric,
+// contract, alert).
+//
+// Custom fields are properties that you can add to Metronome objects to store
+// metadata like foreign keys or other descriptors. This metadata can get
+// transferred to or accessed by other systems to contextualize Metronome data and
+// power business processes. For example, to service workflows like revenue
+// recognition, reconciliation, and invoicing, custom fields help Metronome know
+// the relationship between entities in the platform and third-party systems.
+//
+// Use this endpoint to:
+//
+//   - Create a new custom field key for Customer objects in Metronome. You can then
+//     use the Set Custom Field Values endpoint to set the value of this key for a
+//     specific customer.
+//   - Specify whether the key should enforce uniqueness. If the key is set to
+//     enforce uniqueness and you attempt to set a custom field value for the key
+//     that already exists, it will fail.
+//
+// Usage guidelines:
+//
+//   - Custom fields set on commits, credits, and contracts can be used to scope
+//     alert evaluation. For example, you can create a spend threshold alert that
+//     only considers spend associated with contracts with custom field key
+//     contract_type and value paygo
+//   - Custom fields set on products can be used in the Stripe integration to set
+//     metadata on invoices.
+//   - Custom fields for customers, contracts, invoices, products, commits, scheduled
+//     charges, and subscriptions are passed down to the invoice.
 func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAddKeyParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -44,7 +71,10 @@ func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAdd
 	return
 }
 
-// Deletes one or more custom fields on an instance of a Metronome entity.
+// Remove specific custom field values from a Metronome entity instance by
+// specifying the field keys to delete. Use this endpoint to clean up unwanted
+// custom field data while preserving other fields on the same entity. Requires the
+// entity type, entity ID, and array of keys to remove.
 func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFieldDeleteValuesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -53,7 +83,10 @@ func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFi
 	return
 }
 
-// List all active custom field keys, optionally filtered by entity type.
+// Retrieve all your active custom field keys, with optional filtering by entity
+// type (customer, contract, product, etc.). Use this endpoint to discover what
+// custom field keys are available before setting values on entities or to audit
+// your custom field configuration across different entity types.
 func (r *V1CustomFieldService) ListKeys(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1CustomFieldListKeysResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -71,12 +104,18 @@ func (r *V1CustomFieldService) ListKeys(ctx context.Context, params V1CustomFiel
 	return res, nil
 }
 
-// List all active custom field keys, optionally filtered by entity type.
+// Retrieve all your active custom field keys, with optional filtering by entity
+// type (customer, contract, product, etc.). Use this endpoint to discover what
+// custom field keys are available before setting values on entities or to audit
+// your custom field configuration across different entity types.
 func (r *V1CustomFieldService) ListKeysAutoPaging(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[V1CustomFieldListKeysResponse] {
 	return pagination.NewCursorPageWithoutLimitAutoPager(r.ListKeys(ctx, params, opts...))
 }
 
-// Remove a key from the allow list for a given entity.
+// Removes a custom field key from the allowlist for a specific entity type,
+// preventing future use of that key across all instances of the entity. Existing
+// values for this key on entity instances will no longer be accessible once the
+// key is removed.
 func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomFieldRemoveKeyParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -85,13 +124,10 @@ func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomField
 	return
 }
 
-// Sets one or more custom fields on an instance of a Metronome entity. If a
-// key/value pair passed in this request matches one already set on the entity, its
-// value will be overwritten. Any key/value pairs that exist on the entity that do
-// not match those passed in this request will remain untouched. This endpoint is
-// transactional and will update all key/value pairs or no key/value pairs. Partial
-// updates are not supported. There is a 200 character limit on custom field
-// values.
+// Sets custom field values on a specific Metronome entity instance. Overwrites
+// existing values for matching keys while preserving other fields. All updates are
+// transactional—either all values are set or none are. Custom field values are
+// limited to 200 characters each.
 func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomFieldSetValuesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -330,6 +366,7 @@ func (r V1CustomFieldRemoveKeyParamsEntity) IsKnown() bool {
 }
 
 type V1CustomFieldSetValuesParams struct {
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields param.Field[map[string]string]                  `json:"custom_fields,required"`
 	Entity       param.Field[V1CustomFieldSetValuesParamsEntity] `json:"entity,required"`
 	EntityID     param.Field[string]                             `json:"entity_id,required" format:"uuid"`

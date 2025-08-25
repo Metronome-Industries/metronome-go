@@ -33,8 +33,23 @@ func NewV2ContractService(opts ...option.RequestOption) (r *V2ContractService) {
 	return
 }
 
-// Get a specific contract. New clients should use this endpoint rather than the v1
-// endpoint.
+// Gets the details for a specific contract, including contract term, rate card
+// information, credits and commits, and more.
+//
+// Use this endpoint to:
+//
+//   - Check the duration of a customer's current contract
+//   - Get details on contract terms, including access schedule amounts for
+//     commitments and credits
+//   - Understand the state of a contract at a past time. As you can evolve the terms
+//     of a contract over time through editing, use the as_of_date parameter to view
+//     the full contract configuration as of that point in time.
+//
+// Usage guidelines:
+//
+//   - Optionally, use the include_balance and include_ledger fields to include
+//     balances and ledgers in the credit and commit responses. Using these fields
+//     will cause the query to be slower.
 func (r *V2ContractService) Get(ctx context.Context, body V2ContractGetParams, opts ...option.RequestOption) (res *V2ContractGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/get"
@@ -42,8 +57,20 @@ func (r *V2ContractService) Get(ctx context.Context, body V2ContractGetParams, o
 	return
 }
 
-// List all contracts for a customer in chronological order. New clients should use
-// this endpoint rather than the v1 endpoint.
+// For a given customer, lists all of their contracts in chronological order.
+//
+// Use this endpoint to:
+//
+//   - Check if a customer is provisioned with any contract, and at which tier
+//   - Check the duration and terms of a customer's current contract
+//   - Power a page in your end customer experience that shows the customer's history
+//     of tiers (e.g. this customer started out on the Pro Plan, then downgraded to
+//     the Starter plan).
+//
+// Usage guidelines:\
+// Use the starting_at, covering_date, and include_archived parameters to filter the
+// list of returned contracts. For example, to list only currently active contracts,
+// pass covering_date equal to the current time.
 func (r *V2ContractService) List(ctx context.Context, body V2ContractListParams, opts ...option.RequestOption) (res *V2ContractListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/list"
@@ -51,7 +78,28 @@ func (r *V2ContractService) List(ctx context.Context, body V2ContractListParams,
 	return
 }
 
-// Edit a contract. Contract editing must be enabled to use this endpoint.
+// The ability to edit a contract helps you react quickly to the needs of your
+// customers and your business.
+//
+// Use this endpoint to:
+//
+// - Encode mid-term commitment and discount changes
+// - Fix configuration mistakes and easily roll back packaging changes
+//
+// Key response fields:
+//
+//   - The id of the edit
+//   - Complete edit details. For example, if you edited the contract to add new
+//     overrides and credits, you will receive the IDs of those overrides and credits
+//     in the response.
+//
+// Usage guidelines:
+//
+//   - When you edit a contract, any draft invoices update immediately to reflect
+//     that edit. Finalized invoices remain unchanged - you must void and regenerate
+//     them in the UI or API to reflect the edit.
+//   - Contract editing must be enabled to use this endpoint. Reach out to your
+//     Metronome representative to learn more.
 func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams, opts ...option.RequestOption) (res *V2ContractEditResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/edit"
@@ -59,8 +107,22 @@ func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams,
 	return
 }
 
-// Edit a customer or contract commit. Contract commits can only be edited using
-// this endpoint if contract editing is enabled.
+// Edit specific details for a contract-level or customer-level commit. Use this
+// endpoint to modify individual commit access schedules, invoice schedules,
+// applicable products, invoicing contracts, or other fields.
+//
+// Usage guidelines:
+//
+//   - As with all edits in Metronome, draft invoices will reflect the edit
+//     immediately, while finalized invoices are untouched unless voided and
+//     regenerated.
+//   - If a commit's invoice schedule item is associated with a finalized invoice,
+//     you cannot remove or update the invoice schedule item.
+//   - If a commit's invoice schedule item is associated with a voided invoice, you
+//     cannot remove the invoice schedule item.
+//   - You cannot remove an commit access schedule segment that was applied to a
+//     finalized invoice. You can void the invoice beforehand and then remove the
+//     access schedule segment.
 func (r *V2ContractService) EditCommit(ctx context.Context, body V2ContractEditCommitParams, opts ...option.RequestOption) (res *V2ContractEditCommitResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/commits/edit"
@@ -68,8 +130,22 @@ func (r *V2ContractService) EditCommit(ctx context.Context, body V2ContractEditC
 	return
 }
 
-// Edit a customer or contract credit. Contract credits can only be edited using
-// this endpoint if contract editing is enabled.
+// Edit details for a contract-level or customer-level credit.
+//
+// Use this endpoint to:
+//
+//   - Extend the duration or the amount of an existing free credit like a trial
+//   - Modify individual credit access schedules, applicable products, priority, or
+//     other fields.
+//
+// Usage guidelines:
+//
+//   - As with all edits in Metronome, draft invoices will reflect the edit
+//     immediately, while finalized invoices are untouched unless voided and
+//     regenerated.
+//   - You cannot remove an access schedule segment that was applied to a finalized
+//     invoice. You can void the invoice beforehand and then remove the access
+//     schedule segment.
 func (r *V2ContractService) EditCredit(ctx context.Context, body V2ContractEditCreditParams, opts ...option.RequestOption) (res *V2ContractEditCreditResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/credits/edit"
@@ -77,8 +153,21 @@ func (r *V2ContractService) EditCredit(ctx context.Context, body V2ContractEditC
 	return
 }
 
-// Get the edit history of a specific contract. Contract editing must be enabled to
-// use this endpoint.
+// List all the edits made to a contract over time. In Metronome, you can edit a
+// contract at any point after it's created to fix mistakes or reflect changes in
+// terms. Metronome stores a full history of all edits that were ever made to a
+// contract, whether through the UI, editContract endpoint, or other endpoints like
+// updateContractEndDate.
+//
+// Use this endpoint to:
+//
+// - Understand what changes were made to a contract, when, and by who
+//
+// Key response fields:
+//
+//   - An array of every edit ever made to the contract
+//   - Details on each individual edit - for example showing that in one edit, a user
+//     added two discounts and incremented a subscription quantity.
 func (r *V2ContractService) GetEditHistory(ctx context.Context, body V2ContractGetEditHistoryParams, opts ...option.RequestOption) (res *V2ContractGetEditHistoryResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/contracts/getEditHistory"
@@ -1853,7 +1942,8 @@ func (r v2ContractGetEditHistoryResponseDataUpdateCreditsAccessScheduleUpdateSch
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateDiscount struct {
-	ID                   string            `json:"id,required" format:"uuid"`
+	ID string `json:"id,required" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields         map[string]string `json:"custom_fields"`
 	Name                 string            `json:"name"`
 	NetsuiteSalesOrderID string            `json:"netsuite_sales_order_id"`
@@ -2602,8 +2692,9 @@ type V2ContractEditParamsAddCommit struct {
 	// Which tags the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
-	ApplicableProductTags param.Field[[]string]          `json:"applicable_product_tags"`
-	CustomFields          param.Field[map[string]string] `json:"custom_fields"`
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields param.Field[map[string]string] `json:"custom_fields"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// Optional configuration for commit hierarchy access control
@@ -2922,8 +3013,9 @@ type V2ContractEditParamsAddCredit struct {
 	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
 	// Which tags the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
-	ApplicableProductTags param.Field[[]string]          `json:"applicable_product_tags"`
-	CustomFields          param.Field[map[string]string] `json:"custom_fields"`
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields param.Field[map[string]string] `json:"custom_fields"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// Optional configuration for credit hierarchy access control
@@ -2989,8 +3081,9 @@ func (r V2ContractEditParamsAddCreditsRateType) IsKnown() bool {
 type V2ContractEditParamsAddDiscount struct {
 	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule     param.Field[V2ContractEditParamsAddDiscountsSchedule] `json:"schedule,required"`
-	CustomFields param.Field[map[string]string]                        `json:"custom_fields"`
+	Schedule param.Field[V2ContractEditParamsAddDiscountsSchedule] `json:"schedule,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields param.Field[map[string]string] `json:"custom_fields"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -3288,7 +3381,8 @@ type V2ContractEditParamsAddProfessionalService struct {
 	Quantity param.Field[float64] `json:"quantity,required"`
 	// Unit price for the charge. Will be multiplied by quantity to determine the
 	// amount and must be specified.
-	UnitPrice    param.Field[float64]           `json:"unit_price,required"`
+	UnitPrice param.Field[float64] `json:"unit_price,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields param.Field[map[string]string] `json:"custom_fields"`
 	Description  param.Field[string]            `json:"description"`
 	// This field's availability is dependent on your client's configuration.
@@ -3755,8 +3849,9 @@ func (r V2ContractEditParamsAddResellerRoyaltiesGcpOptions) MarshalJSON() (data 
 type V2ContractEditParamsAddScheduledCharge struct {
 	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule     param.Field[V2ContractEditParamsAddScheduledChargesSchedule] `json:"schedule,required"`
-	CustomFields param.Field[map[string]string]                               `json:"custom_fields"`
+	Schedule param.Field[V2ContractEditParamsAddScheduledChargesSchedule] `json:"schedule,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields param.Field[map[string]string] `json:"custom_fields"`
 	// displayed on invoices
 	Name param.Field[string] `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -3871,15 +3966,23 @@ func (r V2ContractEditParamsAddScheduledChargesScheduleScheduleItem) MarshalJSON
 
 type V2ContractEditParamsAddSubscription struct {
 	CollectionSchedule param.Field[V2ContractEditParamsAddSubscriptionsCollectionSchedule] `json:"collection_schedule,required"`
-	InitialQuantity    param.Field[float64]                                                `json:"initial_quantity,required"`
 	Proration          param.Field[V2ContractEditParamsAddSubscriptionsProration]          `json:"proration,required"`
 	SubscriptionRate   param.Field[V2ContractEditParamsAddSubscriptionsSubscriptionRate]   `json:"subscription_rate,required"`
-	CustomFields       param.Field[map[string]string]                                      `json:"custom_fields"`
-	Description        param.Field[string]                                                 `json:"description"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields param.Field[map[string]string] `json:"custom_fields"`
+	Description  param.Field[string]            `json:"description"`
 	// Exclusive end time for the subscription. If not provided, subscription inherits
 	// contract end date.
 	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	Name         param.Field[string]    `json:"name"`
+	// The initial quantity for the subscription. It must be non-negative value.
+	// Required if quantity_management_mode is QUANTITY_ONLY.
+	InitialQuantity param.Field[float64] `json:"initial_quantity"`
+	Name            param.Field[string]  `json:"name"`
+	// Determines how the subscription's quantity is controlled. Defaults to
+	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+	// directly on the subscription. `initial_quantity` must be provided with this
+	// option. Compatible with recurring commits/credits that use POOLED allocation.
+	QuantityManagementMode param.Field[V2ContractEditParamsAddSubscriptionsQuantityManagementMode] `json:"quantity_management_mode"`
 	// Inclusive start time for the subscription. If not provided, defaults to contract
 	// start date
 	StartingAt param.Field[time.Time] `json:"starting_at" format:"date-time"`
@@ -3968,6 +4071,25 @@ const (
 func (r V2ContractEditParamsAddSubscriptionsSubscriptionRateBillingFrequency) IsKnown() bool {
 	switch r {
 	case V2ContractEditParamsAddSubscriptionsSubscriptionRateBillingFrequencyMonthly, V2ContractEditParamsAddSubscriptionsSubscriptionRateBillingFrequencyQuarterly, V2ContractEditParamsAddSubscriptionsSubscriptionRateBillingFrequencyAnnual, V2ContractEditParamsAddSubscriptionsSubscriptionRateBillingFrequencyWeekly:
+		return true
+	}
+	return false
+}
+
+// Determines how the subscription's quantity is controlled. Defaults to
+// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+// directly on the subscription. `initial_quantity` must be provided with this
+// option. Compatible with recurring commits/credits that use POOLED allocation.
+type V2ContractEditParamsAddSubscriptionsQuantityManagementMode string
+
+const (
+	V2ContractEditParamsAddSubscriptionsQuantityManagementModeSeatBased    V2ContractEditParamsAddSubscriptionsQuantityManagementMode = "SEAT_BASED"
+	V2ContractEditParamsAddSubscriptionsQuantityManagementModeQuantityOnly V2ContractEditParamsAddSubscriptionsQuantityManagementMode = "QUANTITY_ONLY"
+)
+
+func (r V2ContractEditParamsAddSubscriptionsQuantityManagementMode) IsKnown() bool {
+	switch r {
+	case V2ContractEditParamsAddSubscriptionsQuantityManagementModeSeatBased, V2ContractEditParamsAddSubscriptionsQuantityManagementModeQuantityOnly:
 		return true
 	}
 	return false

@@ -1816,6 +1816,20 @@ const SubscriptionProrationInvoiceBehaviorBillImmediately = shared.SubscriptionP
 // This is an alias to an internal value.
 const SubscriptionProrationInvoiceBehaviorBillOnNextCollectionDate = shared.SubscriptionProrationInvoiceBehaviorBillOnNextCollectionDate
 
+// Determines how the subscription's quantity is controlled. Defaults to
+// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+// directly on the subscription. `initial_quantity` must be provided with this
+// option. Compatible with recurring commits/credits that use POOLED allocation.
+//
+// This is an alias to an internal type.
+type SubscriptionQuantityManagementMode = shared.SubscriptionQuantityManagementMode
+
+// This is an alias to an internal value.
+const SubscriptionQuantityManagementModeSeatBased = shared.SubscriptionQuantityManagementModeSeatBased
+
+// This is an alias to an internal value.
+const SubscriptionQuantityManagementModeQuantityOnly = shared.SubscriptionQuantityManagementModeQuantityOnly
+
 // This is an alias to an internal type.
 type SubscriptionQuantitySchedule = shared.SubscriptionQuantitySchedule
 

@@ -111,8 +111,9 @@ type Commit struct {
 	// remaining on the credit or commit - in that case, the balance will be 0. All
 	// manual ledger entries associated with active credit or commit segments are
 	// included in the balance, including future-dated manual ledger entries.
-	Balance      float64           `json:"balance"`
-	Contract     CommitContract    `json:"contract"`
+	Balance  float64        `json:"balance"`
+	Contract CommitContract `json:"contract"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
 	// Optional configuration for commit hierarchy access control
@@ -1527,7 +1528,8 @@ type Contract struct {
 	Initial    ContractWithoutAmendments `json:"initial,required"`
 	// RFC 3339 timestamp indicating when the contract was archived. If not returned,
 	// the contract is not archived.
-	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration ContractCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
@@ -1787,7 +1789,8 @@ type ContractV2 struct {
 	UsageStatementSchedule ContractV2UsageStatementSchedule `json:"usage_statement_schedule,required"`
 	ArchivedAt             time.Time                        `json:"archived_at" format:"date-time"`
 	Credits                []ContractV2Credit               `json:"credits"`
-	CustomFields           map[string]string                `json:"custom_fields"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
 	// This field's availability is dependent on your client's configuration.
 	CustomerBillingProviderConfiguration ContractV2CustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	// This field's availability is dependent on your client's configuration.
@@ -1904,10 +1907,11 @@ type ContractV2Commit struct {
 	// remaining on the credit or commit - in that case, the balance will be 0. All
 	// manual ledger entries associated with active credit or commit segments are
 	// included in the balance, including future-dated manual ledger entries.
-	Balance      float64                   `json:"balance"`
-	Contract     ContractV2CommitsContract `json:"contract"`
-	CustomFields map[string]string         `json:"custom_fields"`
-	Description  string                    `json:"description"`
+	Balance  float64                   `json:"balance"`
+	Contract ContractV2CommitsContract `json:"contract"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	Description  string            `json:"description"`
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The contract that this commit will be billed on.
@@ -3189,10 +3193,11 @@ type ContractV2Credit struct {
 	// remaining on the credit or commit - in that case, the balance will be 0. All
 	// manual ledger entries associated with active credit or commit segments are
 	// included in the balance, including future-dated manual ledger entries.
-	Balance      float64                   `json:"balance"`
-	Contract     ContractV2CreditsContract `json:"contract"`
-	CustomFields map[string]string         `json:"custom_fields"`
-	Description  string                    `json:"description"`
+	Balance  float64                   `json:"balance"`
+	Contract ContractV2CreditsContract `json:"contract"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	Description  string            `json:"description"`
 	// Optional configuration for credit hierarchy access control
 	HierarchyConfiguration CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// A list of ordered events that impact the balance of a credit. For example, an
@@ -5350,8 +5355,9 @@ type Credit struct {
 	// remaining on the credit or commit - in that case, the balance will be 0. All
 	// manual ledger entries associated with active credit or commit segments are
 	// included in the balance, including future-dated manual ledger entries.
-	Balance      float64           `json:"balance"`
-	Contract     CreditContract    `json:"contract"`
+	Balance  float64        `json:"balance"`
+	Contract CreditContract `json:"contract"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
 	// Optional configuration for credit hierarchy access control
@@ -5940,11 +5946,12 @@ func (r creditTypeDataJSON) RawJSON() string {
 }
 
 type Discount struct {
-	ID           string              `json:"id,required" format:"uuid"`
-	Product      DiscountProduct     `json:"product,required"`
-	Schedule     SchedulePointInTime `json:"schedule,required"`
-	CustomFields map[string]string   `json:"custom_fields"`
-	Name         string              `json:"name"`
+	ID       string              `json:"id,required" format:"uuid"`
+	Product  DiscountProduct     `json:"product,required"`
+	Schedule SchedulePointInTime `json:"schedule,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	Name         string            `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string       `json:"netsuite_sales_order_id"`
 	JSON                 discountJSON `json:"-"`
@@ -7201,7 +7208,8 @@ type ProService struct {
 	Quantity float64 `json:"quantity,required"`
 	// Unit price for the charge. Will be multiplied by quantity to determine the
 	// amount and must be specified.
-	UnitPrice    float64           `json:"unit_price,required"`
+	UnitPrice float64 `json:"unit_price,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
 	// This field's availability is dependent on your client's configuration.
@@ -7362,11 +7370,12 @@ func (r recurringCommitSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() 
 }
 
 type ScheduledCharge struct {
-	ID           string                 `json:"id,required" format:"uuid"`
-	Product      ScheduledChargeProduct `json:"product,required"`
-	Schedule     SchedulePointInTime    `json:"schedule,required"`
-	ArchivedAt   time.Time              `json:"archived_at" format:"date-time"`
-	CustomFields map[string]string      `json:"custom_fields"`
+	ID         string                 `json:"id,required" format:"uuid"`
+	Product    ScheduledChargeProduct `json:"product,required"`
+	Schedule   SchedulePointInTime    `json:"schedule,required"`
+	ArchivedAt time.Time              `json:"archived_at" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
 	// displayed on invoices
 	Name string `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -7625,35 +7634,42 @@ func (r SpendThresholdConfigurationV2Param) MarshalJSON() (data []byte, err erro
 type Subscription struct {
 	CollectionSchedule SubscriptionCollectionSchedule `json:"collection_schedule,required"`
 	Proration          SubscriptionProration          `json:"proration,required"`
+	// Determines how the subscription's quantity is controlled. Defaults to
+	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+	// directly on the subscription. `initial_quantity` must be provided with this
+	// option. Compatible with recurring commits/credits that use POOLED allocation.
+	QuantityManagementMode SubscriptionQuantityManagementMode `json:"quantity_management_mode,required"`
 	// List of quantity schedule items for the subscription. Only includes the current
 	// quantity and future quantity changes.
 	QuantitySchedule []SubscriptionQuantitySchedule `json:"quantity_schedule,required"`
 	StartingAt       time.Time                      `json:"starting_at,required" format:"date-time"`
 	SubscriptionRate SubscriptionSubscriptionRate   `json:"subscription_rate,required"`
 	ID               string                         `json:"id" format:"uuid"`
-	CustomFields     map[string]string              `json:"custom_fields"`
-	Description      string                         `json:"description"`
-	EndingBefore     time.Time                      `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                         `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                         `json:"name"`
-	JSON             subscriptionJSON               `json:"-"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields     map[string]string `json:"custom_fields"`
+	Description      string            `json:"description"`
+	EndingBefore     time.Time         `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string            `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string            `json:"name"`
+	JSON             subscriptionJSON  `json:"-"`
 }
 
 // subscriptionJSON contains the JSON metadata for the struct [Subscription]
 type subscriptionJSON struct {
-	CollectionSchedule apijson.Field
-	Proration          apijson.Field
-	QuantitySchedule   apijson.Field
-	StartingAt         apijson.Field
-	SubscriptionRate   apijson.Field
-	ID                 apijson.Field
-	CustomFields       apijson.Field
-	Description        apijson.Field
-	EndingBefore       apijson.Field
-	FiatCreditTypeID   apijson.Field
-	Name               apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
+	CollectionSchedule     apijson.Field
+	Proration              apijson.Field
+	QuantityManagementMode apijson.Field
+	QuantitySchedule       apijson.Field
+	StartingAt             apijson.Field
+	SubscriptionRate       apijson.Field
+	ID                     apijson.Field
+	CustomFields           apijson.Field
+	Description            apijson.Field
+	EndingBefore           apijson.Field
+	FiatCreditTypeID       apijson.Field
+	Name                   apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
 }
 
 func (r *Subscription) UnmarshalJSON(data []byte) (err error) {
@@ -7712,6 +7728,25 @@ const (
 func (r SubscriptionProrationInvoiceBehavior) IsKnown() bool {
 	switch r {
 	case SubscriptionProrationInvoiceBehaviorBillImmediately, SubscriptionProrationInvoiceBehaviorBillOnNextCollectionDate:
+		return true
+	}
+	return false
+}
+
+// Determines how the subscription's quantity is controlled. Defaults to
+// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+// directly on the subscription. `initial_quantity` must be provided with this
+// option. Compatible with recurring commits/credits that use POOLED allocation.
+type SubscriptionQuantityManagementMode string
+
+const (
+	SubscriptionQuantityManagementModeSeatBased    SubscriptionQuantityManagementMode = "SEAT_BASED"
+	SubscriptionQuantityManagementModeQuantityOnly SubscriptionQuantityManagementMode = "QUANTITY_ONLY"
+)
+
+func (r SubscriptionQuantityManagementMode) IsKnown() bool {
+	switch r {
+	case SubscriptionQuantityManagementModeSeatBased, SubscriptionQuantityManagementModeQuantityOnly:
 		return true
 	}
 	return false

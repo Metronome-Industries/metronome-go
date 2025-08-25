@@ -488,7 +488,6 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}),
 		AddSubscriptions: metronome.F([]metronome.V2ContractEditParamsAddSubscription{{
 			CollectionSchedule: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsCollectionScheduleAdvance),
-			InitialQuantity:    metronome.F(0.000000),
 			Proration: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsProration{
 				InvoiceBehavior: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsProrationInvoiceBehaviorBillImmediately),
 				IsProrated:      metronome.F(true),
@@ -500,11 +499,13 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			CustomFields: metronome.F(map[string]string{
 				"foo": "string",
 			}),
-			Description:  metronome.F("description"),
-			EndingBefore: metronome.F(time.Now()),
-			Name:         metronome.F("name"),
-			StartingAt:   metronome.F(time.Now()),
-			TemporaryID:  metronome.F("temporary_id"),
+			Description:            metronome.F("description"),
+			EndingBefore:           metronome.F(time.Now()),
+			InitialQuantity:        metronome.F(0.000000),
+			Name:                   metronome.F("name"),
+			QuantityManagementMode: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsQuantityManagementModeSeatBased),
+			StartingAt:             metronome.F(time.Now()),
+			TemporaryID:            metronome.F("temporary_id"),
 		}}),
 		AllowContractEndingBeforeFinalizedInvoice: metronome.F(true),
 		ArchiveCommits: metronome.F([]metronome.V2ContractEditParamsArchiveCommit{{

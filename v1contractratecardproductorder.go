@@ -32,7 +32,10 @@ func NewV1ContractRateCardProductOrderService(opts ...option.RequestOption) (r *
 	return
 }
 
-// Updates ordering of specified products
+// The ordering of products on a rate card determines the order in which the
+// products will appear on customers' invoices. Use this endpoint to set the order
+// of specific products on the rate card by moving them relative to their current
+// location.
 func (r *V1ContractRateCardProductOrderService) Update(ctx context.Context, body V1ContractRateCardProductOrderUpdateParams, opts ...option.RequestOption) (res *V1ContractRateCardProductOrderUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contract-pricing/rate-cards/moveRateCardProducts"
@@ -40,7 +43,9 @@ func (r *V1ContractRateCardProductOrderService) Update(ctx context.Context, body
 	return
 }
 
-// Sets the ordering of products within a rate card
+// The ordering of products on a rate card determines the order in which the
+// products will appear on customers' invoices. Use this endpoint to set the order
+// of products on the rate card.
 func (r *V1ContractRateCardProductOrderService) Set(ctx context.Context, body V1ContractRateCardProductOrderSetParams, opts ...option.RequestOption) (res *V1ContractRateCardProductOrderSetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contract-pricing/rate-cards/setRateCardProductsOrder"

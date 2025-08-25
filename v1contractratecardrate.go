@@ -36,7 +36,14 @@ func NewV1ContractRateCardRateService(opts ...option.RequestOption) (r *V1Contra
 	return
 }
 
-// Get all rates for a rate card at a point in time
+// Understand the rate schedule at a given timestamp, optionally filtering the list
+// of rates returned based on properties such as product_id and
+// pricing_group_values . For example, you may want to display the current price
+// for a given product in your product experience - use this endpoint to fetch that
+// information from its source of truth in Metronome.
+//
+// If you want to understand the rates for a specific customer's contract,
+// inclusive of contract-level overrides, use the getContractRateSchedule endpoint.
 func (r *V1ContractRateCardRateService) List(ctx context.Context, params V1ContractRateCardRateListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1ContractRateCardRateListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -54,7 +61,14 @@ func (r *V1ContractRateCardRateService) List(ctx context.Context, params V1Contr
 	return res, nil
 }
 
-// Get all rates for a rate card at a point in time
+// Understand the rate schedule at a given timestamp, optionally filtering the list
+// of rates returned based on properties such as product_id and
+// pricing_group_values . For example, you may want to display the current price
+// for a given product in your product experience - use this endpoint to fetch that
+// information from its source of truth in Metronome.
+//
+// If you want to understand the rates for a specific customer's contract,
+// inclusive of contract-level overrides, use the getContractRateSchedule endpoint.
 func (r *V1ContractRateCardRateService) ListAutoPaging(ctx context.Context, params V1ContractRateCardRateListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1ContractRateCardRateListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -76,7 +90,8 @@ func (r *V1ContractRateCardRateService) AddMany(ctx context.Context, body V1Cont
 }
 
 type V1ContractRateCardRateListResponse struct {
-	Entitled            bool                                               `json:"entitled,required"`
+	Entitled bool `json:"entitled,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	ProductCustomFields map[string]string                                  `json:"product_custom_fields,required"`
 	ProductID           string                                             `json:"product_id,required" format:"uuid"`
 	ProductName         string                                             `json:"product_name,required"`

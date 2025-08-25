@@ -130,7 +130,8 @@ func (r *V1PlanService) ListCustomersAutoPaging(ctx context.Context, params V1Pl
 }
 
 type PlanDetail struct {
-	ID           string                  `json:"id,required" format:"uuid"`
+	ID string `json:"id,required" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string       `json:"custom_fields,required"`
 	Name         string                  `json:"name,required"`
 	CreditGrants []PlanDetailCreditGrant `json:"credit_grants"`
@@ -261,9 +262,10 @@ func (r planDetailOverageRateJSON) RawJSON() string {
 }
 
 type V1PlanListResponse struct {
-	ID           string                 `json:"id,required" format:"uuid"`
-	Description  string                 `json:"description,required"`
-	Name         string                 `json:"name,required"`
+	ID          string `json:"id,required" format:"uuid"`
+	Description string `json:"description,required"`
+	Name        string `json:"name,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string      `json:"custom_fields"`
 	JSON         v1PlanListResponseJSON `json:"-"`
 }
@@ -309,15 +311,16 @@ func (r v1PlanGetDetailsResponseJSON) RawJSON() string {
 }
 
 type V1PlanListChargesResponse struct {
-	ID           string                              `json:"id,required" format:"uuid"`
-	ChargeType   V1PlanListChargesResponseChargeType `json:"charge_type,required"`
-	CreditType   shared.CreditTypeData               `json:"credit_type,required"`
-	CustomFields map[string]string                   `json:"custom_fields,required"`
-	Name         string                              `json:"name,required"`
-	Prices       []V1PlanListChargesResponsePrice    `json:"prices,required"`
-	ProductID    string                              `json:"product_id,required"`
-	ProductName  string                              `json:"product_name,required"`
-	Quantity     float64                             `json:"quantity"`
+	ID         string                              `json:"id,required" format:"uuid"`
+	ChargeType V1PlanListChargesResponseChargeType `json:"charge_type,required"`
+	CreditType shared.CreditTypeData               `json:"credit_type,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string                `json:"custom_fields,required"`
+	Name         string                           `json:"name,required"`
+	Prices       []V1PlanListChargesResponsePrice `json:"prices,required"`
+	ProductID    string                           `json:"product_id,required"`
+	ProductName  string                           `json:"product_name,required"`
+	Quantity     float64                          `json:"quantity"`
 	// Used in price ramps. Indicates how many billing periods pass before the charge
 	// applies.
 	StartPeriod float64 `json:"start_period"`
@@ -472,7 +475,8 @@ func (r v1PlanListCustomersResponseJSON) RawJSON() string {
 }
 
 type V1PlanListCustomersResponsePlanDetails struct {
-	ID             string            `json:"id,required" format:"uuid"`
+	ID string `json:"id,required" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields   map[string]string `json:"custom_fields,required"`
 	CustomerPlanID string            `json:"customer_plan_id,required" format:"uuid"`
 	Name           string            `json:"name,required"`

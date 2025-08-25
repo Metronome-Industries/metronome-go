@@ -235,8 +235,9 @@ type V1CreditGrantListResponse struct {
 	// The effective balance of the grant as of the end of the customer's current
 	// billing period. Expiration deductions will be included only if the grant expires
 	// before the end of the current billing period.
-	Balance      V1CreditGrantListResponseBalance `json:"balance,required"`
-	CustomFields map[string]string                `json:"custom_fields,required"`
+	Balance V1CreditGrantListResponseBalance `json:"balance,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields,required"`
 	// the Metronome ID of the customer
 	CustomerID  string              `json:"customer_id,required" format:"uuid"`
 	Deductions  []CreditLedgerEntry `json:"deductions,required"`

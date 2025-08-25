@@ -34,7 +34,12 @@ func NewV1PricingUnitService(opts ...option.RequestOption) (r *V1PricingUnitServ
 	return
 }
 
-// List all pricing units (known in the API by the legacy term "credit types").
+// List all pricing units. All fiat currency types (for example, USD or GBP) will
+// be included, as well as any custom pricing units that were configured. Custom
+// pricing units can be used to charge for usage in a non-fiat pricing unit, for
+// example AI credits.
+//
+// Note: The USD (cents) pricing unit is 2714e483-4ff1-48e4-9e25-ac732e8f24f2.
 func (r *V1PricingUnitService) List(ctx context.Context, query V1PricingUnitListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1PricingUnitListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -52,7 +57,12 @@ func (r *V1PricingUnitService) List(ctx context.Context, query V1PricingUnitList
 	return res, nil
 }
 
-// List all pricing units (known in the API by the legacy term "credit types").
+// List all pricing units. All fiat currency types (for example, USD or GBP) will
+// be included, as well as any custom pricing units that were configured. Custom
+// pricing units can be used to charge for usage in a non-fiat pricing unit, for
+// example AI credits.
+//
+// Note: The USD (cents) pricing unit is 2714e483-4ff1-48e4-9e25-ac732e8f24f2.
 func (r *V1PricingUnitService) ListAutoPaging(ctx context.Context, query V1PricingUnitListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1PricingUnitListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
