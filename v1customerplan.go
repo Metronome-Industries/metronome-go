@@ -132,7 +132,8 @@ func (r *V1CustomerPlanService) ListPriceAdjustmentsAutoPaging(ctx context.Conte
 
 type V1CustomerPlanListResponse struct {
 	// the ID of the customer plan
-	ID              string            `json:"id,required" format:"uuid"`
+	ID string `json:"id,required" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields    map[string]string `json:"custom_fields,required"`
 	PlanDescription string            `json:"plan_description,required"`
 	// the ID of the plan

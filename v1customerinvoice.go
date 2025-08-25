@@ -38,7 +38,45 @@ func NewV1CustomerInvoiceService(opts ...option.RequestOption) (r *V1CustomerInv
 	return
 }
 
-// Fetch a specific invoice for a given customer.
+// Retrieve detailed information for a specific invoice by its unique identifier.
+// This endpoint returns comprehensive invoice data including line items, applied
+// credits, totals, and billing period details for both finalized and draft
+// invoices.
+//
+// Use this endpoint to:
+//
+//   - Display historical invoice details in customer-facing dashboards or billing
+//     portals.
+//   - Retrieve current month draft invoices to show customers their month-to-date
+//     spend.
+//   - Access finalized invoices for historical billing records and payment
+//     reconciliation.
+//   - Validate customer pricing and credit applications for customer support
+//     queries.
+//
+// Key response fields: Invoice status (DRAFT, FINALIZED, VOID) Billing period
+// start and end dates Total amount and amount due after credits Detailed line
+// items broken down by:
+//
+// - Customer and contract information
+// - Invoice line item type
+// - Product/service name and ID
+// - Quantity consumed
+// - Unit and total price
+// - Time period for usage-based charges
+// - Applied credits or prepaid commitments
+//
+// Usage guidelines:
+//
+//   - Draft invoices update in real-time as usage is reported and may change before
+//     finalization
+//   - The response includes both usage-based line items (e.g., API calls, data
+//     processed) and scheduled charges (e.g., monthly subscriptions, commitment
+//     fees)
+//   - Credit and commitment applications are shown as separate line items with
+//     negative amounts
+//   - For voided invoices, the response will indicate VOID status but retain all
+//     original line item details
 func (r *V1CustomerInvoiceService) Get(ctx context.Context, params V1CustomerInvoiceGetParams, opts ...option.RequestOption) (res *V1CustomerInvoiceGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.CustomerID.Value == "" {
@@ -54,8 +92,50 @@ func (r *V1CustomerInvoiceService) Get(ctx context.Context, params V1CustomerInv
 	return
 }
 
-// List all invoices for a given customer, optionally filtered by status, date
-// range, and/or credit type.
+// Retrieves a paginated list of invoices for a specific customer, with flexible
+// filtering options to narrow results by status, date range, credit type, and
+// more. This endpoint provides a comprehensive view of a customer's billing
+// history and current charges, supporting both real-time billing dashboards and
+// historical reporting needs.
+//
+// Use this endpoint to:
+//
+//   - Display historical invoice details in customer-facing dashboards or billing
+//     portals.
+//   - Retrieve current month draft invoices to show customers their month-to-date
+//     spend.
+//   - Access finalized invoices for historical billing records and payment
+//     reconciliation.
+//   - Validate customer pricing and credit applications for customer support
+//     queries.
+//   - Generate financial reports by filtering invoices within specific date ranges
+//
+// Key response fields: Array of invoice objects containing:
+//
+// - Invoice ID and status (DRAFT, FINALIZED, VOID)
+// - Invoice type (USAGE, SCHEDULED)
+// - Billing period start and end dates
+// - Issue date and due date
+// - Total amount, subtotal, and amount due
+// - Applied credits summary
+// - Contract ID reference
+// - External billing provider status (if integrated with Stripe, etc.)
+// - Pagination metadata next_page cursor
+//
+// Usage guidelines:
+//
+//   - The endpoint returns invoice summaries; use the Get Invoice endpoint for
+//     detailed line items
+//   - Draft invoices are continuously updated as new usage is reported and will show
+//     real-time spend
+//   - Results are ordered by creation date descending by default (newest first)
+//   - When filtering by date range, the filter applies to the billing period, not
+//     the issue date
+//   - For customers with many invoices, implement pagination to ensure all results
+//     are retrieved External billing provider statuses (like Stripe payment status)
+//     are included when applicable
+//   - Voided invoices are included in results by default unless filtered out by
+//     status
 func (r *V1CustomerInvoiceService) List(ctx context.Context, params V1CustomerInvoiceListParams, opts ...option.RequestOption) (res *pagination.CursorPage[Invoice], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -77,8 +157,50 @@ func (r *V1CustomerInvoiceService) List(ctx context.Context, params V1CustomerIn
 	return res, nil
 }
 
-// List all invoices for a given customer, optionally filtered by status, date
-// range, and/or credit type.
+// Retrieves a paginated list of invoices for a specific customer, with flexible
+// filtering options to narrow results by status, date range, credit type, and
+// more. This endpoint provides a comprehensive view of a customer's billing
+// history and current charges, supporting both real-time billing dashboards and
+// historical reporting needs.
+//
+// Use this endpoint to:
+//
+//   - Display historical invoice details in customer-facing dashboards or billing
+//     portals.
+//   - Retrieve current month draft invoices to show customers their month-to-date
+//     spend.
+//   - Access finalized invoices for historical billing records and payment
+//     reconciliation.
+//   - Validate customer pricing and credit applications for customer support
+//     queries.
+//   - Generate financial reports by filtering invoices within specific date ranges
+//
+// Key response fields: Array of invoice objects containing:
+//
+// - Invoice ID and status (DRAFT, FINALIZED, VOID)
+// - Invoice type (USAGE, SCHEDULED)
+// - Billing period start and end dates
+// - Issue date and due date
+// - Total amount, subtotal, and amount due
+// - Applied credits summary
+// - Contract ID reference
+// - External billing provider status (if integrated with Stripe, etc.)
+// - Pagination metadata next_page cursor
+//
+// Usage guidelines:
+//
+//   - The endpoint returns invoice summaries; use the Get Invoice endpoint for
+//     detailed line items
+//   - Draft invoices are continuously updated as new usage is reported and will show
+//     real-time spend
+//   - Results are ordered by creation date descending by default (newest first)
+//   - When filtering by date range, the filter applies to the billing period, not
+//     the issue date
+//   - For customers with many invoices, implement pagination to ensure all results
+//     are retrieved External billing provider statuses (like Stripe payment status)
+//     are included when applicable
+//   - Voided invoices are included in results by default unless filtered out by
+//     status
 func (r *V1CustomerInvoiceService) ListAutoPaging(ctx context.Context, params V1CustomerInvoiceListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[Invoice] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -95,11 +217,40 @@ func (r *V1CustomerInvoiceService) AddCharge(ctx context.Context, params V1Custo
 	return
 }
 
-// List daily or hourly invoice breakdowns for a given customer, optionally
-// filtered by status, date range, and/or credit type. Important considerations:
+// Retrieve granular time-series breakdowns of invoice data at hourly or daily
+// intervals. This endpoint transforms standard invoices into detailed timelines,
+// enabling you to track usage patterns, identify consumption spikes, and provide
+// customers with transparency into their billing details throughout the billing
+// period.
 //
-//   - If we receive backdated usage after an invoice has been finalized, the
-//     backdated usage will be included in the response and usage numbers may differ.
+// Use this endpoint to:
+//
+// - Build usage analytics dashboards showing daily or hourly consumption trends
+// - Identify peak usage periods for capacity planning and cost optimization
+// - Generate detailed billing reports for finance teams and customer success
+// - Troubleshoot billing disputes by examining usage patterns at specific times
+// - Power real-time cost monitoring and alerting systems
+//
+// Key response fields: An array of BreakdownInvoice objects, each containing:
+//
+// - All standard invoice fields (ID, customer, commit, line items, totals, status)
+// - Line items with quantities and costs for that specific period
+// - breakdown_start_timestamp: Start of the specific time window
+// - breakdown_end_timestamp: End of the specific time window
+// - next_page: Pagination cursor for large result sets
+//
+// Usage guidelines:
+//
+//   - Time granularity: Set window_size to hour or day based on your analysis needs
+//   - Response limits: Daily breakdowns return up to 35 days; hourly breakdowns
+//     return up to 24 hours per request
+//   - Date filtering: Use starting_on and ending_before to focus on specific periods
+//   - Performance: For large date ranges, use pagination to retrieve all data
+//     efficiently
+//   - Backdated usage: If usage events arrive after invoice finalization, breakdowns
+//     will reflect the updated usage
+//   - Zero quantity filtering: Use skip_zero_qty_line_items=true to exclude periods
+//     with no usage
 func (r *V1CustomerInvoiceService) ListBreakdowns(ctx context.Context, params V1CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerInvoiceListBreakdownsResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -121,11 +272,40 @@ func (r *V1CustomerInvoiceService) ListBreakdowns(ctx context.Context, params V1
 	return res, nil
 }
 
-// List daily or hourly invoice breakdowns for a given customer, optionally
-// filtered by status, date range, and/or credit type. Important considerations:
+// Retrieve granular time-series breakdowns of invoice data at hourly or daily
+// intervals. This endpoint transforms standard invoices into detailed timelines,
+// enabling you to track usage patterns, identify consumption spikes, and provide
+// customers with transparency into their billing details throughout the billing
+// period.
 //
-//   - If we receive backdated usage after an invoice has been finalized, the
-//     backdated usage will be included in the response and usage numbers may differ.
+// Use this endpoint to:
+//
+// - Build usage analytics dashboards showing daily or hourly consumption trends
+// - Identify peak usage periods for capacity planning and cost optimization
+// - Generate detailed billing reports for finance teams and customer success
+// - Troubleshoot billing disputes by examining usage patterns at specific times
+// - Power real-time cost monitoring and alerting systems
+//
+// Key response fields: An array of BreakdownInvoice objects, each containing:
+//
+// - All standard invoice fields (ID, customer, commit, line items, totals, status)
+// - Line items with quantities and costs for that specific period
+// - breakdown_start_timestamp: Start of the specific time window
+// - breakdown_end_timestamp: End of the specific time window
+// - next_page: Pagination cursor for large result sets
+//
+// Usage guidelines:
+//
+//   - Time granularity: Set window_size to hour or day based on your analysis needs
+//   - Response limits: Daily breakdowns return up to 35 days; hourly breakdowns
+//     return up to 24 hours per request
+//   - Date filtering: Use starting_on and ending_before to focus on specific periods
+//   - Performance: For large date ranges, use pagination to retrieve all data
+//     efficiently
+//   - Backdated usage: If usage events arrive after invoice finalization, breakdowns
+//     will reflect the updated usage
+//   - Zero quantity filtering: Use skip_zero_qty_line_items=true to exclude periods
+//     with no usage
 func (r *V1CustomerInvoiceService) ListBreakdownsAutoPaging(ctx context.Context, params V1CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerInvoiceListBreakdownsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListBreakdowns(ctx, params, opts...))
 }
@@ -140,15 +320,17 @@ type Invoice struct {
 	Type        string                `json:"type,required"`
 	AmendmentID string                `json:"amendment_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
-	BillableStatus       InvoiceBillableStatus   `json:"billable_status"`
+	BillableStatus InvoiceBillableStatus `json:"billable_status"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	ContractCustomFields map[string]string       `json:"contract_custom_fields"`
 	ContractID           string                  `json:"contract_id" format:"uuid"`
 	CorrectionRecord     InvoiceCorrectionRecord `json:"correction_record"`
 	// When the invoice was created (UTC). This field is present for correction
 	// invoices only.
-	CreatedAt            time.Time              `json:"created_at" format:"date-time"`
-	CustomFields         map[string]interface{} `json:"custom_fields"`
-	CustomerCustomFields map[string]string      `json:"customer_custom_fields"`
+	CreatedAt    time.Time              `json:"created_at" format:"date-time"`
+	CustomFields map[string]interface{} `json:"custom_fields"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomerCustomFields map[string]string `json:"customer_custom_fields"`
 	// End of the usage period this invoice covers (UTC)
 	EndTimestamp       time.Time                  `json:"end_timestamp" format:"date-time"`
 	ExternalInvoice    InvoiceExternalInvoice     `json:"external_invoice,nullable"`
@@ -157,10 +339,11 @@ type Invoice struct {
 	IssuedAt            time.Time `json:"issued_at" format:"date-time"`
 	NetPaymentTermsDays float64   `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string            `json:"netsuite_sales_order_id"`
-	PlanCustomFields     map[string]string `json:"plan_custom_fields"`
-	PlanID               string            `json:"plan_id" format:"uuid"`
-	PlanName             string            `json:"plan_name"`
+	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	PlanCustomFields map[string]string `json:"plan_custom_fields"`
+	PlanID           string            `json:"plan_id" format:"uuid"`
+	PlanName         string            `json:"plan_name"`
 	// Only present for contract invoices with reseller royalties.
 	ResellerRoyalty InvoiceResellerRoyalty `json:"reseller_royalty"`
 	// This field's availability is dependent on your client's configuration.
@@ -245,7 +428,8 @@ type InvoiceLineItem struct {
 	// present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
 	// types.
 	AppliedCommitOrCredit InvoiceLineItemsAppliedCommitOrCredit `json:"applied_commit_or_credit"`
-	CommitCustomFields    map[string]string                     `json:"commit_custom_fields"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CommitCustomFields map[string]string `json:"commit_custom_fields"`
 	// For line items with product of `USAGE`, `SUBSCRIPTION`, or `COMPOSITE` types,
 	// the ID of the credit or commit that was applied to this line item. For line
 	// items with product type of `FIXED`, the ID of the prepaid or postpaid commit
@@ -256,8 +440,10 @@ type InvoiceLineItem struct {
 	CommitSegmentID            string `json:"commit_segment_id" format:"uuid"`
 	// `PrepaidCommit` (for commit types `PREPAID` and `CREDIT`) or `PostpaidCommit`
 	// (for commit type `POSTPAID`).
-	CommitType           string            `json:"commit_type"`
-	CustomFields         map[string]string `json:"custom_fields"`
+	CommitType string `json:"commit_type"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	DiscountCustomFields map[string]string `json:"discount_custom_fields"`
 	// ID of the discount applied to this line item.
 	DiscountID string `json:"discount_id" format:"uuid"`
@@ -284,7 +470,8 @@ type InvoiceLineItem struct {
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
 	// Includes the pricing group values associated with this line item if dimensional
 	// pricing is used.
-	PricingGroupValues  map[string]string `json:"pricing_group_values"`
+	PricingGroupValues map[string]string `json:"pricing_group_values"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	ProductCustomFields map[string]string `json:"product_custom_fields"`
 	// ID of the product associated with the line item.
 	ProductID string `json:"product_id" format:"uuid"`
@@ -295,19 +482,22 @@ type InvoiceLineItem struct {
 	// `SubscriptionProductListItem` (for `SUBSCRIPTION` type products) or
 	// `CompositeProductListItem` (for `COMPOSITE` type products). For scheduled
 	// charges, commit and credit payments, the value is `FixedProductListItem`.
-	ProductType                     string            `json:"product_type"`
+	ProductType string `json:"product_type"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	ProfessionalServiceCustomFields map[string]string `json:"professional_service_custom_fields"`
 	ProfessionalServiceID           string            `json:"professional_service_id" format:"uuid"`
 	// The quantity associated with the line item.
-	Quantity                    float64                      `json:"quantity"`
-	ResellerType                InvoiceLineItemsResellerType `json:"reseller_type"`
-	ScheduledChargeCustomFields map[string]string            `json:"scheduled_charge_custom_fields"`
+	Quantity     float64                      `json:"quantity"`
+	ResellerType InvoiceLineItemsResellerType `json:"reseller_type"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	ScheduledChargeCustomFields map[string]string `json:"scheduled_charge_custom_fields"`
 	// ID of scheduled charge.
 	ScheduledChargeID string `json:"scheduled_charge_id" format:"uuid"`
 	// The line item's start date (inclusive).
-	StartingAt               time.Time                     `json:"starting_at" format:"date-time"`
-	SubLineItems             []InvoiceLineItemsSubLineItem `json:"sub_line_items"`
-	SubscriptionCustomFields map[string]string             `json:"subscription_custom_fields"`
+	StartingAt   time.Time                     `json:"starting_at" format:"date-time"`
+	SubLineItems []InvoiceLineItemsSubLineItem `json:"sub_line_items"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	SubscriptionCustomFields map[string]string `json:"subscription_custom_fields"`
 	// Populated if the line item has a tiered price.
 	Tier InvoiceLineItemsTier `json:"tier"`
 	// The unit price associated with the line item.
@@ -452,6 +642,7 @@ func (r InvoiceLineItemsResellerType) IsKnown() bool {
 }
 
 type InvoiceLineItemsSubLineItem struct {
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields  map[string]string `json:"custom_fields,required"`
 	Name          string            `json:"name,required"`
 	Quantity      float64           `json:"quantity,required"`
@@ -763,9 +954,10 @@ func (r InvoiceExternalInvoiceExternalStatus) IsKnown() bool {
 }
 
 type InvoiceInvoiceAdjustment struct {
-	CreditType              shared.CreditTypeData        `json:"credit_type,required"`
-	Name                    string                       `json:"name,required"`
-	Total                   float64                      `json:"total,required"`
+	CreditType shared.CreditTypeData `json:"credit_type,required"`
+	Name       string                `json:"name,required"`
+	Total      float64               `json:"total,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CreditGrantCustomFields map[string]string            `json:"credit_grant_custom_fields"`
 	CreditGrantID           string                       `json:"credit_grant_id"`
 	JSON                    invoiceInvoiceAdjustmentJSON `json:"-"`
