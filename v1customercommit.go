@@ -11,6 +11,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -33,7 +34,61 @@ func NewV1CustomerCommitService(opts ...option.RequestOption) (r *V1CustomerComm
 	return
 }
 
-// Create a new commit at the customer level.
+// Creates customer-level commits that establish spending commitments for customers
+// across their Metronome usage. Commits represent contracted spending obligations
+// that can be either prepaid (paid upfront) or postpaid (billed later). Note: In
+// most cases, you should add commitments directly to customer contracts using the
+// contract/create or contract/edit APIs.
+//
+// Use this endpoint to:\
+//
+// Use this endpoint when you need to establish customer-level spending commitments
+// that can be applied across multiple contracts or scoped to specific contracts.
+// Customer-level commits are ideal for:
+//
+// - Enterprise-wide minimum spending agreements that span multiple contracts
+// - Multi-contract volume commitments with shared spending pools
+// - Cross-contract discount tiers based on aggregate usage
+//
+// Commit type Requirements: You must specify either "prepaid" or "postpaid" as the
+// commit type:
+//
+//   - Prepaid commits: Customer pays upfront; invoice_schedule is optional (if
+//     omitted, creates a commit without an invoice)
+//   - Postpaid commits: Customer pays when the commitment expires (the end of the
+//     access_schedule); invoice_schedule is required and must match access_schedule
+//     totals.
+//
+// Billing configuration:
+//
+//   - invoice_contract_id is required for postpaid commits and for prepaid commits
+//     with billing (only optional for free prepaid commits)
+//   - For postpaid commits: access_schedule and invoice_schedule must have matching
+//     amounts
+//   - For postpaid commits: only one schedule item is allowed in both schedules.
+//
+// Scoping flexibility: Customer-level commits can be configured in a few ways:
+//
+//   - Contract-specific: Use the applicable_contract_ids field to limit the commit
+//     to specific contracts
+//   - Cross-contract: Leave applicable_contract_ids empty to allow the commit to be
+//     used across all of the customer's contracts
+//
+// Product targeting: Commits can be scoped to specific products using
+// applicable_product_ids, applicable_product_tags, or specifiers, or left
+// unrestricted to apply to all products.
+//
+// Priority considerations: When multiple commits are applicable, the one with the
+// lower priority value will be consumed first. If there is a tie, contract level
+// commits and credits will be applied before customer level commits and credits.
+// Plan your priority scheme carefully to ensure commits are applied in the desired
+// order.
+//
+// Usage guidelines:\
+// ⚠️ Preferred Alternative: In most cases, you should add commits directly to contracts
+// using the create contract or edit contract APIs instead of creating customer-level
+// commits. Contract-level commits provide better organization and are the recommended
+// approach for standard use cases.
 func (r *V1CustomerCommitService) New(ctx context.Context, body V1CustomerCommitNewParams, opts ...option.RequestOption) (res *V1CustomerCommitNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/customerCommits/create"
@@ -41,17 +96,122 @@ func (r *V1CustomerCommitService) New(ctx context.Context, body V1CustomerCommit
 	return
 }
 
-// List commits.
-func (r *V1CustomerCommitService) List(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) (res *V1CustomerCommitListResponse, err error) {
+// Retrieve all commit agreements for a customer, including both prepaid and
+// postpaid commitments. This endpoint provides comprehensive visibility into
+// contractual spending obligations, enabling you to track commitment utilization
+// and manage customer contracts effectively.
+//
+// Use this endpoint to:
+//
+// - Display commitment balances and utilization in customer dashboards
+// - Track prepaid commitment drawdown and remaining balances
+// - Monitor postpaid commitment progress toward minimum thresholds
+// - Build commitment tracking and forecasting tools
+// - Show commitment history with optional ledger details
+// - Manage rollover balances between contract periods
+//
+// Key response fields: An array of Commit objects containing:
+//
+// - Commit type: PREPAID (pay upfront) or POSTPAID (pay at true-up)
+// - Rate type: COMMIT_RATE (discounted) or LIST_RATE (standard pricing)
+// - Access schedule: When commitment funds become available
+// - Invoice schedule: When the customer is billed
+// - Product targeting: Which product(s) usage is eligible to draw from this commit
+// - Optional ledger entries: Transaction history (if include_ledgers=true)
+// - Balance information: Current available amount (if include_balance=true)
+// - Rollover settings: Fraction of unused amount that carries forward
+//
+// Usage guidelines:
+//
+// - Pagination: Results limited to 25 commits per page; use next_page for more
+// - Date filtering options:
+//   - covering_date: Commits active on a specific date
+//   - starting_at: Commits with access on/after a date
+//   - effective_before: Commits with access before a date (exclusive)
+//
+// - Scope options:
+//   - include_contract_commits: Include contract-level commits (not just
+//     customer-level)
+//   - include_archived: Include archived commits and commits from archived
+//     contracts
+//
+// - Performance considerations:
+//   - include_ledgers: Adds detailed transaction history (slower)
+//   - include_balance: Adds current balance calculation (slower)
+//
+// - Optional filtering: Use commit_id to retrieve a specific commit
+func (r *V1CustomerCommitService) List(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) (res *pagination.BodyCursorPage[shared.Commit], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contracts/customerCommits/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, body, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
-// Pull forward the end date of a prepaid commit. Use the "edit a commit" endpoint
-// to extend the end date of a prepaid commit, or to make other edits to the
-// commit.
+// Retrieve all commit agreements for a customer, including both prepaid and
+// postpaid commitments. This endpoint provides comprehensive visibility into
+// contractual spending obligations, enabling you to track commitment utilization
+// and manage customer contracts effectively.
+//
+// Use this endpoint to:
+//
+// - Display commitment balances and utilization in customer dashboards
+// - Track prepaid commitment drawdown and remaining balances
+// - Monitor postpaid commitment progress toward minimum thresholds
+// - Build commitment tracking and forecasting tools
+// - Show commitment history with optional ledger details
+// - Manage rollover balances between contract periods
+//
+// Key response fields: An array of Commit objects containing:
+//
+// - Commit type: PREPAID (pay upfront) or POSTPAID (pay at true-up)
+// - Rate type: COMMIT_RATE (discounted) or LIST_RATE (standard pricing)
+// - Access schedule: When commitment funds become available
+// - Invoice schedule: When the customer is billed
+// - Product targeting: Which product(s) usage is eligible to draw from this commit
+// - Optional ledger entries: Transaction history (if include_ledgers=true)
+// - Balance information: Current available amount (if include_balance=true)
+// - Rollover settings: Fraction of unused amount that carries forward
+//
+// Usage guidelines:
+//
+// - Pagination: Results limited to 25 commits per page; use next_page for more
+// - Date filtering options:
+//   - covering_date: Commits active on a specific date
+//   - starting_at: Commits with access on/after a date
+//   - effective_before: Commits with access before a date (exclusive)
+//
+// - Scope options:
+//   - include_contract_commits: Include contract-level commits (not just
+//     customer-level)
+//   - include_archived: Include archived commits and commits from archived
+//     contracts
+//
+// - Performance considerations:
+//   - include_ledgers: Adds detailed transaction history (slower)
+//   - include_balance: Adds current balance calculation (slower)
+//
+// - Optional filtering: Use commit_id to retrieve a specific commit
+func (r *V1CustomerCommitService) ListAutoPaging(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) *pagination.BodyCursorPageAutoPager[shared.Commit] {
+	return pagination.NewBodyCursorPageAutoPager(r.List(ctx, body, opts...))
+}
+
+// Shortens the end date of a prepaid commit to terminate it earlier than
+// originally scheduled. Use this endpoint when you need to cancel or reduce the
+// duration of an existing prepaid commit. Only works with prepaid commit types and
+// can only move the end date forward (earlier), not extend it.
+//
+// Usage guidelines:\ To extend commit end dates or make other comprehensive edits,
+// use the 'edit commit' endpoint instead.
 func (r *V1CustomerCommitService) UpdateEndDate(ctx context.Context, body V1CustomerCommitUpdateEndDateParams, opts ...option.RequestOption) (res *V1CustomerCommitUpdateEndDateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/customerCommits/updateEndDate"
@@ -77,29 +237,6 @@ func (r *V1CustomerCommitNewResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerCommitNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponse struct {
-	Data     []shared.Commit                  `json:"data,required"`
-	NextPage string                           `json:"next_page,required,nullable"`
-	JSON     v1CustomerCommitListResponseJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseJSON contains the JSON metadata for the struct
-// [V1CustomerCommitListResponse]
-type v1CustomerCommitListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -146,8 +283,9 @@ type V1CustomerCommitNewParams struct {
 	// Which tags the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
-	ApplicableProductTags param.Field[[]string]          `json:"applicable_product_tags"`
-	CustomFields          param.Field[map[string]string] `json:"custom_fields"`
+	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields param.Field[map[string]string] `json:"custom_fields"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Field[string] `json:"description"`
 	// The contract that this commit will be billed on. This is required for "POSTPAID"
@@ -170,7 +308,7 @@ type V1CustomerCommitNewParams struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1CustomerCommitNewParamsSpecifier] `json:"specifiers"`
+	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
@@ -338,20 +476,6 @@ func (r V1CustomerCommitNewParamsRateType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type V1CustomerCommitNewParamsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1CustomerCommitNewParamsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type V1CustomerCommitListParams struct {

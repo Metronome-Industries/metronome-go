@@ -52,7 +52,37 @@ func NewV1CustomerService(opts ...option.RequestOption) (r *V1CustomerService) {
 	return
 }
 
-// Create a new customer
+// Create a new customer in Metronome and optionally the billing configuration
+// (recommended) which dictates where invoices for the customer will be sent or
+// where payment will be collected.
+//
+// Use this endpoint to:\
+// Execute your customer provisioning workflows for either PLG motions, where customers
+// originate in your platform, or SLG motions, where customers originate in your sales
+// system.
+//
+//   - Key response fields: This end-point returns the customer_id created by the
+//     request. This id can be used to fetch relevant billing configurations and
+//     create contracts.
+//
+// Example workflow:
+//
+//   - Generally, Metronome recommends first creating the customer in the downstream
+//     payment / ERP system when payment method is collected and then creating the
+//     customer in Metronome using the response (i.e. customer_id) from the
+//     downstream system. If you do not create a billing configuration on customer
+//     creation, you can add it later.
+//   - Once a customer is created, you can then create a contract for the customer.
+//     In the contract creation process, you will need to add the customer billing
+//     configuration to the contract to ensure Metronome invoices the customer
+//     correctly. This is because a customer can have multiple configurations.
+//   - As part of the customer creation process, set the ingest alias for the
+//     customer which will ensure usage is accurately mapped to the customer. Ingest
+//     aliases can be added or changed after the creation process as well.
+//
+// Usage guidelines:\
+// For details on different billing configurations for different systems, review the
+// /setCustomerBillingConfiguration end-point.
 func (r *V1CustomerService) New(ctx context.Context, body V1CustomerNewParams, opts ...option.RequestOption) (res *V1CustomerNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/customers"
@@ -60,7 +90,13 @@ func (r *V1CustomerService) New(ctx context.Context, body V1CustomerNewParams, o
 	return
 }
 
-// Get a customer by Metronome ID.
+// Get detailed information for a specific customer by their Metronome ID. Returns
+// customer profile data including name, creation date, ingest aliases,
+// configuration settings, and custom fields. Use this endpoint to fetch complete
+// customer details for billing operations or account management.
+//
+// Note: If searching for a customer billing configuration, use the
+// /getCustomerBillingConfigurations end-point.
 func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, opts ...option.RequestOption) (res *V1CustomerGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.CustomerID.Value == "" {
@@ -72,7 +108,11 @@ func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, 
 	return
 }
 
-// List all customers.
+// Gets a paginated list of all customers in your Metronome account. Use this
+// endpoint to browse your customer base, implement customer search functionality,
+// or sync customer data with external systems. Returns customer details including
+// IDs, names, and configuration settings. Supports filtering and pagination
+// parameters for efficient data retrieval.
 func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerDetail], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -90,13 +130,29 @@ func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams
 	return res, nil
 }
 
-// List all customers.
+// Gets a paginated list of all customers in your Metronome account. Use this
+// endpoint to browse your customer base, implement customer search functionality,
+// or sync customer data with external systems. Returns customer details including
+// IDs, names, and configuration settings. Supports filtering and pagination
+// parameters for efficient data retrieval.
 func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerDetail] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// Archive a customer Note: any alerts associated with the customer will not be
-// triggered.
+// Use this endpoint to archive a customer while preserving auditability. Archiving
+// a customer will automatically archive all contracts as of the current date and
+// void all corresponding invoices. Use this endpoint if a customer is onboarded by
+// mistake.
+//
+// Usage guidelines:
+//
+//   - Once a customer is archived, it cannot be unarchived.
+//   - Archived customers can still be viewed through the API or the UI for audit
+//     purposes.
+//   - Ingest aliases remain idempotent for archived customers. In order to reuse an
+//     ingest alias, first remove the ingest alias from the customer prior to
+//     archiving.
+//   - Any alerts associated with the customer will no longer be triggered.
 func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveParams, opts ...option.RequestOption) (res *V1CustomerArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/customers/archive"
@@ -104,7 +160,10 @@ func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveP
 	return
 }
 
-// Get all billable metrics for a given customer.
+// Get all billable metrics available for a specific customer. Supports pagination
+// and filtering by current plan status or archived metrics. Use this endpoint to
+// see which metrics are being tracked for billing calculations for a given
+// customer.
 func (r *V1CustomerService) ListBillableMetrics(ctx context.Context, params V1CustomerListBillableMetricsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerListBillableMetricsResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -126,7 +185,10 @@ func (r *V1CustomerService) ListBillableMetrics(ctx context.Context, params V1Cu
 	return res, nil
 }
 
-// Get all billable metrics for a given customer.
+// Get all billable metrics available for a specific customer. Supports pagination
+// and filtering by current plan status or archived metrics. Use this endpoint to
+// see which metrics are being tracked for billing calculations for a given
+// customer.
 func (r *V1CustomerService) ListBillableMetricsAutoPaging(ctx context.Context, params V1CustomerListBillableMetricsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerListBillableMetricsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListBillableMetrics(ctx, params, opts...))
 }
@@ -177,9 +239,72 @@ func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1Customer
 	return
 }
 
-// Sets the ingest aliases for a customer. Ingest aliases can be used in the
-// `customer_id` field when sending usage events to Metronome. This call is
-// idempotent. It fully replaces the set of ingest aliases for the given customer.
+// Returns all billing configurations previously set for the customer. Use during
+// the contract provisioning process to fetch the
+// `billing_provider_configuration_id` needed to set the contract billing
+// configuration.
+func (r *V1CustomerService) GetCustomerBillingConfigurations(ctx context.Context, body V1CustomerGetCustomerBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerGetCustomerBillingConfigurationsResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "v1/getCustomerBillingProviderConfigurations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Create a billing configuration for a customer. Once created, these
+// configurations are available to associate to a contract and dictates which
+// downstream system to collect payment in or send the invoice to. You can create
+// multiple configurations per customer. The configuration formats are distinct for
+// each downstream provider.
+//
+// Use this endpoint to:
+//
+//   - Add the initial configuration to an existing customer. Once created, the
+//     billing configuration can then be associated to the customer's contract.
+//   - Add a new configuration to an existing customer. This might be used as part of
+//     an upgrade or downgrade workflow where the customer was previously billed
+//     through system A (e.g. Stripe) but will now be billed through system B (e.g.
+//     AWS). Once created, the new configuration can then be associated to the
+//     customer's contract.
+//
+// Delivery Method Options:
+//
+//   - direct_to_billing_provider: Use when Metronome should send invoices directly
+//     to the billing provider's API (e.g., Stripe, NetSuite). This is the most
+//     common method for automated billing workflows.
+//   - tackle: Use specifically for AWS Marketplace transactions that require
+//     Tackle's co-selling platform for partner attribution and commission tracking.
+//   - aws_sqs: Use when you want invoice data delivered to an AWS SQS queue for
+//     custom processing before sending to your billing system.
+//   - aws_sns: Use when you want invoice notifications published to an AWS SNS topic
+//     for event-driven billing workflows.
+//
+// Key response fields: The id for the customer billing configuration. This id can
+// be used to associate the billing configuration to a contract.
+//
+// Usage guidelines:\
+// Must use the delivery_method_id if you have multiple Stripe accounts connected to
+// Metronome.
+func (r *V1CustomerService) SetCustomerBillingConfigurations(ctx context.Context, body V1CustomerSetCustomerBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	path := "v1/setCustomerBillingProviderConfigurations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return
+}
+
+// Sets the ingest aliases for a customer. Use this endpoint to associate a
+// Metronome customer with an internal ID for easier tracking between systems.
+// Ingest aliases can be used in the customer_id field when sending usage events to
+// Metronome.
+//
+// Usage guidelines:
+//
+//   - This call is idempotent and fully replaces the set of ingest aliases for the
+//     given customer.
+//   - Switching an ingest alias from one customer to another will associate all
+//     corresponding usage to the new customer.
+//   - Use multiple ingest aliases to model child organizations within a single
+//     Metronome customer.
 func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1CustomerSetIngestAliasesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -192,7 +317,11 @@ func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1Custo
 	return
 }
 
-// Updates the specified customer's name.
+// Updates the display name for a customer record. Use this to correct customer
+// names, update business names after rebranding, or maintain accurate customer
+// information for invoicing and reporting. Returns the updated customer object
+// with the new name applied immediately across all billing documents and
+// interfaces.
 func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNameParams, opts ...option.RequestOption) (res *V1CustomerSetNameResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.CustomerID.Value == "" {
@@ -204,7 +333,10 @@ func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNam
 	return
 }
 
-// Updates the specified customer's config.
+// Update configuration settings for a specific customer, such as external system
+// integrations (e.g., Salesforce account ID) and other customer-specific billing
+// parameters. Use this endpoint to modify customer configurations without
+// affecting core customer data like name or ingest aliases.
 func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerUpdateConfigParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -225,10 +357,11 @@ type Customer struct {
 	ExternalID string `json:"external_id,required"`
 	// aliases for this customer that can be used instead of the Metronome customer ID
 	// in usage events
-	IngestAliases []string          `json:"ingest_aliases,required"`
-	Name          string            `json:"name,required"`
-	CustomFields  map[string]string `json:"custom_fields"`
-	JSON          customerJSON      `json:"-"`
+	IngestAliases []string `json:"ingest_aliases,required"`
+	Name          string   `json:"name,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	JSON         customerJSON      `json:"-"`
 }
 
 // customerJSON contains the JSON metadata for the struct [Customer]
@@ -254,7 +387,8 @@ type CustomerDetail struct {
 	// the Metronome ID of the customer
 	ID string `json:"id,required" format:"uuid"`
 	// RFC 3339 timestamp indicating when the customer was created.
-	CreatedAt      time.Time                    `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields   map[string]string            `json:"custom_fields,required"`
 	CustomerConfig CustomerDetailCustomerConfig `json:"customer_config,required"`
 	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
@@ -434,7 +568,8 @@ type V1CustomerListBillableMetricsResponse struct {
 	AggregationType V1CustomerListBillableMetricsResponseAggregationType `json:"aggregation_type"`
 	// RFC 3339 timestamp indicating when the billable metric was archived. If not
 	// provided, the billable metric is not archived.
-	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
@@ -601,6 +736,109 @@ func (r v1CustomerPreviewEventsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type V1CustomerGetCustomerBillingConfigurationsResponse struct {
+	Data []V1CustomerGetCustomerBillingConfigurationsResponseData `json:"data,required"`
+	JSON v1CustomerGetCustomerBillingConfigurationsResponseJSON   `json:"-"`
+}
+
+// v1CustomerGetCustomerBillingConfigurationsResponseJSON contains the JSON
+// metadata for the struct [V1CustomerGetCustomerBillingConfigurationsResponse]
+type v1CustomerGetCustomerBillingConfigurationsResponseJSON struct {
+	Data        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerGetCustomerBillingConfigurationsResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerGetCustomerBillingConfigurationsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerGetCustomerBillingConfigurationsResponseData struct {
+	// ID of this configuration; can be provided as the
+	// billing_provider_configuration_id when creating a contract.
+	ID string `json:"id,required" format:"uuid"`
+	// The billing provider set for this configuration.
+	BillingProvider V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider `json:"billing_provider,required"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider.
+	Configuration map[string]interface{} `json:"configuration,required"`
+	CustomerID    string                 `json:"customer_id,required" format:"uuid"`
+	// The method to use for delivering invoices to this customer.
+	DeliveryMethod V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod `json:"delivery_method,required"`
+	// Configuration for the delivery method. The structure of this object is specific
+	// to the delivery method.
+	DeliveryMethodConfiguration map[string]interface{} `json:"delivery_method_configuration,required"`
+	// ID of the delivery method to use for this customer.
+	DeliveryMethodID string                                                     `json:"delivery_method_id,required" format:"uuid"`
+	JSON             v1CustomerGetCustomerBillingConfigurationsResponseDataJSON `json:"-"`
+}
+
+// v1CustomerGetCustomerBillingConfigurationsResponseDataJSON contains the JSON
+// metadata for the struct [V1CustomerGetCustomerBillingConfigurationsResponseData]
+type v1CustomerGetCustomerBillingConfigurationsResponseDataJSON struct {
+	ID                          apijson.Field
+	BillingProvider             apijson.Field
+	Configuration               apijson.Field
+	CustomerID                  apijson.Field
+	DeliveryMethod              apijson.Field
+	DeliveryMethodConfiguration apijson.Field
+	DeliveryMethodID            apijson.Field
+	raw                         string
+	ExtraFields                 map[string]apijson.Field
+}
+
+func (r *V1CustomerGetCustomerBillingConfigurationsResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerGetCustomerBillingConfigurationsResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+// The billing provider set for this configuration.
+type V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider string
+
+const (
+	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderAwsMarketplace   V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "aws_marketplace"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderStripe           V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "stripe"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderNetsuite         V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "netsuite"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderCustom           V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "custom"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderAzureMarketplace V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "azure_marketplace"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderQuickbooksOnline V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "quickbooks_online"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderWorkday          V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "workday"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderGcpMarketplace   V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "gcp_marketplace"
+)
+
+func (r V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider) IsKnown() bool {
+	switch r {
+	case V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderAwsMarketplace, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderStripe, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderNetsuite, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderCustom, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderAzureMarketplace, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderQuickbooksOnline, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderWorkday, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderGcpMarketplace:
+		return true
+	}
+	return false
+}
+
+// The method to use for delivering invoices to this customer.
+type V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod string
+
+const (
+	V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodDirectToBillingProvider V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod = "direct_to_billing_provider"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodAwsSqs                  V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod = "aws_sqs"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodTackle                  V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod = "tackle"
+	V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodAwsSns                  V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod = "aws_sns"
+)
+
+func (r V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod) IsKnown() bool {
+	switch r {
+	case V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodDirectToBillingProvider, V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodAwsSqs, V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodTackle, V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodAwsSns:
+		return true
+	}
+	return false
+}
+
 type V1CustomerSetNameResponse struct {
 	Data Customer                      `json:"data,required"`
 	JSON v1CustomerSetNameResponseJSON `json:"-"`
@@ -624,8 +862,9 @@ func (r v1CustomerSetNameResponseJSON) RawJSON() string {
 
 type V1CustomerNewParams struct {
 	// This will be truncated to 160 characters if the provided name is longer.
-	Name                                  param.Field[string]                                                    `json:"name,required"`
-	BillingConfig                         param.Field[V1CustomerNewParamsBillingConfig]                          `json:"billing_config"`
+	Name          param.Field[string]                           `json:"name,required"`
+	BillingConfig param.Field[V1CustomerNewParamsBillingConfig] `json:"billing_config"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields                          param.Field[map[string]string]                                         `json:"custom_fields"`
 	CustomerBillingProviderConfigurations param.Field[[]V1CustomerNewParamsCustomerBillingProviderConfiguration] `json:"customer_billing_provider_configurations"`
 	// (deprecated, use ingest_aliases instead) an alias that can be used to refer to
@@ -912,6 +1151,87 @@ const (
 func (r V1CustomerPreviewEventsParamsMode) IsKnown() bool {
 	switch r {
 	case V1CustomerPreviewEventsParamsModeReplace, V1CustomerPreviewEventsParamsModeMerge:
+		return true
+	}
+	return false
+}
+
+type V1CustomerGetCustomerBillingConfigurationsParams struct {
+	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+}
+
+func (r V1CustomerGetCustomerBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1CustomerSetCustomerBillingConfigurationsParams struct {
+	Data param.Field[[]V1CustomerSetCustomerBillingConfigurationsParamsData] `json:"data,required"`
+}
+
+func (r V1CustomerSetCustomerBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type V1CustomerSetCustomerBillingConfigurationsParamsData struct {
+	// The billing provider set for this configuration.
+	BillingProvider param.Field[V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider] `json:"billing_provider,required"`
+	CustomerID      param.Field[string]                                                              `json:"customer_id,required" format:"uuid"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider and delivery method combination. Defaults to an empty
+	// object, however, for most billing provider + delivery method combinations, it
+	// will not be a valid configuration. For AWS marketplace configurations, the
+	// aws_is_subscription_product flag can be used to indicate a product with
+	// usage-based pricing. More information can be found
+	// [here](https://docs.metronome.com/invoice-customers/solutions/marketplaces/invoice-aws/#provision-aws-marketplace-customers-in-metronome).
+	Configuration param.Field[map[string]interface{}] `json:"configuration"`
+	// The method to use for delivering invoices to this customer. If not provided, the
+	// `delivery_method_id` must be provided.
+	DeliveryMethod param.Field[V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod] `json:"delivery_method"`
+	// ID of the delivery method to use for this customer. If not provided, the
+	// `delivery_method` must be provided.
+	DeliveryMethodID param.Field[string] `json:"delivery_method_id" format:"uuid"`
+}
+
+func (r V1CustomerSetCustomerBillingConfigurationsParamsData) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The billing provider set for this configuration.
+type V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider string
+
+const (
+	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAwsMarketplace   V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "aws_marketplace"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderStripe           V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "stripe"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderNetsuite         V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "netsuite"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderCustom           V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "custom"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAzureMarketplace V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "azure_marketplace"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderQuickbooksOnline V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "quickbooks_online"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderWorkday          V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "workday"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderGcpMarketplace   V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "gcp_marketplace"
+)
+
+func (r V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider) IsKnown() bool {
+	switch r {
+	case V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAwsMarketplace, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderStripe, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderNetsuite, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderCustom, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAzureMarketplace, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderQuickbooksOnline, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderWorkday, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderGcpMarketplace:
+		return true
+	}
+	return false
+}
+
+// The method to use for delivering invoices to this customer. If not provided, the
+// `delivery_method_id` must be provided.
+type V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod string
+
+const (
+	V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod = "direct_to_billing_provider"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodAwsSqs                  V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod = "aws_sqs"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodTackle                  V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod = "tackle"
+	V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodAwsSns                  V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod = "aws_sns"
+)
+
+func (r V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod) IsKnown() bool {
+	switch r {
+	case V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider, V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodAwsSqs, V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodTackle, V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodAwsSns:
 		return true
 	}
 	return false

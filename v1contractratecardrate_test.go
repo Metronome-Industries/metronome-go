@@ -73,8 +73,8 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		RateType:         metronome.F(metronome.V1ContractRateCardRateAddParamsRateTypeFlat),
 		StartingAt:       metronome.F(time.Now()),
 		BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddParamsBillingFrequencyMonthly),
-		CommitRate: metronome.F(metronome.V1ContractRateCardRateAddParamsCommitRate{
-			RateType: metronome.F(metronome.V1ContractRateCardRateAddParamsCommitRateRateTypeFlat),
+		CommitRate: metronome.F(shared.CommitRateParam{
+			RateType: metronome.F(shared.CommitRateRateTypeFlat),
 			Price:    metronome.F(0.000000),
 			Tiers: metronome.F([]shared.TierParam{{
 				Price: metronome.F(0.000000),
@@ -127,8 +127,8 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 			RateType:         metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesRateTypeFlat),
 			StartingAt:       metronome.F(time.Now()),
 			BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly),
-			CommitRate: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRate{
-				RateType: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
+			CommitRate: metronome.F(shared.CommitRateParam{
+				RateType: metronome.F(shared.CommitRateRateTypeFlat),
 				Price:    metronome.F(0.000000),
 				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),
@@ -158,8 +158,8 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 			RateType:         metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesRateTypeFlat),
 			StartingAt:       metronome.F(time.Now()),
 			BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly),
-			CommitRate: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRate{
-				RateType: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
+			CommitRate: metronome.F(shared.CommitRateParam{
+				RateType: metronome.F(shared.CommitRateRateTypeFlat),
 				Price:    metronome.F(0.000000),
 				Tiers: metronome.F([]shared.TierParam{{
 					Price: metronome.F(0.000000),

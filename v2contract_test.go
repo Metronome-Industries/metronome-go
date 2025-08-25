@@ -105,9 +105,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				"foo": "string",
 			}),
 			Description: metronome.F("description"),
-			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsAddCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			InvoiceSchedule: metronome.F(metronome.V2ContractEditParamsAddCommitsInvoiceSchedule{
@@ -149,7 +149,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Priority:         metronome.F(0.000000),
 			RateType:         metronome.F(metronome.V2ContractEditParamsAddCommitsRateTypeCommitRate),
 			RolloverFraction: metronome.F(0.000000),
-			Specifiers: metronome.F([]metronome.V2ContractEditParamsAddCommitsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -177,16 +177,16 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				"foo": "string",
 			}),
 			Description: metronome.F("description"),
-			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsAddCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 			Priority:             metronome.F(0.000000),
 			RateType:             metronome.F(metronome.V2ContractEditParamsAddCreditsRateTypeCommitRate),
-			Specifiers: metronome.F([]metronome.V2ContractEditParamsAddCreditsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -268,14 +268,16 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}}),
 			Type: metronome.F(metronome.V2ContractEditParamsAddOverridesTypeMultiplier),
 		}}),
-		AddPrepaidBalanceThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfiguration{
-			Commit: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommit{
-				ProductID:             metronome.F("product_id"),
+		AddPrepaidBalanceThresholdConfiguration: metronome.F(shared.PrepaidBalanceThresholdConfigurationV2Param{
+			Commit: metronome.F(shared.PrepaidBalanceThresholdConfigurationV2CommitParam{
+				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{
+					Description: metronome.F("description"),
+					Name:        metronome.F("name"),
+					ProductID:   metronome.F("product_id"),
+				},
 				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 				ApplicableProductTags: metronome.F([]string{"string"}),
-				Description:           metronome.F("description"),
-				Name:                  metronome.F("name"),
-				Specifiers: metronome.F([]metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationCommitSpecifier{{
+				Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 					PresentationGroupValues: metronome.F(map[string]string{
 						"foo": "string",
 					}),
@@ -287,19 +289,19 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				}}),
 			}),
 			IsEnabled: metronome.F(true),
-			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfig{
-				PaymentGateType: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
-				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+			PaymentGateConfig: metronome.F(shared.PaymentGateConfigV2Param{
+				PaymentGateType: metronome.F(shared.PaymentGateConfigV2PaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(shared.PaymentGateConfigV2PrecalculatedTaxConfigParam{
 					TaxAmount: metronome.F(0.000000),
 					TaxName:   metronome.F("tax_name"),
 				}),
-				StripeConfig: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
-					PaymentType: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				StripeConfig: metronome.F(shared.PaymentGateConfigV2StripeConfigParam{
+					PaymentType: metronome.F(shared.PaymentGateConfigV2StripeConfigPaymentTypeInvoice),
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
 				}),
-				TaxType: metronome.F(metronome.V2ContractEditParamsAddPrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
+				TaxType: metronome.F(shared.PaymentGateConfigV2TaxTypeNone),
 			}),
 			RechargeToAmount:   metronome.F(0.000000),
 			ThresholdAmount:    metronome.F(0.000000),
@@ -333,9 +335,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
-			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			InvoiceAmount: metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsInvoiceAmount{
@@ -349,7 +351,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			RateType:             metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsRateTypeCommitRate),
 			RecurrenceFrequency:  metronome.F(metronome.V2ContractEditParamsAddRecurringCommitsRecurrenceFrequencyMonthly),
 			RolloverFraction:     metronome.F(0.000000),
-			Specifiers: metronome.F([]metronome.V2ContractEditParamsAddRecurringCommitsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -385,9 +387,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ApplicableProductTags: metronome.F([]string{"string"}),
 			Description:           metronome.F("description"),
 			EndingBefore:          metronome.F(time.Now()),
-			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			Name:                 metronome.F("x"),
@@ -396,7 +398,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			RateType:             metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsRateTypeCommitRate),
 			RecurrenceFrequency:  metronome.F(metronome.V2ContractEditParamsAddRecurringCreditsRecurrenceFrequencyMonthly),
 			RolloverFraction:     metronome.F(0.000000),
-			Specifiers: metronome.F([]metronome.V2ContractEditParamsAddRecurringCreditsSpecifier{{
+			Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: metronome.F(map[string]string{
 					"foo": "string",
 				}),
@@ -461,32 +463,31 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Name:                 metronome.F("x"),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
-		AddSpendThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfiguration{
-			Commit: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationCommit{
-				ProductID:   metronome.F("product_id"),
+		AddSpendThresholdConfiguration: metronome.F(shared.SpendThresholdConfigurationV2Param{
+			Commit: metronome.F(shared.UpdateBaseThresholdCommitParam{
 				Description: metronome.F("description"),
 				Name:        metronome.F("name"),
+				ProductID:   metronome.F("product_id"),
 			}),
 			IsEnabled: metronome.F(true),
-			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfig{
-				PaymentGateType: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
-				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+			PaymentGateConfig: metronome.F(shared.PaymentGateConfigV2Param{
+				PaymentGateType: metronome.F(shared.PaymentGateConfigV2PaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(shared.PaymentGateConfigV2PrecalculatedTaxConfigParam{
 					TaxAmount: metronome.F(0.000000),
 					TaxName:   metronome.F("tax_name"),
 				}),
-				StripeConfig: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfig{
-					PaymentType: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				StripeConfig: metronome.F(shared.PaymentGateConfigV2StripeConfigParam{
+					PaymentType: metronome.F(shared.PaymentGateConfigV2StripeConfigPaymentTypeInvoice),
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
 				}),
-				TaxType: metronome.F(metronome.V2ContractEditParamsAddSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
+				TaxType: metronome.F(shared.PaymentGateConfigV2TaxTypeNone),
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
 		AddSubscriptions: metronome.F([]metronome.V2ContractEditParamsAddSubscription{{
 			CollectionSchedule: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsCollectionScheduleAdvance),
-			InitialQuantity:    metronome.F(0.000000),
 			Proration: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsProration{
 				InvoiceBehavior: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsProrationInvoiceBehaviorBillImmediately),
 				IsProrated:      metronome.F(true),
@@ -498,11 +499,13 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			CustomFields: metronome.F(map[string]string{
 				"foo": "string",
 			}),
-			Description:  metronome.F("description"),
-			EndingBefore: metronome.F(time.Now()),
-			Name:         metronome.F("name"),
-			StartingAt:   metronome.F(time.Now()),
-			TemporaryID:  metronome.F("temporary_id"),
+			Description:            metronome.F("description"),
+			EndingBefore:           metronome.F(time.Now()),
+			InitialQuantity:        metronome.F(0.000000),
+			Name:                   metronome.F("name"),
+			QuantityManagementMode: metronome.F(metronome.V2ContractEditParamsAddSubscriptionsQuantityManagementModeSeatBased),
+			StartingAt:             metronome.F(time.Now()),
+			TemporaryID:            metronome.F("temporary_id"),
 		}}),
 		AllowContractEndingBeforeFinalizedInvoice: metronome.F(true),
 		ArchiveCommits: metronome.F([]metronome.V2ContractEditParamsArchiveCommit{{
@@ -517,6 +520,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		RemoveOverrides: metronome.F([]metronome.V2ContractEditParamsRemoveOverride{{
 			ID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}}),
+		UniquenessKey: metronome.F("x"),
 		UpdateCommits: metronome.F([]metronome.V2ContractEditParamsUpdateCommit{{
 			CommitID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			AccessSchedule: metronome.F(metronome.V2ContractEditParamsUpdateCommitsAccessSchedule{
@@ -537,9 +541,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 			ApplicableProductTags: metronome.F([]string{"string"}),
-			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsUpdateCommitsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsUpdateCommitsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			InvoiceSchedule: metronome.F(metronome.V2ContractEditParamsUpdateCommitsInvoiceSchedule{
@@ -587,9 +591,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 			ApplicableProductTags: metronome.F([]string{"string"}),
-			HierarchyConfiguration: metronome.F(metronome.V2ContractEditParamsUpdateCreditsHierarchyConfiguration{
-				ChildAccess: metronome.F[metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessUnion](metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll{
-					Type: metronome.F(metronome.V2ContractEditParamsUpdateCreditsHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
+			HierarchyConfiguration: metronome.F(shared.CommitHierarchyConfigurationParam{
+				ChildAccess: metronome.F[shared.CommitHierarchyConfigurationChildAccessUnionParam](shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: metronome.F(shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllTypeAll),
 				}),
 			}),
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
@@ -598,12 +602,14 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}}),
 		UpdatePrepaidBalanceThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration{
 			Commit: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit{
+				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{
+					Description: metronome.F("description"),
+					Name:        metronome.F("name"),
+					ProductID:   metronome.F("product_id"),
+				},
 				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 				ApplicableProductTags: metronome.F([]string{"string"}),
-				Description:           metronome.F("description"),
-				Name:                  metronome.F("name"),
-				ProductID:             metronome.F("product_id"),
-				Specifiers: metronome.F([]metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitSpecifier{{
+				Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 					PresentationGroupValues: metronome.F(map[string]string{
 						"foo": "string",
 					}),
@@ -616,19 +622,19 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			}),
 			CustomCreditTypeID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			IsEnabled:          metronome.F(true),
-			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfig{
-				PaymentGateType: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
-				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+			PaymentGateConfig: metronome.F(shared.PaymentGateConfigV2Param{
+				PaymentGateType: metronome.F(shared.PaymentGateConfigV2PaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(shared.PaymentGateConfigV2PrecalculatedTaxConfigParam{
 					TaxAmount: metronome.F(0.000000),
 					TaxName:   metronome.F("tax_name"),
 				}),
-				StripeConfig: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfig{
-					PaymentType: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				StripeConfig: metronome.F(shared.PaymentGateConfigV2StripeConfigParam{
+					PaymentType: metronome.F(shared.PaymentGateConfigV2StripeConfigPaymentTypeInvoice),
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
 				}),
-				TaxType: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationPaymentGateConfigTaxTypeNone),
+				TaxType: metronome.F(shared.PaymentGateConfigV2TaxTypeNone),
 			}),
 			RechargeToAmount: metronome.F(0.000000),
 			ThresholdAmount:  metronome.F(0.000000),
@@ -676,25 +682,25 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
 		UpdateSpendThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfiguration{
-			Commit: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationCommit{
+			Commit: metronome.F(shared.UpdateBaseThresholdCommitParam{
 				Description: metronome.F("description"),
 				Name:        metronome.F("name"),
 				ProductID:   metronome.F("product_id"),
 			}),
 			IsEnabled: metronome.F(true),
-			PaymentGateConfig: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfig{
-				PaymentGateType: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPaymentGateTypeNone),
-				PrecalculatedTaxConfig: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigPrecalculatedTaxConfig{
+			PaymentGateConfig: metronome.F(shared.PaymentGateConfigV2Param{
+				PaymentGateType: metronome.F(shared.PaymentGateConfigV2PaymentGateTypeNone),
+				PrecalculatedTaxConfig: metronome.F(shared.PaymentGateConfigV2PrecalculatedTaxConfigParam{
 					TaxAmount: metronome.F(0.000000),
 					TaxName:   metronome.F("tax_name"),
 				}),
-				StripeConfig: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfig{
-					PaymentType: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigStripeConfigPaymentTypeInvoice),
+				StripeConfig: metronome.F(shared.PaymentGateConfigV2StripeConfigParam{
+					PaymentType: metronome.F(shared.PaymentGateConfigV2StripeConfigPaymentTypeInvoice),
 					InvoiceMetadata: metronome.F(map[string]string{
 						"foo": "string",
 					}),
 				}),
-				TaxType: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationPaymentGateConfigTaxTypeNone),
+				TaxType: metronome.F(shared.PaymentGateConfigV2TaxTypeNone),
 			}),
 			ThresholdAmount: metronome.F(0.000000),
 		}),
@@ -771,7 +777,7 @@ func TestV2ContractEditCommitWithOptionalParams(t *testing.T) {
 		}),
 		Priority:  metronome.F(0.000000),
 		ProductID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		Specifiers: metronome.F([]metronome.V2ContractEditCommitParamsSpecifier{{
+		Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 			PresentationGroupValues: metronome.F(map[string]string{
 				"foo": "string",
 			}),
@@ -826,7 +832,7 @@ func TestV2ContractEditCreditWithOptionalParams(t *testing.T) {
 		ApplicableProductTags: metronome.F([]string{"string"}),
 		Priority:              metronome.F(0.000000),
 		ProductID:             metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		Specifiers: metronome.F([]metronome.V2ContractEditCreditParamsSpecifier{{
+		Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 			PresentationGroupValues: metronome.F(map[string]string{
 				"foo": "string",
 			}),

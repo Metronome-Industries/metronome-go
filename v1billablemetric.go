@@ -38,7 +38,35 @@ func NewV1BillableMetricService(opts ...option.RequestOption) (r *V1BillableMetr
 	return
 }
 
-// Creates a new Billable Metric.
+// Create billable metrics programmatically with this endpoint—an essential step in
+// configuring your pricing and packaging in Metronome.
+//
+// A billable metric is a customizable query that filters and aggregates events
+// from your event stream. These metrics are continuously tracked as usage data
+// enters Metronome through the ingestion pipeline. The ingestion process
+// transforms raw usage data into actionable pricing metrics, enabling accurate
+// metering and billing for your products.
+//
+// Use this endpoint to:
+//
+//   - Create individual or multiple billable metrics as part of a setup workflow.
+//   - Automate the entire pricing configuration process, from metric creation to
+//     customer contract setup.
+//   - Define metrics using either standard filtering/aggregation or a custom SQL
+//     query.
+//
+// Key response fields:
+//
+//   - The ID of the billable metric that was created
+//   - The created billable metric will be available to be used in Products, usage
+//     endpoints, and alerts.
+//
+// Usage guidelines:
+//
+//   - Metrics defined using standard filtering and aggregation are Streaming
+//     billable metrics, which have been optimized for ultra low latency and high
+//     throughput workflows.
+//   - Use SQL billable metrics if you require more flexible aggregation options.
 func (r *V1BillableMetricService) New(ctx context.Context, body V1BillableMetricNewParams, opts ...option.RequestOption) (res *V1BillableMetricNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/billable-metrics/create"
@@ -46,7 +74,13 @@ func (r *V1BillableMetricService) New(ctx context.Context, body V1BillableMetric
 	return
 }
 
-// Get a billable metric.
+// Retrieves the complete configuration for a specific billable metric by its ID.
+// Use this to review billable metric setup before associating it with products.
+// Returns the metric's name, event type, properties, aggregation_type,
+// aggregation_key, group_keys, custom fields, and SQL query (if it's a SQL
+// billable metric). Important: Archived billable metrics will include an
+// archived_at timestamp; they no longer process new usage events but remain
+// accessible for historical reference.
 func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetricGetParams, opts ...option.RequestOption) (res *V1BillableMetricGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.BillableMetricID.Value == "" {
@@ -58,7 +92,11 @@ func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetri
 	return
 }
 
-// List all billable metrics.
+// Retrieves all billable metrics with their complete configurations. Use this for
+// programmatic discovery and management of billable metrics, such as associating
+// metrics to products and auditing for orphaned or archived metrics. Important:
+// Archived metrics are excluded by default; use include_archived=true parameter to
+// include them.
 func (r *V1BillableMetricService) List(ctx context.Context, query V1BillableMetricListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1BillableMetricListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -76,12 +114,23 @@ func (r *V1BillableMetricService) List(ctx context.Context, query V1BillableMetr
 	return res, nil
 }
 
-// List all billable metrics.
+// Retrieves all billable metrics with their complete configurations. Use this for
+// programmatic discovery and management of billable metrics, such as associating
+// metrics to products and auditing for orphaned or archived metrics. Important:
+// Archived metrics are excluded by default; use include_archived=true parameter to
+// include them.
 func (r *V1BillableMetricService) ListAutoPaging(ctx context.Context, query V1BillableMetricListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1BillableMetricListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// Archive an existing billable metric.
+// Use this endpoint to retire billable metrics that are no longer used. After a
+// billable metric is archived, that billable metric can no longer be used in any
+// new Products to define how that product should be metered. If you archive a
+// billable metric that is already associated with a Product, the Product will
+// continue to function as usual, metering based on the definition of the archived
+// billable metric. Archived billable metrics will be returned on the
+// getBillableMetric and listBillableMetrics endpoints with a populated archived_at
+// field.
 func (r *V1BillableMetricService) Archive(ctx context.Context, body V1BillableMetricArchiveParams, opts ...option.RequestOption) (res *V1BillableMetricArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/billable-metrics/archive"
@@ -144,7 +193,8 @@ type V1BillableMetricGetResponseData struct {
 	AggregationType V1BillableMetricGetResponseDataAggregationType `json:"aggregation_type"`
 	// RFC 3339 timestamp indicating when the billable metric was archived. If not
 	// provided, the billable metric is not archived.
-	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
@@ -217,7 +267,8 @@ type V1BillableMetricListResponse struct {
 	AggregationType V1BillableMetricListResponseAggregationType `json:"aggregation_type"`
 	// RFC 3339 timestamp indicating when the billable metric was archived. If not
 	// provided, the billable metric is not archived.
-	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`

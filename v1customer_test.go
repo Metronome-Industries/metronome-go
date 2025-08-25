@@ -232,6 +232,93 @@ func TestV1CustomerPreviewEventsWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestV1CustomerGetCustomerBillingConfigurations(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.V1.Customers.GetCustomerBillingConfigurations(context.TODO(), metronome.V1CustomerGetCustomerBillingConfigurationsParams{
+		CustomerID: metronome.F("6a37bb88-8538-48c5-b37b-a41c836328bd"),
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestV1CustomerSetCustomerBillingConfigurations(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	err := client.V1.Customers.SetCustomerBillingConfigurations(context.TODO(), metronome.V1CustomerSetCustomerBillingConfigurationsParams{
+		Data: metronome.F([]metronome.V1CustomerSetCustomerBillingConfigurationsParamsData{{
+			BillingProvider: metronome.F(metronome.V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderStripe),
+			CustomerID:      metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
+			Configuration: metronome.F(map[string]interface{}{
+				"stripe_customer_id":             "bar",
+				"stripe_collection_method":       "bar",
+				"leave_stripe_invoices_in_draft": "bar",
+			}),
+			DeliveryMethod:   metronome.F(metronome.V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider),
+			DeliveryMethodID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		}, {
+			BillingProvider: metronome.F(metronome.V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAwsMarketplace),
+			CustomerID:      metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
+			Configuration: metronome.F(map[string]interface{}{
+				"aws_customer_id":  "bar",
+				"aws_product_code": "bar",
+				"aws_region":       "bar",
+			}),
+			DeliveryMethod:   metronome.F(metronome.V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider),
+			DeliveryMethodID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		}, {
+			BillingProvider: metronome.F(metronome.V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAzureMarketplace),
+			CustomerID:      metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
+			Configuration: metronome.F(map[string]interface{}{
+				"azure_subscription_id": "bar",
+			}),
+			DeliveryMethod:   metronome.F(metronome.V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider),
+			DeliveryMethodID: metronome.F("5b9e3072-415b-4842-94f0-0b6700c8b6be"),
+		}, {
+			BillingProvider: metronome.F(metronome.V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAwsMarketplace),
+			CustomerID:      metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
+			Configuration: metronome.F(map[string]interface{}{
+				"aws_customer_id":             "bar",
+				"aws_product_code":            "bar",
+				"aws_region":                  "bar",
+				"aws_is_subscription_product": "bar",
+			}),
+			DeliveryMethod:   metronome.F(metronome.V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider),
+			DeliveryMethodID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		}}),
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestV1CustomerSetIngestAliases(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {

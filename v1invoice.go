@@ -31,7 +31,21 @@ func NewV1InvoiceService(opts ...option.RequestOption) (r *V1InvoiceService) {
 	return
 }
 
-// Regenerate a voided contract invoice
+// This endpoint regenerates a voided invoice and recalculates the invoice based on
+// up-to-date rates, available balances, and other fees regardless of the billing
+// period.
+//
+// Use this endpoint to:
+//
+//   - Recalculate an invoice with updated rate terms, available balance, and fees to
+//     correct billing disputes or discrepancies
+//
+// Key response fields: The regenerated invoice id, which is distinct from the
+// previously voided invoice.
+//
+// Usage guidelines:\
+// If an invoice is attached to a contract with a billing provider on it, the regenerated
+// invoice will be distributed based on the configuration.
 func (r *V1InvoiceService) Regenerate(ctx context.Context, body V1InvoiceRegenerateParams, opts ...option.RequestOption) (res *V1InvoiceRegenerateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/invoices/regenerate"
@@ -39,7 +53,11 @@ func (r *V1InvoiceService) Regenerate(ctx context.Context, body V1InvoiceRegener
 	return
 }
 
-// Void an invoice
+// Permanently cancels an invoice by setting its status to voided, preventing
+// collection and removing it from customer billing. Use this to correct billing
+// errors, cancel incorrect charges, or handle disputed invoices that should not be
+// collected. Returns the voided invoice ID with the status change applied
+// immediately to stop any payment processing.
 func (r *V1InvoiceService) Void(ctx context.Context, body V1InvoiceVoidParams, opts ...option.RequestOption) (res *V1InvoiceVoidResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/invoices/void"
