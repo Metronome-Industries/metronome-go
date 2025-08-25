@@ -646,27 +646,6 @@ const ContractV2OverridesOverrideSpecifiersBillingFrequencyAnnual = shared.Contr
 const ContractV2OverridesOverrideSpecifiersBillingFrequencyWeekly = shared.ContractV2OverridesOverrideSpecifiersBillingFrequencyWeekly
 
 // This is an alias to an internal type.
-type ContractV2OverridesOverwriteRate = shared.ContractV2OverridesOverwriteRate
-
-// This is an alias to an internal type.
-type ContractV2OverridesOverwriteRateRateType = shared.ContractV2OverridesOverwriteRateRateType
-
-// This is an alias to an internal value.
-const ContractV2OverridesOverwriteRateRateTypeFlat = shared.ContractV2OverridesOverwriteRateRateTypeFlat
-
-// This is an alias to an internal value.
-const ContractV2OverridesOverwriteRateRateTypePercentage = shared.ContractV2OverridesOverwriteRateRateTypePercentage
-
-// This is an alias to an internal value.
-const ContractV2OverridesOverwriteRateRateTypeSubscription = shared.ContractV2OverridesOverwriteRateRateTypeSubscription
-
-// This is an alias to an internal value.
-const ContractV2OverridesOverwriteRateRateTypeTiered = shared.ContractV2OverridesOverwriteRateRateTypeTiered
-
-// This is an alias to an internal value.
-const ContractV2OverridesOverwriteRateRateTypeCustom = shared.ContractV2OverridesOverwriteRateRateTypeCustom
-
-// This is an alias to an internal type.
 type ContractV2OverridesProduct = shared.ContractV2OverridesProduct
 
 // This is an alias to an internal type.
@@ -975,23 +954,6 @@ const ContractV2RecurringCommitsRecurrenceFrequencyAnnual = shared.ContractV2Rec
 // This is an alias to an internal value.
 const ContractV2RecurringCommitsRecurrenceFrequencyWeekly = shared.ContractV2RecurringCommitsRecurrenceFrequencyWeekly
 
-// Attach a subscription to the recurring commit/credit.
-//
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsSubscriptionConfig = shared.ContractV2RecurringCommitsSubscriptionConfig
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsSubscriptionConfigAllocation = shared.ContractV2RecurringCommitsSubscriptionConfigAllocation
-
-// This is an alias to an internal value.
-const ContractV2RecurringCommitsSubscriptionConfigAllocationIndividual = shared.ContractV2RecurringCommitsSubscriptionConfigAllocationIndividual
-
-// This is an alias to an internal value.
-const ContractV2RecurringCommitsSubscriptionConfigAllocationPooled = shared.ContractV2RecurringCommitsSubscriptionConfigAllocationPooled
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitsSubscriptionConfigApplySeatIncreaseConfig = shared.ContractV2RecurringCommitsSubscriptionConfigApplySeatIncreaseConfig
-
 // This is an alias to an internal type.
 type ContractV2RecurringCredit = shared.ContractV2RecurringCredit
 
@@ -1066,23 +1028,6 @@ const ContractV2RecurringCreditsRecurrenceFrequencyAnnual = shared.ContractV2Rec
 
 // This is an alias to an internal value.
 const ContractV2RecurringCreditsRecurrenceFrequencyWeekly = shared.ContractV2RecurringCreditsRecurrenceFrequencyWeekly
-
-// Attach a subscription to the recurring commit/credit.
-//
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsSubscriptionConfig = shared.ContractV2RecurringCreditsSubscriptionConfig
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsSubscriptionConfigAllocation = shared.ContractV2RecurringCreditsSubscriptionConfigAllocation
-
-// This is an alias to an internal value.
-const ContractV2RecurringCreditsSubscriptionConfigAllocationIndividual = shared.ContractV2RecurringCreditsSubscriptionConfigAllocationIndividual
-
-// This is an alias to an internal value.
-const ContractV2RecurringCreditsSubscriptionConfigAllocationPooled = shared.ContractV2RecurringCreditsSubscriptionConfigAllocationPooled
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditsSubscriptionConfigApplySeatIncreaseConfig = shared.ContractV2RecurringCreditsSubscriptionConfigApplySeatIncreaseConfig
 
 // This is an alias to an internal type.
 type ContractV2ResellerRoyalty = shared.ContractV2ResellerRoyalty
@@ -1245,23 +1190,6 @@ const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyAnnual = share
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCommitsRecurrenceFrequencyWeekly
 
-// Attach a subscription to the recurring commit/credit.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfig
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocation
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationIndividual = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationIndividual
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationPooled = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigAllocationPooled
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig = shared.ContractWithoutAmendmentsRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig
-
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCredit = shared.ContractWithoutAmendmentsRecurringCredit
 
@@ -1336,23 +1264,6 @@ const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyAnnual = share
 
 // This is an alias to an internal value.
 const ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly = shared.ContractWithoutAmendmentsRecurringCreditsRecurrenceFrequencyWeekly
-
-// Attach a subscription to the recurring commit/credit.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfig
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocation
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationIndividual = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationIndividual
-
-// This is an alias to an internal value.
-const ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationPooled = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigAllocationPooled
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig = shared.ContractWithoutAmendmentsRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
@@ -1571,27 +1482,6 @@ const OverrideOverrideSpecifiersBillingFrequencyAnnual = shared.OverrideOverride
 const OverrideOverrideSpecifiersBillingFrequencyWeekly = shared.OverrideOverrideSpecifiersBillingFrequencyWeekly
 
 // This is an alias to an internal type.
-type OverrideOverwriteRate = shared.OverrideOverwriteRate
-
-// This is an alias to an internal type.
-type OverrideOverwriteRateRateType = shared.OverrideOverwriteRateRateType
-
-// This is an alias to an internal value.
-const OverrideOverwriteRateRateTypeFlat = shared.OverrideOverwriteRateRateTypeFlat
-
-// This is an alias to an internal value.
-const OverrideOverwriteRateRateTypePercentage = shared.OverrideOverwriteRateRateTypePercentage
-
-// This is an alias to an internal value.
-const OverrideOverwriteRateRateTypeSubscription = shared.OverrideOverwriteRateRateTypeSubscription
-
-// This is an alias to an internal value.
-const OverrideOverwriteRateRateTypeTiered = shared.OverrideOverwriteRateRateTypeTiered
-
-// This is an alias to an internal value.
-const OverrideOverwriteRateRateTypeCustom = shared.OverrideOverwriteRateRateTypeCustom
-
-// This is an alias to an internal type.
 type OverrideProduct = shared.OverrideProduct
 
 // This is an alias to an internal type.
@@ -1635,6 +1525,27 @@ const OverrideTypeTiered = shared.OverrideTypeTiered
 
 // This is an alias to an internal type.
 type OverrideTier = shared.OverrideTier
+
+// This is an alias to an internal type.
+type OverwriteRate = shared.OverwriteRate
+
+// This is an alias to an internal type.
+type OverwriteRateRateType = shared.OverwriteRateRateType
+
+// This is an alias to an internal value.
+const OverwriteRateRateTypeFlat = shared.OverwriteRateRateTypeFlat
+
+// This is an alias to an internal value.
+const OverwriteRateRateTypePercentage = shared.OverwriteRateRateTypePercentage
+
+// This is an alias to an internal value.
+const OverwriteRateRateTypeSubscription = shared.OverwriteRateRateTypeSubscription
+
+// This is an alias to an internal value.
+const OverwriteRateRateTypeTiered = shared.OverwriteRateRateTypeTiered
+
+// This is an alias to an internal value.
+const OverwriteRateRateTypeCustom = shared.OverwriteRateRateTypeCustom
 
 // This is an alias to an internal type.
 type PaymentGateConfig = shared.PaymentGateConfig
@@ -1837,6 +1748,21 @@ const RateRateTypeCustom = shared.RateRateTypeCustom
 const RateRateTypeTiered = shared.RateRateTypeTiered
 
 // This is an alias to an internal type.
+type RecurringCommitSubscriptionConfig = shared.RecurringCommitSubscriptionConfig
+
+// This is an alias to an internal type.
+type RecurringCommitSubscriptionConfigAllocation = shared.RecurringCommitSubscriptionConfigAllocation
+
+// This is an alias to an internal value.
+const RecurringCommitSubscriptionConfigAllocationIndividual = shared.RecurringCommitSubscriptionConfigAllocationIndividual
+
+// This is an alias to an internal value.
+const RecurringCommitSubscriptionConfigAllocationPooled = shared.RecurringCommitSubscriptionConfigAllocationPooled
+
+// This is an alias to an internal type.
+type RecurringCommitSubscriptionConfigApplySeatIncreaseConfig = shared.RecurringCommitSubscriptionConfigApplySeatIncreaseConfig
+
+// This is an alias to an internal type.
 type ScheduledCharge = shared.ScheduledCharge
 
 // This is an alias to an internal type.
@@ -1864,13 +1790,7 @@ type SpendThresholdConfigurationParam = shared.SpendThresholdConfigurationParam
 type SpendThresholdConfigurationV2 = shared.SpendThresholdConfigurationV2
 
 // This is an alias to an internal type.
-type SpendThresholdConfigurationV2Commit = shared.SpendThresholdConfigurationV2Commit
-
-// This is an alias to an internal type.
 type SpendThresholdConfigurationV2Param = shared.SpendThresholdConfigurationV2Param
-
-// This is an alias to an internal type.
-type SpendThresholdConfigurationV2CommitParam = shared.SpendThresholdConfigurationV2CommitParam
 
 // This is an alias to an internal type.
 type Subscription = shared.Subscription
@@ -1925,3 +1845,9 @@ type Tier = shared.Tier
 
 // This is an alias to an internal type.
 type TierParam = shared.TierParam
+
+// This is an alias to an internal type.
+type UpdateBaseThresholdCommit = shared.UpdateBaseThresholdCommit
+
+// This is an alias to an internal type.
+type UpdateBaseThresholdCommitParam = shared.UpdateBaseThresholdCommitParam

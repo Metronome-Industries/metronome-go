@@ -270,11 +270,13 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}}),
 		AddPrepaidBalanceThresholdConfiguration: metronome.F(shared.PrepaidBalanceThresholdConfigurationV2Param{
 			Commit: metronome.F(shared.PrepaidBalanceThresholdConfigurationV2CommitParam{
-				ProductID:             metronome.F("product_id"),
+				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{
+					Description: metronome.F("description"),
+					Name:        metronome.F("name"),
+					ProductID:   metronome.F("product_id"),
+				},
 				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 				ApplicableProductTags: metronome.F([]string{"string"}),
-				Description:           metronome.F("description"),
-				Name:                  metronome.F("name"),
 				Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 					PresentationGroupValues: metronome.F(map[string]string{
 						"foo": "string",
@@ -462,10 +464,10 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
 		AddSpendThresholdConfiguration: metronome.F(shared.SpendThresholdConfigurationV2Param{
-			Commit: metronome.F(shared.SpendThresholdConfigurationV2CommitParam{
-				ProductID:   metronome.F("product_id"),
+			Commit: metronome.F(shared.UpdateBaseThresholdCommitParam{
 				Description: metronome.F("description"),
 				Name:        metronome.F("name"),
+				ProductID:   metronome.F("product_id"),
 			}),
 			IsEnabled: metronome.F(true),
 			PaymentGateConfig: metronome.F(shared.PaymentGateConfigV2Param{
@@ -599,11 +601,13 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}}),
 		UpdatePrepaidBalanceThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration{
 			Commit: metronome.F(metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit{
+				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{
+					Description: metronome.F("description"),
+					Name:        metronome.F("name"),
+					ProductID:   metronome.F("product_id"),
+				},
 				ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
 				ApplicableProductTags: metronome.F([]string{"string"}),
-				Description:           metronome.F("description"),
-				Name:                  metronome.F("name"),
-				ProductID:             metronome.F("product_id"),
 				Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
 					PresentationGroupValues: metronome.F(map[string]string{
 						"foo": "string",
@@ -677,7 +681,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.F("netsuite_sales_order_id"),
 		}}),
 		UpdateSpendThresholdConfiguration: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfiguration{
-			Commit: metronome.F(metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationCommit{
+			Commit: metronome.F(shared.UpdateBaseThresholdCommitParam{
 				Description: metronome.F("description"),
 				Name:        metronome.F("name"),
 				ProductID:   metronome.F("product_id"),

@@ -524,7 +524,7 @@ type V2ContractGetEditHistoryResponseDataAddOverride struct {
 	Multiplier            float64                                                             `json:"multiplier"`
 	OverrideSpecifiers    []V2ContractGetEditHistoryResponseDataAddOverridesOverrideSpecifier `json:"override_specifiers"`
 	OverrideTiers         []shared.OverrideTier                                               `json:"override_tiers"`
-	OverwriteRate         V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRate       `json:"overwrite_rate"`
+	OverwriteRate         shared.OverwriteRate                                                `json:"overwrite_rate"`
 	Priority              float64                                                             `json:"priority"`
 	Product               V2ContractGetEditHistoryResponseDataAddOverridesProduct             `json:"product"`
 	Target                V2ContractGetEditHistoryResponseDataAddOverridesTarget              `json:"target"`
@@ -609,66 +609,6 @@ const (
 func (r V2ContractGetEditHistoryResponseDataAddOverridesOverrideSpecifiersBillingFrequency) IsKnown() bool {
 	switch r {
 	case V2ContractGetEditHistoryResponseDataAddOverridesOverrideSpecifiersBillingFrequencyMonthly, V2ContractGetEditHistoryResponseDataAddOverridesOverrideSpecifiersBillingFrequencyQuarterly, V2ContractGetEditHistoryResponseDataAddOverridesOverrideSpecifiersBillingFrequencyAnnual, V2ContractGetEditHistoryResponseDataAddOverridesOverrideSpecifiersBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRate struct {
-	RateType   V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateType `json:"rate_type,required"`
-	CreditType shared.CreditTypeData                                                 `json:"credit_type"`
-	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
-	// processors.
-	CustomRate map[string]interface{} `json:"custom_rate"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
-	// set to true.
-	IsProrated bool `json:"is_prorated"`
-	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
-	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-	Price float64 `json:"price"`
-	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-	Quantity float64 `json:"quantity"`
-	// Only set for TIERED rate_type.
-	Tiers []shared.Tier                                                     `json:"tiers"`
-	JSON  v2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateJSON contains the
-// JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRate]
-type v2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateJSON struct {
-	RateType    apijson.Field
-	CreditType  apijson.Field
-	CustomRate  apijson.Field
-	IsProrated  apijson.Field
-	Price       apijson.Field
-	Quantity    apijson.Field
-	Tiers       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateType string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypeFlat         V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateType = "FLAT"
-	V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypePercentage   V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateType = "PERCENTAGE"
-	V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypeSubscription V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateType = "SUBSCRIPTION"
-	V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypeTiered       V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateType = "TIERED"
-	V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypeCustom       V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateType = "CUSTOM"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateType) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypeFlat, V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypePercentage, V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypeSubscription, V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypeTiered, V2ContractGetEditHistoryResponseDataAddOverridesOverwriteRateRateTypeCustom:
 		return true
 	}
 	return false
@@ -777,8 +717,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []shared.CommitSpecifier `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
-	SubscriptionConfig V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig `json:"subscription_config"`
-	JSON               v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON                `json:"-"`
+	SubscriptionConfig shared.RecurringCommitSubscriptionConfig                   `json:"subscription_config"`
+	JSON               v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddRecurringCommitJSON contains the JSON
@@ -1013,71 +953,6 @@ func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsRecurrenceFrequen
 	return false
 }
 
-// Attach a subscription to the recurring commit/credit.
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig struct {
-	Allocation              V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation              `json:"allocation,required"`
-	ApplySeatIncreaseConfig V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
-	SubscriptionID          string                                                                                           `json:"subscription_id,required" format:"uuid"`
-	JSON                    v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigJSON                    `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig]
-type v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigJSON struct {
-	Allocation              apijson.Field
-	ApplySeatIncreaseConfig apijson.Field
-	SubscriptionID          apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocationIndividual V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation = "INDIVIDUAL"
-	V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocationPooled     V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation = "POOLED"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocation) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocationIndividual, V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigAllocationPooled:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig struct {
-	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool                                                                                                 `json:"is_prorated,required"`
-	JSON       v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig]
-type v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
-	IsProrated  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCommitsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
-	return r.raw
-}
-
 type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	ID string `json:"id,required" format:"uuid"`
 	// The amount of commit to grant.
@@ -1124,8 +999,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []shared.CommitSpecifier `json:"specifiers"`
 	// Attach a subscription to the recurring commit/credit.
-	SubscriptionConfig V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig `json:"subscription_config"`
-	JSON               v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON                `json:"-"`
+	SubscriptionConfig shared.RecurringCommitSubscriptionConfig                   `json:"subscription_config"`
+	JSON               v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON `json:"-"`
 }
 
 // v2ContractGetEditHistoryResponseDataAddRecurringCreditJSON contains the JSON
@@ -1330,71 +1205,6 @@ func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsRecurrenceFrequen
 		return true
 	}
 	return false
-}
-
-// Attach a subscription to the recurring commit/credit.
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig struct {
-	Allocation              V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation              `json:"allocation,required"`
-	ApplySeatIncreaseConfig V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
-	SubscriptionID          string                                                                                           `json:"subscription_id,required" format:"uuid"`
-	JSON                    v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigJSON                    `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig]
-type v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigJSON struct {
-	Allocation              apijson.Field
-	ApplySeatIncreaseConfig apijson.Field
-	SubscriptionID          apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation string
-
-const (
-	V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocationIndividual V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation = "INDIVIDUAL"
-	V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocationPooled     V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation = "POOLED"
-)
-
-func (r V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocation) IsKnown() bool {
-	switch r {
-	case V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocationIndividual, V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigAllocationPooled:
-		return true
-	}
-	return false
-}
-
-type V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig struct {
-	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool                                                                                                 `json:"is_prorated,required"`
-	JSON       v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig]
-type v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON struct {
-	IsProrated  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataAddRecurringCreditsSubscriptionConfigApplySeatIncreaseConfigJSON) RawJSON() string {
-	return r.raw
 }
 
 type V2ContractGetEditHistoryResponseDataAddResellerRoyalty struct {
@@ -2276,13 +2086,6 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,nullable"`
-	Description           string   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string `json:"name"`
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID string `json:"product_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -2291,6 +2094,7 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// body of `specifiers`.
 	Specifiers []shared.CommitSpecifierInput                                                            `json:"specifiers,nullable"`
 	JSON       v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitJSON `json:"-"`
+	shared.UpdateBaseThresholdCommit
 }
 
 // v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitJSON
@@ -2299,9 +2103,6 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 type v2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitJSON struct {
 	ApplicableProductIDs  apijson.Field
 	ApplicableProductTags apijson.Field
-	Description           apijson.Field
-	Name                  apijson.Field
-	ProductID             apijson.Field
 	Specifiers            apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
@@ -2600,7 +2401,7 @@ func (r v2ContractGetEditHistoryResponseDataUpdateScheduledChargesInvoiceSchedul
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration struct {
-	Commit V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommit `json:"commit"`
+	Commit shared.UpdateBaseThresholdCommit `json:"commit"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -2629,36 +2430,6 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration) 
 }
 
 func (r v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommit struct {
-	Description string `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name string `json:"name"`
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID string                                                                          `json:"product_id"`
-	JSON      v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommitJSON `json:"-"`
-}
-
-// v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommitJSON
-// contains the JSON metadata for the struct
-// [V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommit]
-type v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommitJSON struct {
-	Description apijson.Field
-	Name        apijson.Field
-	ProductID   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationCommitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -4428,13 +4199,6 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
 	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
-	Description           param.Field[string]   `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name param.Field[string] `json:"name"`
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID param.Field[string] `json:"product_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -4442,6 +4206,7 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
 	Specifiers param.Field[[]shared.CommitSpecifierInputParam] `json:"specifiers"`
+	shared.UpdateBaseThresholdCommitParam
 }
 
 func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
@@ -4548,7 +4313,7 @@ func (r V2ContractEditParamsUpdateScheduledChargesInvoiceScheduleUpdateScheduleI
 }
 
 type V2ContractEditParamsUpdateSpendThresholdConfiguration struct {
-	Commit param.Field[V2ContractEditParamsUpdateSpendThresholdConfigurationCommit] `json:"commit"`
+	Commit param.Field[shared.UpdateBaseThresholdCommitParam] `json:"commit"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -4560,20 +4325,6 @@ type V2ContractEditParamsUpdateSpendThresholdConfiguration struct {
 }
 
 func (r V2ContractEditParamsUpdateSpendThresholdConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V2ContractEditParamsUpdateSpendThresholdConfigurationCommit struct {
-	Description param.Field[string] `json:"description"`
-	// Specify the name of the line item for the threshold charge. If left blank, it
-	// will default to the commit product name.
-	Name param.Field[string] `json:"name"`
-	// The commit product that will be used to generate the line item for commit
-	// payment.
-	ProductID param.Field[string] `json:"product_id"`
-}
-
-func (r V2ContractEditParamsUpdateSpendThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
