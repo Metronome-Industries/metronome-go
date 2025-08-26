@@ -16,7 +16,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1CustomerPlanService contains methods and other services that help with
@@ -194,10 +193,10 @@ func (r v1CustomerPlanListResponseTrialInfoJSON) RawJSON() string {
 }
 
 type V1CustomerPlanListResponseTrialInfoSpendingCap struct {
-	Amount          float64                                            `json:"amount,required"`
-	AmountRemaining float64                                            `json:"amount_remaining,required"`
-	CreditType      shared.CreditTypeData                              `json:"credit_type,required"`
-	JSON            v1CustomerPlanListResponseTrialInfoSpendingCapJSON `json:"-"`
+	Amount          float64                                                   `json:"amount,required"`
+	AmountRemaining float64                                                   `json:"amount_remaining,required"`
+	CreditType      V1CustomerPlanListResponseTrialInfoSpendingCapsCreditType `json:"credit_type,required"`
+	JSON            v1CustomerPlanListResponseTrialInfoSpendingCapJSON        `json:"-"`
 }
 
 // v1CustomerPlanListResponseTrialInfoSpendingCapJSON contains the JSON metadata
@@ -218,8 +217,32 @@ func (r v1CustomerPlanListResponseTrialInfoSpendingCapJSON) RawJSON() string {
 	return r.raw
 }
 
+type V1CustomerPlanListResponseTrialInfoSpendingCapsCreditType struct {
+	ID   string                                                        `json:"id,required" format:"uuid"`
+	Name string                                                        `json:"name,required"`
+	JSON v1CustomerPlanListResponseTrialInfoSpendingCapsCreditTypeJSON `json:"-"`
+}
+
+// v1CustomerPlanListResponseTrialInfoSpendingCapsCreditTypeJSON contains the JSON
+// metadata for the struct
+// [V1CustomerPlanListResponseTrialInfoSpendingCapsCreditType]
+type v1CustomerPlanListResponseTrialInfoSpendingCapsCreditTypeJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerPlanListResponseTrialInfoSpendingCapsCreditType) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerPlanListResponseTrialInfoSpendingCapsCreditTypeJSON) RawJSON() string {
+	return r.raw
+}
+
 type V1CustomerPlanAddResponse struct {
-	Data shared.ID                     `json:"data,required"`
+	Data V1CustomerPlanAddResponseData `json:"data,required"`
 	JSON v1CustomerPlanAddResponseJSON `json:"-"`
 }
 
@@ -236,6 +259,27 @@ func (r *V1CustomerPlanAddResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r v1CustomerPlanAddResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type V1CustomerPlanAddResponseData struct {
+	ID   string                            `json:"id,required" format:"uuid"`
+	JSON v1CustomerPlanAddResponseDataJSON `json:"-"`
+}
+
+// v1CustomerPlanAddResponseDataJSON contains the JSON metadata for the struct
+// [V1CustomerPlanAddResponseData]
+type v1CustomerPlanAddResponseDataJSON struct {
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V1CustomerPlanAddResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v1CustomerPlanAddResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
