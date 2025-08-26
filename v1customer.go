@@ -243,7 +243,7 @@ func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1Customer
 // the contract provisioning process to fetch the
 // `billing_provider_configuration_id` needed to set the contract billing
 // configuration.
-func (r *V1CustomerService) GetCustomerBillingConfigurations(ctx context.Context, body V1CustomerGetCustomerBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerGetCustomerBillingConfigurationsResponse, err error) {
+func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V1CustomerGetBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerGetBillingConfigurationsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/getCustomerBillingProviderConfigurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -284,7 +284,7 @@ func (r *V1CustomerService) GetCustomerBillingConfigurations(ctx context.Context
 // Usage guidelines:\
 // Must use the delivery_method_id if you have multiple Stripe accounts connected to
 // Metronome.
-func (r *V1CustomerService) SetCustomerBillingConfigurations(ctx context.Context, body V1CustomerSetCustomerBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
+func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/setCustomerBillingProviderConfigurations"
@@ -736,50 +736,50 @@ func (r v1CustomerPreviewEventsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CustomerGetCustomerBillingConfigurationsResponse struct {
-	Data []V1CustomerGetCustomerBillingConfigurationsResponseData `json:"data,required"`
-	JSON v1CustomerGetCustomerBillingConfigurationsResponseJSON   `json:"-"`
+type V1CustomerGetBillingConfigurationsResponse struct {
+	Data []V1CustomerGetBillingConfigurationsResponseData `json:"data,required"`
+	JSON v1CustomerGetBillingConfigurationsResponseJSON   `json:"-"`
 }
 
-// v1CustomerGetCustomerBillingConfigurationsResponseJSON contains the JSON
-// metadata for the struct [V1CustomerGetCustomerBillingConfigurationsResponse]
-type v1CustomerGetCustomerBillingConfigurationsResponseJSON struct {
+// v1CustomerGetBillingConfigurationsResponseJSON contains the JSON metadata for
+// the struct [V1CustomerGetBillingConfigurationsResponse]
+type v1CustomerGetBillingConfigurationsResponseJSON struct {
 	Data        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *V1CustomerGetCustomerBillingConfigurationsResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *V1CustomerGetBillingConfigurationsResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CustomerGetCustomerBillingConfigurationsResponseJSON) RawJSON() string {
+func (r v1CustomerGetBillingConfigurationsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type V1CustomerGetCustomerBillingConfigurationsResponseData struct {
+type V1CustomerGetBillingConfigurationsResponseData struct {
 	// ID of this configuration; can be provided as the
 	// billing_provider_configuration_id when creating a contract.
 	ID string `json:"id,required" format:"uuid"`
 	// The billing provider set for this configuration.
-	BillingProvider V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider `json:"billing_provider,required"`
+	BillingProvider V1CustomerGetBillingConfigurationsResponseDataBillingProvider `json:"billing_provider,required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
 	Configuration map[string]interface{} `json:"configuration,required"`
 	CustomerID    string                 `json:"customer_id,required" format:"uuid"`
 	// The method to use for delivering invoices to this customer.
-	DeliveryMethod V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod `json:"delivery_method,required"`
+	DeliveryMethod V1CustomerGetBillingConfigurationsResponseDataDeliveryMethod `json:"delivery_method,required"`
 	// Configuration for the delivery method. The structure of this object is specific
 	// to the delivery method.
 	DeliveryMethodConfiguration map[string]interface{} `json:"delivery_method_configuration,required"`
 	// ID of the delivery method to use for this customer.
-	DeliveryMethodID string                                                     `json:"delivery_method_id,required" format:"uuid"`
-	JSON             v1CustomerGetCustomerBillingConfigurationsResponseDataJSON `json:"-"`
+	DeliveryMethodID string                                             `json:"delivery_method_id,required" format:"uuid"`
+	JSON             v1CustomerGetBillingConfigurationsResponseDataJSON `json:"-"`
 }
 
-// v1CustomerGetCustomerBillingConfigurationsResponseDataJSON contains the JSON
-// metadata for the struct [V1CustomerGetCustomerBillingConfigurationsResponseData]
-type v1CustomerGetCustomerBillingConfigurationsResponseDataJSON struct {
+// v1CustomerGetBillingConfigurationsResponseDataJSON contains the JSON metadata
+// for the struct [V1CustomerGetBillingConfigurationsResponseData]
+type v1CustomerGetBillingConfigurationsResponseDataJSON struct {
 	ID                          apijson.Field
 	BillingProvider             apijson.Field
 	Configuration               apijson.Field
@@ -791,49 +791,49 @@ type v1CustomerGetCustomerBillingConfigurationsResponseDataJSON struct {
 	ExtraFields                 map[string]apijson.Field
 }
 
-func (r *V1CustomerGetCustomerBillingConfigurationsResponseData) UnmarshalJSON(data []byte) (err error) {
+func (r *V1CustomerGetBillingConfigurationsResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CustomerGetCustomerBillingConfigurationsResponseDataJSON) RawJSON() string {
+func (r v1CustomerGetBillingConfigurationsResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
 // The billing provider set for this configuration.
-type V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider string
+type V1CustomerGetBillingConfigurationsResponseDataBillingProvider string
 
 const (
-	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderAwsMarketplace   V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "aws_marketplace"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderStripe           V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "stripe"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderNetsuite         V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "netsuite"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderCustom           V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "custom"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderAzureMarketplace V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "azure_marketplace"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderQuickbooksOnline V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "quickbooks_online"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderWorkday          V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "workday"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderGcpMarketplace   V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider = "gcp_marketplace"
+	V1CustomerGetBillingConfigurationsResponseDataBillingProviderAwsMarketplace   V1CustomerGetBillingConfigurationsResponseDataBillingProvider = "aws_marketplace"
+	V1CustomerGetBillingConfigurationsResponseDataBillingProviderStripe           V1CustomerGetBillingConfigurationsResponseDataBillingProvider = "stripe"
+	V1CustomerGetBillingConfigurationsResponseDataBillingProviderNetsuite         V1CustomerGetBillingConfigurationsResponseDataBillingProvider = "netsuite"
+	V1CustomerGetBillingConfigurationsResponseDataBillingProviderCustom           V1CustomerGetBillingConfigurationsResponseDataBillingProvider = "custom"
+	V1CustomerGetBillingConfigurationsResponseDataBillingProviderAzureMarketplace V1CustomerGetBillingConfigurationsResponseDataBillingProvider = "azure_marketplace"
+	V1CustomerGetBillingConfigurationsResponseDataBillingProviderQuickbooksOnline V1CustomerGetBillingConfigurationsResponseDataBillingProvider = "quickbooks_online"
+	V1CustomerGetBillingConfigurationsResponseDataBillingProviderWorkday          V1CustomerGetBillingConfigurationsResponseDataBillingProvider = "workday"
+	V1CustomerGetBillingConfigurationsResponseDataBillingProviderGcpMarketplace   V1CustomerGetBillingConfigurationsResponseDataBillingProvider = "gcp_marketplace"
 )
 
-func (r V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProvider) IsKnown() bool {
+func (r V1CustomerGetBillingConfigurationsResponseDataBillingProvider) IsKnown() bool {
 	switch r {
-	case V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderAwsMarketplace, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderStripe, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderNetsuite, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderCustom, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderAzureMarketplace, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderQuickbooksOnline, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderWorkday, V1CustomerGetCustomerBillingConfigurationsResponseDataBillingProviderGcpMarketplace:
+	case V1CustomerGetBillingConfigurationsResponseDataBillingProviderAwsMarketplace, V1CustomerGetBillingConfigurationsResponseDataBillingProviderStripe, V1CustomerGetBillingConfigurationsResponseDataBillingProviderNetsuite, V1CustomerGetBillingConfigurationsResponseDataBillingProviderCustom, V1CustomerGetBillingConfigurationsResponseDataBillingProviderAzureMarketplace, V1CustomerGetBillingConfigurationsResponseDataBillingProviderQuickbooksOnline, V1CustomerGetBillingConfigurationsResponseDataBillingProviderWorkday, V1CustomerGetBillingConfigurationsResponseDataBillingProviderGcpMarketplace:
 		return true
 	}
 	return false
 }
 
 // The method to use for delivering invoices to this customer.
-type V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod string
+type V1CustomerGetBillingConfigurationsResponseDataDeliveryMethod string
 
 const (
-	V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodDirectToBillingProvider V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod = "direct_to_billing_provider"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodAwsSqs                  V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod = "aws_sqs"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodTackle                  V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod = "tackle"
-	V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodAwsSns                  V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod = "aws_sns"
+	V1CustomerGetBillingConfigurationsResponseDataDeliveryMethodDirectToBillingProvider V1CustomerGetBillingConfigurationsResponseDataDeliveryMethod = "direct_to_billing_provider"
+	V1CustomerGetBillingConfigurationsResponseDataDeliveryMethodAwsSqs                  V1CustomerGetBillingConfigurationsResponseDataDeliveryMethod = "aws_sqs"
+	V1CustomerGetBillingConfigurationsResponseDataDeliveryMethodTackle                  V1CustomerGetBillingConfigurationsResponseDataDeliveryMethod = "tackle"
+	V1CustomerGetBillingConfigurationsResponseDataDeliveryMethodAwsSns                  V1CustomerGetBillingConfigurationsResponseDataDeliveryMethod = "aws_sns"
 )
 
-func (r V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethod) IsKnown() bool {
+func (r V1CustomerGetBillingConfigurationsResponseDataDeliveryMethod) IsKnown() bool {
 	switch r {
-	case V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodDirectToBillingProvider, V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodAwsSqs, V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodTackle, V1CustomerGetCustomerBillingConfigurationsResponseDataDeliveryMethodAwsSns:
+	case V1CustomerGetBillingConfigurationsResponseDataDeliveryMethodDirectToBillingProvider, V1CustomerGetBillingConfigurationsResponseDataDeliveryMethodAwsSqs, V1CustomerGetBillingConfigurationsResponseDataDeliveryMethodTackle, V1CustomerGetBillingConfigurationsResponseDataDeliveryMethodAwsSns:
 		return true
 	}
 	return false
@@ -1156,26 +1156,26 @@ func (r V1CustomerPreviewEventsParamsMode) IsKnown() bool {
 	return false
 }
 
-type V1CustomerGetCustomerBillingConfigurationsParams struct {
+type V1CustomerGetBillingConfigurationsParams struct {
 	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
 }
 
-func (r V1CustomerGetCustomerBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
+func (r V1CustomerGetBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type V1CustomerSetCustomerBillingConfigurationsParams struct {
-	Data param.Field[[]V1CustomerSetCustomerBillingConfigurationsParamsData] `json:"data,required"`
+type V1CustomerSetBillingConfigurationsParams struct {
+	Data param.Field[[]V1CustomerSetBillingConfigurationsParamsData] `json:"data,required"`
 }
 
-func (r V1CustomerSetCustomerBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
+func (r V1CustomerSetBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type V1CustomerSetCustomerBillingConfigurationsParamsData struct {
+type V1CustomerSetBillingConfigurationsParamsData struct {
 	// The billing provider set for this configuration.
-	BillingProvider param.Field[V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider] `json:"billing_provider,required"`
-	CustomerID      param.Field[string]                                                              `json:"customer_id,required" format:"uuid"`
+	BillingProvider param.Field[V1CustomerSetBillingConfigurationsParamsDataBillingProvider] `json:"billing_provider,required"`
+	CustomerID      param.Field[string]                                                      `json:"customer_id,required" format:"uuid"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider and delivery method combination. Defaults to an empty
 	// object, however, for most billing provider + delivery method combinations, it
@@ -1186,33 +1186,33 @@ type V1CustomerSetCustomerBillingConfigurationsParamsData struct {
 	Configuration param.Field[map[string]interface{}] `json:"configuration"`
 	// The method to use for delivering invoices to this customer. If not provided, the
 	// `delivery_method_id` must be provided.
-	DeliveryMethod param.Field[V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod] `json:"delivery_method"`
+	DeliveryMethod param.Field[V1CustomerSetBillingConfigurationsParamsDataDeliveryMethod] `json:"delivery_method"`
 	// ID of the delivery method to use for this customer. If not provided, the
 	// `delivery_method` must be provided.
 	DeliveryMethodID param.Field[string] `json:"delivery_method_id" format:"uuid"`
 }
 
-func (r V1CustomerSetCustomerBillingConfigurationsParamsData) MarshalJSON() (data []byte, err error) {
+func (r V1CustomerSetBillingConfigurationsParamsData) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
 // The billing provider set for this configuration.
-type V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider string
+type V1CustomerSetBillingConfigurationsParamsDataBillingProvider string
 
 const (
-	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAwsMarketplace   V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "aws_marketplace"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderStripe           V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "stripe"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderNetsuite         V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "netsuite"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderCustom           V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "custom"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAzureMarketplace V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "azure_marketplace"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderQuickbooksOnline V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "quickbooks_online"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderWorkday          V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "workday"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderGcpMarketplace   V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider = "gcp_marketplace"
+	V1CustomerSetBillingConfigurationsParamsDataBillingProviderAwsMarketplace   V1CustomerSetBillingConfigurationsParamsDataBillingProvider = "aws_marketplace"
+	V1CustomerSetBillingConfigurationsParamsDataBillingProviderStripe           V1CustomerSetBillingConfigurationsParamsDataBillingProvider = "stripe"
+	V1CustomerSetBillingConfigurationsParamsDataBillingProviderNetsuite         V1CustomerSetBillingConfigurationsParamsDataBillingProvider = "netsuite"
+	V1CustomerSetBillingConfigurationsParamsDataBillingProviderCustom           V1CustomerSetBillingConfigurationsParamsDataBillingProvider = "custom"
+	V1CustomerSetBillingConfigurationsParamsDataBillingProviderAzureMarketplace V1CustomerSetBillingConfigurationsParamsDataBillingProvider = "azure_marketplace"
+	V1CustomerSetBillingConfigurationsParamsDataBillingProviderQuickbooksOnline V1CustomerSetBillingConfigurationsParamsDataBillingProvider = "quickbooks_online"
+	V1CustomerSetBillingConfigurationsParamsDataBillingProviderWorkday          V1CustomerSetBillingConfigurationsParamsDataBillingProvider = "workday"
+	V1CustomerSetBillingConfigurationsParamsDataBillingProviderGcpMarketplace   V1CustomerSetBillingConfigurationsParamsDataBillingProvider = "gcp_marketplace"
 )
 
-func (r V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider) IsKnown() bool {
+func (r V1CustomerSetBillingConfigurationsParamsDataBillingProvider) IsKnown() bool {
 	switch r {
-	case V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAwsMarketplace, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderStripe, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderNetsuite, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderCustom, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderAzureMarketplace, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderQuickbooksOnline, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderWorkday, V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProviderGcpMarketplace:
+	case V1CustomerSetBillingConfigurationsParamsDataBillingProviderAwsMarketplace, V1CustomerSetBillingConfigurationsParamsDataBillingProviderStripe, V1CustomerSetBillingConfigurationsParamsDataBillingProviderNetsuite, V1CustomerSetBillingConfigurationsParamsDataBillingProviderCustom, V1CustomerSetBillingConfigurationsParamsDataBillingProviderAzureMarketplace, V1CustomerSetBillingConfigurationsParamsDataBillingProviderQuickbooksOnline, V1CustomerSetBillingConfigurationsParamsDataBillingProviderWorkday, V1CustomerSetBillingConfigurationsParamsDataBillingProviderGcpMarketplace:
 		return true
 	}
 	return false
@@ -1220,18 +1220,18 @@ func (r V1CustomerSetCustomerBillingConfigurationsParamsDataBillingProvider) IsK
 
 // The method to use for delivering invoices to this customer. If not provided, the
 // `delivery_method_id` must be provided.
-type V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod string
+type V1CustomerSetBillingConfigurationsParamsDataDeliveryMethod string
 
 const (
-	V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod = "direct_to_billing_provider"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodAwsSqs                  V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod = "aws_sqs"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodTackle                  V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod = "tackle"
-	V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodAwsSns                  V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod = "aws_sns"
+	V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider V1CustomerSetBillingConfigurationsParamsDataDeliveryMethod = "direct_to_billing_provider"
+	V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodAwsSqs                  V1CustomerSetBillingConfigurationsParamsDataDeliveryMethod = "aws_sqs"
+	V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodTackle                  V1CustomerSetBillingConfigurationsParamsDataDeliveryMethod = "tackle"
+	V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodAwsSns                  V1CustomerSetBillingConfigurationsParamsDataDeliveryMethod = "aws_sns"
 )
 
-func (r V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethod) IsKnown() bool {
+func (r V1CustomerSetBillingConfigurationsParamsDataDeliveryMethod) IsKnown() bool {
 	switch r {
-	case V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider, V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodAwsSqs, V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodTackle, V1CustomerSetCustomerBillingConfigurationsParamsDataDeliveryMethodAwsSns:
+	case V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider, V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodAwsSqs, V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodTackle, V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodAwsSns:
 		return true
 	}
 	return false
