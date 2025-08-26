@@ -155,9 +155,8 @@ func NewV1ContractService(opts ...option.RequestOption) (r *V1ContractService) {
 //     track of all edits, both in the audit log and over the getEditHistory
 //     endpoint.
 //   - Customers in Metronome can have multiple concurrent contracts at one time. Use
-//     usage_filters to route the correct usage to each contract. Read more about
-//     usage filters
-//     [https://docs.metronome.com/manage-product-access/provision-customer/#create-a-usage-filter](https://docs.metronome.com/manage-product-access/provision-customer/#create-a-usage-filter).
+//     usage_filters to route the correct usage to each contract.
+//     [Read more about usage filters](https://docs.metronome.com/manage-product-access/provision-customer/#create-a-usage-filter).
 func (r *V1ContractService) New(ctx context.Context, body V1ContractNewParams, opts ...option.RequestOption) (res *V1ContractNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/create"
