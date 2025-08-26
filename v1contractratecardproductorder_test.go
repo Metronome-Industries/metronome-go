@@ -26,14 +26,14 @@ func TestV1ContractRateCardProductOrderUpdate(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.ProductOrders.Update(context.TODO(), metronome.V1ContractRateCardProductOrderUpdateParams{
-		ProductMoves: metronome.F([]metronome.V1ContractRateCardProductOrderUpdateParamsProductMove{{
-			Position:  metronome.F(0.000000),
-			ProductID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		ProductMoves: []metronome.V1ContractRateCardProductOrderUpdateParamsProductMove{{
+			Position:  0,
+			ProductID: "13117714-3f05-48e5-a6e9-a66093f13b4d",
 		}, {
-			Position:  metronome.F(1.000000),
-			ProductID: metronome.F("b086f2f4-9851-4466-9ca0-30d53e6a42ac"),
-		}}),
-		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+			Position:  1,
+			ProductID: "b086f2f4-9851-4466-9ca0-30d53e6a42ac",
+		}},
+		RateCardID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -57,8 +57,8 @@ func TestV1ContractRateCardProductOrderSet(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.ProductOrders.Set(context.TODO(), metronome.V1ContractRateCardProductOrderSetParams{
-		ProductOrder: metronome.F([]string{"13117714-3f05-48e5-a6e9-a66093f13b4d", "b086f2f4-9851-4466-9ca0-30d53e6a42ac"}),
-		RateCardID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		ProductOrder: []string{"13117714-3f05-48e5-a6e9-a66093f13b4d", "b086f2f4-9851-4466-9ca0-30d53e6a42ac"},
+		RateCardID:   "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 	})
 	if err != nil {
 		var apierr *metronome.Error

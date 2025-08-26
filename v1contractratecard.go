@@ -4,16 +4,20 @@ package metronome
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
+	shimjson "github.com/Metronome-Industries/metronome-go/internal/encoding/json"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1ContractRateCardService contains methods and other services that help with
@@ -24,16 +28,16 @@ import (
 // the [NewV1ContractRateCardService] method instead.
 type V1ContractRateCardService struct {
 	Options        []option.RequestOption
-	ProductOrders  *V1ContractRateCardProductOrderService
-	Rates          *V1ContractRateCardRateService
-	NamedSchedules *V1ContractRateCardNamedScheduleService
+	ProductOrders  V1ContractRateCardProductOrderService
+	Rates          V1ContractRateCardRateService
+	NamedSchedules V1ContractRateCardNamedScheduleService
 }
 
 // NewV1ContractRateCardService generates a new service that applies the given
 // options to each request. These options are applied after the parent client's
 // options (if there is one), and before any request-specific options.
-func NewV1ContractRateCardService(opts ...option.RequestOption) (r *V1ContractRateCardService) {
-	r = &V1ContractRateCardService{}
+func NewV1ContractRateCardService(opts ...option.RequestOption) (r V1ContractRateCardService) {
+	r = V1ContractRateCardService{}
 	r.Options = opts
 	r.ProductOrders = NewV1ContractRateCardProductOrderService(opts...)
 	r.Rates = NewV1ContractRateCardRateService(opts...)
@@ -207,66 +211,35 @@ func (r *V1ContractRateCardService) GetRateSchedule(ctx context.Context, params 
 }
 
 type V1ContractRateCardNewResponse struct {
-	Data V1ContractRateCardNewResponseData `json:"data,required"`
-	JSON v1ContractRateCardNewResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ContractRateCardNewResponseJSON contains the JSON metadata for the struct
-// [V1ContractRateCardNewResponse]
-type v1ContractRateCardNewResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardNewResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardNewResponseData struct {
-	ID   string                                `json:"id,required" format:"uuid"`
-	JSON v1ContractRateCardNewResponseDataJSON `json:"-"`
-}
-
-// v1ContractRateCardNewResponseDataJSON contains the JSON metadata for the struct
-// [V1ContractRateCardNewResponseData]
-type v1ContractRateCardNewResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardNewResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardNewResponseDataJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardGetResponse struct {
 	Data V1ContractRateCardGetResponseData `json:"data,required"`
-	JSON v1ContractRateCardGetResponseJSON `json:"-"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ContractRateCardGetResponseJSON contains the JSON metadata for the struct
-// [V1ContractRateCardGetResponse]
-type v1ContractRateCardGetResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardGetResponseData struct {
@@ -277,171 +250,83 @@ type V1ContractRateCardGetResponseData struct {
 	Aliases               []V1ContractRateCardGetResponseDataAlias                `json:"aliases"`
 	CreditTypeConversions []V1ContractRateCardGetResponseDataCreditTypeConversion `json:"credit_type_conversions"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields   map[string]string                               `json:"custom_fields"`
-	Description    string                                          `json:"description"`
-	FiatCreditType V1ContractRateCardGetResponseDataFiatCreditType `json:"fiat_credit_type"`
-	JSON           v1ContractRateCardGetResponseDataJSON           `json:"-"`
+	CustomFields   map[string]string     `json:"custom_fields"`
+	Description    string                `json:"description"`
+	FiatCreditType shared.CreditTypeData `json:"fiat_credit_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		CreatedAt             respjson.Field
+		CreatedBy             respjson.Field
+		Name                  respjson.Field
+		Aliases               respjson.Field
+		CreditTypeConversions respjson.Field
+		CustomFields          respjson.Field
+		Description           respjson.Field
+		FiatCreditType        respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
 }
 
-// v1ContractRateCardGetResponseDataJSON contains the JSON metadata for the struct
-// [V1ContractRateCardGetResponseData]
-type v1ContractRateCardGetResponseDataJSON struct {
-	ID                    apijson.Field
-	CreatedAt             apijson.Field
-	CreatedBy             apijson.Field
-	Name                  apijson.Field
-	Aliases               apijson.Field
-	CreditTypeConversions apijson.Field
-	CustomFields          apijson.Field
-	Description           apijson.Field
-	FiatCreditType        apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetResponseData) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetResponseDataJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardGetResponseDataAlias struct {
-	Name         string                                     `json:"name,required"`
-	EndingBefore time.Time                                  `json:"ending_before" format:"date-time"`
-	StartingAt   time.Time                                  `json:"starting_at" format:"date-time"`
-	JSON         v1ContractRateCardGetResponseDataAliasJSON `json:"-"`
+	Name         string    `json:"name,required"`
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name         respjson.Field
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
 }
 
-// v1ContractRateCardGetResponseDataAliasJSON contains the JSON metadata for the
-// struct [V1ContractRateCardGetResponseDataAlias]
-type v1ContractRateCardGetResponseDataAliasJSON struct {
-	Name         apijson.Field
-	EndingBefore apijson.Field
-	StartingAt   apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetResponseDataAlias) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardGetResponseDataAlias) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardGetResponseDataAlias) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetResponseDataAliasJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardGetResponseDataCreditTypeConversion struct {
-	CustomCreditType    V1ContractRateCardGetResponseDataCreditTypeConversionsCustomCreditType `json:"custom_credit_type,required"`
-	FiatPerCustomCredit string                                                                 `json:"fiat_per_custom_credit,required"`
-	JSON                v1ContractRateCardGetResponseDataCreditTypeConversionJSON              `json:"-"`
+	CustomCreditType    shared.CreditTypeData `json:"custom_credit_type,required"`
+	FiatPerCustomCredit string                `json:"fiat_per_custom_credit,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomCreditType    respjson.Field
+		FiatPerCustomCredit respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
 }
 
-// v1ContractRateCardGetResponseDataCreditTypeConversionJSON contains the JSON
-// metadata for the struct [V1ContractRateCardGetResponseDataCreditTypeConversion]
-type v1ContractRateCardGetResponseDataCreditTypeConversionJSON struct {
-	CustomCreditType    apijson.Field
-	FiatPerCustomCredit apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetResponseDataCreditTypeConversion) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardGetResponseDataCreditTypeConversion) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardGetResponseDataCreditTypeConversion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetResponseDataCreditTypeConversionJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardGetResponseDataCreditTypeConversionsCustomCreditType struct {
-	ID   string                                                                     `json:"id,required" format:"uuid"`
-	Name string                                                                     `json:"name,required"`
-	JSON v1ContractRateCardGetResponseDataCreditTypeConversionsCustomCreditTypeJSON `json:"-"`
-}
-
-// v1ContractRateCardGetResponseDataCreditTypeConversionsCustomCreditTypeJSON
-// contains the JSON metadata for the struct
-// [V1ContractRateCardGetResponseDataCreditTypeConversionsCustomCreditType]
-type v1ContractRateCardGetResponseDataCreditTypeConversionsCustomCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetResponseDataCreditTypeConversionsCustomCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetResponseDataCreditTypeConversionsCustomCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardGetResponseDataFiatCreditType struct {
-	ID   string                                              `json:"id,required" format:"uuid"`
-	Name string                                              `json:"name,required"`
-	JSON v1ContractRateCardGetResponseDataFiatCreditTypeJSON `json:"-"`
-}
-
-// v1ContractRateCardGetResponseDataFiatCreditTypeJSON contains the JSON metadata
-// for the struct [V1ContractRateCardGetResponseDataFiatCreditType]
-type v1ContractRateCardGetResponseDataFiatCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetResponseDataFiatCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetResponseDataFiatCreditTypeJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardUpdateResponse struct {
-	Data V1ContractRateCardUpdateResponseData `json:"data,required"`
-	JSON v1ContractRateCardUpdateResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ContractRateCardUpdateResponseJSON contains the JSON metadata for the struct
-// [V1ContractRateCardUpdateResponse]
-type v1ContractRateCardUpdateResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardUpdateResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardUpdateResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardUpdateResponseData struct {
-	ID   string                                   `json:"id,required" format:"uuid"`
-	JSON v1ContractRateCardUpdateResponseDataJSON `json:"-"`
-}
-
-// v1ContractRateCardUpdateResponseDataJSON contains the JSON metadata for the
-// struct [V1ContractRateCardUpdateResponseData]
-type v1ContractRateCardUpdateResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardUpdateResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardUpdateResponseDataJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardListResponse struct {
@@ -452,533 +337,268 @@ type V1ContractRateCardListResponse struct {
 	Aliases               []V1ContractRateCardListResponseAlias                `json:"aliases"`
 	CreditTypeConversions []V1ContractRateCardListResponseCreditTypeConversion `json:"credit_type_conversions"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields   map[string]string                            `json:"custom_fields"`
-	Description    string                                       `json:"description"`
-	FiatCreditType V1ContractRateCardListResponseFiatCreditType `json:"fiat_credit_type"`
-	JSON           v1ContractRateCardListResponseJSON           `json:"-"`
+	CustomFields   map[string]string     `json:"custom_fields"`
+	Description    string                `json:"description"`
+	FiatCreditType shared.CreditTypeData `json:"fiat_credit_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		CreatedAt             respjson.Field
+		CreatedBy             respjson.Field
+		Name                  respjson.Field
+		Aliases               respjson.Field
+		CreditTypeConversions respjson.Field
+		CustomFields          respjson.Field
+		Description           respjson.Field
+		FiatCreditType        respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
 }
 
-// v1ContractRateCardListResponseJSON contains the JSON metadata for the struct
-// [V1ContractRateCardListResponse]
-type v1ContractRateCardListResponseJSON struct {
-	ID                    apijson.Field
-	CreatedAt             apijson.Field
-	CreatedBy             apijson.Field
-	Name                  apijson.Field
-	Aliases               apijson.Field
-	CreditTypeConversions apijson.Field
-	CustomFields          apijson.Field
-	Description           apijson.Field
-	FiatCreditType        apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardListResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardListResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardListResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardListResponseAlias struct {
-	Name         string                                  `json:"name,required"`
-	EndingBefore time.Time                               `json:"ending_before" format:"date-time"`
-	StartingAt   time.Time                               `json:"starting_at" format:"date-time"`
-	JSON         v1ContractRateCardListResponseAliasJSON `json:"-"`
+	Name         string    `json:"name,required"`
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name         respjson.Field
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
 }
 
-// v1ContractRateCardListResponseAliasJSON contains the JSON metadata for the
-// struct [V1ContractRateCardListResponseAlias]
-type v1ContractRateCardListResponseAliasJSON struct {
-	Name         apijson.Field
-	EndingBefore apijson.Field
-	StartingAt   apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardListResponseAlias) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardListResponseAlias) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardListResponseAlias) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardListResponseAliasJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardListResponseCreditTypeConversion struct {
-	CustomCreditType    V1ContractRateCardListResponseCreditTypeConversionsCustomCreditType `json:"custom_credit_type,required"`
-	FiatPerCustomCredit string                                                              `json:"fiat_per_custom_credit,required"`
-	JSON                v1ContractRateCardListResponseCreditTypeConversionJSON              `json:"-"`
+	CustomCreditType    shared.CreditTypeData `json:"custom_credit_type,required"`
+	FiatPerCustomCredit string                `json:"fiat_per_custom_credit,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomCreditType    respjson.Field
+		FiatPerCustomCredit respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
 }
 
-// v1ContractRateCardListResponseCreditTypeConversionJSON contains the JSON
-// metadata for the struct [V1ContractRateCardListResponseCreditTypeConversion]
-type v1ContractRateCardListResponseCreditTypeConversionJSON struct {
-	CustomCreditType    apijson.Field
-	FiatPerCustomCredit apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardListResponseCreditTypeConversion) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardListResponseCreditTypeConversion) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardListResponseCreditTypeConversion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardListResponseCreditTypeConversionJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardListResponseCreditTypeConversionsCustomCreditType struct {
-	ID   string                                                                  `json:"id,required" format:"uuid"`
-	Name string                                                                  `json:"name,required"`
-	JSON v1ContractRateCardListResponseCreditTypeConversionsCustomCreditTypeJSON `json:"-"`
-}
-
-// v1ContractRateCardListResponseCreditTypeConversionsCustomCreditTypeJSON contains
-// the JSON metadata for the struct
-// [V1ContractRateCardListResponseCreditTypeConversionsCustomCreditType]
-type v1ContractRateCardListResponseCreditTypeConversionsCustomCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardListResponseCreditTypeConversionsCustomCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardListResponseCreditTypeConversionsCustomCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardListResponseFiatCreditType struct {
-	ID   string                                           `json:"id,required" format:"uuid"`
-	Name string                                           `json:"name,required"`
-	JSON v1ContractRateCardListResponseFiatCreditTypeJSON `json:"-"`
-}
-
-// v1ContractRateCardListResponseFiatCreditTypeJSON contains the JSON metadata for
-// the struct [V1ContractRateCardListResponseFiatCreditType]
-type v1ContractRateCardListResponseFiatCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardListResponseFiatCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardListResponseFiatCreditTypeJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardArchiveResponse struct {
-	Data V1ContractRateCardArchiveResponseData `json:"data,required"`
-	JSON v1ContractRateCardArchiveResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ContractRateCardArchiveResponseJSON contains the JSON metadata for the struct
-// [V1ContractRateCardArchiveResponse]
-type v1ContractRateCardArchiveResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardArchiveResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardArchiveResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardArchiveResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardArchiveResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardArchiveResponseData struct {
-	ID   string                                    `json:"id,required" format:"uuid"`
-	JSON v1ContractRateCardArchiveResponseDataJSON `json:"-"`
-}
-
-// v1ContractRateCardArchiveResponseDataJSON contains the JSON metadata for the
-// struct [V1ContractRateCardArchiveResponseData]
-type v1ContractRateCardArchiveResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardArchiveResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardArchiveResponseDataJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardGetRateScheduleResponse struct {
 	Data     []V1ContractRateCardGetRateScheduleResponseData `json:"data,required"`
 	NextPage string                                          `json:"next_page,nullable"`
-	JSON     v1ContractRateCardGetRateScheduleResponseJSON   `json:"-"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		NextPage    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ContractRateCardGetRateScheduleResponseJSON contains the JSON metadata for the
-// struct [V1ContractRateCardGetRateScheduleResponse]
-type v1ContractRateCardGetRateScheduleResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetRateScheduleResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardGetRateScheduleResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardGetRateScheduleResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetRateScheduleResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardGetRateScheduleResponseData struct {
 	Entitled bool `json:"entitled,required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	ProductCustomFields map[string]string                                             `json:"product_custom_fields,required"`
-	ProductID           string                                                        `json:"product_id,required" format:"uuid"`
-	ProductName         string                                                        `json:"product_name,required"`
-	ProductTags         []string                                                      `json:"product_tags,required"`
-	Rate                V1ContractRateCardGetRateScheduleResponseDataRate             `json:"rate,required"`
-	StartingAt          time.Time                                                     `json:"starting_at,required" format:"date-time"`
-	BillingFrequency    V1ContractRateCardGetRateScheduleResponseDataBillingFrequency `json:"billing_frequency"`
+	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
+	ProductID           string            `json:"product_id,required" format:"uuid"`
+	ProductName         string            `json:"product_name,required"`
+	ProductTags         []string          `json:"product_tags,required"`
+	Rate                shared.Rate       `json:"rate,required"`
+	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency string `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
-	CommitRate         V1ContractRateCardGetRateScheduleResponseDataCommitRate `json:"commit_rate"`
-	EndingBefore       time.Time                                               `json:"ending_before" format:"date-time"`
-	PricingGroupValues map[string]string                                       `json:"pricing_group_values"`
-	JSON               v1ContractRateCardGetRateScheduleResponseDataJSON       `json:"-"`
-}
-
-// v1ContractRateCardGetRateScheduleResponseDataJSON contains the JSON metadata for
-// the struct [V1ContractRateCardGetRateScheduleResponseData]
-type v1ContractRateCardGetRateScheduleResponseDataJSON struct {
-	Entitled            apijson.Field
-	ProductCustomFields apijson.Field
-	ProductID           apijson.Field
-	ProductName         apijson.Field
-	ProductTags         apijson.Field
-	Rate                apijson.Field
-	StartingAt          apijson.Field
-	BillingFrequency    apijson.Field
-	CommitRate          apijson.Field
-	EndingBefore        apijson.Field
-	PricingGroupValues  apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetRateScheduleResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetRateScheduleResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataRate struct {
-	RateType   V1ContractRateCardGetRateScheduleResponseDataRateRateType   `json:"rate_type,required"`
-	CreditType V1ContractRateCardGetRateScheduleResponseDataRateCreditType `json:"credit_type"`
-	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
-	// processors.
-	CustomRate map[string]interface{} `json:"custom_rate"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
-	// set to true.
-	IsProrated bool `json:"is_prorated"`
-	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
-	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-	Price float64 `json:"price"`
-	// if pricing groups are used, this will contain the values used to calculate the
-	// price
+	CommitRate         shared.CommitRate `json:"commit_rate"`
+	EndingBefore       time.Time         `json:"ending_before" format:"date-time"`
 	PricingGroupValues map[string]string `json:"pricing_group_values"`
-	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-	Quantity float64 `json:"quantity"`
-	// Only set for TIERED rate_type.
-	Tiers []V1ContractRateCardGetRateScheduleResponseDataRateTier `json:"tiers"`
-	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
-	// using list prices rather than the standard rates for this product on the
-	// contract.
-	UseListPrices bool                                                  `json:"use_list_prices"`
-	JSON          v1ContractRateCardGetRateScheduleResponseDataRateJSON `json:"-"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entitled            respjson.Field
+		ProductCustomFields respjson.Field
+		ProductID           respjson.Field
+		ProductName         respjson.Field
+		ProductTags         respjson.Field
+		Rate                respjson.Field
+		StartingAt          respjson.Field
+		BillingFrequency    respjson.Field
+		CommitRate          respjson.Field
+		EndingBefore        respjson.Field
+		PricingGroupValues  respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
 }
 
-// v1ContractRateCardGetRateScheduleResponseDataRateJSON contains the JSON metadata
-// for the struct [V1ContractRateCardGetRateScheduleResponseDataRate]
-type v1ContractRateCardGetRateScheduleResponseDataRateJSON struct {
-	RateType           apijson.Field
-	CreditType         apijson.Field
-	CustomRate         apijson.Field
-	IsProrated         apijson.Field
-	Price              apijson.Field
-	PricingGroupValues apijson.Field
-	Quantity           apijson.Field
-	Tiers              apijson.Field
-	UseListPrices      apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetRateScheduleResponseDataRate) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardGetRateScheduleResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardGetRateScheduleResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetRateScheduleResponseDataRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataRateRateType string
-
-const (
-	V1ContractRateCardGetRateScheduleResponseDataRateRateTypeFlat         V1ContractRateCardGetRateScheduleResponseDataRateRateType = "FLAT"
-	V1ContractRateCardGetRateScheduleResponseDataRateRateTypePercentage   V1ContractRateCardGetRateScheduleResponseDataRateRateType = "PERCENTAGE"
-	V1ContractRateCardGetRateScheduleResponseDataRateRateTypeSubscription V1ContractRateCardGetRateScheduleResponseDataRateRateType = "SUBSCRIPTION"
-	V1ContractRateCardGetRateScheduleResponseDataRateRateTypeCustom       V1ContractRateCardGetRateScheduleResponseDataRateRateType = "CUSTOM"
-	V1ContractRateCardGetRateScheduleResponseDataRateRateTypeTiered       V1ContractRateCardGetRateScheduleResponseDataRateRateType = "TIERED"
-)
-
-func (r V1ContractRateCardGetRateScheduleResponseDataRateRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardGetRateScheduleResponseDataRateRateTypeFlat, V1ContractRateCardGetRateScheduleResponseDataRateRateTypePercentage, V1ContractRateCardGetRateScheduleResponseDataRateRateTypeSubscription, V1ContractRateCardGetRateScheduleResponseDataRateRateTypeCustom, V1ContractRateCardGetRateScheduleResponseDataRateRateTypeTiered:
-		return true
-	}
-	return false
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataRateCreditType struct {
-	ID   string                                                          `json:"id,required" format:"uuid"`
-	Name string                                                          `json:"name,required"`
-	JSON v1ContractRateCardGetRateScheduleResponseDataRateCreditTypeJSON `json:"-"`
-}
-
-// v1ContractRateCardGetRateScheduleResponseDataRateCreditTypeJSON contains the
-// JSON metadata for the struct
-// [V1ContractRateCardGetRateScheduleResponseDataRateCreditType]
-type v1ContractRateCardGetRateScheduleResponseDataRateCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetRateScheduleResponseDataRateCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetRateScheduleResponseDataRateCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataRateTier struct {
-	Price float64                                                   `json:"price,required"`
-	Size  float64                                                   `json:"size"`
-	JSON  v1ContractRateCardGetRateScheduleResponseDataRateTierJSON `json:"-"`
-}
-
-// v1ContractRateCardGetRateScheduleResponseDataRateTierJSON contains the JSON
-// metadata for the struct [V1ContractRateCardGetRateScheduleResponseDataRateTier]
-type v1ContractRateCardGetRateScheduleResponseDataRateTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetRateScheduleResponseDataRateTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetRateScheduleResponseDataRateTierJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataBillingFrequency string
-
-const (
-	V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyMonthly   V1ContractRateCardGetRateScheduleResponseDataBillingFrequency = "MONTHLY"
-	V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyQuarterly V1ContractRateCardGetRateScheduleResponseDataBillingFrequency = "QUARTERLY"
-	V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyAnnual    V1ContractRateCardGetRateScheduleResponseDataBillingFrequency = "ANNUAL"
-	V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyWeekly    V1ContractRateCardGetRateScheduleResponseDataBillingFrequency = "WEEKLY"
-)
-
-func (r V1ContractRateCardGetRateScheduleResponseDataBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyMonthly, V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyQuarterly, V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyAnnual, V1ContractRateCardGetRateScheduleResponseDataBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-// A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit.
-type V1ContractRateCardGetRateScheduleResponseDataCommitRate struct {
-	RateType V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType `json:"rate_type,required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
-	Price float64 `json:"price"`
-	// Only set for TIERED rate_type.
-	Tiers []V1ContractRateCardGetRateScheduleResponseDataCommitRateTier `json:"tiers"`
-	JSON  v1ContractRateCardGetRateScheduleResponseDataCommitRateJSON   `json:"-"`
-}
-
-// v1ContractRateCardGetRateScheduleResponseDataCommitRateJSON contains the JSON
-// metadata for the struct
-// [V1ContractRateCardGetRateScheduleResponseDataCommitRate]
-type v1ContractRateCardGetRateScheduleResponseDataCommitRateJSON struct {
-	RateType    apijson.Field
-	Price       apijson.Field
-	Tiers       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetRateScheduleResponseDataCommitRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetRateScheduleResponseDataCommitRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType string
-
-const (
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeFlat         V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "FLAT"
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypePercentage   V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "PERCENTAGE"
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeSubscription V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "SUBSCRIPTION"
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeTiered       V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "TIERED"
-	V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeCustom       V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType = "CUSTOM"
-)
-
-func (r V1ContractRateCardGetRateScheduleResponseDataCommitRateRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeFlat, V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypePercentage, V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeSubscription, V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeTiered, V1ContractRateCardGetRateScheduleResponseDataCommitRateRateTypeCustom:
-		return true
-	}
-	return false
-}
-
-type V1ContractRateCardGetRateScheduleResponseDataCommitRateTier struct {
-	Price float64                                                         `json:"price,required"`
-	Size  float64                                                         `json:"size"`
-	JSON  v1ContractRateCardGetRateScheduleResponseDataCommitRateTierJSON `json:"-"`
-}
-
-// v1ContractRateCardGetRateScheduleResponseDataCommitRateTierJSON contains the
-// JSON metadata for the struct
-// [V1ContractRateCardGetRateScheduleResponseDataCommitRateTier]
-type v1ContractRateCardGetRateScheduleResponseDataCommitRateTierJSON struct {
-	Price       apijson.Field
-	Size        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardGetRateScheduleResponseDataCommitRateTier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardGetRateScheduleResponseDataCommitRateTierJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardNewParams struct {
 	// Used only in UI/API. It is not exposed to end customers.
-	Name param.Field[string] `json:"name,required"`
+	Name        string            `json:"name,required"`
+	Description param.Opt[string] `json:"description,omitzero"`
+	// The Metronome ID of the credit type to associate with the rate card, defaults to
+	// USD (cents) if not passed.
+	FiatCreditTypeID param.Opt[string] `json:"fiat_credit_type_id,omitzero" format:"uuid"`
 	// Reference this alias when creating a contract. If the same alias is assigned to
 	// multiple rate cards, it will reference the rate card to which it was most
 	// recently assigned. It is not exposed to end customers.
-	Aliases param.Field[[]V1ContractRateCardNewParamsAlias] `json:"aliases"`
+	Aliases []V1ContractRateCardNewParamsAlias `json:"aliases,omitzero"`
 	// Required when using custom pricing units in rates.
-	CreditTypeConversions param.Field[[]V1ContractRateCardNewParamsCreditTypeConversion] `json:"credit_type_conversions"`
+	CreditTypeConversions []V1ContractRateCardNewParamsCreditTypeConversion `json:"credit_type_conversions,omitzero"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields param.Field[map[string]string] `json:"custom_fields"`
-	Description  param.Field[string]            `json:"description"`
-	// The Metronome ID of the credit type to associate with the rate card, defaults to
-	// USD (cents) if not passed.
-	FiatCreditTypeID param.Field[string] `json:"fiat_credit_type_id" format:"uuid"`
+	CustomFields map[string]string `json:"custom_fields,omitzero"`
+	paramObj
 }
 
 func (r V1ContractRateCardNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Name is required.
 type V1ContractRateCardNewParamsAlias struct {
-	Name         param.Field[string]    `json:"name,required"`
-	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	StartingAt   param.Field[time.Time] `json:"starting_at" format:"date-time"`
+	Name         string               `json:"name,required"`
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	StartingAt   param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	paramObj
 }
 
 func (r V1ContractRateCardNewParamsAlias) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardNewParamsAlias
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardNewParamsAlias) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties CustomCreditTypeID, FiatPerCustomCredit are required.
 type V1ContractRateCardNewParamsCreditTypeConversion struct {
-	CustomCreditTypeID  param.Field[string]  `json:"custom_credit_type_id,required" format:"uuid"`
-	FiatPerCustomCredit param.Field[float64] `json:"fiat_per_custom_credit,required"`
+	CustomCreditTypeID  string  `json:"custom_credit_type_id,required" format:"uuid"`
+	FiatPerCustomCredit float64 `json:"fiat_per_custom_credit,required"`
+	paramObj
 }
 
 func (r V1ContractRateCardNewParamsCreditTypeConversion) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardNewParamsCreditTypeConversion
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardNewParamsCreditTypeConversion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractRateCardGetParams struct {
-	ID param.Field[string] `json:"id,required" format:"uuid"`
+	ID shared.IDParam
+	paramObj
 }
 
 func (r V1ContractRateCardGetParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return shimjson.Marshal(r.ID)
+}
+func (r *V1ContractRateCardGetParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.ID)
 }
 
 type V1ContractRateCardUpdateParams struct {
 	// ID of the rate card to update
-	RateCardID param.Field[string] `json:"rate_card_id,required" format:"uuid"`
+	RateCardID  string            `json:"rate_card_id,required" format:"uuid"`
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Used only in UI/API. It is not exposed to end customers.
+	Name param.Opt[string] `json:"name,omitzero"`
 	// Reference this alias when creating a contract. If the same alias is assigned to
 	// multiple rate cards, it will reference the rate card to which it was most
 	// recently assigned. It is not exposed to end customers.
-	Aliases     param.Field[[]V1ContractRateCardUpdateParamsAlias] `json:"aliases"`
-	Description param.Field[string]                                `json:"description"`
-	// Used only in UI/API. It is not exposed to end customers.
-	Name param.Field[string] `json:"name"`
+	Aliases []V1ContractRateCardUpdateParamsAlias `json:"aliases,omitzero"`
+	paramObj
 }
 
 func (r V1ContractRateCardUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Name is required.
 type V1ContractRateCardUpdateParamsAlias struct {
-	Name         param.Field[string]    `json:"name,required"`
-	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
-	StartingAt   param.Field[time.Time] `json:"starting_at" format:"date-time"`
+	Name         string               `json:"name,required"`
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	StartingAt   param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	paramObj
 }
 
 func (r V1ContractRateCardUpdateParamsAlias) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardUpdateParamsAlias
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardUpdateParamsAlias) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractRateCardListParams struct {
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
-	Body     interface{}         `json:"body"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
+	Body     any
+	paramObj
 }
 
 func (r V1ContractRateCardListParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
+	return shimjson.Marshal(r.Body)
+}
+func (r *V1ContractRateCardListParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.Body)
 }
 
 // URLQuery serializes [V1ContractRateCardListParams]'s query parameters as
 // `url.Values`.
-func (r V1ContractRateCardListParams) URLQuery() (v url.Values) {
+func (r V1ContractRateCardListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -986,37 +606,46 @@ func (r V1ContractRateCardListParams) URLQuery() (v url.Values) {
 }
 
 type V1ContractRateCardArchiveParams struct {
-	ID param.Field[string] `json:"id,required" format:"uuid"`
+	ID shared.IDParam
+	paramObj
 }
 
 func (r V1ContractRateCardArchiveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return shimjson.Marshal(r.ID)
+}
+func (r *V1ContractRateCardArchiveParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.ID)
 }
 
 type V1ContractRateCardGetRateScheduleParams struct {
 	// ID of the rate card to get the schedule for
-	RateCardID param.Field[string] `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id,required" format:"uuid"`
 	// inclusive starting point for the rates schedule
-	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// optional exclusive end date for the rates schedule. When not specified rates
 	// will show all future schedule segments.
-	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	// List of rate selectors, rates matching ANY of the selector will be included in
 	// the response Passing no selectors will result in all rates being returned.
-	Selectors param.Field[[]V1ContractRateCardGetRateScheduleParamsSelector] `json:"selectors"`
+	Selectors []V1ContractRateCardGetRateScheduleParamsSelector `json:"selectors,omitzero"`
+	paramObj
 }
 
 func (r V1ContractRateCardGetRateScheduleParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardGetRateScheduleParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardGetRateScheduleParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1ContractRateCardGetRateScheduleParams]'s query parameters
 // as `url.Values`.
-func (r V1ContractRateCardGetRateScheduleParams) URLQuery() (v url.Values) {
+func (r V1ContractRateCardGetRateScheduleParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -1024,38 +653,32 @@ func (r V1ContractRateCardGetRateScheduleParams) URLQuery() (v url.Values) {
 }
 
 type V1ContractRateCardGetRateScheduleParamsSelector struct {
+	// Rates matching the product id will be included in the response.
+	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
 	// Subscription rates matching the billing frequency will be included in the
 	// response.
-	BillingFrequency param.Field[V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency] `json:"billing_frequency"`
+	//
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// List of pricing group key value pairs, rates containing the matching key / value
 	// pairs will be included in the response.
-	PartialPricingGroupValues param.Field[map[string]string] `json:"partial_pricing_group_values"`
+	PartialPricingGroupValues map[string]string `json:"partial_pricing_group_values,omitzero"`
 	// List of pricing group key value pairs, rates matching all of the key / value
 	// pairs will be included in the response.
-	PricingGroupValues param.Field[map[string]string] `json:"pricing_group_values"`
-	// Rates matching the product id will be included in the response.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
+	paramObj
 }
 
 func (r V1ContractRateCardGetRateScheduleParamsSelector) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardGetRateScheduleParamsSelector
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardGetRateScheduleParamsSelector) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-// Subscription rates matching the billing frequency will be included in the
-// response.
-type V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency string
-
-const (
-	V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyMonthly   V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency = "MONTHLY"
-	V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyQuarterly V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency = "QUARTERLY"
-	V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyAnnual    V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency = "ANNUAL"
-	V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyWeekly    V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency = "WEEKLY"
-)
-
-func (r V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyMonthly, V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyQuarterly, V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyAnnual, V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyWeekly:
-		return true
-	}
-	return false
+func init() {
+	apijson.RegisterFieldValidator[V1ContractRateCardGetRateScheduleParamsSelector](
+		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+	)
 }

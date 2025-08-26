@@ -9,10 +9,11 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 )
 
 // V1PricingUnitService contains methods and other services that help with
@@ -28,8 +29,8 @@ type V1PricingUnitService struct {
 // NewV1PricingUnitService generates a new service that applies the given options
 // to each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewV1PricingUnitService(opts ...option.RequestOption) (r *V1PricingUnitService) {
-	r = &V1PricingUnitService{}
+func NewV1PricingUnitService(opts ...option.RequestOption) (r V1PricingUnitService) {
+	r = V1PricingUnitService{}
 	r.Options = opts
 	return
 }
@@ -68,40 +69,36 @@ func (r *V1PricingUnitService) ListAutoPaging(ctx context.Context, query V1Prici
 }
 
 type V1PricingUnitListResponse struct {
-	ID         string                        `json:"id" format:"uuid"`
-	IsCurrency bool                          `json:"is_currency"`
-	Name       string                        `json:"name"`
-	JSON       v1PricingUnitListResponseJSON `json:"-"`
+	ID         string `json:"id" format:"uuid"`
+	IsCurrency bool   `json:"is_currency"`
+	Name       string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsCurrency  respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1PricingUnitListResponseJSON contains the JSON metadata for the struct
-// [V1PricingUnitListResponse]
-type v1PricingUnitListResponseJSON struct {
-	ID          apijson.Field
-	IsCurrency  apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1PricingUnitListResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1PricingUnitListResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1PricingUnitListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1PricingUnitListResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1PricingUnitListParams struct {
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
+	paramObj
 }
 
 // URLQuery serializes [V1PricingUnitListParams]'s query parameters as
 // `url.Values`.
-func (r V1PricingUnitListParams) URLQuery() (v url.Values) {
+func (r V1PricingUnitListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

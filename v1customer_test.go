@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1CustomerNewWithOptionalParams(t *testing.T) {
@@ -27,29 +28,29 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.New(context.TODO(), metronome.V1CustomerNewParams{
-		Name: metronome.F("Example, Inc."),
-		BillingConfig: metronome.F(metronome.V1CustomerNewParamsBillingConfig{
-			BillingProviderCustomerID: metronome.F("billing_provider_customer_id"),
-			BillingProviderType:       metronome.F(metronome.V1CustomerNewParamsBillingConfigBillingProviderTypeAwsMarketplace),
-			AwsIsSubscriptionProduct:  metronome.F(true),
-			AwsProductCode:            metronome.F("aws_product_code"),
-			AwsRegion:                 metronome.F(metronome.V1CustomerNewParamsBillingConfigAwsRegionAfSouth1),
-			StripeCollectionMethod:    metronome.F(metronome.V1CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically),
-		}),
-		CustomFields: metronome.F(map[string]string{
+		Name: "Example, Inc.",
+		BillingConfig: metronome.V1CustomerNewParamsBillingConfig{
+			BillingProviderCustomerID: "billing_provider_customer_id",
+			BillingProviderType:       "aws_marketplace",
+			AwsIsSubscriptionProduct:  metronome.Bool(true),
+			AwsProductCode:            metronome.String("aws_product_code"),
+			AwsRegion:                 "af-south-1",
+			StripeCollectionMethod:    "charge_automatically",
+		},
+		CustomFields: map[string]string{
 			"foo": "string",
-		}),
-		CustomerBillingProviderConfigurations: metronome.F([]metronome.V1CustomerNewParamsCustomerBillingProviderConfiguration{{
-			BillingProvider: metronome.F(metronome.V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderStripe),
-			Configuration: metronome.F(map[string]interface{}{
+		},
+		CustomerBillingProviderConfigurations: []metronome.V1CustomerNewParamsCustomerBillingProviderConfiguration{{
+			BillingProvider: "stripe",
+			Configuration: map[string]any{
 				"stripe_customer_id":       "bar",
 				"stripe_collection_method": "bar",
-			}),
-			DeliveryMethod:   metronome.F(metronome.V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodDirectToBillingProvider),
-			DeliveryMethodID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		}}),
-		ExternalID:    metronome.F("x"),
-		IngestAliases: metronome.F([]string{"team@example.com"}),
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		}},
+		ExternalID:    metronome.String("x"),
+		IngestAliases: []string{"team@example.com"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -73,7 +74,7 @@ func TestV1CustomerGet(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Get(context.TODO(), metronome.V1CustomerGetParams{
-		CustomerID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		CustomerID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -97,12 +98,12 @@ func TestV1CustomerListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.List(context.TODO(), metronome.V1CustomerListParams{
-		CustomerIDs:          metronome.F([]string{"string"}),
-		IngestAlias:          metronome.F("ingest_alias"),
-		Limit:                metronome.F(int64(1)),
-		NextPage:             metronome.F("next_page"),
-		OnlyArchived:         metronome.F(true),
-		SalesforceAccountIDs: metronome.F([]string{"string"}),
+		CustomerIDs:          []string{"string"},
+		IngestAlias:          metronome.String("ingest_alias"),
+		Limit:                metronome.Int(1),
+		NextPage:             metronome.String("next_page"),
+		OnlyArchived:         metronome.Bool(true),
+		SalesforceAccountIDs: []string{"string"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -126,7 +127,9 @@ func TestV1CustomerArchive(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Archive(context.TODO(), metronome.V1CustomerArchiveParams{
-		ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
+		ID: shared.IDParam{
+			ID: "8deed800-1b7a-495d-a207-6c52bac54dc9",
+		},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -150,11 +153,11 @@ func TestV1CustomerListBillableMetricsWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.ListBillableMetrics(context.TODO(), metronome.V1CustomerListBillableMetricsParams{
-		CustomerID:      metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		IncludeArchived: metronome.F(true),
-		Limit:           metronome.F(int64(1)),
-		NextPage:        metronome.F("next_page"),
-		OnCurrentPlan:   metronome.F(true),
+		CustomerID:      "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		IncludeArchived: metronome.Bool(true),
+		Limit:           metronome.Int(1),
+		NextPage:        metronome.String("next_page"),
+		OnCurrentPlan:   metronome.Bool(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -178,11 +181,11 @@ func TestV1CustomerListCostsWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.ListCosts(context.TODO(), metronome.V1CustomerListCostsParams{
-		CustomerID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		EndingBefore: metronome.F(time.Now()),
-		StartingOn:   metronome.F(time.Now()),
-		Limit:        metronome.F(int64(1)),
-		NextPage:     metronome.F("next_page"),
+		CustomerID:   "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		EndingBefore: time.Now(),
+		StartingOn:   time.Now(),
+		Limit:        metronome.Int(1),
+		NextPage:     metronome.String("next_page"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -206,19 +209,19 @@ func TestV1CustomerPreviewEventsWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.PreviewEvents(context.TODO(), metronome.V1CustomerPreviewEventsParams{
-		CustomerID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Events: metronome.F([]metronome.V1CustomerPreviewEventsParamsEvent{{
-			EventType:  metronome.F("heartbeat"),
-			CustomerID: metronome.F("x"),
-			Properties: metronome.F(map[string]interface{}{
+		CustomerID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		Events: []metronome.V1CustomerPreviewEventsParamsEvent{{
+			EventType:  "heartbeat",
+			CustomerID: metronome.String("x"),
+			Properties: map[string]any{
 				"cpu_hours":       "bar",
 				"memory_gb_hours": "bar",
-			}),
-			Timestamp:     metronome.F("2021-01-01T00:00:00Z"),
-			TransactionID: metronome.F("x"),
-		}}),
-		Mode:                 metronome.F(metronome.V1CustomerPreviewEventsParamsModeReplace),
-		SkipZeroQtyLineItems: metronome.F(true),
+			},
+			Timestamp:     metronome.String("2021-01-01T00:00:00Z"),
+			TransactionID: metronome.String("x"),
+		}},
+		Mode:                 metronome.V1CustomerPreviewEventsParamsModeReplace,
+		SkipZeroQtyLineItems: metronome.Bool(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -242,7 +245,7 @@ func TestV1CustomerGetBillingConfigurations(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.GetBillingConfigurations(context.TODO(), metronome.V1CustomerGetBillingConfigurationsParams{
-		CustomerID: metronome.F("6a37bb88-8538-48c5-b37b-a41c836328bd"),
+		CustomerID: "6a37bb88-8538-48c5-b37b-a41c836328bd",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -266,46 +269,46 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.Customers.SetBillingConfigurations(context.TODO(), metronome.V1CustomerSetBillingConfigurationsParams{
-		Data: metronome.F([]metronome.V1CustomerSetBillingConfigurationsParamsData{{
-			BillingProvider: metronome.F(metronome.V1CustomerSetBillingConfigurationsParamsDataBillingProviderStripe),
-			CustomerID:      metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
-			Configuration: metronome.F(map[string]interface{}{
+		Data: []metronome.V1CustomerSetBillingConfigurationsParamsData{{
+			BillingProvider: "stripe",
+			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
+			Configuration: map[string]any{
 				"stripe_customer_id":             "bar",
 				"stripe_collection_method":       "bar",
 				"leave_stripe_invoices_in_draft": "bar",
-			}),
-			DeliveryMethod:   metronome.F(metronome.V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider),
-			DeliveryMethodID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}, {
-			BillingProvider: metronome.F(metronome.V1CustomerSetBillingConfigurationsParamsDataBillingProviderAwsMarketplace),
-			CustomerID:      metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
-			Configuration: metronome.F(map[string]interface{}{
+			BillingProvider: "aws_marketplace",
+			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
+			Configuration: map[string]any{
 				"aws_customer_id":  "bar",
 				"aws_product_code": "bar",
 				"aws_region":       "bar",
-			}),
-			DeliveryMethod:   metronome.F(metronome.V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider),
-			DeliveryMethodID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}, {
-			BillingProvider: metronome.F(metronome.V1CustomerSetBillingConfigurationsParamsDataBillingProviderAzureMarketplace),
-			CustomerID:      metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
-			Configuration: metronome.F(map[string]interface{}{
+			BillingProvider: "azure_marketplace",
+			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
+			Configuration: map[string]any{
 				"azure_subscription_id": "bar",
-			}),
-			DeliveryMethod:   metronome.F(metronome.V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider),
-			DeliveryMethodID: metronome.F("5b9e3072-415b-4842-94f0-0b6700c8b6be"),
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("5b9e3072-415b-4842-94f0-0b6700c8b6be"),
 		}, {
-			BillingProvider: metronome.F(metronome.V1CustomerSetBillingConfigurationsParamsDataBillingProviderAwsMarketplace),
-			CustomerID:      metronome.F("4db51251-61de-4bfe-b9ce-495e244f3491"),
-			Configuration: metronome.F(map[string]interface{}{
+			BillingProvider: "aws_marketplace",
+			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
+			Configuration: map[string]any{
 				"aws_customer_id":             "bar",
 				"aws_product_code":            "bar",
 				"aws_region":                  "bar",
 				"aws_is_subscription_product": "bar",
-			}),
-			DeliveryMethod:   metronome.F(metronome.V1CustomerSetBillingConfigurationsParamsDataDeliveryMethodDirectToBillingProvider),
-			DeliveryMethodID: metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		}}),
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		}},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -329,8 +332,8 @@ func TestV1CustomerSetIngestAliases(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.Customers.SetIngestAliases(context.TODO(), metronome.V1CustomerSetIngestAliasesParams{
-		CustomerID:    metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		IngestAliases: metronome.F([]string{"team@example.com"}),
+		CustomerID:    "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		IngestAliases: []string{"team@example.com"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -354,8 +357,8 @@ func TestV1CustomerSetName(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.SetName(context.TODO(), metronome.V1CustomerSetNameParams{
-		CustomerID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Name:       metronome.F("Example, Inc."),
+		CustomerID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		Name:       "Example, Inc.",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -379,9 +382,9 @@ func TestV1CustomerUpdateConfigWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.Customers.UpdateConfig(context.TODO(), metronome.V1CustomerUpdateConfigParams{
-		CustomerID:                 metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		LeaveStripeInvoicesInDraft: metronome.F(true),
-		SalesforceAccountID:        metronome.F("0015500001WO1ZiABL"),
+		CustomerID:                 "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		LeaveStripeInvoicesInDraft: metronome.Bool(true),
+		SalesforceAccountID:        metronome.String("0015500001WO1ZiABL"),
 	})
 	if err != nil {
 		var apierr *metronome.Error

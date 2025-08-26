@@ -26,12 +26,12 @@ func TestV1CustomerBillingConfigNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.Customers.BillingConfig.New(context.TODO(), metronome.V1CustomerBillingConfigNewParams{
-		CustomerID:                metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		BillingProviderType:       metronome.F(metronome.V1CustomerBillingConfigNewParamsBillingProviderTypeStripe),
-		BillingProviderCustomerID: metronome.F("cus_AJ6y20bjkOOayM"),
-		AwsProductCode:            metronome.F("aws_product_code"),
-		AwsRegion:                 metronome.F(metronome.V1CustomerBillingConfigNewParamsAwsRegionAfSouth1),
-		StripeCollectionMethod:    metronome.F(metronome.V1CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically),
+		CustomerID:                "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		BillingProviderType:       metronome.V1CustomerBillingConfigNewParamsBillingProviderTypeStripe,
+		BillingProviderCustomerID: "cus_AJ6y20bjkOOayM",
+		AwsProductCode:            metronome.String("aws_product_code"),
+		AwsRegion:                 metronome.V1CustomerBillingConfigNewParamsAwsRegionAfSouth1,
+		StripeCollectionMethod:    metronome.V1CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically,
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -55,8 +55,8 @@ func TestV1CustomerBillingConfigGet(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.BillingConfig.Get(context.TODO(), metronome.V1CustomerBillingConfigGetParams{
-		CustomerID:          metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		BillingProviderType: metronome.F(metronome.V1CustomerBillingConfigGetParamsBillingProviderTypeStripe),
+		CustomerID:          "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		BillingProviderType: metronome.V1CustomerBillingConfigGetParamsBillingProviderTypeStripe,
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -80,8 +80,8 @@ func TestV1CustomerBillingConfigDelete(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.Customers.BillingConfig.Delete(context.TODO(), metronome.V1CustomerBillingConfigDeleteParams{
-		CustomerID:          metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		BillingProviderType: metronome.F(metronome.V1CustomerBillingConfigDeleteParamsBillingProviderTypeStripe),
+		CustomerID:          "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		BillingProviderType: metronome.V1CustomerBillingConfigDeleteParamsBillingProviderTypeStripe,
 	})
 	if err != nil {
 		var apierr *metronome.Error

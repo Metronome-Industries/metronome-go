@@ -9,6 +9,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 )
 
 // V1ServiceService contains methods and other services that help with interacting
@@ -24,8 +25,8 @@ type V1ServiceService struct {
 // NewV1ServiceService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewV1ServiceService(opts ...option.RequestOption) (r *V1ServiceService) {
-	r = &V1ServiceService{}
+func NewV1ServiceService(opts ...option.RequestOption) (r V1ServiceService) {
+	r = V1ServiceService{}
 	r.Options = opts
 	return
 }
@@ -45,61 +46,37 @@ func (r *V1ServiceService) List(ctx context.Context, opts ...option.RequestOptio
 
 type V1ServiceListResponse struct {
 	Services []V1ServiceListResponseService `json:"services,required"`
-	JSON     v1ServiceListResponseJSON      `json:"-"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Services    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ServiceListResponseJSON contains the JSON metadata for the struct
-// [V1ServiceListResponse]
-type v1ServiceListResponseJSON struct {
-	Services    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ServiceListResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ServiceListResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ServiceListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ServiceListResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ServiceListResponseService struct {
-	IPs   []string                           `json:"ips,required"`
-	Name  string                             `json:"name,required"`
-	Usage V1ServiceListResponseServicesUsage `json:"usage,required"`
-	JSON  v1ServiceListResponseServiceJSON   `json:"-"`
+	IPs  []string `json:"ips,required"`
+	Name string   `json:"name,required"`
+	// Any of "makes_connections_from", "accepts_connections_at".
+	Usage string `json:"usage,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IPs         respjson.Field
+		Name        respjson.Field
+		Usage       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ServiceListResponseServiceJSON contains the JSON metadata for the struct
-// [V1ServiceListResponseService]
-type v1ServiceListResponseServiceJSON struct {
-	IPs         apijson.Field
-	Name        apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ServiceListResponseService) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ServiceListResponseService) RawJSON() string { return r.JSON.raw }
+func (r *V1ServiceListResponseService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ServiceListResponseServiceJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ServiceListResponseServicesUsage string
-
-const (
-	V1ServiceListResponseServicesUsageMakesConnectionsFrom V1ServiceListResponseServicesUsage = "makes_connections_from"
-	V1ServiceListResponseServicesUsageAcceptsConnectionsAt V1ServiceListResponseServicesUsage = "accepts_connections_at"
-)
-
-func (r V1ServiceListResponseServicesUsage) IsKnown() bool {
-	switch r {
-	case V1ServiceListResponseServicesUsageMakesConnectionsFrom, V1ServiceListResponseServicesUsageAcceptsConnectionsAt:
-		return true
-	}
-	return false
 }
