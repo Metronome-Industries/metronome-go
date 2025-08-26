@@ -12,7 +12,6 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1CustomerCreditNewWithOptionalParams(t *testing.T) {
@@ -50,7 +49,7 @@ func TestV1CustomerCreditNewWithOptionalParams(t *testing.T) {
 		NetsuiteSalesOrderID:    metronome.F("netsuite_sales_order_id"),
 		RateType:                metronome.F(metronome.V1CustomerCreditNewParamsRateTypeCommitRate),
 		SalesforceOpportunityID: metronome.F("salesforce_opportunity_id"),
-		Specifiers: metronome.F([]shared.CommitSpecifierInputParam{{
+		Specifiers: metronome.F([]metronome.V1CustomerCreditNewParamsSpecifier{{
 			PresentationGroupValues: metronome.F(map[string]string{
 				"foo": "string",
 			}),
