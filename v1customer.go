@@ -59,20 +59,22 @@ func NewV1CustomerService(opts ...option.RequestOption) (r V1CustomerService) {
 // (recommended) which dictates where invoices for the customer will be sent or
 // where payment will be collected.
 //
-// Use this endpoint to:\
-// Execute your customer provisioning workflows for either PLG motions, where customers
-// originate in your platform, or SLG motions, where customers originate in your sales
-// system.
+// ### Use this endpoint to:
 //
-//   - Key response fields: This end-point returns the customer_id created by the
-//     request. This id can be used to fetch relevant billing configurations and
-//     create contracts.
+// Execute your customer provisioning workflows for either PLG motions, where
+// customers originate in your platform, or SLG motions, where customers originate
+// in your sales system.
+//
+// ### Key response fields:
+//
+// This end-point returns the `customer_id` created by the request. This id can be
+// used to fetch relevant billing configurations and create contracts.
 //
 // Example workflow:
 //
 //   - Generally, Metronome recommends first creating the customer in the downstream
 //     payment / ERP system when payment method is collected and then creating the
-//     customer in Metronome using the response (i.e. customer_id) from the
+//     customer in Metronome using the response (i.e. `customer_id`) from the
 //     downstream system. If you do not create a billing configuration on customer
 //     creation, you can add it later.
 //   - Once a customer is created, you can then create a contract for the customer.
@@ -83,9 +85,10 @@ func NewV1CustomerService(opts ...option.RequestOption) (r V1CustomerService) {
 //     customer which will ensure usage is accurately mapped to the customer. Ingest
 //     aliases can be added or changed after the creation process as well.
 //
-// Usage guidelines:\
-// For details on different billing configurations for different systems, review the
-// /setCustomerBillingConfiguration end-point.
+// ### Usage guidelines:
+//
+// For details on different billing configurations for different systems, review
+// the /setCustomerBillingConfiguration end-point.
 func (r *V1CustomerService) New(ctx context.Context, body V1CustomerNewParams, opts ...option.RequestOption) (res *V1CustomerNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/customers"
@@ -147,7 +150,7 @@ func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1Customer
 // void all corresponding invoices. Use this endpoint if a customer is onboarded by
 // mistake.
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
 //   - Once a customer is archived, it cannot be unarchived.
 //   - Archived customers can still be viewed through the API or the UI for audit
@@ -259,7 +262,7 @@ func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V
 // multiple configurations per customer. The configuration formats are distinct for
 // each downstream provider.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Add the initial configuration to an existing customer. Once created, the
 //     billing configuration can then be associated to the customer's contract.
@@ -281,12 +284,15 @@ func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V
 //   - aws_sns: Use when you want invoice notifications published to an AWS SNS topic
 //     for event-driven billing workflows.
 //
-// Key response fields: The id for the customer billing configuration. This id can
-// be used to associate the billing configuration to a contract.
+// ### Key response fields:
 //
-// Usage guidelines:\
-// Must use the delivery_method_id if you have multiple Stripe accounts connected to
-// Metronome.
+// The id for the customer billing configuration. This id can be used to associate
+// the billing configuration to a contract.
+//
+// ### Usage guidelines:
+//
+// Must use the delivery_method_id if you have multiple Stripe accounts connected
+// to Metronome.
 func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -297,10 +303,10 @@ func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V
 
 // Sets the ingest aliases for a customer. Use this endpoint to associate a
 // Metronome customer with an internal ID for easier tracking between systems.
-// Ingest aliases can be used in the customer_id field when sending usage events to
-// Metronome.
+// Ingest aliases can be used in the `customer_id` field when sending usage events
+// to Metronome.
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
 //   - This call is idempotent and fully replaces the set of ingest aliases for the
 //     given customer.

@@ -50,7 +50,7 @@ func NewV1BillableMetricService(opts ...option.RequestOption) (r V1BillableMetri
 // transforms raw usage data into actionable pricing metrics, enabling accurate
 // metering and billing for your products.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Create individual or multiple billable metrics as part of a setup workflow.
 //   - Automate the entire pricing configuration process, from metric creation to
@@ -58,13 +58,13 @@ func NewV1BillableMetricService(opts ...option.RequestOption) (r V1BillableMetri
 //   - Define metrics using either standard filtering/aggregation or a custom SQL
 //     query.
 //
-// Key response fields:
+// ### Key response fields:
 //
 //   - The ID of the billable metric that was created
 //   - The created billable metric will be available to be used in Products, usage
 //     endpoints, and alerts.
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
 //   - Metrics defined using standard filtering and aggregation are Streaming
 //     billable metrics, which have been optimized for ultra low latency and high
@@ -98,8 +98,8 @@ func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetri
 // Retrieves all billable metrics with their complete configurations. Use this for
 // programmatic discovery and management of billable metrics, such as associating
 // metrics to products and auditing for orphaned or archived metrics. Important:
-// Archived metrics are excluded by default; use include_archived=true parameter to
-// include them.
+// Archived metrics are excluded by default; use `include_archived=true` parameter
+// to include them.
 func (r *V1BillableMetricService) List(ctx context.Context, query V1BillableMetricListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1BillableMetricListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -120,8 +120,8 @@ func (r *V1BillableMetricService) List(ctx context.Context, query V1BillableMetr
 // Retrieves all billable metrics with their complete configurations. Use this for
 // programmatic discovery and management of billable metrics, such as associating
 // metrics to products and auditing for orphaned or archived metrics. Important:
-// Archived metrics are excluded by default; use include_archived=true parameter to
-// include them.
+// Archived metrics are excluded by default; use `include_archived=true` parameter
+// to include them.
 func (r *V1BillableMetricService) ListAutoPaging(ctx context.Context, query V1BillableMetricListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1BillableMetricListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }

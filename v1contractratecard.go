@@ -51,7 +51,7 @@ func NewV1ContractRateCardService(opts ...option.RequestOption) (r V1ContractRat
 // automatically propagated across your customer cohorts. Most clients need only
 // maintain one or a few rate cards within Metronome.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Create a rate card with a name and description
 //   - Define the rate card's single underlying fiat currency, and any number of
@@ -66,11 +66,11 @@ func NewV1ContractRateCardService(opts ...option.RequestOption) (r V1ContractRat
 //     paygo customers, you can update the alias for paygo to be scheduled to be
 //     assigned to the new rate card without updating your code.
 //
-// Key response fields:
+// ### Key response fields:
 //
 // - The ID of the rate card you just created
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
 //   - After creating a rate card, you can now use the addRate or addRates endpoints
 //     to add products and their prices to it
@@ -104,7 +104,7 @@ func (r *V1ContractRateCardService) Get(ctx context.Context, body V1ContractRate
 // schedules. This allows you to update how a rate card is identified and
 // referenced throughout your system.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Rate card renaming: Update display names or descriptions for organizational
 //     clarity
@@ -133,7 +133,7 @@ func (r *V1ContractRateCardService) Get(ctx context.Context, body V1ContractRate
 //   - Add alias to current rate card: Assign a stable alias (e.g.,
 //     "standard-pricing") to your active rate card
 //   - Reference alias during contract creation: Configure your self-serve workflow
-//     to create contracts using rate_card_alias instead of direct rate_card_id
+//     to create contracts using `rate_card_alias` instead of direct `rate_card_id`
 //   - Automatic resolution: New contracts referencing the alias automatically
 //     resolve to the rate card associated with the alias at the point in time of
 //     provisioning
@@ -195,14 +195,15 @@ func (r *V1ContractRateCardService) Archive(ctx context.Context, body V1Contract
 // A rate card defines the prices that you charge for your products. Rate cards
 // support scheduled changes over time, to allow you to easily roll out pricing
 // changes and new product launches across your customer base. Use this endpoint to
-// understand the rate schedule starting_at a given date, optionally filtering the
-// list of rates returned based on product id or pricing group values. For example,
-// you may want to display a schedule of upcoming price changes for a given product
-// in your product experience - use this endpoint to fetch that information from
-// its source of truth in Metronome.
+// understand the rate schedule `starting_at` a given date, optionally filtering
+// the list of rates returned based on product id or pricing group values. For
+// example, you may want to display a schedule of upcoming price changes for a
+// given product in your product experience - use this endpoint to fetch that
+// information from its source of truth in Metronome.
 //
 // If you want to understand the rates for a specific customer's contract,
-// inclusive of contract-level overrides, use the getContractRateSchedule endpoint.
+// inclusive of contract-level overrides, use the `getContractRateSchedule`
+// endpoint.
 func (r *V1ContractRateCardService) GetRateSchedule(ctx context.Context, params V1ContractRateCardGetRateScheduleParams, opts ...option.RequestOption) (res *V1ContractRateCardGetRateScheduleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contract-pricing/rate-cards/getRateSchedule"
