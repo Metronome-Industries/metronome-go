@@ -1165,8 +1165,12 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	NetsuiteSalesOrderID   string                                                          `json:"netsuite_sales_order_id,nullable"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
-	Priority         float64 `json:"priority,nullable"`
-	ProductID        string  `json:"product_id" format:"uuid"`
+	Priority  float64 `json:"priority,nullable"`
+	ProductID string  `json:"product_id" format:"uuid"`
+	// If set, the commit's rate type was updated to the specified value.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType         string  `json:"rate_type"`
 	RolloverFraction float64 `json:"rollover_fraction,nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -1187,6 +1191,7 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 		NetsuiteSalesOrderID   respjson.Field
 		Priority               respjson.Field
 		ProductID              respjson.Field
+		RateType               respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
 		ExtraFields            map[string]respjson.Field
@@ -1389,7 +1394,11 @@ type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 	NetsuiteSalesOrderID   string                              `json:"netsuite_sales_order_id,nullable"`
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
-	Priority         float64 `json:"priority,nullable"`
+	Priority float64 `json:"priority,nullable"`
+	// If set, the credit's rate type was updated to the specified value.
+	//
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType         string  `json:"rate_type"`
 	RolloverFraction float64 `json:"rollover_fraction,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1399,6 +1408,7 @@ type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Priority               respjson.Field
+		RateType               respjson.Field
 		RolloverFraction       respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
@@ -2993,7 +3003,7 @@ type V2ContractEditParamsAddRecurringCommitSubscriptionConfig struct {
 	SubscriptionID string `json:"subscription_id,required"`
 	// If set to POOLED, allocation added per seat is pooled across the account.
 	//
-	// Any of "POOLED".
+	// Any of "POOLED", "INDIVIDUAL".
 	Allocation string `json:"allocation,omitzero"`
 	paramObj
 }
@@ -3008,7 +3018,7 @@ func (r *V2ContractEditParamsAddRecurringCommitSubscriptionConfig) UnmarshalJSON
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddRecurringCommitSubscriptionConfig](
-		"allocation", "POOLED",
+		"allocation", "POOLED", "INDIVIDUAL",
 	)
 }
 
@@ -3166,7 +3176,7 @@ type V2ContractEditParamsAddRecurringCreditSubscriptionConfig struct {
 	SubscriptionID string `json:"subscription_id,required"`
 	// If set to POOLED, allocation added per seat is pooled across the account.
 	//
-	// Any of "POOLED".
+	// Any of "POOLED", "INDIVIDUAL".
 	Allocation string `json:"allocation,omitzero"`
 	paramObj
 }
@@ -3181,7 +3191,7 @@ func (r *V2ContractEditParamsAddRecurringCreditSubscriptionConfig) UnmarshalJSON
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddRecurringCreditSubscriptionConfig](
-		"allocation", "POOLED",
+		"allocation", "POOLED", "INDIVIDUAL",
 	)
 }
 
@@ -3560,6 +3570,12 @@ type V2ContractEditParamsUpdateCommit struct {
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfigurationParam        `json:"hierarchy_configuration,omitzero"`
 	InvoiceSchedule        V2ContractEditParamsUpdateCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
+	// If provided, updates the commit to use the specified rate type for current and
+	// future invoices. Previously finalized invoices will need to be voided and
+	// regenerated to reflect the rate type change.
+	//
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType string `json:"rate_type,omitzero"`
 	paramObj
 }
 
@@ -3569,6 +3585,12 @@ func (r V2ContractEditParamsUpdateCommit) MarshalJSON() (data []byte, err error)
 }
 func (r *V2ContractEditParamsUpdateCommit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdateCommit](
+		"rate_type", "LIST_RATE", "COMMIT_RATE",
+	)
 }
 
 type V2ContractEditParamsUpdateCommitAccessSchedule struct {
@@ -3714,6 +3736,12 @@ type V2ContractEditParamsUpdateCredit struct {
 	AccessSchedule        V2ContractEditParamsUpdateCreditAccessSchedule `json:"access_schedule,omitzero"`
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
+	// If provided, updates the credit to use the specified rate type for current and
+	// future invoices. Previously finalized invoices will need to be voided and
+	// regenerated to reflect the rate type change.
+	//
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType string `json:"rate_type,omitzero"`
 	paramObj
 }
 
@@ -3723,6 +3751,12 @@ func (r V2ContractEditParamsUpdateCredit) MarshalJSON() (data []byte, err error)
 }
 func (r *V2ContractEditParamsUpdateCredit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdateCredit](
+		"rate_type", "LIST_RATE", "COMMIT_RATE",
+	)
 }
 
 type V2ContractEditParamsUpdateCreditAccessSchedule struct {
@@ -4080,6 +4114,12 @@ type V2ContractEditCommitParams struct {
 	Specifiers      []shared.CommitSpecifierInputParam        `json:"specifiers,omitzero"`
 	AccessSchedule  V2ContractEditCommitParamsAccessSchedule  `json:"access_schedule,omitzero"`
 	InvoiceSchedule V2ContractEditCommitParamsInvoiceSchedule `json:"invoice_schedule,omitzero"`
+	// If provided, updates the commit to use the specified rate type for current and
+	// future invoices. Previously finalized invoices will need to be voided and
+	// regenerated to reflect the rate type change.
+	//
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType V2ContractEditCommitParamsRateType `json:"rate_type,omitzero"`
 	paramObj
 }
 
@@ -4217,6 +4257,16 @@ func (r *V2ContractEditCommitParamsInvoiceScheduleUpdateScheduleItem) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// If provided, updates the commit to use the specified rate type for current and
+// future invoices. Previously finalized invoices will need to be voided and
+// regenerated to reflect the rate type change.
+type V2ContractEditCommitParamsRateType string
+
+const (
+	V2ContractEditCommitParamsRateTypeListRate   V2ContractEditCommitParamsRateType = "LIST_RATE"
+	V2ContractEditCommitParamsRateTypeCommitRate V2ContractEditCommitParamsRateType = "COMMIT_RATE"
+)
+
 type V2ContractEditCreditParams struct {
 	// ID of the credit to edit
 	CreditID string `json:"credit_id,required" format:"uuid"`
@@ -4240,6 +4290,12 @@ type V2ContractEditCreditParams struct {
 	// body of `specifiers`.
 	Specifiers     []shared.CommitSpecifierInputParam       `json:"specifiers,omitzero"`
 	AccessSchedule V2ContractEditCreditParamsAccessSchedule `json:"access_schedule,omitzero"`
+	// If provided, updates the credit to use the specified rate type for current and
+	// future invoices. Previously finalized invoices will need to be voided and
+	// regenerated to reflect the rate type change.
+	//
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType V2ContractEditCreditParamsRateType `json:"rate_type,omitzero"`
 	paramObj
 }
 
@@ -4312,6 +4368,16 @@ func (r V2ContractEditCreditParamsAccessScheduleUpdateScheduleItem) MarshalJSON(
 func (r *V2ContractEditCreditParamsAccessScheduleUpdateScheduleItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// If provided, updates the credit to use the specified rate type for current and
+// future invoices. Previously finalized invoices will need to be voided and
+// regenerated to reflect the rate type change.
+type V2ContractEditCreditParamsRateType string
+
+const (
+	V2ContractEditCreditParamsRateTypeListRate   V2ContractEditCreditParamsRateType = "LIST_RATE"
+	V2ContractEditCreditParamsRateTypeCommitRate V2ContractEditCreditParamsRateType = "COMMIT_RATE"
+)
 
 type V2ContractGetEditHistoryParams struct {
 	ContractID string `json:"contract_id,required" format:"uuid"`

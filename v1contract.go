@@ -1868,7 +1868,7 @@ type V1ContractNewParamsRecurringCommitSubscriptionConfig struct {
 	SubscriptionID string `json:"subscription_id,required"`
 	// If set to POOLED, allocation added per seat is pooled across the account.
 	//
-	// Any of "POOLED".
+	// Any of "INDIVIDUAL", "POOLED".
 	Allocation string `json:"allocation,omitzero"`
 	paramObj
 }
@@ -1883,7 +1883,7 @@ func (r *V1ContractNewParamsRecurringCommitSubscriptionConfig) UnmarshalJSON(dat
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitSubscriptionConfig](
-		"allocation", "POOLED",
+		"allocation", "INDIVIDUAL", "POOLED",
 	)
 }
 
@@ -2039,7 +2039,7 @@ type V1ContractNewParamsRecurringCreditSubscriptionConfig struct {
 	SubscriptionID string `json:"subscription_id,required"`
 	// If set to POOLED, allocation added per seat is pooled across the account.
 	//
-	// Any of "POOLED".
+	// Any of "INDIVIDUAL", "POOLED".
 	Allocation string `json:"allocation,omitzero"`
 	paramObj
 }
@@ -2054,7 +2054,7 @@ func (r *V1ContractNewParamsRecurringCreditSubscriptionConfig) UnmarshalJSON(dat
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditSubscriptionConfig](
-		"allocation", "POOLED",
+		"allocation", "INDIVIDUAL", "POOLED",
 	)
 }
 
