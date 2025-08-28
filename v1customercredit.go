@@ -70,11 +70,13 @@ func NewV1CustomerCreditService(opts ...option.RequestOption) (r V1CustomerCredi
 // aligned to the contract schedule or starts immediately and is set to expire in
 // the future.
 //
-// Usage Guidelines:\
-// ⚠️ Preferred Alternative: In most cases, you should add credits directly to contracts
-// using the contract/create or contract/edit APIs instead of creating customer-level
-// credits. Contract-level credits provide better organization, and are easier for finance
-// teams to recognize revenue, and are the recommended approach for most use cases.
+// ### Usage Guidelines:
+//
+// ⚠️ Preferred Alternative: In most cases, you should add credits directly to
+// contracts using the contract/create or contract/edit APIs instead of creating
+// customer-level credits. Contract-level credits provide better organization, and
+// are easier for finance teams to recognize revenue, and are the recommended
+// approach for most use cases.
 func (r *V1CustomerCreditService) New(ctx context.Context, body V1CustomerCreditNewParams, opts ...option.RequestOption) (res *V1CustomerCreditNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contracts/customerCredits/create"
@@ -88,7 +90,7 @@ func (r *V1CustomerCreditService) New(ctx context.Context, body V1CustomerCredit
 // rules, enabling you to build credit management interfaces and track available
 // funding.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Display all available credits in customer billing dashboards
 //   - Show credit balances and expiration dates
@@ -97,18 +99,20 @@ func (r *V1CustomerCreditService) New(ctx context.Context, body V1CustomerCredit
 //   - Monitor promotional credit utilization • Support customer inquiries about
 //     available credits
 //
-// Key response fields: An array of Credit objects containing:
+// ### Key response fields:
+//
+// An array of Credit objects containing:
 //
 //   - Credit details: Name, priority, and which applicable products/tags it applies
 //     to
-//   - Product ID: The product_id of the credit. This is for external mapping into
+//   - Product ID: The `product_id` of the credit. This is for external mapping into
 //     your quote-to-cash stack, not the product it applies to.
 //   - Access schedule: When credits become available and expire
-//   - Optional ledger entries: Transaction history (if include_ledgers=true)
-//   - Balance information: Current available amount (if include_balance=true)
+//   - Optional ledger entries: Transaction history (if `include_ledgers=true`)
+//   - Balance information: Current available amount (if `include_balance=true`)
 //   - Metadata: Custom fields and usage specifiers
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
 // - Pagination: Results limited to 25 commits per page; use next_page for more
 // - Date filtering options:
@@ -117,9 +121,9 @@ func (r *V1CustomerCreditService) New(ctx context.Context, body V1CustomerCredit
 //   - effective_before: Credits with access before a date (exclusive)
 //
 // - Scope options:
-//   - include_contract_credits: Include contract-level credits (not just
+//   - `include_contract_credits`: Include contract-level credits (not just
 //     customer-level)
-//   - include_archived: Include archived credits and credits from archived
+//   - `include_archived`: Include archived credits and credits from archived
 //     contracts
 //
 // - Performance considerations:
@@ -150,7 +154,7 @@ func (r *V1CustomerCreditService) List(ctx context.Context, body V1CustomerCredi
 // rules, enabling you to build credit management interfaces and track available
 // funding.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Display all available credits in customer billing dashboards
 //   - Show credit balances and expiration dates
@@ -159,18 +163,20 @@ func (r *V1CustomerCreditService) List(ctx context.Context, body V1CustomerCredi
 //   - Monitor promotional credit utilization • Support customer inquiries about
 //     available credits
 //
-// Key response fields: An array of Credit objects containing:
+// ### Key response fields:
+//
+// An array of Credit objects containing:
 //
 //   - Credit details: Name, priority, and which applicable products/tags it applies
 //     to
-//   - Product ID: The product_id of the credit. This is for external mapping into
+//   - Product ID: The `product_id` of the credit. This is for external mapping into
 //     your quote-to-cash stack, not the product it applies to.
 //   - Access schedule: When credits become available and expire
-//   - Optional ledger entries: Transaction history (if include_ledgers=true)
-//   - Balance information: Current available amount (if include_balance=true)
+//   - Optional ledger entries: Transaction history (if `include_ledgers=true`)
+//   - Balance information: Current available amount (if `include_balance=true`)
 //   - Metadata: Custom fields and usage specifiers
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
 // - Pagination: Results limited to 25 commits per page; use next_page for more
 // - Date filtering options:
@@ -179,9 +185,9 @@ func (r *V1CustomerCreditService) List(ctx context.Context, body V1CustomerCredi
 //   - effective_before: Credits with access before a date (exclusive)
 //
 // - Scope options:
-//   - include_contract_credits: Include contract-level credits (not just
+//   - `include_contract_credits`: Include contract-level credits (not just
 //     customer-level)
-//   - include_archived: Include archived credits and credits from archived
+//   - `include_archived`: Include archived credits and credits from archived
 //     contracts
 //
 // - Performance considerations:

@@ -45,7 +45,7 @@ func NewV1CustomFieldService(opts ...option.RequestOption) (r V1CustomFieldServi
 // recognition, reconciliation, and invoicing, custom fields help Metronome know
 // the relationship between entities in the platform and third-party systems.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Create a new custom field key for Customer objects in Metronome. You can then
 //     use the Set Custom Field Values endpoint to set the value of this key for a
@@ -54,7 +54,7 @@ func NewV1CustomFieldService(opts ...option.RequestOption) (r V1CustomFieldServi
 //     enforce uniqueness and you attempt to set a custom field value for the key
 //     that already exists, it will fail.
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
 //   - Custom fields set on commits, credits, and contracts can be used to scope
 //     alert evaluation. For example, you can create a spend threshold alert that

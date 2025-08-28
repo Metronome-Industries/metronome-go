@@ -61,15 +61,15 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 // Key Components:
 //
 //   - Contract Term and Billing Schedule
-//   - Set contract duration using starting_at and ending_before fields. PLG
+//   - Set contract duration using `starting_at` and `ending_before` fields. PLG
 //     contracts typically use perpetual agreements (no end date), while Enterprise
 //     contracts have fixed end dates which can be edited over time in the case of
 //     co-term upsells.
 //
 // Rate Card\
 // If you are offering usage based pricing, you can set a rate card for the contract
-// to reference through rate_card_id or rate_card_alias. The rate card is a store of
-// all of your usage based products and their centralized pricing. Any new products
+// to reference through `rate_card_id` or `rate_card_alias`. The rate card is a store
+// of all of your usage based products and their centralized pricing. Any new products
 // or price changes on the rate card can be set to automatically propagate to all associated
 // contracts - this ensures consistent pricing and product launches flow to contracts
 // without manual updates and migrations. The usage_statement_schedule determines the
@@ -99,16 +99,16 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 // or as a part of an allotment associated with a Subscription.
 //
 // In Metronome, you can set commits and credits to only be applicable for a subset
-// of usage. Use applicable_product_ids or applicable_product_tags to create
+// of usage. Use `applicable_product_ids` or `applicable_product_tags` to create
 // product or product-family specific commits or credits, or you can build complex
 // boolean logic specifiers to target usage based on pricing and presentation group
-// values using override_specifiers.
+// values using `override_specifiers`.
 //
 // These objects can also also be configured to have a recurrence schedule to
 // easily model customer packaging which includes recurring monthly or quarterly
 // allotments.
 //
-// Commits support rollover settings (rollover_fraction) to transfer unused
+// Commits support rollover settings (`rollover_fraction`) to transfer unused
 // balances between contract periods, either entirely or as a percentage.
 //
 // Read more about
@@ -121,11 +121,11 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 // When you add a subscription to a contract you need to:
 //
 //   - Define whether the subscription is paid for in-advance or in-arrears
-//     (collection_schedule)
-//   - Define the proration behavior (proration)
-//   - Specify an initial quantity (initial_quantity)
+//     (`collection_schedule`)
+//   - Define the proration behavior (`proration`)
+//   - Specify an initial quantity (`initial_quantity`)
 //   - Define which subscription rate on the rate card should be used
-//     (subscription_rate)
+//     (`subscription_rate`)
 //
 // Read more about
 // [Create Subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/).
@@ -137,25 +137,24 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 //
 // Threshold Billing\
 // Metronome allows you to configure automatic billing triggers when customers reach
-// spending thresholds to prevent fraud and manage risk. You can use spend_threshold_configuration
+// spending thresholds to prevent fraud and manage risk. You can use `spend_threshold_configuration`
 // to trigger an invoice to cover current charges whenever the threshold is reached
-// or you can ensure the customer maintains a minimum prepaid balance using the prepaid_balance_configuration
-// .
+// or you can ensure the customer maintains a minimum prepaid balance using the `prepaid_balance_configuration`.
 //
 // Read more about
 // [Spend Threshold](https://docs.metronome.com/manage-product-access/spend-thresholds/)
 // and
 // [Prepaid Balance Thresholds](https://docs.metronome.com/manage-product-access/prepaid-balance-thresholds/).
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
 //   - You can always
 //     [Edit Contracts](https://docs.metronome.com/manage-product-access/edit-contract/)
-//     after it has been created, using the editContract endpoint. Metronome keeps
-//     track of all edits, both in the audit log and over the getEditHistory
+//     after it has been created, using the `editContract` endpoint. Metronome keeps
+//     track of all edits, both in the audit log and over the `getEditHistory`
 //     endpoint.
 //   - Customers in Metronome can have multiple concurrent contracts at one time. Use
-//     usage_filters to route the correct usage to each contract.
+//     `usage_filters` to route the correct usage to each contract.
 //     [Read more about usage filters](https://docs.metronome.com/manage-product-access/provision-customer/#create-a-usage-filter).
 func (r *V1ContractService) New(ctx context.Context, body V1ContractNewParams, opts ...option.RequestOption) (res *V1ContractNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -191,7 +190,7 @@ func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams,
 // appended to the commit ledger as a new event. Optionally include a description
 // that provides the reasoning for the entry.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Address incorrect usage burn-down caused by malformed usage or invalid config
 //   - Decrease available balance to account for outages where usage may have not
@@ -199,11 +198,12 @@ func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams,
 //   - Issue credits to customers in the form of increased balance on existing commit
 //     or credit
 //
-// Usage guidelines:\
-// Manual ledger entries can be extremely useful for resolving discrepancies in Metronome.
-// However, most corrections to inaccurate billings can be modified upstream of the
-// commit, whether that is via contract editing, rate editing, or other actions that
-// cause an invoice to be recalculated.
+// ### Usage guidelines:
+//
+// Manual ledger entries can be extremely useful for resolving discrepancies in
+// Metronome. However, most corrections to inaccurate billings can be modified
+// upstream of the commit, whether that is via contract editing, rate editing, or
+// other actions that cause an invoice to be recalculated.
 func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1ContractAddManualBalanceEntryParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -213,7 +213,7 @@ func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1Co
 }
 
 // Amendments will be replaced by Contract editing. New clients should implement
-// using the editContract endpoint. Read more about the migration to contract
+// using the `editContract` endpoint. Read more about the migration to contract
 // editing [here](https://docs.metronome.com/migrate-amendments-to-edits/) and
 // reach out to your Metronome representative for more details. Once contract
 // editing is enabled, access to this endpoint will be removed.
@@ -241,8 +241,8 @@ func (r *V1ContractService) Amend(ctx context.Context, body V1ContractAmendParam
 // Archived contract visibility:
 //
 // Archived contracts remain accessible for historical reporting and audit
-// purposes. They can be retrieved using the ListContracts endpoint by setting the
-// include_archived parameter to true or in the Metronome UI when the "Show
+// purposes. They can be retrieved using the `ListContracts` endpoint by setting
+// the `include_archived` parameter to `true` or in the Metronome UI when the "Show
 // archived" option is enabled.
 func (r *V1ContractService) Archive(ctx context.Context, body V1ContractArchiveParams, opts ...option.RequestOption) (res *V1ContractArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -268,32 +268,32 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 // postpaid commitments, promotional credits, and other balance types that can
 // offset usage charges, helping you build transparent billing experiences.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 // - Display current available balances in customer dashboards
 // - Verify available funds before approving high-usage operations
 // - Generate balance reports for finance teams
 // - Filter balances by contract or date ranges
 //
-// Key response fields: An array of balance objects (all credits and commits)
-// containing:
+// ### Key response fields:
+//
+// An array of balance objects (all credits and commits) containing:
 //
 //   - Balance details: Current available amount for each commit or credit
 //   - Metadata: Product associations, priorities, applicable date ranges
 //   - Optional ledger entries: Detailed transaction history (if
-//     include_ledgers=true)
+//     `include_ledgers=true`)
 //   - Balance calculations: Including pending transactions and future-dated entries
 //   - Custom fields: Any additional metadata attached to balances
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
-//   - Date filtering: Use effective_before to include only balances with access
+//   - Date filtering: Use `effective_before` to include only balances with access
 //     before a specific date (exclusive)
-//   - Set include_balance=true for calculated balance amounts on each commit or
+//   - Set `include_balance=true` for calculated balance amounts on each commit or
 //     credit
-//   - Set include_ledgers=true for full transaction history
-//   - Set include_contract_balances = true to see contract level balances
-//
+//   - Set `include_ledgers=true` for full transaction history
+//   - Set `include_contract_balances = true` to see contract level balances
 //   - Balance logic: Reflects currently accessible amounts, excluding expired/future
 //     segments
 //   - Manual adjustments: Includes all manual ledger entries, even future-dated ones
@@ -319,32 +319,32 @@ func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractLis
 // postpaid commitments, promotional credits, and other balance types that can
 // offset usage charges, helping you build transparent billing experiences.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 // - Display current available balances in customer dashboards
 // - Verify available funds before approving high-usage operations
 // - Generate balance reports for finance teams
 // - Filter balances by contract or date ranges
 //
-// Key response fields: An array of balance objects (all credits and commits)
-// containing:
+// ### Key response fields:
+//
+// An array of balance objects (all credits and commits) containing:
 //
 //   - Balance details: Current available amount for each commit or credit
 //   - Metadata: Product associations, priorities, applicable date ranges
 //   - Optional ledger entries: Detailed transaction history (if
-//     include_ledgers=true)
+//     `include_ledgers=true`)
 //   - Balance calculations: Including pending transactions and future-dated entries
 //   - Custom fields: Any additional metadata attached to balances
 //
-// Usage guidelines:
+// ### Usage guidelines:
 //
-//   - Date filtering: Use effective_before to include only balances with access
+//   - Date filtering: Use `effective_before` to include only balances with access
 //     before a specific date (exclusive)
-//   - Set include_balance=true for calculated balance amounts on each commit or
+//   - Set `include_balance=true` for calculated balance amounts on each commit or
 //     credit
-//   - Set include_ledgers=true for full transaction history
-//   - Set include_contract_balances = true to see contract level balances
-//
+//   - Set `include_ledgers=true` for full transaction history
+//   - Set `include_contract_balances = true` to see contract level balances
 //   - Balance logic: Reflects currently accessible amounts, excluding expired/future
 //     segments
 //   - Manual adjustments: Includes all manual ledger entries, even future-dated ones
@@ -399,15 +399,16 @@ func (r *V1ContractService) ScheduleProServicesInvoice(ctx context.Context, body
 // group key project_id on each contract, and route usage for project_1 to the
 // first contract and project_2 to the second contract.
 //
-// Use this endpoint to:
+// ### Use this endpoint to:
 //
 //   - Support enterprise contracting scenarios where multiple contracts are
 //     associated to the same customer with the same rates.
 //   - Update the usage filter associated with the contract over time.
 //
-// Usage guidelines:\
-// To use usage filters, the group_key must be defined on the billable metrics underlying
-// the rate card on the contracts.
+// ### Usage guidelines:
+//
+// To use usage filters, the `group_key` must be defined on the billable metrics
+// underlying the rate card on the contracts.
 func (r *V1ContractService) SetUsageFilter(ctx context.Context, body V1ContractSetUsageFilterParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -1588,8 +1589,8 @@ type V1ContractNewParamsOverrideOverrideSpecifier struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of product_id, product_tags, pricing_group_values, or
-	// presentation_group_values. If provided, the override will only apply to the
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. If provided, the override will only apply to the
 	// specified commits. If not provided, the override will apply to all commits.
 	CommitIDs []string `json:"commit_ids,omitzero"`
 	// A map of group names to values. The override will only apply to line items with
@@ -1602,14 +1603,14 @@ type V1ContractNewParamsOverrideOverrideSpecifier struct {
 	// tags.
 	ProductTags []string `json:"product_tags,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of product_id, product_tags, pricing_group_values, or
-	// presentation_group_values. If provided, the override will only apply to commits
-	// created by the specified recurring commit ids.
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. If provided, the override will only apply to
+	// commits created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of product_id, product_tags, pricing_group_values, or
-	// presentation_group_values. If provided, the override will only apply to credits
-	// created by the specified recurring credit ids.
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. If provided, the override will only apply to
+	// credits created by the specified recurring credit ids.
 	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
@@ -3145,8 +3146,8 @@ type V1ContractAmendParamsOverrideOverrideSpecifier struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of product_id, product_tags, pricing_group_values, or
-	// presentation_group_values. If provided, the override will only apply to the
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. If provided, the override will only apply to the
 	// specified commits. If not provided, the override will apply to all commits.
 	CommitIDs []string `json:"commit_ids,omitzero"`
 	// A map of group names to values. The override will only apply to line items with
@@ -3159,14 +3160,14 @@ type V1ContractAmendParamsOverrideOverrideSpecifier struct {
 	// tags.
 	ProductTags []string `json:"product_tags,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of product_id, product_tags, pricing_group_values, or
-	// presentation_group_values. If provided, the override will only apply to commits
-	// created by the specified recurring commit ids.
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. If provided, the override will only apply to
+	// commits created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of product_id, product_tags, pricing_group_values, or
-	// presentation_group_values. If provided, the override will only apply to credits
-	// created by the specified recurring credit ids.
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. If provided, the override will only apply to
+	// credits created by the specified recurring credit ids.
 	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
