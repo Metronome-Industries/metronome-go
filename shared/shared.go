@@ -116,8 +116,14 @@ func (r *BaseUsageFilterParam) UnmarshalJSON(data []byte) error {
 }
 
 type Commit struct {
-	ID      string        `json:"id,required" format:"uuid"`
-	Product CommitProduct `json:"product,required"`
+	ID string `json:"id,required" format:"uuid"`
+	// Timestamp of when the commit was created.
+	//
+	//   - Recurring commits: latter of commit service period date and parent commit
+	//     start date
+	//   - Rollover commits: when the new contract started
+	CreatedAt time.Time     `json:"created_at,required" format:"date-time"`
+	Product   CommitProduct `json:"product,required"`
 	// Any of "PREPAID", "POSTPAID".
 	Type CommitType `json:"type,required"`
 	// The schedule that the customer will gain access to the credits purposed with
@@ -177,6 +183,7 @@ type Commit struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
+		CreatedAt               respjson.Field
 		Product                 respjson.Field
 		Type                    respjson.Field
 		AccessSchedule          respjson.Field
@@ -1445,8 +1452,14 @@ func (r *ContractV2) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2Commit struct {
-	ID      string                  `json:"id,required" format:"uuid"`
-	Product ContractV2CommitProduct `json:"product,required"`
+	ID string `json:"id,required" format:"uuid"`
+	// Timestamp of when the commit was created.
+	//
+	//   - Recurring commits: latter of commit service period date and parent commit
+	//     start date
+	//   - Rollover commits: when the new contract started
+	CreatedAt time.Time               `json:"created_at,required" format:"date-time"`
+	Product   ContractV2CommitProduct `json:"product,required"`
 	// Any of "PREPAID", "POSTPAID".
 	Type string `json:"type,required"`
 	// The schedule that the customer will gain access to the credits purposed with
@@ -1497,6 +1510,7 @@ type ContractV2Commit struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
+		CreatedAt               respjson.Field
 		Product                 respjson.Field
 		Type                    respjson.Field
 		AccessSchedule          respjson.Field

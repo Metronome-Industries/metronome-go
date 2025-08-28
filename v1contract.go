@@ -531,6 +531,8 @@ func (r *V1ContractNewHistoricalInvoicesResponse) UnmarshalJSON(data []byte) err
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type V1ContractListBalancesResponseUnion struct {
 	ID string `json:"id"`
+	// This field is from variant [shared.Commit].
+	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [shared.CommitProduct], [shared.CreditProduct]
 	Product V1ContractListBalancesResponseUnionProduct `json:"product"`
 	Type    string                                     `json:"type"`
@@ -570,6 +572,7 @@ type V1ContractListBalancesResponseUnion struct {
 	UniquenessKey           string                   `json:"uniqueness_key"`
 	JSON                    struct {
 		ID                      respjson.Field
+		CreatedAt               respjson.Field
 		Product                 respjson.Field
 		Type                    respjson.Field
 		AccessSchedule          respjson.Field
