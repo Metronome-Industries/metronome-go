@@ -38,8 +38,8 @@ func NewV1InvoiceService(opts ...option.RequestOption) (r V1InvoiceService) {
 //
 // ### Use this endpoint to:
 //
-//   - Recalculate an invoice with updated rate terms, available balance, and fees to
-//     correct billing disputes or discrepancies
+// Recalculate an invoice with updated rate terms, available balance, and fees to
+// correct billing disputes or discrepancies
 //
 // ### Key response fields:
 //

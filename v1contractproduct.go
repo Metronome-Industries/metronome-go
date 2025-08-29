@@ -66,8 +66,10 @@ func (r *V1ContractProductService) Get(ctx context.Context, body V1ContractProdu
 // boundary—set future dates to schedule updates ahead of time, or past dates for
 // retroactive changes. Returns the updated product ID upon success.
 //
-// Usage guidance: Product type cannot be changed after creation. For incorrect
-// product types, create a new product and archive the original instead.
+// ### Usage guidance:
+//
+//   - Product type cannot be changed after creation. For incorrect product types,
+//     create a new product and archive the original instead.
 func (r *V1ContractProductService) Update(ctx context.Context, body V1ContractProductUpdateParams, opts ...option.RequestOption) (res *V1ContractProductUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/contract-pricing/products/update"
@@ -77,7 +79,7 @@ func (r *V1ContractProductService) Update(ctx context.Context, body V1ContractPr
 
 // Get a paginated list of all products in your organization with their complete
 // configuration, version history, and metadata. By default excludes archived
-// products unless explicitly requested via the archive_filter parameter.
+// products unless explicitly requested via the `archive_filter` parameter.
 func (r *V1ContractProductService) List(ctx context.Context, params V1ContractProductListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1ContractProductListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -97,7 +99,7 @@ func (r *V1ContractProductService) List(ctx context.Context, params V1ContractPr
 
 // Get a paginated list of all products in your organization with their complete
 // configuration, version history, and metadata. By default excludes archived
-// products unless explicitly requested via the archive_filter parameter.
+// products unless explicitly requested via the `archive_filter` parameter.
 func (r *V1ContractProductService) ListAutoPaging(ctx context.Context, params V1ContractProductListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1ContractProductListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }

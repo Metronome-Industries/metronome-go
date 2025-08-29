@@ -124,7 +124,7 @@ func (r *V1CustomerInvoiceService) Get(ctx context.Context, params V1CustomerInv
 // - Applied credits summary
 // - Contract ID reference
 // - External billing provider status (if integrated with Stripe, etc.)
-// - Pagination metadata next_page cursor
+// - Pagination metadata `next_page` cursor
 //
 // ### Usage guidelines:
 //
@@ -191,7 +191,7 @@ func (r *V1CustomerInvoiceService) List(ctx context.Context, params V1CustomerIn
 // - Applied credits summary
 // - Contract ID reference
 // - External billing provider status (if integrated with Stripe, etc.)
-// - Pagination metadata next_page cursor
+// - Pagination metadata `next_page` cursor
 //
 // ### Usage guidelines:
 //
@@ -243,9 +243,9 @@ func (r *V1CustomerInvoiceService) AddCharge(ctx context.Context, params V1Custo
 //
 // - All standard invoice fields (ID, customer, commit, line items, totals, status)
 // - Line items with quantities and costs for that specific period
-// - breakdown_start_timestamp: Start of the specific time window
-// - breakdown_end_timestamp: End of the specific time window
-// - next_page: Pagination cursor for large result sets
+// - `breakdown_start_timestamp`: Start of the specific time window
+// - `breakdown_end_timestamp`: End of the specific time window
+// - `next_page`: Pagination cursor for large result sets
 //
 // ### Usage guidelines:
 //
@@ -302,9 +302,9 @@ func (r *V1CustomerInvoiceService) ListBreakdowns(ctx context.Context, params V1
 //
 // - All standard invoice fields (ID, customer, commit, line items, totals, status)
 // - Line items with quantities and costs for that specific period
-// - breakdown_start_timestamp: Start of the specific time window
-// - breakdown_end_timestamp: End of the specific time window
-// - next_page: Pagination cursor for large result sets
+// - `breakdown_start_timestamp`: Start of the specific time window
+// - `breakdown_end_timestamp`: End of the specific time window
+// - `next_page`: Pagination cursor for large result sets
 //
 // ### Usage guidelines:
 //
