@@ -79,11 +79,15 @@ func (r *V1BillableMetricService) New(ctx context.Context, body V1BillableMetric
 
 // Retrieves the complete configuration for a specific billable metric by its ID.
 // Use this to review billable metric setup before associating it with products.
-// Returns the metric's name, event type, properties, aggregation_type,
-// aggregation_key, group_keys, custom fields, and SQL query (if it's a SQL
-// billable metric). Important: Archived billable metrics will include an
-// archived_at timestamp; they no longer process new usage events but remain
-// accessible for historical reference.
+// Returns the metric's `name`, `event_type_filter`, `property_filters`,
+// `aggregation_type`, `aggregation_key`, `group_keys`, `custom fields`, and
+// `SQL query` (if it's a SQL billable metric).
+//
+// Important:
+//
+//   - Archived billable metrics will include an `archived_at` timestamp; they no
+//     longer process new usage events but remain accessible for historical
+//     reference.
 func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetricGetParams, opts ...option.RequestOption) (res *V1BillableMetricGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.BillableMetricID == "" {
@@ -98,8 +102,8 @@ func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetri
 // Retrieves all billable metrics with their complete configurations. Use this for
 // programmatic discovery and management of billable metrics, such as associating
 // metrics to products and auditing for orphaned or archived metrics. Important:
-// Archived metrics are excluded by default; use `include_archived=true` parameter
-// to include them.
+// Archived metrics are excluded by default; use `include_archived`=`true`
+// parameter to include them.
 func (r *V1BillableMetricService) List(ctx context.Context, query V1BillableMetricListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1BillableMetricListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -120,8 +124,8 @@ func (r *V1BillableMetricService) List(ctx context.Context, query V1BillableMetr
 // Retrieves all billable metrics with their complete configurations. Use this for
 // programmatic discovery and management of billable metrics, such as associating
 // metrics to products and auditing for orphaned or archived metrics. Important:
-// Archived metrics are excluded by default; use `include_archived=true` parameter
-// to include them.
+// Archived metrics are excluded by default; use `include_archived`=`true`
+// parameter to include them.
 func (r *V1BillableMetricService) ListAutoPaging(ctx context.Context, query V1BillableMetricListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1BillableMetricListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
@@ -131,9 +135,10 @@ func (r *V1BillableMetricService) ListAutoPaging(ctx context.Context, query V1Bi
 // new Products to define how that product should be metered. If you archive a
 // billable metric that is already associated with a Product, the Product will
 // continue to function as usual, metering based on the definition of the archived
-// billable metric. Archived billable metrics will be returned on the
-// getBillableMetric and listBillableMetrics endpoints with a populated archived_at
-// field.
+// billable metric.
+//
+// Archived billable metrics will be returned on the `getBillableMetric` and
+// `listBillableMetrics` endpoints with a populated `archived_at` field.
 func (r *V1BillableMetricService) Archive(ctx context.Context, body V1BillableMetricArchiveParams, opts ...option.RequestOption) (res *V1BillableMetricArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/billable-metrics/archive"

@@ -56,11 +56,11 @@ func NewV1AuditLogService(opts ...option.RequestOption) (r V1AuditLogService) {
 //   - timestamp: When the action occurred (RFC 3339 format)
 //   - actor: Information about who performed the action
 //   - request: Details including request ID, IP address, and user agent
-//   - resource_type: The type of resource affected (e.g., customer, contract,
+//   - `resource_type`: The type of resource affected (e.g., customer, contract,
 //     invoice)
-//   - resource_id: The specific resource identifier
-//   - action: The operation performed
-//   - next_page: Cursor for continuous log retrieval
+//   - `resource_id`: The specific resource identifier
+//   - `action`: The operation performed
+//   - `next_page`: Cursor for continuous log retrieval
 //
 // ### Usage guidelines:
 //
@@ -72,8 +72,9 @@ func NewV1AuditLogService(opts ...option.RequestOption) (r V1AuditLogService) {
 //   - `starting_on`: Earliest logs to return (inclusive)
 //   - `ending_before`: Latest logs to return (exclusive)
 //   - Cannot be used with `next_page`
-//   - Resource filtering: Must specify both resource_type and resource_id together
-//   - Sort order: Default is date_asc; use date_desc for newest first
+//   - Resource filtering: Must specify both `resource_type` and `resource_id`
+//     together
+//   - Sort order: Default is `date_asc`; use `date_desc` for newest first
 func (r *V1AuditLogService) List(ctx context.Context, query V1AuditLogListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1AuditLogListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -111,11 +112,11 @@ func (r *V1AuditLogService) List(ctx context.Context, query V1AuditLogListParams
 //   - timestamp: When the action occurred (RFC 3339 format)
 //   - actor: Information about who performed the action
 //   - request: Details including request ID, IP address, and user agent
-//   - resource_type: The type of resource affected (e.g., customer, contract,
+//   - `resource_type`: The type of resource affected (e.g., customer, contract,
 //     invoice)
-//   - resource_id: The specific resource identifier
-//   - action: The operation performed
-//   - next_page: Cursor for continuous log retrieval
+//   - `resource_id`: The specific resource identifier
+//   - `action`: The operation performed
+//   - `next_page`: Cursor for continuous log retrieval
 //
 // ### Usage guidelines:
 //
@@ -127,8 +128,9 @@ func (r *V1AuditLogService) List(ctx context.Context, query V1AuditLogListParams
 //   - `starting_on`: Earliest logs to return (inclusive)
 //   - `ending_before`: Latest logs to return (exclusive)
 //   - Cannot be used with `next_page`
-//   - Resource filtering: Must specify both resource_type and resource_id together
-//   - Sort order: Default is date_asc; use date_desc for newest first
+//   - Resource filtering: Must specify both `resource_type` and `resource_id`
+//     together
+//   - Sort order: Default is `date_asc`; use `date_desc` for newest first
 func (r *V1AuditLogService) ListAutoPaging(ctx context.Context, query V1AuditLogListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1AuditLogListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
