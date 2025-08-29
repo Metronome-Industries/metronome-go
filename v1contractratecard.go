@@ -127,7 +127,9 @@ func (r *V1ContractRateCardService) Get(ctx context.Context, body V1ContractRate
 //     into their existing prices without code. Note that there are multiple
 //     mechanisms to support grandfathering in Metronome.
 //
-// ####How scheduled aliases work for PLG grandfathering: Initial setup:
+// #### How scheduled aliases work for PLG grandfathering:
+//
+// Initial setup:
 //
 //   - Add alias to current rate card: Assign a stable alias (e.g.,
 //     "standard-pricing") to your active rate card
@@ -137,7 +139,7 @@ func (r *V1ContractRateCardService) Get(ctx context.Context, body V1ContractRate
 //     resolve to the rate card associated with the alias at the point in time of
 //     provisioning
 //
-// ####Grandfathering process:
+// #### Grandfathering process:
 //
 //   - Create new rate card: Build your new rate card with updated pricing structure
 //   - Schedule alias transition: Add the same alias to the new rate card with a
