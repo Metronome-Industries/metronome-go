@@ -685,7 +685,8 @@ func (r *V1CustomerGetBillingConfigurationsResponse) UnmarshalJSON(data []byte) 
 type V1CustomerGetBillingConfigurationsResponseData struct {
 	// ID of this configuration; can be provided as the
 	// billing_provider_configuration_id when creating a contract.
-	ID string `json:"id,required" format:"uuid"`
+	ID         string    `json:"id,required" format:"uuid"`
+	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
 	// The billing provider set for this configuration.
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
@@ -707,6 +708,7 @@ type V1CustomerGetBillingConfigurationsResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                          respjson.Field
+		ArchivedAt                  respjson.Field
 		BillingProvider             respjson.Field
 		Configuration               respjson.Field
 		CustomerID                  respjson.Field
@@ -990,7 +992,8 @@ const (
 )
 
 type V1CustomerGetBillingConfigurationsParams struct {
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID      string          `json:"customer_id,required" format:"uuid"`
+	IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
 	paramObj
 }
 
