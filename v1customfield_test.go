@@ -26,9 +26,9 @@ func TestV1CustomFieldAddKey(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.CustomFields.AddKey(context.TODO(), metronome.V1CustomFieldAddKeyParams{
-		EnforceUniqueness: metronome.F(true),
-		Entity:            metronome.F(metronome.V1CustomFieldAddKeyParamsEntityCustomer),
-		Key:               metronome.F("x_account_id"),
+		EnforceUniqueness: true,
+		Entity:            metronome.V1CustomFieldAddKeyParamsEntityCustomer,
+		Key:               "x_account_id",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -52,9 +52,9 @@ func TestV1CustomFieldDeleteValues(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.CustomFields.DeleteValues(context.TODO(), metronome.V1CustomFieldDeleteValuesParams{
-		Entity:   metronome.F(metronome.V1CustomFieldDeleteValuesParamsEntityCustomer),
-		EntityID: metronome.F("99594816-e8a5-4bca-be21-8d1de0f45120"),
-		Keys:     metronome.F([]string{"x_account_id"}),
+		Entity:   metronome.V1CustomFieldDeleteValuesParamsEntityCustomer,
+		EntityID: "99594816-e8a5-4bca-be21-8d1de0f45120",
+		Keys:     []string{"x_account_id"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -78,8 +78,8 @@ func TestV1CustomFieldListKeysWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.CustomFields.ListKeys(context.TODO(), metronome.V1CustomFieldListKeysParams{
-		NextPage: metronome.F("next_page"),
-		Entities: metronome.F([]metronome.V1CustomFieldListKeysParamsEntity{metronome.V1CustomFieldListKeysParamsEntityCustomer}),
+		NextPage: metronome.String("next_page"),
+		Entities: []string{"customer"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -103,8 +103,8 @@ func TestV1CustomFieldRemoveKey(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.CustomFields.RemoveKey(context.TODO(), metronome.V1CustomFieldRemoveKeyParams{
-		Entity: metronome.F(metronome.V1CustomFieldRemoveKeyParamsEntityCustomer),
-		Key:    metronome.F("x_account_id"),
+		Entity: metronome.V1CustomFieldRemoveKeyParamsEntityCustomer,
+		Key:    "x_account_id",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -128,11 +128,11 @@ func TestV1CustomFieldSetValues(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.CustomFields.SetValues(context.TODO(), metronome.V1CustomFieldSetValuesParams{
-		CustomFields: metronome.F(map[string]string{
+		CustomFields: map[string]string{
 			"x_account_id": "KyVnHhSBWl7eY2bl",
-		}),
-		Entity:   metronome.F(metronome.V1CustomFieldSetValuesParamsEntityCustomer),
-		EntityID: metronome.F("99594816-e8a5-4bca-be21-8d1de0f45120"),
+		},
+		Entity:   metronome.V1CustomFieldSetValuesParamsEntityCustomer,
+		EntityID: "99594816-e8a5-4bca-be21-8d1de0f45120",
 	})
 	if err != nil {
 		var apierr *metronome.Error

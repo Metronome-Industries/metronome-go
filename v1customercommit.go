@@ -5,15 +5,15 @@ package metronome
 import (
 	"context"
 	"net/http"
-	"reflect"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/tidwall/gjson"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1CustomerCommitService contains methods and other services that help with
@@ -29,8 +29,8 @@ type V1CustomerCommitService struct {
 // NewV1CustomerCommitService generates a new service that applies the given
 // options to each request. These options are applied after the parent client's
 // options (if there is one), and before any request-specific options.
-func NewV1CustomerCommitService(opts ...option.RequestOption) (r *V1CustomerCommitService) {
-	r = &V1CustomerCommitService{}
+func NewV1CustomerCommitService(opts ...option.RequestOption) (r V1CustomerCommitService) {
+	r = V1CustomerCommitService{}
 	r.Options = opts
 	return
 }
@@ -141,7 +141,7 @@ func (r *V1CustomerCommitService) New(ctx context.Context, body V1CustomerCommit
 //   - include_balance: Adds current balance calculation (slower)
 //
 // - Optional filtering: Use commit_id to retrieve a specific commit
-func (r *V1CustomerCommitService) List(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) (res *pagination.BodyCursorPage[V1CustomerCommitListResponse], err error) {
+func (r *V1CustomerCommitService) List(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) (res *pagination.BodyCursorPage[shared.Commit], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -202,7 +202,7 @@ func (r *V1CustomerCommitService) List(ctx context.Context, body V1CustomerCommi
 //   - include_balance: Adds current balance calculation (slower)
 //
 // - Optional filtering: Use commit_id to retrieve a specific commit
-func (r *V1CustomerCommitService) ListAutoPaging(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) *pagination.BodyCursorPageAutoPager[V1CustomerCommitListResponse] {
+func (r *V1CustomerCommitService) ListAutoPaging(ctx context.Context, body V1CustomerCommitListParams, opts ...option.RequestOption) *pagination.BodyCursorPageAutoPager[shared.Commit] {
 	return pagination.NewBodyCursorPageAutoPager(r.List(ctx, body, opts...))
 }
 
@@ -221,964 +221,138 @@ func (r *V1CustomerCommitService) UpdateEndDate(ctx context.Context, body V1Cust
 }
 
 type V1CustomerCommitNewResponse struct {
-	Data V1CustomerCommitNewResponseData `json:"data,required"`
-	JSON v1CustomerCommitNewResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CustomerCommitNewResponseJSON contains the JSON metadata for the struct
-// [V1CustomerCommitNewResponse]
-type v1CustomerCommitNewResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitNewResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerCommitNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerCommitNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitNewResponseData struct {
-	ID   string                              `json:"id,required" format:"uuid"`
-	JSON v1CustomerCommitNewResponseDataJSON `json:"-"`
-}
-
-// v1CustomerCommitNewResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomerCommitNewResponseData]
-type v1CustomerCommitNewResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitNewResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitNewResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponse struct {
-	ID      string                              `json:"id,required" format:"uuid"`
-	Product V1CustomerCommitListResponseProduct `json:"product,required"`
-	Type    V1CustomerCommitListResponseType    `json:"type,required"`
-	// The schedule that the customer will gain access to the credits purposed with
-	// this commit.
-	AccessSchedule V1CustomerCommitListResponseAccessSchedule `json:"access_schedule"`
-	// (DEPRECATED) Use access_schedule + invoice_schedule instead.
-	Amount                float64  `json:"amount"`
-	ApplicableContractIDs []string `json:"applicable_contract_ids" format:"uuid"`
-	ApplicableProductIDs  []string `json:"applicable_product_ids" format:"uuid"`
-	ApplicableProductTags []string `json:"applicable_product_tags"`
-	// RFC 3339 timestamp indicating when the commit was archived. If not provided, the
-	// commit is not archived.
-	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
-	// The current balance of the credit or commit. This balance reflects the amount of
-	// credit or commit that the customer has access to use at this moment - thus,
-	// expired and upcoming credit or commit segments contribute 0 to the balance. The
-	// balance will match the sum of all ledger entries with the exception of the case
-	// where the sum of negative manual ledger entries exceeds the positive amount
-	// remaining on the credit or commit - in that case, the balance will be 0. All
-	// manual ledger entries associated with active credit or commit segments are
-	// included in the balance, including future-dated manual ledger entries.
-	Balance  float64                              `json:"balance"`
-	Contract V1CustomerCommitListResponseContract `json:"contract"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields"`
-	Description  string            `json:"description"`
-	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration V1CustomerCommitListResponseHierarchyConfiguration `json:"hierarchy_configuration"`
-	// The contract that this commit will be billed on.
-	InvoiceContract V1CustomerCommitListResponseInvoiceContract `json:"invoice_contract"`
-	// The schedule that the customer will be invoiced for this commit.
-	InvoiceSchedule V1CustomerCommitListResponseInvoiceSchedule `json:"invoice_schedule"`
-	// A list of ordered events that impact the balance of a commit. For example, an
-	// invoice deduction or a rollover.
-	Ledger []V1CustomerCommitListResponseLedger `json:"ledger"`
-	Name   string                               `json:"name"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
-	// If multiple credits or commits are applicable, the one with the lower priority
-	// will apply first.
-	Priority         float64                                    `json:"priority"`
-	RateType         V1CustomerCommitListResponseRateType       `json:"rate_type"`
-	RolledOverFrom   V1CustomerCommitListResponseRolledOverFrom `json:"rolled_over_from"`
-	RolloverFraction float64                                    `json:"rollover_fraction"`
-	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []V1CustomerCommitListResponseSpecifier `json:"specifiers"`
-	// Prevents the creation of duplicates. If a request to create a commit or credit
-	// is made with a uniqueness key that was previously used to create a commit or
-	// credit, a new record will not be created and the request will fail with a 409
-	// error.
-	UniquenessKey string                           `json:"uniqueness_key"`
-	JSON          v1CustomerCommitListResponseJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseJSON contains the JSON metadata for the struct
-// [V1CustomerCommitListResponse]
-type v1CustomerCommitListResponseJSON struct {
-	ID                      apijson.Field
-	Product                 apijson.Field
-	Type                    apijson.Field
-	AccessSchedule          apijson.Field
-	Amount                  apijson.Field
-	ApplicableContractIDs   apijson.Field
-	ApplicableProductIDs    apijson.Field
-	ApplicableProductTags   apijson.Field
-	ArchivedAt              apijson.Field
-	Balance                 apijson.Field
-	Contract                apijson.Field
-	CustomFields            apijson.Field
-	Description             apijson.Field
-	HierarchyConfiguration  apijson.Field
-	InvoiceContract         apijson.Field
-	InvoiceSchedule         apijson.Field
-	Ledger                  apijson.Field
-	Name                    apijson.Field
-	NetsuiteSalesOrderID    apijson.Field
-	Priority                apijson.Field
-	RateType                apijson.Field
-	RolledOverFrom          apijson.Field
-	RolloverFraction        apijson.Field
-	SalesforceOpportunityID apijson.Field
-	Specifiers              apijson.Field
-	UniquenessKey           apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseProduct struct {
-	ID   string                                  `json:"id,required" format:"uuid"`
-	Name string                                  `json:"name,required"`
-	JSON v1CustomerCommitListResponseProductJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseProductJSON contains the JSON metadata for the
-// struct [V1CustomerCommitListResponseProduct]
-type v1CustomerCommitListResponseProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseProduct) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseProductJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseType string
-
-const (
-	V1CustomerCommitListResponseTypePrepaid  V1CustomerCommitListResponseType = "PREPAID"
-	V1CustomerCommitListResponseTypePostpaid V1CustomerCommitListResponseType = "POSTPAID"
-)
-
-func (r V1CustomerCommitListResponseType) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitListResponseTypePrepaid, V1CustomerCommitListResponseTypePostpaid:
-		return true
-	}
-	return false
-}
-
-// The schedule that the customer will gain access to the credits purposed with
-// this commit.
-type V1CustomerCommitListResponseAccessSchedule struct {
-	ScheduleItems []V1CustomerCommitListResponseAccessScheduleScheduleItem `json:"schedule_items,required"`
-	CreditType    V1CustomerCommitListResponseAccessScheduleCreditType     `json:"credit_type"`
-	JSON          v1CustomerCommitListResponseAccessScheduleJSON           `json:"-"`
-}
-
-// v1CustomerCommitListResponseAccessScheduleJSON contains the JSON metadata for
-// the struct [V1CustomerCommitListResponseAccessSchedule]
-type v1CustomerCommitListResponseAccessScheduleJSON struct {
-	ScheduleItems apijson.Field
-	CreditType    apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseAccessSchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseAccessScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseAccessScheduleScheduleItem struct {
-	ID           string                                                     `json:"id,required" format:"uuid"`
-	Amount       float64                                                    `json:"amount,required"`
-	EndingBefore time.Time                                                  `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time                                                  `json:"starting_at,required" format:"date-time"`
-	JSON         v1CustomerCommitListResponseAccessScheduleScheduleItemJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseAccessScheduleScheduleItemJSON contains the JSON
-// metadata for the struct [V1CustomerCommitListResponseAccessScheduleScheduleItem]
-type v1CustomerCommitListResponseAccessScheduleScheduleItemJSON struct {
-	ID           apijson.Field
-	Amount       apijson.Field
-	EndingBefore apijson.Field
-	StartingAt   apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseAccessScheduleScheduleItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseAccessScheduleScheduleItemJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseAccessScheduleCreditType struct {
-	ID   string                                                   `json:"id,required" format:"uuid"`
-	Name string                                                   `json:"name,required"`
-	JSON v1CustomerCommitListResponseAccessScheduleCreditTypeJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseAccessScheduleCreditTypeJSON contains the JSON
-// metadata for the struct [V1CustomerCommitListResponseAccessScheduleCreditType]
-type v1CustomerCommitListResponseAccessScheduleCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseAccessScheduleCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseAccessScheduleCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseContract struct {
-	ID   string                                   `json:"id,required" format:"uuid"`
-	JSON v1CustomerCommitListResponseContractJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseContractJSON contains the JSON metadata for the
-// struct [V1CustomerCommitListResponseContract]
-type v1CustomerCommitListResponseContractJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseContract) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseContractJSON) RawJSON() string {
-	return r.raw
-}
-
-// Optional configuration for commit hierarchy access control
-type V1CustomerCommitListResponseHierarchyConfiguration struct {
-	ChildAccess V1CustomerCommitListResponseHierarchyConfigurationChildAccess `json:"child_access,required"`
-	JSON        v1CustomerCommitListResponseHierarchyConfigurationJSON        `json:"-"`
-}
-
-// v1CustomerCommitListResponseHierarchyConfigurationJSON contains the JSON
-// metadata for the struct [V1CustomerCommitListResponseHierarchyConfiguration]
-type v1CustomerCommitListResponseHierarchyConfigurationJSON struct {
-	ChildAccess apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseHierarchyConfiguration) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseHierarchyConfigurationJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseHierarchyConfigurationChildAccess struct {
-	Type V1CustomerCommitListResponseHierarchyConfigurationChildAccessType `json:"type,required"`
-	// This field can have the runtime type of [[]string].
-	ContractIDs interface{}                                                       `json:"contract_ids"`
-	JSON        v1CustomerCommitListResponseHierarchyConfigurationChildAccessJSON `json:"-"`
-	union       V1CustomerCommitListResponseHierarchyConfigurationChildAccessUnion
-}
-
-// v1CustomerCommitListResponseHierarchyConfigurationChildAccessJSON contains the
-// JSON metadata for the struct
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccess]
-type v1CustomerCommitListResponseHierarchyConfigurationChildAccessJSON struct {
-	Type        apijson.Field
-	ContractIDs apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r v1CustomerCommitListResponseHierarchyConfigurationChildAccessJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *V1CustomerCommitListResponseHierarchyConfigurationChildAccess) UnmarshalJSON(data []byte) (err error) {
-	*r = V1CustomerCommitListResponseHierarchyConfigurationChildAccess{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessUnion] interface
-// which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessType],
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessType],
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessObject].
-func (r V1CustomerCommitListResponseHierarchyConfigurationChildAccess) AsUnion() V1CustomerCommitListResponseHierarchyConfigurationChildAccessUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessType],
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessType] or
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessObject].
-type V1CustomerCommitListResponseHierarchyConfigurationChildAccessUnion interface {
-	implementsV1CustomerCommitListResponseHierarchyConfigurationChildAccess()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*V1CustomerCommitListResponseHierarchyConfigurationChildAccessUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseHierarchyConfigurationChildAccessType{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseHierarchyConfigurationChildAccessType{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseHierarchyConfigurationChildAccessObject{}),
-		},
-	)
-}
-
-type V1CustomerCommitListResponseHierarchyConfigurationChildAccessType struct {
-	Type V1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeType `json:"type,required"`
-	JSON v1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeJSON contains
-// the JSON metadata for the struct
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessType]
-type v1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeJSON struct {
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseHierarchyConfigurationChildAccessType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V1CustomerCommitListResponseHierarchyConfigurationChildAccessType) implementsV1CustomerCommitListResponseHierarchyConfigurationChildAccess() {
-}
-
-type V1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeType string
-
-const (
-	V1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeTypeAll V1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeType = "ALL"
-)
-
-func (r V1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeType) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitListResponseHierarchyConfigurationChildAccessTypeTypeAll:
-		return true
-	}
-	return false
-}
-
-type V1CustomerCommitListResponseHierarchyConfigurationChildAccessObject struct {
-	ContractIDs []string                                                                `json:"contract_ids,required" format:"uuid"`
-	Type        V1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectType `json:"type,required"`
-	JSON        v1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectJSON contains
-// the JSON metadata for the struct
-// [V1CustomerCommitListResponseHierarchyConfigurationChildAccessObject]
-type v1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectJSON struct {
-	ContractIDs apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseHierarchyConfigurationChildAccessObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V1CustomerCommitListResponseHierarchyConfigurationChildAccessObject) implementsV1CustomerCommitListResponseHierarchyConfigurationChildAccess() {
-}
-
-type V1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectType string
-
-const (
-	V1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectTypeContractIDs V1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectType = "CONTRACT_IDS"
-)
-
-func (r V1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectType) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitListResponseHierarchyConfigurationChildAccessObjectTypeContractIDs:
-		return true
-	}
-	return false
-}
-
-// The contract that this commit will be billed on.
-type V1CustomerCommitListResponseInvoiceContract struct {
-	ID   string                                          `json:"id,required" format:"uuid"`
-	JSON v1CustomerCommitListResponseInvoiceContractJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseInvoiceContractJSON contains the JSON metadata for
-// the struct [V1CustomerCommitListResponseInvoiceContract]
-type v1CustomerCommitListResponseInvoiceContractJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseInvoiceContract) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseInvoiceContractJSON) RawJSON() string {
-	return r.raw
-}
-
-// The schedule that the customer will be invoiced for this commit.
-type V1CustomerCommitListResponseInvoiceSchedule struct {
-	CreditType V1CustomerCommitListResponseInvoiceScheduleCreditType `json:"credit_type"`
-	// This field is only applicable to commit invoice schedules. If true, this
-	// schedule will not generate an invoice.
-	DoNotInvoice  bool                                                      `json:"do_not_invoice"`
-	ScheduleItems []V1CustomerCommitListResponseInvoiceScheduleScheduleItem `json:"schedule_items"`
-	JSON          v1CustomerCommitListResponseInvoiceScheduleJSON           `json:"-"`
-}
-
-// v1CustomerCommitListResponseInvoiceScheduleJSON contains the JSON metadata for
-// the struct [V1CustomerCommitListResponseInvoiceSchedule]
-type v1CustomerCommitListResponseInvoiceScheduleJSON struct {
-	CreditType    apijson.Field
-	DoNotInvoice  apijson.Field
-	ScheduleItems apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseInvoiceSchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseInvoiceScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseInvoiceScheduleCreditType struct {
-	ID   string                                                    `json:"id,required" format:"uuid"`
-	Name string                                                    `json:"name,required"`
-	JSON v1CustomerCommitListResponseInvoiceScheduleCreditTypeJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseInvoiceScheduleCreditTypeJSON contains the JSON
-// metadata for the struct [V1CustomerCommitListResponseInvoiceScheduleCreditType]
-type v1CustomerCommitListResponseInvoiceScheduleCreditTypeJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseInvoiceScheduleCreditType) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseInvoiceScheduleCreditTypeJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseInvoiceScheduleScheduleItem struct {
-	ID        string                                                      `json:"id,required" format:"uuid"`
-	Amount    float64                                                     `json:"amount,required"`
-	Quantity  float64                                                     `json:"quantity,required"`
-	Timestamp time.Time                                                   `json:"timestamp,required" format:"date-time"`
-	UnitPrice float64                                                     `json:"unit_price,required"`
-	InvoiceID string                                                      `json:"invoice_id,nullable" format:"uuid"`
-	JSON      v1CustomerCommitListResponseInvoiceScheduleScheduleItemJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseInvoiceScheduleScheduleItemJSON contains the JSON
-// metadata for the struct
-// [V1CustomerCommitListResponseInvoiceScheduleScheduleItem]
-type v1CustomerCommitListResponseInvoiceScheduleScheduleItemJSON struct {
-	ID          apijson.Field
-	Amount      apijson.Field
-	Quantity    apijson.Field
-	Timestamp   apijson.Field
-	UnitPrice   apijson.Field
-	InvoiceID   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseInvoiceScheduleScheduleItemJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseLedger struct {
-	Amount        float64                                `json:"amount,required"`
-	Timestamp     time.Time                              `json:"timestamp,required" format:"date-time"`
-	Type          V1CustomerCommitListResponseLedgerType `json:"type,required"`
-	ContractID    string                                 `json:"contract_id" format:"uuid"`
-	InvoiceID     string                                 `json:"invoice_id" format:"uuid"`
-	NewContractID string                                 `json:"new_contract_id" format:"uuid"`
-	Reason        string                                 `json:"reason"`
-	SegmentID     string                                 `json:"segment_id" format:"uuid"`
-	JSON          v1CustomerCommitListResponseLedgerJSON `json:"-"`
-	union         V1CustomerCommitListResponseLedgerUnion
-}
-
-// v1CustomerCommitListResponseLedgerJSON contains the JSON metadata for the struct
-// [V1CustomerCommitListResponseLedger]
-type v1CustomerCommitListResponseLedgerJSON struct {
-	Amount        apijson.Field
-	Timestamp     apijson.Field
-	Type          apijson.Field
-	ContractID    apijson.Field
-	InvoiceID     apijson.Field
-	NewContractID apijson.Field
-	Reason        apijson.Field
-	SegmentID     apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r v1CustomerCommitListResponseLedgerJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *V1CustomerCommitListResponseLedger) UnmarshalJSON(data []byte) (err error) {
-	*r = V1CustomerCommitListResponseLedger{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [V1CustomerCommitListResponseLedgerUnion] interface which you
-// can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject].
-func (r V1CustomerCommitListResponseLedger) AsUnion() V1CustomerCommitListResponseLedgerUnion {
-	return r.union
-}
-
-// Union satisfied by [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject],
-// [V1CustomerCommitListResponseLedgerObject] or
-// [V1CustomerCommitListResponseLedgerObject].
-type V1CustomerCommitListResponseLedgerUnion interface {
-	implementsV1CustomerCommitListResponseLedger()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*V1CustomerCommitListResponseLedgerUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(V1CustomerCommitListResponseLedgerObject{}),
-		},
-	)
-}
-
-type V1CustomerCommitListResponseLedgerObject struct {
-	Amount    float64                                      `json:"amount,required"`
-	SegmentID string                                       `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time                                    `json:"timestamp,required" format:"date-time"`
-	Type      V1CustomerCommitListResponseLedgerObjectType `json:"type,required"`
-	JSON      v1CustomerCommitListResponseLedgerObjectJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseLedgerObjectJSON contains the JSON metadata for the
-// struct [V1CustomerCommitListResponseLedgerObject]
-type v1CustomerCommitListResponseLedgerObjectJSON struct {
-	Amount      apijson.Field
-	SegmentID   apijson.Field
-	Timestamp   apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseLedgerObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseLedgerObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r V1CustomerCommitListResponseLedgerObject) implementsV1CustomerCommitListResponseLedger() {}
-
-type V1CustomerCommitListResponseLedgerObjectType string
-
-const (
-	V1CustomerCommitListResponseLedgerObjectTypePrepaidCommitSegmentStart V1CustomerCommitListResponseLedgerObjectType = "PREPAID_COMMIT_SEGMENT_START"
-)
-
-func (r V1CustomerCommitListResponseLedgerObjectType) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitListResponseLedgerObjectTypePrepaidCommitSegmentStart:
-		return true
-	}
-	return false
-}
-
-type V1CustomerCommitListResponseLedgerType string
-
-const (
-	V1CustomerCommitListResponseLedgerTypePrepaidCommitSegmentStart               V1CustomerCommitListResponseLedgerType = "PREPAID_COMMIT_SEGMENT_START"
-	V1CustomerCommitListResponseLedgerTypePrepaidCommitAutomatedInvoiceDeduction  V1CustomerCommitListResponseLedgerType = "PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION"
-	V1CustomerCommitListResponseLedgerTypePrepaidCommitRollover                   V1CustomerCommitListResponseLedgerType = "PREPAID_COMMIT_ROLLOVER"
-	V1CustomerCommitListResponseLedgerTypePrepaidCommitExpiration                 V1CustomerCommitListResponseLedgerType = "PREPAID_COMMIT_EXPIRATION"
-	V1CustomerCommitListResponseLedgerTypePrepaidCommitCanceled                   V1CustomerCommitListResponseLedgerType = "PREPAID_COMMIT_CANCELED"
-	V1CustomerCommitListResponseLedgerTypePrepaidCommitCredited                   V1CustomerCommitListResponseLedgerType = "PREPAID_COMMIT_CREDITED"
-	V1CustomerCommitListResponseLedgerTypePrepaidCommitSeatBasedAdjustment        V1CustomerCommitListResponseLedgerType = "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT"
-	V1CustomerCommitListResponseLedgerTypePostpaidCommitInitialBalance            V1CustomerCommitListResponseLedgerType = "POSTPAID_COMMIT_INITIAL_BALANCE"
-	V1CustomerCommitListResponseLedgerTypePostpaidCommitAutomatedInvoiceDeduction V1CustomerCommitListResponseLedgerType = "POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION"
-	V1CustomerCommitListResponseLedgerTypePostpaidCommitRollover                  V1CustomerCommitListResponseLedgerType = "POSTPAID_COMMIT_ROLLOVER"
-	V1CustomerCommitListResponseLedgerTypePostpaidCommitTrueup                    V1CustomerCommitListResponseLedgerType = "POSTPAID_COMMIT_TRUEUP"
-	V1CustomerCommitListResponseLedgerTypePrepaidCommitManual                     V1CustomerCommitListResponseLedgerType = "PREPAID_COMMIT_MANUAL"
-	V1CustomerCommitListResponseLedgerTypePostpaidCommitManual                    V1CustomerCommitListResponseLedgerType = "POSTPAID_COMMIT_MANUAL"
-	V1CustomerCommitListResponseLedgerTypePostpaidCommitExpiration                V1CustomerCommitListResponseLedgerType = "POSTPAID_COMMIT_EXPIRATION"
-)
-
-func (r V1CustomerCommitListResponseLedgerType) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitListResponseLedgerTypePrepaidCommitSegmentStart, V1CustomerCommitListResponseLedgerTypePrepaidCommitAutomatedInvoiceDeduction, V1CustomerCommitListResponseLedgerTypePrepaidCommitRollover, V1CustomerCommitListResponseLedgerTypePrepaidCommitExpiration, V1CustomerCommitListResponseLedgerTypePrepaidCommitCanceled, V1CustomerCommitListResponseLedgerTypePrepaidCommitCredited, V1CustomerCommitListResponseLedgerTypePrepaidCommitSeatBasedAdjustment, V1CustomerCommitListResponseLedgerTypePostpaidCommitInitialBalance, V1CustomerCommitListResponseLedgerTypePostpaidCommitAutomatedInvoiceDeduction, V1CustomerCommitListResponseLedgerTypePostpaidCommitRollover, V1CustomerCommitListResponseLedgerTypePostpaidCommitTrueup, V1CustomerCommitListResponseLedgerTypePrepaidCommitManual, V1CustomerCommitListResponseLedgerTypePostpaidCommitManual, V1CustomerCommitListResponseLedgerTypePostpaidCommitExpiration:
-		return true
-	}
-	return false
-}
-
-type V1CustomerCommitListResponseRateType string
-
-const (
-	V1CustomerCommitListResponseRateTypeCommitRate V1CustomerCommitListResponseRateType = "COMMIT_RATE"
-	V1CustomerCommitListResponseRateTypeListRate   V1CustomerCommitListResponseRateType = "LIST_RATE"
-)
-
-func (r V1CustomerCommitListResponseRateType) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitListResponseRateTypeCommitRate, V1CustomerCommitListResponseRateTypeListRate:
-		return true
-	}
-	return false
-}
-
-type V1CustomerCommitListResponseRolledOverFrom struct {
-	CommitID   string                                         `json:"commit_id,required" format:"uuid"`
-	ContractID string                                         `json:"contract_id,required" format:"uuid"`
-	JSON       v1CustomerCommitListResponseRolledOverFromJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseRolledOverFromJSON contains the JSON metadata for
-// the struct [V1CustomerCommitListResponseRolledOverFrom]
-type v1CustomerCommitListResponseRolledOverFromJSON struct {
-	CommitID    apijson.Field
-	ContractID  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseRolledOverFrom) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseRolledOverFromJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitListResponseSpecifier struct {
-	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID string `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags []string                                  `json:"product_tags"`
-	JSON        v1CustomerCommitListResponseSpecifierJSON `json:"-"`
-}
-
-// v1CustomerCommitListResponseSpecifierJSON contains the JSON metadata for the
-// struct [V1CustomerCommitListResponseSpecifier]
-type v1CustomerCommitListResponseSpecifierJSON struct {
-	PresentationGroupValues apijson.Field
-	PricingGroupValues      apijson.Field
-	ProductID               apijson.Field
-	ProductTags             apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitListResponseSpecifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitListResponseSpecifierJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerCommitUpdateEndDateResponse struct {
-	Data V1CustomerCommitUpdateEndDateResponseData `json:"data,required"`
-	JSON v1CustomerCommitUpdateEndDateResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CustomerCommitUpdateEndDateResponseJSON contains the JSON metadata for the
-// struct [V1CustomerCommitUpdateEndDateResponse]
-type v1CustomerCommitUpdateEndDateResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitUpdateEndDateResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerCommitUpdateEndDateResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerCommitUpdateEndDateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitUpdateEndDateResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerCommitUpdateEndDateResponseData struct {
-	ID   string                                        `json:"id,required" format:"uuid"`
-	JSON v1CustomerCommitUpdateEndDateResponseDataJSON `json:"-"`
-}
-
-// v1CustomerCommitUpdateEndDateResponseDataJSON contains the JSON metadata for the
-// struct [V1CustomerCommitUpdateEndDateResponseData]
-type v1CustomerCommitUpdateEndDateResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerCommitUpdateEndDateResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerCommitUpdateEndDateResponseDataJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerCommitNewParams struct {
 	// Schedule for distributing the commit to the customer. For "POSTPAID" commits
 	// only one schedule item is allowed and amount must match invoice_schedule total.
-	AccessSchedule param.Field[V1CustomerCommitNewParamsAccessSchedule] `json:"access_schedule,required"`
-	CustomerID     param.Field[string]                                  `json:"customer_id,required" format:"uuid"`
+	AccessSchedule V1CustomerCommitNewParamsAccessSchedule `json:"access_schedule,omitzero,required"`
+	CustomerID     string                                  `json:"customer_id,required" format:"uuid"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
-	Priority param.Field[float64] `json:"priority,required"`
+	Priority float64 `json:"priority,required"`
 	// ID of the fixed product associated with the commit. This is required because
 	// products are used to invoice the commit amount.
-	ProductID param.Field[string]                        `json:"product_id,required" format:"uuid"`
-	Type      param.Field[V1CustomerCommitNewParamsType] `json:"type,required"`
-	// Which contract the commit applies to. If not provided, the commit applies to all
-	// contracts.
-	ApplicableContractIDs param.Field[[]string] `json:"applicable_contract_ids"`
-	// Which products the commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs param.Field[[]string] `json:"applicable_product_ids" format:"uuid"`
-	// Which tags the commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags param.Field[[]string] `json:"applicable_product_tags"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields param.Field[map[string]string] `json:"custom_fields"`
+	ProductID string `json:"product_id,required" format:"uuid"`
+	// Any of "PREPAID", "POSTPAID".
+	Type V1CustomerCommitNewParamsType `json:"type,omitzero,required"`
 	// Used only in UI/API. It is not exposed to end customers.
-	Description param.Field[string] `json:"description"`
+	Description param.Opt[string] `json:"description,omitzero"`
 	// The contract that this commit will be billed on. This is required for "POSTPAID"
 	// commits and for "PREPAID" commits unless there is no invoice schedule above
 	// (i.e., the commit is 'free').
-	InvoiceContractID param.Field[string] `json:"invoice_contract_id" format:"uuid"`
-	// Required for "POSTPAID" commits: the true up invoice will be generated at this
-	// time and only one schedule item is allowed; the total must match
-	// accesss_schedule amount. Optional for "PREPAID" commits: if not provided, this
-	// will be a "complimentary" commit with no invoice.
-	InvoiceSchedule param.Field[V1CustomerCommitNewParamsInvoiceSchedule] `json:"invoice_schedule"`
+	InvoiceContractID param.Opt[string] `json:"invoice_contract_id,omitzero" format:"uuid"`
 	// displayed on invoices
-	Name param.Field[string] `json:"name"`
+	Name param.Opt[string] `json:"name,omitzero"`
 	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Field[string]                            `json:"netsuite_sales_order_id"`
-	RateType             param.Field[V1CustomerCommitNewParamsRateType] `json:"rate_type"`
+	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
 	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID param.Field[string] `json:"salesforce_opportunity_id"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers param.Field[[]V1CustomerCommitNewParamsSpecifier] `json:"specifiers"`
+	SalesforceOpportunityID param.Opt[string] `json:"salesforce_opportunity_id,omitzero"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
 	// error.
-	UniquenessKey param.Field[string] `json:"uniqueness_key"`
+	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
+	// Which contract the commit applies to. If not provided, the commit applies to all
+	// contracts.
+	ApplicableContractIDs []string `json:"applicable_contract_ids,omitzero"`
+	// Which products the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+	// Which tags the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields,omitzero"`
+	// Required for "POSTPAID" commits: the true up invoice will be generated at this
+	// time and only one schedule item is allowed; the total must match
+	// accesss_schedule amount. Optional for "PREPAID" commits: if not provided, this
+	// will be a "complimentary" commit with no invoice.
+	InvoiceSchedule V1CustomerCommitNewParamsInvoiceSchedule `json:"invoice_schedule,omitzero"`
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType V1CustomerCommitNewParamsRateType `json:"rate_type,omitzero"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerCommitNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerCommitNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerCommitNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Schedule for distributing the commit to the customer. For "POSTPAID" commits
 // only one schedule item is allowed and amount must match invoice_schedule total.
+//
+// The property ScheduleItems is required.
 type V1CustomerCommitNewParamsAccessSchedule struct {
-	ScheduleItems param.Field[[]V1CustomerCommitNewParamsAccessScheduleScheduleItem] `json:"schedule_items,required"`
+	ScheduleItems []V1CustomerCommitNewParamsAccessScheduleScheduleItem `json:"schedule_items,omitzero,required"`
 	// Defaults to USD (cents) if not passed
-	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	paramObj
 }
 
 func (r V1CustomerCommitNewParamsAccessSchedule) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerCommitNewParamsAccessSchedule
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerCommitNewParamsAccessSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Amount, EndingBefore, StartingAt are required.
 type V1CustomerCommitNewParamsAccessScheduleScheduleItem struct {
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount float64 `json:"amount,required"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore param.Field[time.Time] `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
 	// RFC 3339 timestamp (inclusive)
-	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	paramObj
 }
 
 func (r V1CustomerCommitNewParamsAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerCommitNewParamsAccessScheduleScheduleItem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerCommitNewParamsAccessScheduleScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerCommitNewParamsType string
@@ -1188,116 +362,105 @@ const (
 	V1CustomerCommitNewParamsTypePostpaid V1CustomerCommitNewParamsType = "POSTPAID"
 )
 
-func (r V1CustomerCommitNewParamsType) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitNewParamsTypePrepaid, V1CustomerCommitNewParamsTypePostpaid:
-		return true
-	}
-	return false
-}
-
 // Required for "POSTPAID" commits: the true up invoice will be generated at this
 // time and only one schedule item is allowed; the total must match
 // accesss_schedule amount. Optional for "PREPAID" commits: if not provided, this
 // will be a "complimentary" commit with no invoice.
 type V1CustomerCommitNewParamsInvoiceSchedule struct {
 	// Defaults to USD (cents) if not passed.
-	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// This field is only applicable to commit invoice schedules. If true, this
 	// schedule will not generate an invoice.
-	DoNotInvoice param.Field[bool] `json:"do_not_invoice"`
+	DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
 	// Enter the unit price and quantity for the charge or instead only send the
 	// amount. If amount is sent, the unit price is assumed to be the amount and
 	// quantity is inferred to be 1.
-	RecurringSchedule param.Field[V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule] `json:"recurring_schedule"`
+	RecurringSchedule V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
 	// Either provide amount or provide both unit_price and quantity.
-	ScheduleItems param.Field[[]V1CustomerCommitNewParamsInvoiceScheduleScheduleItem] `json:"schedule_items"`
+	ScheduleItems []V1CustomerCommitNewParamsInvoiceScheduleScheduleItem `json:"schedule_items,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerCommitNewParamsInvoiceSchedule) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerCommitNewParamsInvoiceSchedule
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerCommitNewParamsInvoiceSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enter the unit price and quantity for the charge or instead only send the
 // amount. If amount is sent, the unit price is assumed to be the amount and
 // quantity is inferred to be 1.
+//
+// The properties AmountDistribution, EndingBefore, Frequency, StartingAt are
+// required.
 type V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule struct {
-	AmountDistribution param.Field[V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistribution] `json:"amount_distribution,required"`
+	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
+	AmountDistribution string `json:"amount_distribution,omitzero,required"`
 	// RFC 3339 timestamp (exclusive).
-	EndingBefore param.Field[time.Time]                                                          `json:"ending_before,required" format:"date-time"`
-	Frequency    param.Field[V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequency] `json:"frequency,required"`
+	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
+	Frequency string `json:"frequency,omitzero,required"`
 	// RFC 3339 timestamp (inclusive).
-	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
-	Amount param.Field[float64] `json:"amount"`
+	Amount param.Opt[float64] `json:"amount,omitzero"`
 	// Quantity for the charge. Will be multiplied by unit_price to determine the
 	// amount and must be specified with unit_price. If specified amount cannot be
 	// provided.
-	Quantity param.Field[float64] `json:"quantity"`
+	Quantity param.Opt[float64] `json:"quantity,omitzero"`
 	// Unit price for the charge. Will be multiplied by quantity to determine the
 	// amount and must be specified with quantity. If specified amount cannot be
 	// provided.
-	UnitPrice param.Field[float64] `json:"unit_price"`
+	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-type V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistribution string
-
-const (
-	V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionDivided        V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistribution = "DIVIDED"
-	V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionDividedRounded V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistribution = "DIVIDED_ROUNDED"
-	V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionEach           V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistribution = "EACH"
-)
-
-func (r V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistribution) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionDivided, V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionDividedRounded, V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionEach:
-		return true
-	}
-	return false
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule](
+		"amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
+	)
+	apijson.RegisterFieldValidator[V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule](
+		"frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
+	)
 }
 
-type V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequency string
-
-const (
-	V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencyMonthly    V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequency = "MONTHLY"
-	V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencyQuarterly  V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequency = "QUARTERLY"
-	V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencySemiAnnual V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequency = "SEMI_ANNUAL"
-	V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencyAnnual     V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequency = "ANNUAL"
-)
-
-func (r V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequency) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencyMonthly, V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencyQuarterly, V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencySemiAnnual, V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencyAnnual:
-		return true
-	}
-	return false
-}
-
+// The property Timestamp is required.
 type V1CustomerCommitNewParamsInvoiceScheduleScheduleItem struct {
 	// timestamp of the scheduled event
-	Timestamp param.Field[time.Time] `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
-	Amount param.Field[float64] `json:"amount"`
+	Amount param.Opt[float64] `json:"amount,omitzero"`
 	// Quantity for the charge. Will be multiplied by unit_price to determine the
 	// amount and must be specified with unit_price. If specified amount cannot be
 	// provided.
-	Quantity param.Field[float64] `json:"quantity"`
+	Quantity param.Opt[float64] `json:"quantity,omitzero"`
 	// Unit price for the charge. Will be multiplied by quantity to determine the
 	// amount and must be specified with quantity. If specified amount cannot be
 	// provided.
-	UnitPrice param.Field[float64] `json:"unit_price"`
+	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerCommitNewParamsInvoiceScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerCommitNewParamsInvoiceScheduleScheduleItem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerCommitNewParamsInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerCommitNewParamsRateType string
@@ -1307,71 +470,59 @@ const (
 	V1CustomerCommitNewParamsRateTypeListRate   V1CustomerCommitNewParamsRateType = "LIST_RATE"
 )
 
-func (r V1CustomerCommitNewParamsRateType) IsKnown() bool {
-	switch r {
-	case V1CustomerCommitNewParamsRateTypeCommitRate, V1CustomerCommitNewParamsRateTypeListRate:
-		return true
-	}
-	return false
-}
-
-type V1CustomerCommitNewParamsSpecifier struct {
-	PresentationGroupValues param.Field[map[string]string] `json:"presentation_group_values"`
-	PricingGroupValues      param.Field[map[string]string] `json:"pricing_group_values"`
-	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
-	// If provided, the specifier will only apply to products with all the specified
-	// tags.
-	ProductTags param.Field[[]string] `json:"product_tags"`
-}
-
-func (r V1CustomerCommitNewParamsSpecifier) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type V1CustomerCommitListParams struct {
-	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
-	CommitID   param.Field[string] `json:"commit_id" format:"uuid"`
+	CustomerID string            `json:"customer_id,required" format:"uuid"`
+	CommitID   param.Opt[string] `json:"commit_id,omitzero" format:"uuid"`
 	// Include only commits that have access schedules that "cover" the provided date
-	CoveringDate param.Field[time.Time] `json:"covering_date" format:"date-time"`
+	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
 	// Include only commits that have any access before the provided date (exclusive)
-	EffectiveBefore param.Field[time.Time] `json:"effective_before" format:"date-time"`
+	EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
 	// Include archived commits and commits from archived contracts.
-	IncludeArchived param.Field[bool] `json:"include_archived"`
+	IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
 	// Include the balance in the response. Setting this flag may cause the query to be
 	// slower.
-	IncludeBalance param.Field[bool] `json:"include_balance"`
+	IncludeBalance param.Opt[bool] `json:"include_balance,omitzero"`
 	// Include commits on the contract level.
-	IncludeContractCommits param.Field[bool] `json:"include_contract_commits"`
+	IncludeContractCommits param.Opt[bool] `json:"include_contract_commits,omitzero"`
 	// Include commit ledgers in the response. Setting this flag may cause the query to
 	// be slower.
-	IncludeLedgers param.Field[bool] `json:"include_ledgers"`
+	IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
 	// The maximum number of commits to return. Defaults to 25.
-	Limit param.Field[int64] `json:"limit"`
+	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// The next page token from a previous response.
-	NextPage param.Field[string] `json:"next_page"`
+	NextPage param.Opt[string] `json:"next_page,omitzero"`
 	// Include only commits that have any access on or after the provided date
-	StartingAt param.Field[time.Time] `json:"starting_at" format:"date-time"`
+	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	paramObj
 }
 
 func (r V1CustomerCommitListParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerCommitListParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerCommitListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerCommitUpdateEndDateParams struct {
 	// ID of the commit to update. Only supports "PREPAID" commits.
-	CommitID param.Field[string] `json:"commit_id,required" format:"uuid"`
+	CommitID string `json:"commit_id,required" format:"uuid"`
 	// ID of the customer whose commit is to be updated
-	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
 	// RFC 3339 timestamp indicating when access to the commit will end and it will no
 	// longer be possible to draw it down (exclusive). If not provided, the access will
 	// not be updated.
-	AccessEndingBefore param.Field[time.Time] `json:"access_ending_before" format:"date-time"`
+	AccessEndingBefore param.Opt[time.Time] `json:"access_ending_before,omitzero" format:"date-time"`
 	// RFC 3339 timestamp indicating when the commit will stop being invoiced
 	// (exclusive). If not provided, the invoice schedule will not be updated.
-	InvoicesEndingBefore param.Field[time.Time] `json:"invoices_ending_before" format:"date-time"`
+	InvoicesEndingBefore param.Opt[time.Time] `json:"invoices_ending_before,omitzero" format:"date-time"`
+	paramObj
 }
 
 func (r V1CustomerCommitUpdateEndDateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerCommitUpdateEndDateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerCommitUpdateEndDateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

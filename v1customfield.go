@@ -9,10 +9,11 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 )
 
 // V1CustomFieldService contains methods and other services that help with
@@ -28,8 +29,8 @@ type V1CustomFieldService struct {
 // NewV1CustomFieldService generates a new service that applies the given options
 // to each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewV1CustomFieldService(opts ...option.RequestOption) (r *V1CustomFieldService) {
-	r = &V1CustomFieldService{}
+func NewV1CustomFieldService(opts ...option.RequestOption) (r V1CustomFieldService) {
+	r = V1CustomFieldService{}
 	r.Options = opts
 	return
 }
@@ -137,28 +138,27 @@ func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomField
 }
 
 type V1CustomFieldListKeysResponse struct {
-	EnforceUniqueness bool                                `json:"enforce_uniqueness,required"`
-	Entity            V1CustomFieldListKeysResponseEntity `json:"entity,required"`
-	Key               string                              `json:"key,required"`
-	JSON              v1CustomFieldListKeysResponseJSON   `json:"-"`
+	EnforceUniqueness bool `json:"enforce_uniqueness,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity V1CustomFieldListKeysResponseEntity `json:"entity,required"`
+	Key    string                              `json:"key,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EnforceUniqueness respjson.Field
+		Entity            respjson.Field
+		Key               respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
 }
 
-// v1CustomFieldListKeysResponseJSON contains the JSON metadata for the struct
-// [V1CustomFieldListKeysResponse]
-type v1CustomFieldListKeysResponseJSON struct {
-	EnforceUniqueness apijson.Field
-	Entity            apijson.Field
-	Key               apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *V1CustomFieldListKeysResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomFieldListKeysResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomFieldListKeysResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomFieldListKeysResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomFieldListKeysResponseEntity string
@@ -184,22 +184,23 @@ const (
 	V1CustomFieldListKeysResponseEntitySubscription        V1CustomFieldListKeysResponseEntity = "subscription"
 )
 
-func (r V1CustomFieldListKeysResponseEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldListKeysResponseEntityAlert, V1CustomFieldListKeysResponseEntityBillableMetric, V1CustomFieldListKeysResponseEntityCharge, V1CustomFieldListKeysResponseEntityCommit, V1CustomFieldListKeysResponseEntityContractCredit, V1CustomFieldListKeysResponseEntityContractProduct, V1CustomFieldListKeysResponseEntityContract, V1CustomFieldListKeysResponseEntityCreditGrant, V1CustomFieldListKeysResponseEntityCustomerPlan, V1CustomFieldListKeysResponseEntityCustomer, V1CustomFieldListKeysResponseEntityDiscount, V1CustomFieldListKeysResponseEntityInvoice, V1CustomFieldListKeysResponseEntityPlan, V1CustomFieldListKeysResponseEntityProfessionalService, V1CustomFieldListKeysResponseEntityProduct, V1CustomFieldListKeysResponseEntityRateCard, V1CustomFieldListKeysResponseEntityScheduledCharge, V1CustomFieldListKeysResponseEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldAddKeyParams struct {
-	EnforceUniqueness param.Field[bool]                            `json:"enforce_uniqueness,required"`
-	Entity            param.Field[V1CustomFieldAddKeyParamsEntity] `json:"entity,required"`
-	Key               param.Field[string]                          `json:"key,required"`
+	EnforceUniqueness bool `json:"enforce_uniqueness,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity V1CustomFieldAddKeyParamsEntity `json:"entity,omitzero,required"`
+	Key    string                          `json:"key,required"`
+	paramObj
 }
 
 func (r V1CustomFieldAddKeyParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldAddKeyParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldAddKeyParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomFieldAddKeyParamsEntity string
@@ -225,22 +226,23 @@ const (
 	V1CustomFieldAddKeyParamsEntitySubscription        V1CustomFieldAddKeyParamsEntity = "subscription"
 )
 
-func (r V1CustomFieldAddKeyParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldAddKeyParamsEntityAlert, V1CustomFieldAddKeyParamsEntityBillableMetric, V1CustomFieldAddKeyParamsEntityCharge, V1CustomFieldAddKeyParamsEntityCommit, V1CustomFieldAddKeyParamsEntityContractCredit, V1CustomFieldAddKeyParamsEntityContractProduct, V1CustomFieldAddKeyParamsEntityContract, V1CustomFieldAddKeyParamsEntityCreditGrant, V1CustomFieldAddKeyParamsEntityCustomerPlan, V1CustomFieldAddKeyParamsEntityCustomer, V1CustomFieldAddKeyParamsEntityDiscount, V1CustomFieldAddKeyParamsEntityInvoice, V1CustomFieldAddKeyParamsEntityPlan, V1CustomFieldAddKeyParamsEntityProfessionalService, V1CustomFieldAddKeyParamsEntityProduct, V1CustomFieldAddKeyParamsEntityRateCard, V1CustomFieldAddKeyParamsEntityScheduledCharge, V1CustomFieldAddKeyParamsEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldDeleteValuesParams struct {
-	Entity   param.Field[V1CustomFieldDeleteValuesParamsEntity] `json:"entity,required"`
-	EntityID param.Field[string]                                `json:"entity_id,required" format:"uuid"`
-	Keys     param.Field[[]string]                              `json:"keys,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity   V1CustomFieldDeleteValuesParamsEntity `json:"entity,omitzero,required"`
+	EntityID string                                `json:"entity_id,required" format:"uuid"`
+	Keys     []string                              `json:"keys,omitzero,required"`
+	paramObj
 }
 
 func (r V1CustomFieldDeleteValuesParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldDeleteValuesParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldDeleteValuesParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomFieldDeleteValuesParamsEntity string
@@ -266,72 +268,52 @@ const (
 	V1CustomFieldDeleteValuesParamsEntitySubscription        V1CustomFieldDeleteValuesParamsEntity = "subscription"
 )
 
-func (r V1CustomFieldDeleteValuesParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldDeleteValuesParamsEntityAlert, V1CustomFieldDeleteValuesParamsEntityBillableMetric, V1CustomFieldDeleteValuesParamsEntityCharge, V1CustomFieldDeleteValuesParamsEntityCommit, V1CustomFieldDeleteValuesParamsEntityContractCredit, V1CustomFieldDeleteValuesParamsEntityContractProduct, V1CustomFieldDeleteValuesParamsEntityContract, V1CustomFieldDeleteValuesParamsEntityCreditGrant, V1CustomFieldDeleteValuesParamsEntityCustomerPlan, V1CustomFieldDeleteValuesParamsEntityCustomer, V1CustomFieldDeleteValuesParamsEntityDiscount, V1CustomFieldDeleteValuesParamsEntityInvoice, V1CustomFieldDeleteValuesParamsEntityPlan, V1CustomFieldDeleteValuesParamsEntityProfessionalService, V1CustomFieldDeleteValuesParamsEntityProduct, V1CustomFieldDeleteValuesParamsEntityRateCard, V1CustomFieldDeleteValuesParamsEntityScheduledCharge, V1CustomFieldDeleteValuesParamsEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldListKeysParams struct {
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// Optional list of entity types to return keys for
-	Entities param.Field[[]V1CustomFieldListKeysParamsEntity] `json:"entities"`
+	//
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entities []string `json:"entities,omitzero"`
+	paramObj
 }
 
 func (r V1CustomFieldListKeysParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldListKeysParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldListKeysParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1CustomFieldListKeysParams]'s query parameters as
 // `url.Values`.
-func (r V1CustomFieldListKeysParams) URLQuery() (v url.Values) {
+func (r V1CustomFieldListKeysParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type V1CustomFieldListKeysParamsEntity string
-
-const (
-	V1CustomFieldListKeysParamsEntityAlert               V1CustomFieldListKeysParamsEntity = "alert"
-	V1CustomFieldListKeysParamsEntityBillableMetric      V1CustomFieldListKeysParamsEntity = "billable_metric"
-	V1CustomFieldListKeysParamsEntityCharge              V1CustomFieldListKeysParamsEntity = "charge"
-	V1CustomFieldListKeysParamsEntityCommit              V1CustomFieldListKeysParamsEntity = "commit"
-	V1CustomFieldListKeysParamsEntityContractCredit      V1CustomFieldListKeysParamsEntity = "contract_credit"
-	V1CustomFieldListKeysParamsEntityContractProduct     V1CustomFieldListKeysParamsEntity = "contract_product"
-	V1CustomFieldListKeysParamsEntityContract            V1CustomFieldListKeysParamsEntity = "contract"
-	V1CustomFieldListKeysParamsEntityCreditGrant         V1CustomFieldListKeysParamsEntity = "credit_grant"
-	V1CustomFieldListKeysParamsEntityCustomerPlan        V1CustomFieldListKeysParamsEntity = "customer_plan"
-	V1CustomFieldListKeysParamsEntityCustomer            V1CustomFieldListKeysParamsEntity = "customer"
-	V1CustomFieldListKeysParamsEntityDiscount            V1CustomFieldListKeysParamsEntity = "discount"
-	V1CustomFieldListKeysParamsEntityInvoice             V1CustomFieldListKeysParamsEntity = "invoice"
-	V1CustomFieldListKeysParamsEntityPlan                V1CustomFieldListKeysParamsEntity = "plan"
-	V1CustomFieldListKeysParamsEntityProfessionalService V1CustomFieldListKeysParamsEntity = "professional_service"
-	V1CustomFieldListKeysParamsEntityProduct             V1CustomFieldListKeysParamsEntity = "product"
-	V1CustomFieldListKeysParamsEntityRateCard            V1CustomFieldListKeysParamsEntity = "rate_card"
-	V1CustomFieldListKeysParamsEntityScheduledCharge     V1CustomFieldListKeysParamsEntity = "scheduled_charge"
-	V1CustomFieldListKeysParamsEntitySubscription        V1CustomFieldListKeysParamsEntity = "subscription"
-)
-
-func (r V1CustomFieldListKeysParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldListKeysParamsEntityAlert, V1CustomFieldListKeysParamsEntityBillableMetric, V1CustomFieldListKeysParamsEntityCharge, V1CustomFieldListKeysParamsEntityCommit, V1CustomFieldListKeysParamsEntityContractCredit, V1CustomFieldListKeysParamsEntityContractProduct, V1CustomFieldListKeysParamsEntityContract, V1CustomFieldListKeysParamsEntityCreditGrant, V1CustomFieldListKeysParamsEntityCustomerPlan, V1CustomFieldListKeysParamsEntityCustomer, V1CustomFieldListKeysParamsEntityDiscount, V1CustomFieldListKeysParamsEntityInvoice, V1CustomFieldListKeysParamsEntityPlan, V1CustomFieldListKeysParamsEntityProfessionalService, V1CustomFieldListKeysParamsEntityProduct, V1CustomFieldListKeysParamsEntityRateCard, V1CustomFieldListKeysParamsEntityScheduledCharge, V1CustomFieldListKeysParamsEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldRemoveKeyParams struct {
-	Entity param.Field[V1CustomFieldRemoveKeyParamsEntity] `json:"entity,required"`
-	Key    param.Field[string]                             `json:"key,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity V1CustomFieldRemoveKeyParamsEntity `json:"entity,omitzero,required"`
+	Key    string                             `json:"key,required"`
+	paramObj
 }
 
 func (r V1CustomFieldRemoveKeyParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldRemoveKeyParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldRemoveKeyParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomFieldRemoveKeyParamsEntity string
@@ -357,23 +339,24 @@ const (
 	V1CustomFieldRemoveKeyParamsEntitySubscription        V1CustomFieldRemoveKeyParamsEntity = "subscription"
 )
 
-func (r V1CustomFieldRemoveKeyParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldRemoveKeyParamsEntityAlert, V1CustomFieldRemoveKeyParamsEntityBillableMetric, V1CustomFieldRemoveKeyParamsEntityCharge, V1CustomFieldRemoveKeyParamsEntityCommit, V1CustomFieldRemoveKeyParamsEntityContractCredit, V1CustomFieldRemoveKeyParamsEntityContractProduct, V1CustomFieldRemoveKeyParamsEntityContract, V1CustomFieldRemoveKeyParamsEntityCreditGrant, V1CustomFieldRemoveKeyParamsEntityCustomerPlan, V1CustomFieldRemoveKeyParamsEntityCustomer, V1CustomFieldRemoveKeyParamsEntityDiscount, V1CustomFieldRemoveKeyParamsEntityInvoice, V1CustomFieldRemoveKeyParamsEntityPlan, V1CustomFieldRemoveKeyParamsEntityProfessionalService, V1CustomFieldRemoveKeyParamsEntityProduct, V1CustomFieldRemoveKeyParamsEntityRateCard, V1CustomFieldRemoveKeyParamsEntityScheduledCharge, V1CustomFieldRemoveKeyParamsEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldSetValuesParams struct {
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields param.Field[map[string]string]                  `json:"custom_fields,required"`
-	Entity       param.Field[V1CustomFieldSetValuesParamsEntity] `json:"entity,required"`
-	EntityID     param.Field[string]                             `json:"entity_id,required" format:"uuid"`
+	CustomFields map[string]string `json:"custom_fields,omitzero,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity   V1CustomFieldSetValuesParamsEntity `json:"entity,omitzero,required"`
+	EntityID string                             `json:"entity_id,required" format:"uuid"`
+	paramObj
 }
 
 func (r V1CustomFieldSetValuesParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldSetValuesParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldSetValuesParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomFieldSetValuesParamsEntity string
@@ -398,11 +381,3 @@ const (
 	V1CustomFieldSetValuesParamsEntityScheduledCharge     V1CustomFieldSetValuesParamsEntity = "scheduled_charge"
 	V1CustomFieldSetValuesParamsEntitySubscription        V1CustomFieldSetValuesParamsEntity = "subscription"
 )
-
-func (r V1CustomFieldSetValuesParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldSetValuesParamsEntityAlert, V1CustomFieldSetValuesParamsEntityBillableMetric, V1CustomFieldSetValuesParamsEntityCharge, V1CustomFieldSetValuesParamsEntityCommit, V1CustomFieldSetValuesParamsEntityContractCredit, V1CustomFieldSetValuesParamsEntityContractProduct, V1CustomFieldSetValuesParamsEntityContract, V1CustomFieldSetValuesParamsEntityCreditGrant, V1CustomFieldSetValuesParamsEntityCustomerPlan, V1CustomFieldSetValuesParamsEntityCustomer, V1CustomFieldSetValuesParamsEntityDiscount, V1CustomFieldSetValuesParamsEntityInvoice, V1CustomFieldSetValuesParamsEntityPlan, V1CustomFieldSetValuesParamsEntityProfessionalService, V1CustomFieldSetValuesParamsEntityProduct, V1CustomFieldSetValuesParamsEntityRateCard, V1CustomFieldSetValuesParamsEntityScheduledCharge, V1CustomFieldSetValuesParamsEntitySubscription:
-		return true
-	}
-	return false
-}

@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1CustomerCreditNewWithOptionalParams(t *testing.T) {
@@ -27,39 +28,39 @@ func TestV1CustomerCreditNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Credits.New(context.TODO(), metronome.V1CustomerCreditNewParams{
-		AccessSchedule: metronome.F(metronome.V1CustomerCreditNewParamsAccessSchedule{
-			ScheduleItems: metronome.F([]metronome.V1CustomerCreditNewParamsAccessScheduleScheduleItem{{
-				Amount:       metronome.F(1000.000000),
-				EndingBefore: metronome.F(time.Now()),
-				StartingAt:   metronome.F(time.Now()),
-			}}),
-			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-		}),
-		CustomerID:            metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		Priority:              metronome.F(100.000000),
-		ProductID:             metronome.F("f14d6729-6a44-4b13-9908-9387f1918790"),
-		ApplicableContractIDs: metronome.F([]string{"string"}),
-		ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		ApplicableProductTags: metronome.F([]string{"string"}),
-		CustomFields: metronome.F(map[string]string{
+		AccessSchedule: metronome.V1CustomerCreditNewParamsAccessSchedule{
+			ScheduleItems: []metronome.V1CustomerCreditNewParamsAccessScheduleScheduleItem{{
+				Amount:       1000,
+				EndingBefore: time.Now(),
+				StartingAt:   time.Now(),
+			}},
+			CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+		},
+		CustomerID:            "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		Priority:              100,
+		ProductID:             "f14d6729-6a44-4b13-9908-9387f1918790",
+		ApplicableContractIDs: []string{"string"},
+		ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+		ApplicableProductTags: []string{"string"},
+		CustomFields: map[string]string{
 			"foo": "string",
-		}),
-		Description:             metronome.F("description"),
-		Name:                    metronome.F("My Credit"),
-		NetsuiteSalesOrderID:    metronome.F("netsuite_sales_order_id"),
-		RateType:                metronome.F(metronome.V1CustomerCreditNewParamsRateTypeCommitRate),
-		SalesforceOpportunityID: metronome.F("salesforce_opportunity_id"),
-		Specifiers: metronome.F([]metronome.V1CustomerCreditNewParamsSpecifier{{
-			PresentationGroupValues: metronome.F(map[string]string{
+		},
+		Description:             metronome.String("description"),
+		Name:                    metronome.String("My Credit"),
+		NetsuiteSalesOrderID:    metronome.String("netsuite_sales_order_id"),
+		RateType:                metronome.V1CustomerCreditNewParamsRateTypeCommitRate,
+		SalesforceOpportunityID: metronome.String("salesforce_opportunity_id"),
+		Specifiers: []shared.CommitSpecifierInputParam{{
+			PresentationGroupValues: map[string]string{
 				"foo": "string",
-			}),
-			PricingGroupValues: metronome.F(map[string]string{
+			},
+			PricingGroupValues: map[string]string{
 				"foo": "string",
-			}),
-			ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			ProductTags: metronome.F([]string{"string"}),
-		}}),
-		UniquenessKey: metronome.F("x"),
+			},
+			ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			ProductTags: []string{"string"},
+		}},
+		UniquenessKey: metronome.String("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -83,17 +84,17 @@ func TestV1CustomerCreditListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Credits.List(context.TODO(), metronome.V1CustomerCreditListParams{
-		CustomerID:             metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		CoveringDate:           metronome.F(time.Now()),
-		CreditID:               metronome.F("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
-		EffectiveBefore:        metronome.F(time.Now()),
-		IncludeArchived:        metronome.F(true),
-		IncludeBalance:         metronome.F(true),
-		IncludeContractCredits: metronome.F(true),
-		IncludeLedgers:         metronome.F(true),
-		Limit:                  metronome.F(int64(1)),
-		NextPage:               metronome.F("next_page"),
-		StartingAt:             metronome.F(time.Now()),
+		CustomerID:             "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		CoveringDate:           metronome.Time(time.Now()),
+		CreditID:               metronome.String("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
+		EffectiveBefore:        metronome.Time(time.Now()),
+		IncludeArchived:        metronome.Bool(true),
+		IncludeBalance:         metronome.Bool(true),
+		IncludeContractCredits: metronome.Bool(true),
+		IncludeLedgers:         metronome.Bool(true),
+		Limit:                  metronome.Int(1),
+		NextPage:               metronome.String("next_page"),
+		StartingAt:             metronome.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -117,9 +118,9 @@ func TestV1CustomerCreditUpdateEndDate(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Credits.UpdateEndDate(context.TODO(), metronome.V1CustomerCreditUpdateEndDateParams{
-		AccessEndingBefore: metronome.F(time.Now()),
-		CreditID:           metronome.F("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
-		CustomerID:         metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		AccessEndingBefore: time.Now(),
+		CreditID:           "6162d87b-e5db-4a33-b7f2-76ce6ead4e85",
+		CustomerID:         "13117714-3f05-48e5-a6e9-a66093f13b4d",
 	})
 	if err != nil {
 		var apierr *metronome.Error

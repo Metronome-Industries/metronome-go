@@ -8,32 +8,36 @@ import (
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 )
+
+// aliased to make [param.APIUnion] private when embedding
+type paramUnion = param.APIUnion
+
+// aliased to make [param.APIObject] private when embedding
+type paramObj = param.APIObject
 
 type CursorPage[T any] struct {
 	// Cursor to fetch the next page
 	NextPage string `json:"next_page"`
 	// Items of the page
-	Data []T            `json:"data"`
-	JSON cursorPageJSON `json:"-"`
-	cfg  *requestconfig.RequestConfig
-	res  *http.Response
+	Data []T `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NextPage    respjson.Field
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
 }
 
-// cursorPageJSON contains the JSON metadata for the struct [CursorPage[T]]
-type cursorPageJSON struct {
-	NextPage    apijson.Field
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CursorPage[T]) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CursorPage[T]) RawJSON() string { return r.JSON.raw }
+func (r *CursorPage[T]) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cursorPageJSON) RawJSON() string {
-	return r.raw
 }
 
 // GetNextPage returns the next page as defined by this pagination style. When
@@ -74,6 +78,7 @@ type CursorPageAutoPager[T any] struct {
 	idx  int
 	run  int
 	err  error
+	paramObj
 }
 
 func NewCursorPageAutoPager[T any](page *CursorPage[T], err error) *CursorPageAutoPager[T] {
@@ -126,26 +131,22 @@ type BodyCursorPage[T any] struct {
 	// Cursor to fetch the next page
 	NextPage string `json:"next_page"`
 	// Items of the page
-	Data []T                `json:"data"`
-	JSON bodyCursorPageJSON `json:"-"`
-	cfg  *requestconfig.RequestConfig
-	res  *http.Response
+	Data []T `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NextPage    respjson.Field
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
 }
 
-// bodyCursorPageJSON contains the JSON metadata for the struct [BodyCursorPage[T]]
-type bodyCursorPageJSON struct {
-	NextPage    apijson.Field
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BodyCursorPage[T]) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r BodyCursorPage[T]) RawJSON() string { return r.JSON.raw }
+func (r *BodyCursorPage[T]) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r bodyCursorPageJSON) RawJSON() string {
-	return r.raw
 }
 
 // GetNextPage returns the next page as defined by this pagination style. When
@@ -186,6 +187,7 @@ type BodyCursorPageAutoPager[T any] struct {
 	idx  int
 	run  int
 	err  error
+	paramObj
 }
 
 func NewBodyCursorPageAutoPager[T any](page *BodyCursorPage[T], err error) *BodyCursorPageAutoPager[T] {
@@ -238,27 +240,22 @@ type CursorPageWithoutLimit[T any] struct {
 	// Cursor to fetch the next page
 	NextPage string `json:"next_page"`
 	// Items of the page
-	Data []T                        `json:"data"`
-	JSON cursorPageWithoutLimitJSON `json:"-"`
-	cfg  *requestconfig.RequestConfig
-	res  *http.Response
+	Data []T `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NextPage    respjson.Field
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
 }
 
-// cursorPageWithoutLimitJSON contains the JSON metadata for the struct
-// [CursorPageWithoutLimit[T]]
-type cursorPageWithoutLimitJSON struct {
-	NextPage    apijson.Field
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CursorPageWithoutLimit[T]) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CursorPageWithoutLimit[T]) RawJSON() string { return r.JSON.raw }
+func (r *CursorPageWithoutLimit[T]) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cursorPageWithoutLimitJSON) RawJSON() string {
-	return r.raw
 }
 
 // GetNextPage returns the next page as defined by this pagination style. When
@@ -299,6 +296,7 @@ type CursorPageWithoutLimitAutoPager[T any] struct {
 	idx  int
 	run  int
 	err  error
+	paramObj
 }
 
 func NewCursorPageWithoutLimitAutoPager[T any](page *CursorPageWithoutLimit[T], err error) *CursorPageWithoutLimitAutoPager[T] {

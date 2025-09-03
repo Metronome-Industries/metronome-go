@@ -14,26 +14,26 @@ import (
 // the [NewV1Service] method instead.
 type V1Service struct {
 	Options         []option.RequestOption
-	Alerts          *V1AlertService
-	Plans           *V1PlanService
-	CreditGrants    *V1CreditGrantService
-	PricingUnits    *V1PricingUnitService
-	Customers       *V1CustomerService
-	Dashboards      *V1DashboardService
-	Usage           *V1UsageService
-	AuditLogs       *V1AuditLogService
-	CustomFields    *V1CustomFieldService
-	BillableMetrics *V1BillableMetricService
-	Services        *V1ServiceService
-	Invoices        *V1InvoiceService
-	Contracts       *V1ContractService
+	Alerts          V1AlertService
+	Plans           V1PlanService
+	CreditGrants    V1CreditGrantService
+	PricingUnits    V1PricingUnitService
+	Customers       V1CustomerService
+	Dashboards      V1DashboardService
+	Usage           V1UsageService
+	AuditLogs       V1AuditLogService
+	CustomFields    V1CustomFieldService
+	BillableMetrics V1BillableMetricService
+	Services        V1ServiceService
+	Invoices        V1InvoiceService
+	Contracts       V1ContractService
 }
 
 // NewV1Service generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
-func NewV1Service(opts ...option.RequestOption) (r *V1Service) {
-	r = &V1Service{}
+func NewV1Service(opts ...option.RequestOption) (r V1Service) {
+	r = V1Service{}
 	r.Options = opts
 	r.Alerts = NewV1AlertService(opts...)
 	r.Plans = NewV1PlanService(opts...)

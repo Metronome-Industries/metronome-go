@@ -26,19 +26,18 @@ func TestUsage(t *testing.T) {
 	)
 	err := client.V1.Usage.Ingest(context.TODO(), metronome.V1UsageIngestParams{
 		Usage: []metronome.V1UsageIngestParamsUsage{{
-			TransactionID: metronome.F("90e9401f-0f8c-4cd3-9a9f-d6beb56d8d72"),
-			CustomerID:    metronome.F("team@example.com"),
-			EventType:     metronome.F("heartbeat"),
-			Timestamp:     metronome.F("2024-01-01T00:00:00Z"),
-			Properties: metronome.F(map[string]interface{}{
+			TransactionID: "90e9401f-0f8c-4cd3-9a9f-d6beb56d8d72",
+			CustomerID:    "team@example.com",
+			EventType:     "heartbeat",
+			Timestamp:     "2024-01-01T00:00:00Z",
+			Properties: map[string]any{
 				"cluster_id":  "42",
 				"cpu_seconds": 60,
 				"region":      "Europe",
-			}),
+			},
 		}},
 	})
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }

@@ -4,16 +4,20 @@ package metronome
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
+	shimjson "github.com/Metronome-Industries/metronome-go/internal/encoding/json"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1UsageService contains methods and other services that help with interacting
@@ -29,8 +33,8 @@ type V1UsageService struct {
 // NewV1UsageService generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
-func NewV1UsageService(opts ...option.RequestOption) (r *V1UsageService) {
-	r = &V1UsageService{}
+func NewV1UsageService(opts ...option.RequestOption) (r V1UsageService) {
+	r = V1UsageService{}
 	r.Options = opts
 	return
 }
@@ -335,62 +339,52 @@ type V1UsageListResponse struct {
 	CustomerID         string    `json:"customer_id,required" format:"uuid"`
 	EndTimestamp       time.Time `json:"end_timestamp,required" format:"date-time"`
 	StartTimestamp     time.Time `json:"start_timestamp,required" format:"date-time"`
-	Value              float64   `json:"value,required,nullable"`
+	Value              float64   `json:"value,required"`
 	// Values will be either a number or null. Null indicates that there were no
 	// matches for the group_by value.
-	Groups map[string]float64      `json:"groups"`
-	JSON   v1UsageListResponseJSON `json:"-"`
+	Groups map[string]float64 `json:"groups"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillableMetricID   respjson.Field
+		BillableMetricName respjson.Field
+		CustomerID         respjson.Field
+		EndTimestamp       respjson.Field
+		StartTimestamp     respjson.Field
+		Value              respjson.Field
+		Groups             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
 }
 
-// v1UsageListResponseJSON contains the JSON metadata for the struct
-// [V1UsageListResponse]
-type v1UsageListResponseJSON struct {
-	BillableMetricID   apijson.Field
-	BillableMetricName apijson.Field
-	CustomerID         apijson.Field
-	EndTimestamp       apijson.Field
-	StartTimestamp     apijson.Field
-	Value              apijson.Field
-	Groups             apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V1UsageListResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1UsageListResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1UsageListResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1UsageListWithGroupsResponse struct {
-	EndingBefore time.Time                         `json:"ending_before,required" format:"date-time"`
-	GroupKey     string                            `json:"group_key,required,nullable"`
-	GroupValue   string                            `json:"group_value,required,nullable"`
-	StartingOn   time.Time                         `json:"starting_on,required" format:"date-time"`
-	Value        float64                           `json:"value,required,nullable"`
-	JSON         v1UsageListWithGroupsResponseJSON `json:"-"`
+	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	GroupKey     string    `json:"group_key,required"`
+	GroupValue   string    `json:"group_value,required"`
+	StartingOn   time.Time `json:"starting_on,required" format:"date-time"`
+	Value        float64   `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		GroupKey     respjson.Field
+		GroupValue   respjson.Field
+		StartingOn   respjson.Field
+		Value        respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
 }
 
-// v1UsageListWithGroupsResponseJSON contains the JSON metadata for the struct
-// [V1UsageListWithGroupsResponse]
-type v1UsageListWithGroupsResponseJSON struct {
-	EndingBefore apijson.Field
-	GroupKey     apijson.Field
-	GroupValue   apijson.Field
-	StartingOn   apijson.Field
-	Value        apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1UsageListWithGroupsResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1UsageListWithGroupsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageListWithGroupsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1UsageListWithGroupsResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1UsageSearchResponse struct {
@@ -405,33 +399,28 @@ type V1UsageSearchResponse struct {
 	// The customer the event was matched to if a match was found
 	MatchedCustomer V1UsageSearchResponseMatchedCustomer `json:"matched_customer"`
 	ProcessedAt     time.Time                            `json:"processed_at" format:"date-time"`
-	Properties      map[string]interface{}               `json:"properties"`
-	JSON            v1UsageSearchResponseJSON            `json:"-"`
+	Properties      map[string]any                       `json:"properties"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		CustomerID             respjson.Field
+		EventType              respjson.Field
+		Timestamp              respjson.Field
+		TransactionID          respjson.Field
+		IsDuplicate            respjson.Field
+		MatchedBillableMetrics respjson.Field
+		MatchedCustomer        respjson.Field
+		ProcessedAt            respjson.Field
+		Properties             respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
 }
 
-// v1UsageSearchResponseJSON contains the JSON metadata for the struct
-// [V1UsageSearchResponse]
-type v1UsageSearchResponseJSON struct {
-	ID                     apijson.Field
-	CustomerID             apijson.Field
-	EventType              apijson.Field
-	Timestamp              apijson.Field
-	TransactionID          apijson.Field
-	IsDuplicate            apijson.Field
-	MatchedBillableMetrics apijson.Field
-	MatchedCustomer        apijson.Field
-	ProcessedAt            apijson.Field
-	Properties             apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *V1UsageSearchResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1UsageSearchResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageSearchResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1UsageSearchResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1UsageSearchResponseMatchedBillableMetric struct {
@@ -446,16 +435,18 @@ type V1UsageSearchResponseMatchedBillableMetric struct {
 	// aggregation type is 'count'.
 	AggregationKey string `json:"aggregation_key"`
 	// Specifies the type of aggregation performed on matching events.
-	AggregationType V1UsageSearchResponseMatchedBillableMetricsAggregationType `json:"aggregation_type"`
+	//
+	// Any of "COUNT", "LATEST", "MAX", "SUM", "UNIQUE".
+	AggregationType string `json:"aggregation_type"`
 	// RFC 3339 timestamp indicating when the billable metric was archived. If not
 	// provided, the billable metric is not archived.
 	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
-	EventTypeFilter V1UsageSearchResponseMatchedBillableMetricsEventTypeFilter `json:"event_type_filter"`
+	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// (DEPRECATED) use property_filters & event_type_filter instead
-	Filter map[string]interface{} `json:"filter"`
+	Filter map[string]any `json:"filter"`
 	// (DEPRECATED) use group_keys instead
 	GroupBy []string `json:"group_by"`
 	// Property names that are used to group usage costs on an invoice. Each entry
@@ -464,179 +455,85 @@ type V1UsageSearchResponseMatchedBillableMetric struct {
 	// A list of filters to match events to this billable metric. Each filter defines a
 	// rule on an event property. All rules must pass for the event to match the
 	// billable metric.
-	PropertyFilters []V1UsageSearchResponseMatchedBillableMetricsPropertyFilter `json:"property_filters"`
+	PropertyFilters []shared.PropertyFilter `json:"property_filters"`
 	// The SQL query associated with the billable metric
-	Sql  string                                         `json:"sql"`
-	JSON v1UsageSearchResponseMatchedBillableMetricJSON `json:"-"`
+	Sql string `json:"sql"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Name            respjson.Field
+		Aggregate       respjson.Field
+		AggregateKeys   respjson.Field
+		AggregationKey  respjson.Field
+		AggregationType respjson.Field
+		ArchivedAt      respjson.Field
+		CustomFields    respjson.Field
+		EventTypeFilter respjson.Field
+		Filter          respjson.Field
+		GroupBy         respjson.Field
+		GroupKeys       respjson.Field
+		PropertyFilters respjson.Field
+		Sql             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
 }
 
-// v1UsageSearchResponseMatchedBillableMetricJSON contains the JSON metadata for
-// the struct [V1UsageSearchResponseMatchedBillableMetric]
-type v1UsageSearchResponseMatchedBillableMetricJSON struct {
-	ID              apijson.Field
-	Name            apijson.Field
-	Aggregate       apijson.Field
-	AggregateKeys   apijson.Field
-	AggregationKey  apijson.Field
-	AggregationType apijson.Field
-	ArchivedAt      apijson.Field
-	CustomFields    apijson.Field
-	EventTypeFilter apijson.Field
-	Filter          apijson.Field
-	GroupBy         apijson.Field
-	GroupKeys       apijson.Field
-	PropertyFilters apijson.Field
-	Sql             apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V1UsageSearchResponseMatchedBillableMetric) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1UsageSearchResponseMatchedBillableMetric) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageSearchResponseMatchedBillableMetric) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1UsageSearchResponseMatchedBillableMetricJSON) RawJSON() string {
-	return r.raw
-}
-
-// Specifies the type of aggregation performed on matching events.
-type V1UsageSearchResponseMatchedBillableMetricsAggregationType string
-
-const (
-	V1UsageSearchResponseMatchedBillableMetricsAggregationTypeCount  V1UsageSearchResponseMatchedBillableMetricsAggregationType = "COUNT"
-	V1UsageSearchResponseMatchedBillableMetricsAggregationTypeLatest V1UsageSearchResponseMatchedBillableMetricsAggregationType = "LATEST"
-	V1UsageSearchResponseMatchedBillableMetricsAggregationTypeMax    V1UsageSearchResponseMatchedBillableMetricsAggregationType = "MAX"
-	V1UsageSearchResponseMatchedBillableMetricsAggregationTypeSum    V1UsageSearchResponseMatchedBillableMetricsAggregationType = "SUM"
-	V1UsageSearchResponseMatchedBillableMetricsAggregationTypeUnique V1UsageSearchResponseMatchedBillableMetricsAggregationType = "UNIQUE"
-)
-
-func (r V1UsageSearchResponseMatchedBillableMetricsAggregationType) IsKnown() bool {
-	switch r {
-	case V1UsageSearchResponseMatchedBillableMetricsAggregationTypeCount, V1UsageSearchResponseMatchedBillableMetricsAggregationTypeLatest, V1UsageSearchResponseMatchedBillableMetricsAggregationTypeMax, V1UsageSearchResponseMatchedBillableMetricsAggregationTypeSum, V1UsageSearchResponseMatchedBillableMetricsAggregationTypeUnique:
-		return true
-	}
-	return false
-}
-
-// An optional filtering rule to match the 'event_type' property of an event.
-type V1UsageSearchResponseMatchedBillableMetricsEventTypeFilter struct {
-	// A list of event types that are explicitly included in the billable metric. If
-	// specified, only events of these types will match the billable metric. Must be
-	// non-empty if present.
-	InValues []string `json:"in_values"`
-	// A list of event types that are explicitly excluded from the billable metric. If
-	// specified, events of these types will not match the billable metric. Must be
-	// non-empty if present.
-	NotInValues []string                                                       `json:"not_in_values"`
-	JSON        v1UsageSearchResponseMatchedBillableMetricsEventTypeFilterJSON `json:"-"`
-}
-
-// v1UsageSearchResponseMatchedBillableMetricsEventTypeFilterJSON contains the JSON
-// metadata for the struct
-// [V1UsageSearchResponseMatchedBillableMetricsEventTypeFilter]
-type v1UsageSearchResponseMatchedBillableMetricsEventTypeFilterJSON struct {
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1UsageSearchResponseMatchedBillableMetricsEventTypeFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1UsageSearchResponseMatchedBillableMetricsEventTypeFilterJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1UsageSearchResponseMatchedBillableMetricsPropertyFilter struct {
-	// The name of the event property.
-	Name string `json:"name,required"`
-	// Determines whether the property must exist in the event. If true, only events
-	// with this property will pass the filter. If false, only events without this
-	// property will pass the filter. If null or omitted, the existence of the property
-	// is optional.
-	Exists bool `json:"exists"`
-	// Specifies the allowed values for the property to match an event. An event will
-	// pass the filter only if its property value is included in this list. If
-	// undefined, all property values will pass the filter. Must be non-empty if
-	// present.
-	InValues []string `json:"in_values"`
-	// Specifies the values that prevent an event from matching the filter. An event
-	// will not pass the filter if its property value is included in this list. If null
-	// or empty, all property values will pass the filter. Must be non-empty if
-	// present.
-	NotInValues []string                                                      `json:"not_in_values"`
-	JSON        v1UsageSearchResponseMatchedBillableMetricsPropertyFilterJSON `json:"-"`
-}
-
-// v1UsageSearchResponseMatchedBillableMetricsPropertyFilterJSON contains the JSON
-// metadata for the struct
-// [V1UsageSearchResponseMatchedBillableMetricsPropertyFilter]
-type v1UsageSearchResponseMatchedBillableMetricsPropertyFilterJSON struct {
-	Name        apijson.Field
-	Exists      apijson.Field
-	InValues    apijson.Field
-	NotInValues apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1UsageSearchResponseMatchedBillableMetricsPropertyFilter) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1UsageSearchResponseMatchedBillableMetricsPropertyFilterJSON) RawJSON() string {
-	return r.raw
 }
 
 // The customer the event was matched to if a match was found
 type V1UsageSearchResponseMatchedCustomer struct {
-	ID   string                                   `json:"id" format:"uuid"`
-	Name string                                   `json:"name"`
-	JSON v1UsageSearchResponseMatchedCustomerJSON `json:"-"`
+	ID   string `json:"id" format:"uuid"`
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1UsageSearchResponseMatchedCustomerJSON contains the JSON metadata for the
-// struct [V1UsageSearchResponseMatchedCustomer]
-type v1UsageSearchResponseMatchedCustomerJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1UsageSearchResponseMatchedCustomer) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1UsageSearchResponseMatchedCustomer) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageSearchResponseMatchedCustomer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1UsageSearchResponseMatchedCustomerJSON) RawJSON() string {
-	return r.raw
-}
-
 type V1UsageListParams struct {
-	EndingBefore param.Field[time.Time] `json:"ending_before,required" format:"date-time"`
-	StartingOn   param.Field[time.Time] `json:"starting_on,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	StartingOn   time.Time `json:"starting_on,required" format:"date-time"`
 	// A window_size of "day" or "hour" will return the usage for the specified period
 	// segmented into daily or hourly aggregates. A window_size of "none" will return a
 	// single usage aggregate for the entirety of the specified period.
-	WindowSize param.Field[V1UsageListParamsWindowSize] `json:"window_size,required"`
+	//
+	// Any of "HOUR", "DAY", "NONE".
+	WindowSize V1UsageListParamsWindowSize `json:"window_size,omitzero,required"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// A list of billable metrics to fetch usage for. If absent, all billable metrics
 	// will be returned.
-	BillableMetrics param.Field[[]V1UsageListParamsBillableMetric] `json:"billable_metrics"`
+	BillableMetrics []V1UsageListParamsBillableMetric `json:"billable_metrics,omitzero"`
 	// A list of Metronome customer IDs to fetch usage for. If absent, usage for all
 	// customers will be returned.
-	CustomerIDs param.Field[[]string] `json:"customer_ids" format:"uuid"`
+	CustomerIDs []string `json:"customer_ids,omitzero" format:"uuid"`
+	paramObj
 }
 
 func (r V1UsageListParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1UsageListParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1UsageListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1UsageListParams]'s query parameters as `url.Values`.
-func (r V1UsageListParams) URLQuery() (v url.Values) {
+func (r V1UsageListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -654,83 +551,104 @@ const (
 	V1UsageListParamsWindowSizeNone V1UsageListParamsWindowSize = "NONE"
 )
 
-func (r V1UsageListParamsWindowSize) IsKnown() bool {
-	switch r {
-	case V1UsageListParamsWindowSizeHour, V1UsageListParamsWindowSizeDay, V1UsageListParamsWindowSizeNone:
-		return true
-	}
-	return false
-}
-
+// The property ID is required.
 type V1UsageListParamsBillableMetric struct {
-	ID      param.Field[string]                                  `json:"id,required" format:"uuid"`
-	GroupBy param.Field[V1UsageListParamsBillableMetricsGroupBy] `json:"group_by"`
+	ID      string                                 `json:"id,required" format:"uuid"`
+	GroupBy V1UsageListParamsBillableMetricGroupBy `json:"group_by,omitzero"`
+	paramObj
 }
 
 func (r V1UsageListParamsBillableMetric) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1UsageListParamsBillableMetric
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1UsageListParamsBillableMetric) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-type V1UsageListParamsBillableMetricsGroupBy struct {
+// The property Key is required.
+type V1UsageListParamsBillableMetricGroupBy struct {
 	// The name of the group_by key to use
-	Key param.Field[string] `json:"key,required"`
+	Key string `json:"key,required"`
 	// Values of the group_by key to return in the query. If this field is omitted, all
 	// available values will be returned, up to a maximum of 200.
-	Values param.Field[[]string] `json:"values"`
+	Values []string `json:"values,omitzero"`
+	paramObj
 }
 
-func (r V1UsageListParamsBillableMetricsGroupBy) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+func (r V1UsageListParamsBillableMetricGroupBy) MarshalJSON() (data []byte, err error) {
+	type shadow V1UsageListParamsBillableMetricGroupBy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1UsageListParamsBillableMetricGroupBy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageIngestParams struct {
-	Usage []V1UsageIngestParamsUsage `json:"usage"`
+	Usage []V1UsageIngestParamsUsage
+	paramObj
 }
 
 func (r V1UsageIngestParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Usage)
+	return shimjson.Marshal(r.Usage)
+}
+func (r *V1UsageIngestParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.Usage)
 }
 
+// The properties CustomerID, EventType, Timestamp, TransactionID are required.
 type V1UsageIngestParamsUsage struct {
-	CustomerID param.Field[string] `json:"customer_id,required"`
-	EventType  param.Field[string] `json:"event_type,required"`
+	CustomerID string `json:"customer_id,required"`
+	EventType  string `json:"event_type,required"`
 	// RFC 3339 formatted
-	Timestamp     param.Field[string]                 `json:"timestamp,required"`
-	TransactionID param.Field[string]                 `json:"transaction_id,required"`
-	Properties    param.Field[map[string]interface{}] `json:"properties"`
+	Timestamp     string         `json:"timestamp,required"`
+	TransactionID string         `json:"transaction_id,required"`
+	Properties    map[string]any `json:"properties,omitzero"`
+	paramObj
 }
 
 func (r V1UsageIngestParamsUsage) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1UsageIngestParamsUsage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1UsageIngestParamsUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageListWithGroupsParams struct {
-	BillableMetricID param.Field[string] `json:"billable_metric_id,required" format:"uuid"`
-	CustomerID       param.Field[string] `json:"customer_id,required" format:"uuid"`
+	BillableMetricID string `json:"billable_metric_id,required" format:"uuid"`
+	CustomerID       string `json:"customer_id,required" format:"uuid"`
 	// A window_size of "day" or "hour" will return the usage for the specified period
 	// segmented into daily or hourly aggregates. A window_size of "none" will return a
 	// single usage aggregate for the entirety of the specified period.
-	WindowSize param.Field[V1UsageListWithGroupsParamsWindowSize] `json:"window_size,required"`
+	//
+	// Any of "HOUR", "DAY", "NONE".
+	WindowSize V1UsageListWithGroupsParamsWindowSize `json:"window_size,omitzero,required"`
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// If true, will return the usage for the current billing period. Will return an
 	// error if the customer is currently uncontracted or starting_on and ending_before
 	// are specified when this is true.
-	CurrentPeriod param.Field[bool]                               `json:"current_period"`
-	EndingBefore  param.Field[time.Time]                          `json:"ending_before" format:"date-time"`
-	GroupBy       param.Field[V1UsageListWithGroupsParamsGroupBy] `json:"group_by"`
-	StartingOn    param.Field[time.Time]                          `json:"starting_on" format:"date-time"`
+	CurrentPeriod param.Opt[bool]                    `json:"current_period,omitzero"`
+	EndingBefore  param.Opt[time.Time]               `json:"ending_before,omitzero" format:"date-time"`
+	StartingOn    param.Opt[time.Time]               `json:"starting_on,omitzero" format:"date-time"`
+	GroupBy       V1UsageListWithGroupsParamsGroupBy `json:"group_by,omitzero"`
+	paramObj
 }
 
 func (r V1UsageListWithGroupsParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1UsageListWithGroupsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1UsageListWithGroupsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1UsageListWithGroupsParams]'s query parameters as
 // `url.Values`.
-func (r V1UsageListWithGroupsParams) URLQuery() (v url.Values) {
+func (r V1UsageListWithGroupsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -748,31 +666,34 @@ const (
 	V1UsageListWithGroupsParamsWindowSizeNone V1UsageListWithGroupsParamsWindowSize = "NONE"
 )
 
-func (r V1UsageListWithGroupsParamsWindowSize) IsKnown() bool {
-	switch r {
-	case V1UsageListWithGroupsParamsWindowSizeHour, V1UsageListWithGroupsParamsWindowSizeDay, V1UsageListWithGroupsParamsWindowSizeNone:
-		return true
-	}
-	return false
-}
-
+// The property Key is required.
 type V1UsageListWithGroupsParamsGroupBy struct {
 	// The name of the group_by key to use
-	Key param.Field[string] `json:"key,required"`
+	Key string `json:"key,required"`
 	// Values of the group_by key to return in the query. Omit this if you'd like all
 	// values for the key returned.
-	Values param.Field[[]string] `json:"values"`
+	Values []string `json:"values,omitzero"`
+	paramObj
 }
 
 func (r V1UsageListWithGroupsParamsGroupBy) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1UsageListWithGroupsParamsGroupBy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1UsageListWithGroupsParamsGroupBy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageSearchParams struct {
 	// The transaction IDs of the events to retrieve
-	TransactionIDs param.Field[[]string] `json:"transactionIds,required"`
+	TransactionIDs []string `json:"transactionIds,omitzero,required"`
+	paramObj
 }
 
 func (r V1UsageSearchParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1UsageSearchParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1UsageSearchParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

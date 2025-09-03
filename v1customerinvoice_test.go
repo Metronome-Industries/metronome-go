@@ -27,9 +27,9 @@ func TestV1CustomerInvoiceGetWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Invoices.Get(context.TODO(), metronome.V1CustomerInvoiceGetParams{
-		CustomerID:           metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		InvoiceID:            metronome.F("6a37bb88-8538-48c5-b37b-a41c836328bd"),
-		SkipZeroQtyLineItems: metronome.F(true),
+		CustomerID:           "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		InvoiceID:            "6a37bb88-8538-48c5-b37b-a41c836328bd",
+		SkipZeroQtyLineItems: metronome.Bool(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -53,15 +53,15 @@ func TestV1CustomerInvoiceListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Invoices.List(context.TODO(), metronome.V1CustomerInvoiceListParams{
-		CustomerID:           metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		CreditTypeID:         metronome.F("credit_type_id"),
-		EndingBefore:         metronome.F(time.Now()),
-		Limit:                metronome.F(int64(1)),
-		NextPage:             metronome.F("next_page"),
-		SkipZeroQtyLineItems: metronome.F(true),
-		Sort:                 metronome.F(metronome.V1CustomerInvoiceListParamsSortDateAsc),
-		StartingOn:           metronome.F(time.Now()),
-		Status:               metronome.F("status"),
+		CustomerID:           "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		CreditTypeID:         metronome.String("credit_type_id"),
+		EndingBefore:         metronome.Time(time.Now()),
+		Limit:                metronome.Int(1),
+		NextPage:             metronome.String("next_page"),
+		SkipZeroQtyLineItems: metronome.Bool(true),
+		Sort:                 metronome.V1CustomerInvoiceListParamsSortDateAsc,
+		StartingOn:           metronome.Time(time.Now()),
+		Status:               metronome.String("status"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -85,13 +85,13 @@ func TestV1CustomerInvoiceAddCharge(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Invoices.AddCharge(context.TODO(), metronome.V1CustomerInvoiceAddChargeParams{
-		CustomerID:            metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		ChargeID:              metronome.F("5ae4b726-1ebe-439c-9190-9831760ba195"),
-		CustomerPlanID:        metronome.F("a23b3cf4-47fb-4c3f-bb3d-9e64f7704015"),
-		Description:           metronome.F("One time charge"),
-		InvoiceStartTimestamp: metronome.F(time.Now()),
-		Price:                 metronome.F(250.000000),
-		Quantity:              metronome.F(1.000000),
+		CustomerID:            "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		ChargeID:              "5ae4b726-1ebe-439c-9190-9831760ba195",
+		CustomerPlanID:        "a23b3cf4-47fb-4c3f-bb3d-9e64f7704015",
+		Description:           "One time charge",
+		InvoiceStartTimestamp: time.Now(),
+		Price:                 250,
+		Quantity:              1,
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -115,16 +115,16 @@ func TestV1CustomerInvoiceListBreakdownsWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Invoices.ListBreakdowns(context.TODO(), metronome.V1CustomerInvoiceListBreakdownsParams{
-		CustomerID:           metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		EndingBefore:         metronome.F(time.Now()),
-		StartingOn:           metronome.F(time.Now()),
-		CreditTypeID:         metronome.F("credit_type_id"),
-		Limit:                metronome.F(int64(1)),
-		NextPage:             metronome.F("next_page"),
-		SkipZeroQtyLineItems: metronome.F(true),
-		Sort:                 metronome.F(metronome.V1CustomerInvoiceListBreakdownsParamsSortDateAsc),
-		Status:               metronome.F("status"),
-		WindowSize:           metronome.F(metronome.V1CustomerInvoiceListBreakdownsParamsWindowSizeHour),
+		CustomerID:           "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		EndingBefore:         time.Now(),
+		StartingOn:           time.Now(),
+		CreditTypeID:         metronome.String("credit_type_id"),
+		Limit:                metronome.Int(1),
+		NextPage:             metronome.String("next_page"),
+		SkipZeroQtyLineItems: metronome.Bool(true),
+		Sort:                 metronome.V1CustomerInvoiceListBreakdownsParamsSortDateAsc,
+		Status:               metronome.String("status"),
+		WindowSize:           metronome.V1CustomerInvoiceListBreakdownsParamsWindowSizeHour,
 	})
 	if err != nil {
 		var apierr *metronome.Error

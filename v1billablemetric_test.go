@@ -11,6 +11,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1BillableMetricNewWithOptionalParams(t *testing.T) {
@@ -26,34 +27,34 @@ func TestV1BillableMetricNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.BillableMetrics.New(context.TODO(), metronome.V1BillableMetricNewParams{
-		Name:            metronome.F("CPU Hours"),
-		AggregationKey:  metronome.F("cpu_hours"),
-		AggregationType: metronome.F(metronome.V1BillableMetricNewParamsAggregationTypeSum),
-		CustomFields: metronome.F(map[string]string{
+		Name:            "CPU Hours",
+		AggregationKey:  metronome.String("cpu_hours"),
+		AggregationType: metronome.V1BillableMetricNewParamsAggregationTypeSum,
+		CustomFields: map[string]string{
 			"foo": "string",
-		}),
-		EventTypeFilter: metronome.F(metronome.V1BillableMetricNewParamsEventTypeFilter{
-			InValues:    metronome.F([]string{"cpu_usage"}),
-			NotInValues: metronome.F([]string{"string"}),
-		}),
-		GroupKeys: metronome.F([][]string{{"region"}, {"machine_type"}}),
-		PropertyFilters: metronome.F([]metronome.V1BillableMetricNewParamsPropertyFilter{{
-			Name:        metronome.F("cpu_hours"),
-			Exists:      metronome.F(true),
-			InValues:    metronome.F([]string{"string"}),
-			NotInValues: metronome.F([]string{"string"}),
+		},
+		EventTypeFilter: shared.EventTypeFilterParam{
+			InValues:    []string{"cpu_usage"},
+			NotInValues: []string{"string"},
+		},
+		GroupKeys: [][]string{{"region"}, {"machine_type"}},
+		PropertyFilters: []shared.PropertyFilterParam{{
+			Name:        "cpu_hours",
+			Exists:      metronome.Bool(true),
+			InValues:    []string{"string"},
+			NotInValues: []string{"string"},
 		}, {
-			Name:        metronome.F("region"),
-			Exists:      metronome.F(true),
-			InValues:    metronome.F([]string{"EU", "NA"}),
-			NotInValues: metronome.F([]string{"string"}),
+			Name:        "region",
+			Exists:      metronome.Bool(true),
+			InValues:    []string{"EU", "NA"},
+			NotInValues: []string{"string"},
 		}, {
-			Name:        metronome.F("machine_type"),
-			Exists:      metronome.F(true),
-			InValues:    metronome.F([]string{"slow", "fast"}),
-			NotInValues: metronome.F([]string{"string"}),
-		}}),
-		Sql: metronome.F("sql"),
+			Name:        "machine_type",
+			Exists:      metronome.Bool(true),
+			InValues:    []string{"slow", "fast"},
+			NotInValues: []string{"string"},
+		}},
+		Sql: metronome.String("sql"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -77,7 +78,7 @@ func TestV1BillableMetricGet(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.BillableMetrics.Get(context.TODO(), metronome.V1BillableMetricGetParams{
-		BillableMetricID: metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		BillableMetricID: "13117714-3f05-48e5-a6e9-a66093f13b4d",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -101,9 +102,9 @@ func TestV1BillableMetricListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.BillableMetrics.List(context.TODO(), metronome.V1BillableMetricListParams{
-		IncludeArchived: metronome.F(true),
-		Limit:           metronome.F(int64(1)),
-		NextPage:        metronome.F("next_page"),
+		IncludeArchived: metronome.Bool(true),
+		Limit:           metronome.Int(1),
+		NextPage:        metronome.String("next_page"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -127,7 +128,9 @@ func TestV1BillableMetricArchive(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.BillableMetrics.Archive(context.TODO(), metronome.V1BillableMetricArchiveParams{
-		ID: metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
+		ID: shared.IDParam{
+			ID: "8deed800-1b7a-495d-a207-6c52bac54dc9",
+		},
 	})
 	if err != nil {
 		var apierr *metronome.Error

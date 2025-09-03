@@ -27,13 +27,13 @@ func TestV1AuditLogListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.AuditLogs.List(context.TODO(), metronome.V1AuditLogListParams{
-		EndingBefore: metronome.F(time.Now()),
-		Limit:        metronome.F(int64(1)),
-		NextPage:     metronome.F("next_page"),
-		ResourceID:   metronome.F("resource_id"),
-		ResourceType: metronome.F("resource_type"),
-		Sort:         metronome.F(metronome.V1AuditLogListParamsSortDateAsc),
-		StartingOn:   metronome.F(time.Now()),
+		EndingBefore: metronome.Time(time.Now()),
+		Limit:        metronome.Int(1),
+		NextPage:     metronome.String("next_page"),
+		ResourceID:   metronome.String("resource_id"),
+		ResourceType: metronome.String("resource_type"),
+		Sort:         metronome.V1AuditLogListParamsSortDateAsc,
+		StartingOn:   metronome.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error

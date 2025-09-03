@@ -7,9 +7,11 @@ import (
 	"net/http"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 // V1AlertService contains methods and other services that help with interacting
@@ -25,8 +27,8 @@ type V1AlertService struct {
 // NewV1AlertService generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
-func NewV1AlertService(opts ...option.RequestOption) (r *V1AlertService) {
-	r = &V1AlertService{}
+func NewV1AlertService(opts ...option.RequestOption) (r V1AlertService) {
+	r = V1AlertService{}
 	r.Options = opts
 	return
 }
@@ -116,135 +118,100 @@ func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams,
 }
 
 type V1AlertNewResponse struct {
-	Data V1AlertNewResponseData `json:"data,required"`
-	JSON v1AlertNewResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1AlertNewResponseJSON contains the JSON metadata for the struct
-// [V1AlertNewResponse]
-type v1AlertNewResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1AlertNewResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1AlertNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1AlertNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1AlertNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1AlertNewResponseData struct {
-	ID   string                     `json:"id,required" format:"uuid"`
-	JSON v1AlertNewResponseDataJSON `json:"-"`
-}
-
-// v1AlertNewResponseDataJSON contains the JSON metadata for the struct
-// [V1AlertNewResponseData]
-type v1AlertNewResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1AlertNewResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1AlertNewResponseDataJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1AlertArchiveResponse struct {
-	Data V1AlertArchiveResponseData `json:"data,required"`
-	JSON v1AlertArchiveResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1AlertArchiveResponseJSON contains the JSON metadata for the struct
-// [V1AlertArchiveResponse]
-type v1AlertArchiveResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1AlertArchiveResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1AlertArchiveResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1AlertArchiveResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1AlertArchiveResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1AlertArchiveResponseData struct {
-	ID   string                         `json:"id,required" format:"uuid"`
-	JSON v1AlertArchiveResponseDataJSON `json:"-"`
-}
-
-// v1AlertArchiveResponseDataJSON contains the JSON metadata for the struct
-// [V1AlertArchiveResponseData]
-type v1AlertArchiveResponseDataJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1AlertArchiveResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1AlertArchiveResponseDataJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1AlertNewParams struct {
 	// Type of the alert
-	AlertType param.Field[V1AlertNewParamsAlertType] `json:"alert_type,required"`
+	//
+	// Any of "low_credit_balance_reached", "spend_threshold_reached",
+	// "monthly_invoice_total_spend_threshold_reached",
+	// "low_remaining_days_in_plan_reached", "low_remaining_credit_percentage_reached",
+	// "usage_threshold_reached", "low_remaining_days_for_commit_segment_reached",
+	// "low_remaining_commit_balance_reached",
+	// "low_remaining_commit_percentage_reached",
+	// "low_remaining_days_for_contract_credit_segment_reached",
+	// "low_remaining_contract_credit_balance_reached",
+	// "low_remaining_contract_credit_percentage_reached",
+	// "low_remaining_contract_credit_and_commit_balance_reached",
+	// "invoice_total_reached".
+	AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero,required"`
 	// Name of the alert
-	Name param.Field[string] `json:"name,required"`
+	Name string `json:"name,required"`
 	// Threshold value of the alert policy. Depending upon the alert type, this number
 	// may represent a financial amount, the days remaining, or a percentage reached.
-	Threshold param.Field[float64] `json:"threshold,required"`
+	Threshold float64 `json:"threshold,required"`
 	// For alerts of type `usage_threshold_reached`, specifies which billable metric to
 	// track the usage for.
-	BillableMetricID param.Field[string] `json:"billable_metric_id" format:"uuid"`
-	// An array of strings, representing a way to filter the credit grant this alert
-	// applies to, by looking at the credit_grant_type field on the credit grant. This
-	// field is only defined for CreditPercentage and CreditBalance alerts
-	CreditGrantTypeFilters param.Field[[]string] `json:"credit_grant_type_filters"`
+	BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
 	// ID of the credit's currency, defaults to USD. If the specific alert type
 	// requires a pricing unit/currency, find the ID in the
 	// [Metronome app](https://app.metronome.com/offering/pricing-units).
-	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
-	// A list of custom field filters for alert types that support advanced filtering.
-	// Only present for contract invoices.
-	CustomFieldFilters param.Field[[]V1AlertNewParamsCustomFieldFilter] `json:"custom_field_filters"`
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// If provided, will create this alert for this specific customer. To create an
 	// alert for all customers, do not specify a `customer_id`.
-	CustomerID param.Field[string] `json:"customer_id" format:"uuid"`
+	CustomerID param.Opt[string] `json:"customer_id,omitzero" format:"uuid"`
 	// If true, the alert will evaluate immediately on customers that already meet the
 	// alert threshold. If false, it will only evaluate on future customers that
 	// trigger the alert threshold. Defaults to true.
-	EvaluateOnCreate param.Field[bool] `json:"evaluate_on_create"`
-	// Only present for `spend_threshold_reached` alerts. Scope alert to a specific
-	// group key on individual line items.
-	GroupValues param.Field[[]V1AlertNewParamsGroupValue] `json:"group_values"`
-	// Only supported for invoice_total_reached alerts. A list of invoice types to
-	// evaluate.
-	InvoiceTypesFilter param.Field[[]string] `json:"invoice_types_filter"`
+	EvaluateOnCreate param.Opt[bool] `json:"evaluate_on_create,omitzero"`
 	// If provided, will create this alert for this specific plan. To create an alert
 	// for all customers, do not specify a `plan_id`.
-	PlanID param.Field[string] `json:"plan_id" format:"uuid"`
+	PlanID param.Opt[string] `json:"plan_id,omitzero" format:"uuid"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
-	UniquenessKey param.Field[string] `json:"uniqueness_key"`
+	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
+	// An array of strings, representing a way to filter the credit grant this alert
+	// applies to, by looking at the credit_grant_type field on the credit grant. This
+	// field is only defined for CreditPercentage and CreditBalance alerts
+	CreditGrantTypeFilters []string `json:"credit_grant_type_filters,omitzero"`
+	// A list of custom field filters for alert types that support advanced filtering.
+	// Only present for contract invoices.
+	CustomFieldFilters []V1AlertNewParamsCustomFieldFilter `json:"custom_field_filters,omitzero"`
+	// Only present for `spend_threshold_reached` alerts. Scope alert to a specific
+	// group key on individual line items.
+	GroupValues []V1AlertNewParamsGroupValue `json:"group_values,omitzero"`
+	// Only supported for invoice_total_reached alerts. A list of invoice types to
+	// evaluate.
+	InvoiceTypesFilter []string `json:"invoice_types_filter,omitzero"`
+	paramObj
 }
 
 func (r V1AlertNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1AlertNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Type of the alert
@@ -267,56 +234,56 @@ const (
 	V1AlertNewParamsAlertTypeInvoiceTotalReached                               V1AlertNewParamsAlertType = "invoice_total_reached"
 )
 
-func (r V1AlertNewParamsAlertType) IsKnown() bool {
-	switch r {
-	case V1AlertNewParamsAlertTypeLowCreditBalanceReached, V1AlertNewParamsAlertTypeSpendThresholdReached, V1AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached, V1AlertNewParamsAlertTypeLowRemainingDaysInPlanReached, V1AlertNewParamsAlertTypeLowRemainingCreditPercentageReached, V1AlertNewParamsAlertTypeUsageThresholdReached, V1AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached, V1AlertNewParamsAlertTypeLowRemainingCommitBalanceReached, V1AlertNewParamsAlertTypeLowRemainingCommitPercentageReached, V1AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached, V1AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached, V1AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached, V1AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached, V1AlertNewParamsAlertTypeInvoiceTotalReached:
-		return true
-	}
-	return false
-}
-
+// The properties Entity, Key, Value are required.
 type V1AlertNewParamsCustomFieldFilter struct {
-	Entity param.Field[V1AlertNewParamsCustomFieldFiltersEntity] `json:"entity,required"`
-	Key    param.Field[string]                                   `json:"key,required"`
-	Value  param.Field[string]                                   `json:"value,required"`
+	// Any of "Contract", "Commit", "ContractCredit".
+	Entity string `json:"entity,omitzero,required"`
+	Key    string `json:"key,required"`
+	Value  string `json:"value,required"`
+	paramObj
 }
 
 func (r V1AlertNewParamsCustomFieldFilter) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1AlertNewParamsCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertNewParamsCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-type V1AlertNewParamsCustomFieldFiltersEntity string
-
-const (
-	V1AlertNewParamsCustomFieldFiltersEntityContract       V1AlertNewParamsCustomFieldFiltersEntity = "Contract"
-	V1AlertNewParamsCustomFieldFiltersEntityCommit         V1AlertNewParamsCustomFieldFiltersEntity = "Commit"
-	V1AlertNewParamsCustomFieldFiltersEntityContractCredit V1AlertNewParamsCustomFieldFiltersEntity = "ContractCredit"
-)
-
-func (r V1AlertNewParamsCustomFieldFiltersEntity) IsKnown() bool {
-	switch r {
-	case V1AlertNewParamsCustomFieldFiltersEntityContract, V1AlertNewParamsCustomFieldFiltersEntityCommit, V1AlertNewParamsCustomFieldFiltersEntityContractCredit:
-		return true
-	}
-	return false
+func init() {
+	apijson.RegisterFieldValidator[V1AlertNewParamsCustomFieldFilter](
+		"entity", "Contract", "Commit", "ContractCredit",
+	)
 }
 
+// The property Key is required.
 type V1AlertNewParamsGroupValue struct {
-	Key   param.Field[string] `json:"key,required"`
-	Value param.Field[string] `json:"value"`
+	Key   string            `json:"key,required"`
+	Value param.Opt[string] `json:"value,omitzero"`
+	paramObj
 }
 
 func (r V1AlertNewParamsGroupValue) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1AlertNewParamsGroupValue
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertNewParamsGroupValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1AlertArchiveParams struct {
 	// The Metronome ID of the alert
-	ID param.Field[string] `json:"id,required" format:"uuid"`
+	ID string `json:"id,required" format:"uuid"`
 	// If true, resets the uniqueness key on this alert so it can be re-used
-	ReleaseUniquenessKey param.Field[bool] `json:"release_uniqueness_key"`
+	ReleaseUniquenessKey param.Opt[bool] `json:"release_uniqueness_key,omitzero"`
+	paramObj
 }
 
 func (r V1AlertArchiveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1AlertArchiveParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertArchiveParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
