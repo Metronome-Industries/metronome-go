@@ -232,7 +232,7 @@ func TestV1CustomerPreviewEventsWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestV1CustomerGetBillingConfigurations(t *testing.T) {
+func TestV1CustomerGetBillingConfigurationsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -245,7 +245,8 @@ func TestV1CustomerGetBillingConfigurations(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.GetBillingConfigurations(context.TODO(), metronome.V1CustomerGetBillingConfigurationsParams{
-		CustomerID: "6a37bb88-8538-48c5-b37b-a41c836328bd",
+		CustomerID:      "6a37bb88-8538-48c5-b37b-a41c836328bd",
+		IncludeArchived: metronome.Bool(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error

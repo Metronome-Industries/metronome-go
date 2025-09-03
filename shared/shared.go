@@ -1301,6 +1301,7 @@ func (r *ContractAmendmentResellerRoyalty) UnmarshalJSON(data []byte) error {
 
 // The billing provider configuration associated with a contract.
 type ContractCustomerBillingProviderConfiguration struct {
+	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace".
 	BillingProvider string `json:"billing_provider,required"`
@@ -1312,6 +1313,7 @@ type ContractCustomerBillingProviderConfiguration struct {
 	Configuration map[string]any `json:"configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ArchivedAt      respjson.Field
 		BillingProvider respjson.Field
 		DeliveryMethod  respjson.Field
 		ID              respjson.Field
