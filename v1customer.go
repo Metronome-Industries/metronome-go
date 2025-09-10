@@ -781,7 +781,8 @@ type V1CustomerNewParamsBillingConfig struct {
 	// "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1",
 	// "us-west-2".
 	AwsRegion string `json:"aws_region,omitzero"`
-	// Any of "charge_automatically", "send_invoice".
+	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
+	// "manually_charge_payment_intent".
 	StripeCollectionMethod string `json:"stripe_collection_method,omitzero"`
 	paramObj
 }
@@ -802,7 +803,7 @@ func init() {
 		"aws_region", "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2", "ca-central-1", "cn-north-1", "cn-northwest-1", "eu-central-1", "eu-north-1", "eu-south-1", "eu-west-1", "eu-west-2", "eu-west-3", "me-south-1", "sa-east-1", "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1", "us-west-2",
 	)
 	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
-		"stripe_collection_method", "charge_automatically", "send_invoice",
+		"stripe_collection_method", "charge_automatically", "send_invoice", "auto_charge_payment_intent", "manually_charge_payment_intent",
 	)
 }
 
@@ -826,6 +827,13 @@ type V1CustomerNewParamsCustomerBillingProviderConfiguration struct {
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string `json:"delivery_method,omitzero"`
+	// Specifies which tax provider Metronome should use for tax calculation when
+	// billing through Stripe. This is only supported for Stripe billing provider
+	// configurations with auto_charge_payment_intent or manual_charge_payment_intent
+	// collection methods.
+	//
+	// Any of "anrok", "avalara", "stripe".
+	TaxProvider string `json:"tax_provider,omitzero"`
 	paramObj
 }
 
@@ -843,6 +851,9 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerBillingProviderConfiguration](
 		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
+	)
+	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerBillingProviderConfiguration](
+		"tax_provider", "anrok", "avalara", "stripe",
 	)
 }
 
@@ -1042,6 +1053,13 @@ type V1CustomerSetBillingConfigurationsParamsData struct {
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string `json:"delivery_method,omitzero"`
+	// Specifies which tax provider Metronome should use for tax calculation when
+	// billing through Stripe. This is only supported for Stripe billing provider
+	// configurations with auto_charge_payment_intent or manual_charge_payment_intent
+	// collection methods.
+	//
+	// Any of "anrok", "avalara", "stripe".
+	TaxProvider string `json:"tax_provider,omitzero"`
 	paramObj
 }
 
@@ -1059,6 +1077,9 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
 		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
+	)
+	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
+		"tax_provider", "anrok", "avalara", "stripe",
 	)
 }
 
