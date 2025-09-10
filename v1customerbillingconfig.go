@@ -117,7 +117,8 @@ type V1CustomerBillingConfigGetResponseData struct {
 	// Any of "Subscribed", "Unsubscribed", "Suspended", "PendingFulfillmentStart".
 	AzureSubscriptionStatus   string `json:"azure_subscription_status"`
 	BillingProviderCustomerID string `json:"billing_provider_customer_id"`
-	// Any of "charge_automatically", "send_invoice".
+	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
+	// "manually_charge_payment_intent".
 	StripeCollectionMethod string `json:"stripe_collection_method"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -158,7 +159,8 @@ type V1CustomerBillingConfigNewParams struct {
 	// "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1",
 	// "us-west-2".
 	AwsRegion V1CustomerBillingConfigNewParamsAwsRegion `json:"aws_region,omitzero"`
-	// Any of "charge_automatically", "send_invoice".
+	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
+	// "manually_charge_payment_intent".
 	StripeCollectionMethod V1CustomerBillingConfigNewParamsStripeCollectionMethod `json:"stripe_collection_method,omitzero"`
 	paramObj
 }
@@ -217,8 +219,10 @@ const (
 type V1CustomerBillingConfigNewParamsStripeCollectionMethod string
 
 const (
-	V1CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically V1CustomerBillingConfigNewParamsStripeCollectionMethod = "charge_automatically"
-	V1CustomerBillingConfigNewParamsStripeCollectionMethodSendInvoice         V1CustomerBillingConfigNewParamsStripeCollectionMethod = "send_invoice"
+	V1CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically         V1CustomerBillingConfigNewParamsStripeCollectionMethod = "charge_automatically"
+	V1CustomerBillingConfigNewParamsStripeCollectionMethodSendInvoice                 V1CustomerBillingConfigNewParamsStripeCollectionMethod = "send_invoice"
+	V1CustomerBillingConfigNewParamsStripeCollectionMethodAutoChargePaymentIntent     V1CustomerBillingConfigNewParamsStripeCollectionMethod = "auto_charge_payment_intent"
+	V1CustomerBillingConfigNewParamsStripeCollectionMethodManuallyChargePaymentIntent V1CustomerBillingConfigNewParamsStripeCollectionMethod = "manually_charge_payment_intent"
 )
 
 type V1CustomerBillingConfigGetParams struct {
