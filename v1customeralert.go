@@ -384,6 +384,9 @@ type V1CustomerAlertGetParams struct {
 	AlertID string `json:"alert_id,required" format:"uuid"`
 	// The Metronome ID of the customer
 	CustomerID string `json:"customer_id,required" format:"uuid"`
+	// Only present for `spend_threshold_reached` alerts. Retrieve the alert for a
+	// specific group key-value pair.
+	GroupValues []V1CustomerAlertGetParamsGroupValue `json:"group_values,omitzero"`
 	// When parallel alerts are enabled during migration, this flag denotes whether to
 	// fetch alerts for plans or contracts.
 	//
@@ -397,6 +400,24 @@ func (r V1CustomerAlertGetParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V1CustomerAlertGetParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Scopes alert evaluation to a specific presentation group key on individual line
+// items. Only present for spend alerts.
+//
+// The properties Key, Value are required.
+type V1CustomerAlertGetParamsGroupValue struct {
+	Key   string `json:"key,required"`
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r V1CustomerAlertGetParamsGroupValue) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerAlertGetParamsGroupValue
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertGetParamsGroupValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
