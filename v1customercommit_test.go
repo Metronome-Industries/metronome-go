@@ -12,6 +12,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go"
 	"github.com/Metronome-Industries/metronome-go/internal/testutil"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
 func TestV1CustomerCommitNewWithOptionalParams(t *testing.T) {
@@ -27,60 +28,60 @@ func TestV1CustomerCommitNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Commits.New(context.TODO(), metronome.V1CustomerCommitNewParams{
-		AccessSchedule: metronome.F(metronome.V1CustomerCommitNewParamsAccessSchedule{
-			ScheduleItems: metronome.F([]metronome.V1CustomerCommitNewParamsAccessScheduleScheduleItem{{
-				Amount:       metronome.F(1000.000000),
-				EndingBefore: metronome.F(time.Now()),
-				StartingAt:   metronome.F(time.Now()),
-			}}),
-			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-		}),
-		CustomerID:            metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		Priority:              metronome.F(100.000000),
-		ProductID:             metronome.F("f14d6729-6a44-4b13-9908-9387f1918790"),
-		Type:                  metronome.F(metronome.V1CustomerCommitNewParamsTypePrepaid),
-		ApplicableContractIDs: metronome.F([]string{"string"}),
-		ApplicableProductIDs:  metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		ApplicableProductTags: metronome.F([]string{"string"}),
-		CustomFields: metronome.F(map[string]string{
+		AccessSchedule: metronome.V1CustomerCommitNewParamsAccessSchedule{
+			ScheduleItems: []metronome.V1CustomerCommitNewParamsAccessScheduleScheduleItem{{
+				Amount:       1000,
+				EndingBefore: time.Now(),
+				StartingAt:   time.Now(),
+			}},
+			CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+		},
+		CustomerID:            "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		Priority:              100,
+		ProductID:             "f14d6729-6a44-4b13-9908-9387f1918790",
+		Type:                  metronome.V1CustomerCommitNewParamsTypePrepaid,
+		ApplicableContractIDs: []string{"string"},
+		ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+		ApplicableProductTags: []string{"string"},
+		CustomFields: map[string]string{
 			"foo": "string",
-		}),
-		Description:       metronome.F("description"),
-		InvoiceContractID: metronome.F("e57d6929-c2f1-4796-a9a8-63cedefe848d"),
-		InvoiceSchedule: metronome.F(metronome.V1CustomerCommitNewParamsInvoiceSchedule{
-			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-			DoNotInvoice: metronome.F(false),
-			RecurringSchedule: metronome.F(metronome.V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule{
-				AmountDistribution: metronome.F(metronome.V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleAmountDistributionDivided),
-				EndingBefore:       metronome.F(time.Now()),
-				Frequency:          metronome.F(metronome.V1CustomerCommitNewParamsInvoiceScheduleRecurringScheduleFrequencyMonthly),
-				StartingAt:         metronome.F(time.Now()),
-				Amount:             metronome.F(0.000000),
-				Quantity:           metronome.F(0.000000),
-				UnitPrice:          metronome.F(0.000000),
-			}),
-			ScheduleItems: metronome.F([]metronome.V1CustomerCommitNewParamsInvoiceScheduleScheduleItem{{
-				Timestamp: metronome.F(time.Now()),
-				Amount:    metronome.F(0.000000),
-				Quantity:  metronome.F(1.000000),
-				UnitPrice: metronome.F(10000000.000000),
-			}}),
-		}),
-		Name:                    metronome.F("My Commit"),
-		NetsuiteSalesOrderID:    metronome.F("netsuite_sales_order_id"),
-		RateType:                metronome.F(metronome.V1CustomerCommitNewParamsRateTypeCommitRate),
-		SalesforceOpportunityID: metronome.F("salesforce_opportunity_id"),
-		Specifiers: metronome.F([]metronome.V1CustomerCommitNewParamsSpecifier{{
-			PresentationGroupValues: metronome.F(map[string]string{
+		},
+		Description:       metronome.String("description"),
+		InvoiceContractID: metronome.String("e57d6929-c2f1-4796-a9a8-63cedefe848d"),
+		InvoiceSchedule: metronome.V1CustomerCommitNewParamsInvoiceSchedule{
+			CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+			DoNotInvoice: metronome.Bool(false),
+			RecurringSchedule: metronome.V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule{
+				AmountDistribution: "DIVIDED",
+				EndingBefore:       time.Now(),
+				Frequency:          "MONTHLY",
+				StartingAt:         time.Now(),
+				Amount:             metronome.Float(0),
+				Quantity:           metronome.Float(0),
+				UnitPrice:          metronome.Float(0),
+			},
+			ScheduleItems: []metronome.V1CustomerCommitNewParamsInvoiceScheduleScheduleItem{{
+				Timestamp: time.Now(),
+				Amount:    metronome.Float(0),
+				Quantity:  metronome.Float(1),
+				UnitPrice: metronome.Float(10000000),
+			}},
+		},
+		Name:                    metronome.String("My Commit"),
+		NetsuiteSalesOrderID:    metronome.String("netsuite_sales_order_id"),
+		RateType:                metronome.V1CustomerCommitNewParamsRateTypeCommitRate,
+		SalesforceOpportunityID: metronome.String("salesforce_opportunity_id"),
+		Specifiers: []shared.CommitSpecifierInputParam{{
+			PresentationGroupValues: map[string]string{
 				"foo": "string",
-			}),
-			PricingGroupValues: metronome.F(map[string]string{
+			},
+			PricingGroupValues: map[string]string{
 				"foo": "string",
-			}),
-			ProductID:   metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			ProductTags: metronome.F([]string{"string"}),
-		}}),
-		UniquenessKey: metronome.F("x"),
+			},
+			ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			ProductTags: []string{"string"},
+		}},
+		UniquenessKey: metronome.String("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -104,17 +105,17 @@ func TestV1CustomerCommitListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Commits.List(context.TODO(), metronome.V1CustomerCommitListParams{
-		CustomerID:             metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		CommitID:               metronome.F("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
-		CoveringDate:           metronome.F(time.Now()),
-		EffectiveBefore:        metronome.F(time.Now()),
-		IncludeArchived:        metronome.F(true),
-		IncludeBalance:         metronome.F(true),
-		IncludeContractCommits: metronome.F(true),
-		IncludeLedgers:         metronome.F(true),
-		Limit:                  metronome.F(int64(1)),
-		NextPage:               metronome.F("next_page"),
-		StartingAt:             metronome.F(time.Now()),
+		CustomerID:             "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		CommitID:               metronome.String("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
+		CoveringDate:           metronome.Time(time.Now()),
+		EffectiveBefore:        metronome.Time(time.Now()),
+		IncludeArchived:        metronome.Bool(true),
+		IncludeBalance:         metronome.Bool(true),
+		IncludeContractCommits: metronome.Bool(true),
+		IncludeLedgers:         metronome.Bool(true),
+		Limit:                  metronome.Int(1),
+		NextPage:               metronome.String("next_page"),
+		StartingAt:             metronome.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -138,10 +139,10 @@ func TestV1CustomerCommitUpdateEndDateWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Commits.UpdateEndDate(context.TODO(), metronome.V1CustomerCommitUpdateEndDateParams{
-		CommitID:             metronome.F("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
-		CustomerID:           metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		AccessEndingBefore:   metronome.F(time.Now()),
-		InvoicesEndingBefore: metronome.F(time.Now()),
+		CommitID:             "6162d87b-e5db-4a33-b7f2-76ce6ead4e85",
+		CustomerID:           "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		AccessEndingBefore:   metronome.Time(time.Now()),
+		InvoicesEndingBefore: metronome.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error

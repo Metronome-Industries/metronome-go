@@ -8,9 +8,10 @@ import (
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 )
 
 // V1ContractNamedScheduleService contains methods and other services that help
@@ -26,8 +27,8 @@ type V1ContractNamedScheduleService struct {
 // NewV1ContractNamedScheduleService generates a new service that applies the given
 // options to each request. These options are applied after the parent client's
 // options (if there is one), and before any request-specific options.
-func NewV1ContractNamedScheduleService(opts ...option.RequestOption) (r *V1ContractNamedScheduleService) {
-	r = &V1ContractNamedScheduleService{}
+func NewV1ContractNamedScheduleService(opts ...option.RequestOption) (r V1ContractNamedScheduleService) {
+	r = V1ContractNamedScheduleService{}
 	r.Options = opts
 	return
 }
@@ -53,76 +54,76 @@ func (r *V1ContractNamedScheduleService) Update(ctx context.Context, body V1Cont
 
 type V1ContractNamedScheduleGetResponse struct {
 	Data []V1ContractNamedScheduleGetResponseData `json:"data,required"`
-	JSON v1ContractNamedScheduleGetResponseJSON   `json:"-"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ContractNamedScheduleGetResponseJSON contains the JSON metadata for the struct
-// [V1ContractNamedScheduleGetResponse]
-type v1ContractNamedScheduleGetResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractNamedScheduleGetResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractNamedScheduleGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractNamedScheduleGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractNamedScheduleGetResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractNamedScheduleGetResponseData struct {
-	StartingAt   time.Time                                  `json:"starting_at,required" format:"date-time"`
-	Value        interface{}                                `json:"value,required"`
-	EndingBefore time.Time                                  `json:"ending_before" format:"date-time"`
-	JSON         v1ContractNamedScheduleGetResponseDataJSON `json:"-"`
+	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	Value        any       `json:"value,required"`
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		StartingAt   respjson.Field
+		Value        respjson.Field
+		EndingBefore respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
 }
 
-// v1ContractNamedScheduleGetResponseDataJSON contains the JSON metadata for the
-// struct [V1ContractNamedScheduleGetResponseData]
-type v1ContractNamedScheduleGetResponseDataJSON struct {
-	StartingAt   apijson.Field
-	Value        apijson.Field
-	EndingBefore apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *V1ContractNamedScheduleGetResponseData) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractNamedScheduleGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractNamedScheduleGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractNamedScheduleGetResponseDataJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractNamedScheduleGetParams struct {
 	// ID of the rate card whose named schedule is to be retrieved
-	RateCardID param.Field[string] `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id,required" format:"uuid"`
 	// The identifier for the schedule to be retrieved
-	ScheduleName param.Field[string] `json:"schedule_name,required"`
+	ScheduleName string `json:"schedule_name,required"`
 	// If provided, at most one schedule segment will be returned (the one that covers
 	// this date). If not provided, all segments will be returned.
-	CoveringDate param.Field[time.Time] `json:"covering_date" format:"date-time"`
+	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+	paramObj
 }
 
 func (r V1ContractNamedScheduleGetParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractNamedScheduleGetParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNamedScheduleGetParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNamedScheduleUpdateParams struct {
 	// ID of the rate card whose named schedule is to be updated
-	RateCardID param.Field[string] `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id,required" format:"uuid"`
 	// The identifier for the schedule to be updated
-	ScheduleName param.Field[string]    `json:"schedule_name,required"`
-	StartingAt   param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
+	ScheduleName string    `json:"schedule_name,required"`
+	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
 	// The value to set for the named schedule. The structure of this object is
 	// specific to the named schedule.
-	Value        param.Field[interface{}] `json:"value,required"`
-	EndingBefore param.Field[time.Time]   `json:"ending_before" format:"date-time"`
+	Value        any                  `json:"value,omitzero,required"`
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	paramObj
 }
 
 func (r V1ContractNamedScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractNamedScheduleUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNamedScheduleUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

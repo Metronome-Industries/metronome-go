@@ -10,10 +10,11 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -30,8 +31,8 @@ type V1CreditGrantService struct {
 // NewV1CreditGrantService generates a new service that applies the given options
 // to each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewV1CreditGrantService(opts ...option.RequestOption) (r *V1CreditGrantService) {
-	r = &V1CreditGrantService{}
+func NewV1CreditGrantService(opts ...option.RequestOption) (r V1CreditGrantService) {
+	r = V1CreditGrantService{}
 	r.Options = opts
 	return
 }
@@ -78,11 +79,28 @@ func (r *V1CreditGrantService) Edit(ctx context.Context, body V1CreditGrantEditP
 // Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
 // Ledger entries are returned in chronological order. Ledger entries associated
 // with voided credit grants are not included.
-func (r *V1CreditGrantService) ListEntries(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) (res *V1CreditGrantListEntriesResponse, err error) {
+func (r *V1CreditGrantService) ListEntries(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1CreditGrantListEntriesResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/credits/listEntries"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
+// Ledger entries are returned in chronological order. Ledger entries associated
+// with voided credit grants are not included.
+func (r *V1CreditGrantService) ListEntriesAutoPaging(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[V1CreditGrantListEntriesResponse] {
+	return pagination.NewCursorPageWithoutLimitAutoPager(r.ListEntries(ctx, params, opts...))
 }
 
 // Void a credit grant
@@ -107,44 +125,44 @@ type CreditLedgerEntry struct {
 	// if this entry is a deduction, the Metronome ID of the invoice where the credit
 	// deduction was consumed; if this entry is a grant, the Metronome ID of the
 	// invoice where the grant's paid_amount was charged
-	InvoiceID string                `json:"invoice_id,nullable" format:"uuid"`
-	JSON      creditLedgerEntryJSON `json:"-"`
+	InvoiceID string `json:"invoice_id,nullable" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount         respjson.Field
+		CreatedBy      respjson.Field
+		CreditGrantID  respjson.Field
+		EffectiveAt    respjson.Field
+		Reason         respjson.Field
+		RunningBalance respjson.Field
+		InvoiceID      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
 }
 
-// creditLedgerEntryJSON contains the JSON metadata for the struct
-// [CreditLedgerEntry]
-type creditLedgerEntryJSON struct {
-	Amount         apijson.Field
-	CreatedBy      apijson.Field
-	CreditGrantID  apijson.Field
-	EffectiveAt    apijson.Field
-	Reason         apijson.Field
-	RunningBalance apijson.Field
-	InvoiceID      apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *CreditLedgerEntry) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CreditLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *CreditLedgerEntry) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditLedgerEntryJSON) RawJSON() string {
-	return r.raw
-}
-
+// The properties Type, Value are required.
 type RolloverAmountMaxAmountParam struct {
 	// Rollover up to a fixed amount of the original credit grant amount.
-	Type param.Field[RolloverAmountMaxAmountType] `json:"type,required"`
+	//
+	// Any of "MAX_AMOUNT".
+	Type RolloverAmountMaxAmountType `json:"type,omitzero,required"`
 	// The maximum amount to rollover.
-	Value param.Field[float64] `json:"value,required"`
+	Value float64 `json:"value,required"`
+	paramObj
 }
 
 func (r RolloverAmountMaxAmountParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow RolloverAmountMaxAmountParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-
-func (r RolloverAmountMaxAmountParam) implementsV1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion() {
+func (r *RolloverAmountMaxAmountParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Rollover up to a fixed amount of the original credit grant amount.
@@ -154,26 +172,23 @@ const (
 	RolloverAmountMaxAmountTypeMaxAmount RolloverAmountMaxAmountType = "MAX_AMOUNT"
 )
 
-func (r RolloverAmountMaxAmountType) IsKnown() bool {
-	switch r {
-	case RolloverAmountMaxAmountTypeMaxAmount:
-		return true
-	}
-	return false
-}
-
+// The properties Type, Value are required.
 type RolloverAmountMaxPercentageParam struct {
 	// Rollover up to a percentage of the original credit grant amount.
-	Type param.Field[RolloverAmountMaxPercentageType] `json:"type,required"`
+	//
+	// Any of "MAX_PERCENTAGE".
+	Type RolloverAmountMaxPercentageType `json:"type,omitzero,required"`
 	// The maximum percentage (0-1) of the original credit grant to rollover.
-	Value param.Field[float64] `json:"value,required"`
+	Value float64 `json:"value,required"`
+	paramObj
 }
 
 func (r RolloverAmountMaxPercentageParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow RolloverAmountMaxPercentageParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-
-func (r RolloverAmountMaxPercentageParam) implementsV1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion() {
+func (r *RolloverAmountMaxPercentageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Rollover up to a percentage of the original credit grant amount.
@@ -183,33 +198,20 @@ const (
 	RolloverAmountMaxPercentageTypeMaxPercentage RolloverAmountMaxPercentageType = "MAX_PERCENTAGE"
 )
 
-func (r RolloverAmountMaxPercentageType) IsKnown() bool {
-	switch r {
-	case RolloverAmountMaxPercentageTypeMaxPercentage:
-		return true
-	}
-	return false
-}
-
 type V1CreditGrantNewResponse struct {
-	Data shared.ID                    `json:"data,required"`
-	JSON v1CreditGrantNewResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CreditGrantNewResponseJSON contains the JSON metadata for the struct
-// [V1CreditGrantNewResponse]
-type v1CreditGrantNewResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantNewResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantNewResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CreditGrantListResponse struct {
@@ -218,8 +220,9 @@ type V1CreditGrantListResponse struct {
 	// The effective balance of the grant as of the end of the customer's current
 	// billing period. Expiration deductions will be included only if the grant expires
 	// before the end of the current billing period.
-	Balance      V1CreditGrantListResponseBalance `json:"balance,required"`
-	CustomFields map[string]string                `json:"custom_fields,required"`
+	Balance V1CreditGrantListResponseBalance `json:"balance,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields,required"`
 	// the Metronome ID of the customer
 	CustomerID  string              `json:"customer_id,required" format:"uuid"`
 	Deductions  []CreditLedgerEntry `json:"deductions,required"`
@@ -243,40 +246,35 @@ type V1CreditGrantListResponse struct {
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
-	UniquenessKey string                        `json:"uniqueness_key,nullable"`
-	JSON          v1CreditGrantListResponseJSON `json:"-"`
+	UniquenessKey string `json:"uniqueness_key,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		Balance           respjson.Field
+		CustomFields      respjson.Field
+		CustomerID        respjson.Field
+		Deductions        respjson.Field
+		EffectiveAt       respjson.Field
+		ExpiresAt         respjson.Field
+		GrantAmount       respjson.Field
+		Name              respjson.Field
+		PaidAmount        respjson.Field
+		PendingDeductions respjson.Field
+		Priority          respjson.Field
+		CreditGrantType   respjson.Field
+		InvoiceID         respjson.Field
+		Products          respjson.Field
+		Reason            respjson.Field
+		UniquenessKey     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
 }
 
-// v1CreditGrantListResponseJSON contains the JSON metadata for the struct
-// [V1CreditGrantListResponse]
-type v1CreditGrantListResponseJSON struct {
-	ID                apijson.Field
-	Balance           apijson.Field
-	CustomFields      apijson.Field
-	CustomerID        apijson.Field
-	Deductions        apijson.Field
-	EffectiveAt       apijson.Field
-	ExpiresAt         apijson.Field
-	GrantAmount       apijson.Field
-	Name              apijson.Field
-	PaidAmount        apijson.Field
-	PendingDeductions apijson.Field
-	Priority          apijson.Field
-	CreditGrantType   apijson.Field
-	InvoiceID         apijson.Field
-	Products          apijson.Field
-	Reason            apijson.Field
-	UniquenessKey     apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 // The effective balance of the grant as of the end of the customer's current
@@ -291,200 +289,142 @@ type V1CreditGrantListResponseBalance struct {
 	// The grant's current balance including all posted and pending deductions. If the
 	// grant expires before the end of the customer's current billing period, this
 	// amount will be 0.
-	IncludingPending float64                              `json:"including_pending,required"`
-	JSON             v1CreditGrantListResponseBalanceJSON `json:"-"`
+	IncludingPending float64 `json:"including_pending,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EffectiveAt      respjson.Field
+		ExcludingPending respjson.Field
+		IncludingPending respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
 }
 
-// v1CreditGrantListResponseBalanceJSON contains the JSON metadata for the struct
-// [V1CreditGrantListResponseBalance]
-type v1CreditGrantListResponseBalanceJSON struct {
-	EffectiveAt      apijson.Field
-	ExcludingPending apijson.Field
-	IncludingPending apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListResponseBalance) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListResponseBalance) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListResponseBalance) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListResponseBalanceJSON) RawJSON() string {
-	return r.raw
 }
 
 // the amount of credits initially granted
 type V1CreditGrantListResponseGrantAmount struct {
 	Amount float64 `json:"amount,required"`
 	// the credit type for the amount granted
-	CreditType shared.CreditTypeData                    `json:"credit_type,required"`
-	JSON       v1CreditGrantListResponseGrantAmountJSON `json:"-"`
+	CreditType shared.CreditTypeData `json:"credit_type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		CreditType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CreditGrantListResponseGrantAmountJSON contains the JSON metadata for the
-// struct [V1CreditGrantListResponseGrantAmount]
-type v1CreditGrantListResponseGrantAmountJSON struct {
-	Amount      apijson.Field
-	CreditType  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListResponseGrantAmount) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListResponseGrantAmount) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListResponseGrantAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListResponseGrantAmountJSON) RawJSON() string {
-	return r.raw
 }
 
 // the amount paid for this credit grant
 type V1CreditGrantListResponsePaidAmount struct {
 	Amount float64 `json:"amount,required"`
 	// the credit type for the amount paid
-	CreditType shared.CreditTypeData                   `json:"credit_type,required"`
-	JSON       v1CreditGrantListResponsePaidAmountJSON `json:"-"`
+	CreditType shared.CreditTypeData `json:"credit_type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		CreditType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CreditGrantListResponsePaidAmountJSON contains the JSON metadata for the
-// struct [V1CreditGrantListResponsePaidAmount]
-type v1CreditGrantListResponsePaidAmountJSON struct {
-	Amount      apijson.Field
-	CreditType  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListResponsePaidAmount) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListResponsePaidAmount) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListResponsePaidAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListResponsePaidAmountJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CreditGrantListResponseProduct struct {
-	ID   string                               `json:"id,required"`
-	Name string                               `json:"name,required"`
-	JSON v1CreditGrantListResponseProductJSON `json:"-"`
+	ID   string `json:"id,required"`
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CreditGrantListResponseProductJSON contains the JSON metadata for the struct
-// [V1CreditGrantListResponseProduct]
-type v1CreditGrantListResponseProductJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListResponseProduct) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListResponseProduct) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListResponseProduct) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListResponseProductJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CreditGrantEditResponse struct {
-	Data shared.ID                     `json:"data,required"`
-	JSON v1CreditGrantEditResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CreditGrantEditResponseJSON contains the JSON metadata for the struct
-// [V1CreditGrantEditResponse]
-type v1CreditGrantEditResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantEditResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantEditResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantEditResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantEditResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CreditGrantListEntriesResponse struct {
-	Data     []V1CreditGrantListEntriesResponseData `json:"data,required"`
-	NextPage string                                 `json:"next_page,required,nullable"`
-	JSON     v1CreditGrantListEntriesResponseJSON   `json:"-"`
+	CustomerID string                                   `json:"customer_id,required" format:"uuid"`
+	Ledgers    []V1CreditGrantListEntriesResponseLedger `json:"ledgers,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerID  respjson.Field
+		Ledgers     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CreditGrantListEntriesResponseJSON contains the JSON metadata for the struct
-// [V1CreditGrantListEntriesResponse]
-type v1CreditGrantListEntriesResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListEntriesResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListEntriesResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListEntriesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CreditGrantListEntriesResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CreditGrantListEntriesResponseData struct {
-	CustomerID string                                       `json:"customer_id,required" format:"uuid"`
-	Ledgers    []V1CreditGrantListEntriesResponseDataLedger `json:"ledgers,required"`
-	JSON       v1CreditGrantListEntriesResponseDataJSON     `json:"-"`
-}
-
-// v1CreditGrantListEntriesResponseDataJSON contains the JSON metadata for the
-// struct [V1CreditGrantListEntriesResponseData]
-type v1CreditGrantListEntriesResponseDataJSON struct {
-	CustomerID  apijson.Field
-	Ledgers     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListEntriesResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListEntriesResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CreditGrantListEntriesResponseDataLedger struct {
+type V1CreditGrantListEntriesResponseLedger struct {
 	CreditType shared.CreditTypeData `json:"credit_type,required"`
 	// the effective balances at the end of the specified time window
-	EndingBalance   V1CreditGrantListEntriesResponseDataLedgersEndingBalance   `json:"ending_balance,required"`
-	Entries         []CreditLedgerEntry                                        `json:"entries,required"`
-	PendingEntries  []CreditLedgerEntry                                        `json:"pending_entries,required"`
-	StartingBalance V1CreditGrantListEntriesResponseDataLedgersStartingBalance `json:"starting_balance,required"`
-	JSON            v1CreditGrantListEntriesResponseDataLedgerJSON             `json:"-"`
+	EndingBalance   V1CreditGrantListEntriesResponseLedgerEndingBalance   `json:"ending_balance,required"`
+	Entries         []CreditLedgerEntry                                   `json:"entries,required"`
+	PendingEntries  []CreditLedgerEntry                                   `json:"pending_entries,required"`
+	StartingBalance V1CreditGrantListEntriesResponseLedgerStartingBalance `json:"starting_balance,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreditType      respjson.Field
+		EndingBalance   respjson.Field
+		Entries         respjson.Field
+		PendingEntries  respjson.Field
+		StartingBalance respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
 }
 
-// v1CreditGrantListEntriesResponseDataLedgerJSON contains the JSON metadata for
-// the struct [V1CreditGrantListEntriesResponseDataLedger]
-type v1CreditGrantListEntriesResponseDataLedgerJSON struct {
-	CreditType      apijson.Field
-	EndingBalance   apijson.Field
-	Entries         apijson.Field
-	PendingEntries  apijson.Field
-	StartingBalance apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListEntriesResponseDataLedger) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListEntriesResponseLedger) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListEntriesResponseLedger) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListEntriesResponseDataLedgerJSON) RawJSON() string {
-	return r.raw
 }
 
 // the effective balances at the end of the specified time window
-type V1CreditGrantListEntriesResponseDataLedgersEndingBalance struct {
+type V1CreditGrantListEntriesResponseLedgerEndingBalance struct {
 	// the ending_before request parameter (if supplied) or the current billing
 	// period's end date
 	EffectiveAt time.Time `json:"effective_at,required" format:"date-time"`
@@ -494,30 +434,24 @@ type V1CreditGrantListEntriesResponseDataLedgersEndingBalance struct {
 	ExcludingPending float64 `json:"excluding_pending,required"`
 	// the excluding_pending balance plus any pending invoice deductions and
 	// expirations that will happen by the effective_at date
-	IncludingPending float64                                                      `json:"including_pending,required"`
-	JSON             v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON `json:"-"`
+	IncludingPending float64 `json:"including_pending,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EffectiveAt      respjson.Field
+		ExcludingPending respjson.Field
+		IncludingPending respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
 }
 
-// v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON contains the JSON
-// metadata for the struct
-// [V1CreditGrantListEntriesResponseDataLedgersEndingBalance]
-type v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON struct {
-	EffectiveAt      apijson.Field
-	ExcludingPending apijson.Field
-	IncludingPending apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListEntriesResponseDataLedgersEndingBalance) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListEntriesResponseLedgerEndingBalance) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListEntriesResponseLedgerEndingBalance) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CreditGrantListEntriesResponseDataLedgersEndingBalanceJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CreditGrantListEntriesResponseDataLedgersStartingBalance struct {
+type V1CreditGrantListEntriesResponseLedgerStartingBalance struct {
 	// the starting_on request parameter (if supplied) or the first credit grant's
 	// effective_at date
 	EffectiveAt time.Time `json:"effective_at,required" format:"date-time"`
@@ -526,195 +460,221 @@ type V1CreditGrantListEntriesResponseDataLedgersStartingBalance struct {
 	ExcludingPending float64 `json:"excluding_pending,required"`
 	// the excluding_pending balance plus any pending activity that has not been posted
 	// at the time of the query
-	IncludingPending float64                                                        `json:"including_pending,required"`
-	JSON             v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON `json:"-"`
+	IncludingPending float64 `json:"including_pending,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EffectiveAt      respjson.Field
+		ExcludingPending respjson.Field
+		IncludingPending respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
 }
 
-// v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON contains the JSON
-// metadata for the struct
-// [V1CreditGrantListEntriesResponseDataLedgersStartingBalance]
-type v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON struct {
-	EffectiveAt      apijson.Field
-	ExcludingPending apijson.Field
-	IncludingPending apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *V1CreditGrantListEntriesResponseDataLedgersStartingBalance) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantListEntriesResponseLedgerStartingBalance) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantListEntriesResponseLedgerStartingBalance) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantListEntriesResponseDataLedgersStartingBalanceJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CreditGrantVoidResponse struct {
-	Data shared.ID                     `json:"data,required"`
-	JSON v1CreditGrantVoidResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CreditGrantVoidResponseJSON contains the JSON metadata for the struct
-// [V1CreditGrantVoidResponse]
-type v1CreditGrantVoidResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CreditGrantVoidResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CreditGrantVoidResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CreditGrantVoidResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CreditGrantVoidResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CreditGrantNewParams struct {
 	// the Metronome ID of the customer
-	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
 	// The credit grant will only apply to usage or charges dated before this timestamp
-	ExpiresAt param.Field[time.Time] `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
 	// the amount of credits granted
-	GrantAmount param.Field[V1CreditGrantNewParamsGrantAmount] `json:"grant_amount,required"`
+	GrantAmount V1CreditGrantNewParamsGrantAmount `json:"grant_amount,omitzero,required"`
 	// the name of the credit grant as it will appear on invoices
-	Name param.Field[string] `json:"name,required"`
+	Name string `json:"name,required"`
 	// the amount paid for this credit grant
-	PaidAmount      param.Field[V1CreditGrantNewParamsPaidAmount] `json:"paid_amount,required"`
-	Priority        param.Field[float64]                          `json:"priority,required"`
-	CreditGrantType param.Field[string]                           `json:"credit_grant_type"`
-	// Custom fields to attach to the credit grant.
-	CustomFields param.Field[map[string]string] `json:"custom_fields"`
+	PaidAmount      V1CreditGrantNewParamsPaidAmount `json:"paid_amount,omitzero,required"`
+	Priority        float64                          `json:"priority,required"`
+	CreditGrantType param.Opt[string]                `json:"credit_grant_type,omitzero"`
 	// The credit grant will only apply to usage or charges dated on or after this
 	// timestamp
-	EffectiveAt param.Field[time.Time] `json:"effective_at" format:"date-time"`
+	EffectiveAt param.Opt[time.Time] `json:"effective_at,omitzero" format:"date-time"`
 	// The date to issue an invoice for the paid_amount.
-	InvoiceDate param.Field[time.Time] `json:"invoice_date" format:"date-time"`
+	InvoiceDate param.Opt[time.Time] `json:"invoice_date,omitzero" format:"date-time"`
+	Reason      param.Opt[string]    `json:"reason,omitzero"`
+	// Prevents the creation of duplicates. If a request to create a record is made
+	// with a previously used uniqueness key, a new record will not be created and the
+	// request will fail with a 409 error.
+	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
+	// Custom fields to attach to the credit grant.
+	CustomFields map[string]string `json:"custom_fields,omitzero"`
 	// The product(s) which these credits will be applied to. (If unspecified, the
 	// credits will be applied to charges for all products.). The array ordering
 	// specified here will be used to determine the order in which credits will be
 	// applied to invoice line items
-	ProductIDs param.Field[[]string] `json:"product_ids" format:"uuid"`
-	Reason     param.Field[string]   `json:"reason"`
+	ProductIDs []string `json:"product_ids,omitzero" format:"uuid"`
 	// Configure a rollover for this credit grant so if it expires it rolls over a
 	// configured amount to a new credit grant. This feature is currently opt-in only.
 	// Contact Metronome to be added to the beta.
-	RolloverSettings param.Field[V1CreditGrantNewParamsRolloverSettings] `json:"rollover_settings"`
-	// Prevents the creation of duplicates. If a request to create a record is made
-	// with a previously used uniqueness key, a new record will not be created and the
-	// request will fail with a 409 error.
-	UniquenessKey param.Field[string] `json:"uniqueness_key"`
+	RolloverSettings V1CreditGrantNewParamsRolloverSettings `json:"rollover_settings,omitzero"`
+	paramObj
 }
 
 func (r V1CreditGrantNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CreditGrantNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CreditGrantNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // the amount of credits granted
+//
+// The properties Amount, CreditTypeID are required.
 type V1CreditGrantNewParamsGrantAmount struct {
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount float64 `json:"amount,required"`
 	// the ID of the pricing unit to be used. Defaults to USD (cents) if not passed.
-	CreditTypeID param.Field[string] `json:"credit_type_id,required" format:"uuid"`
+	CreditTypeID string `json:"credit_type_id,required" format:"uuid"`
+	paramObj
 }
 
 func (r V1CreditGrantNewParamsGrantAmount) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CreditGrantNewParamsGrantAmount
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CreditGrantNewParamsGrantAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // the amount paid for this credit grant
+//
+// The properties Amount, CreditTypeID are required.
 type V1CreditGrantNewParamsPaidAmount struct {
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount float64 `json:"amount,required"`
 	// the ID of the pricing unit to be used. Defaults to USD (cents) if not passed.
-	CreditTypeID param.Field[string] `json:"credit_type_id,required" format:"uuid"`
+	CreditTypeID string `json:"credit_type_id,required" format:"uuid"`
+	paramObj
 }
 
 func (r V1CreditGrantNewParamsPaidAmount) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CreditGrantNewParamsPaidAmount
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CreditGrantNewParamsPaidAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Configure a rollover for this credit grant so if it expires it rolls over a
 // configured amount to a new credit grant. This feature is currently opt-in only.
 // Contact Metronome to be added to the beta.
+//
+// The properties ExpiresAt, Priority, RolloverAmount are required.
 type V1CreditGrantNewParamsRolloverSettings struct {
 	// The date to expire the rollover credits.
-	ExpiresAt param.Field[time.Time] `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
 	// The priority to give the rollover credit grant that gets created when a rollover
 	// happens.
-	Priority param.Field[float64] `json:"priority,required"`
+	Priority float64 `json:"priority,required"`
 	// Specify how much to rollover to the rollover credit grant
-	RolloverAmount param.Field[V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion] `json:"rollover_amount,required"`
+	RolloverAmount V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion `json:"rollover_amount,omitzero,required"`
+	paramObj
 }
 
 func (r V1CreditGrantNewParamsRolloverSettings) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CreditGrantNewParamsRolloverSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CreditGrantNewParamsRolloverSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-// Specify how much to rollover to the rollover credit grant
-type V1CreditGrantNewParamsRolloverSettingsRolloverAmount struct {
-	// Rollover up to a percentage of the original credit grant amount.
-	Type param.Field[V1CreditGrantNewParamsRolloverSettingsRolloverAmountType] `json:"type,required"`
-	// The maximum percentage (0-1) of the original credit grant to rollover.
-	Value param.Field[float64] `json:"value,required"`
-}
-
-func (r V1CreditGrantNewParamsRolloverSettingsRolloverAmount) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r V1CreditGrantNewParamsRolloverSettingsRolloverAmount) implementsV1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion() {
-}
-
-// Specify how much to rollover to the rollover credit grant
+// Only one field can be non-zero.
 //
-// Satisfied by [RolloverAmountMaxPercentageParam], [RolloverAmountMaxAmountParam],
-// [V1CreditGrantNewParamsRolloverSettingsRolloverAmount].
-type V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion interface {
-	implementsV1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion()
+// Use [param.IsOmitted] to confirm if a field is set.
+type V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion struct {
+	OfRolloverAmountMaxPercentage *RolloverAmountMaxPercentageParam `json:",omitzero,inline"`
+	OfRolloverAmountMaxAmount     *RolloverAmountMaxAmountParam     `json:",omitzero,inline"`
+	paramUnion
 }
 
-// Rollover up to a percentage of the original credit grant amount.
-type V1CreditGrantNewParamsRolloverSettingsRolloverAmountType string
+func (u V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfRolloverAmountMaxPercentage, u.OfRolloverAmountMaxAmount)
+}
+func (u *V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
 
-const (
-	V1CreditGrantNewParamsRolloverSettingsRolloverAmountTypeMaxPercentage V1CreditGrantNewParamsRolloverSettingsRolloverAmountType = "MAX_PERCENTAGE"
-	V1CreditGrantNewParamsRolloverSettingsRolloverAmountTypeMaxAmount     V1CreditGrantNewParamsRolloverSettingsRolloverAmountType = "MAX_AMOUNT"
-)
-
-func (r V1CreditGrantNewParamsRolloverSettingsRolloverAmountType) IsKnown() bool {
-	switch r {
-	case V1CreditGrantNewParamsRolloverSettingsRolloverAmountTypeMaxPercentage, V1CreditGrantNewParamsRolloverSettingsRolloverAmountTypeMaxAmount:
-		return true
+func (u *V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion) asAny() any {
+	if !param.IsOmitted(u.OfRolloverAmountMaxPercentage) {
+		return u.OfRolloverAmountMaxPercentage
+	} else if !param.IsOmitted(u.OfRolloverAmountMaxAmount) {
+		return u.OfRolloverAmountMaxAmount
 	}
-	return false
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion) GetType() *string {
+	if vt := u.OfRolloverAmountMaxPercentage; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfRolloverAmountMaxAmount; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion) GetValue() *float64 {
+	if vt := u.OfRolloverAmountMaxPercentage; vt != nil {
+		return (*float64)(&vt.Value)
+	} else if vt := u.OfRolloverAmountMaxAmount; vt != nil {
+		return (*float64)(&vt.Value)
+	}
+	return nil
 }
 
 type V1CreditGrantListParams struct {
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
+	// Only return credit grants that are effective before this timestamp (exclusive).
+	EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
+	// Only return credit grants that expire at or after this timestamp.
+	NotExpiringBefore param.Opt[time.Time] `json:"not_expiring_before,omitzero" format:"date-time"`
 	// An array of credit grant IDs. If this is specified, neither credit_type_ids nor
 	// customer_ids may be specified.
-	CreditGrantIDs param.Field[[]string] `json:"credit_grant_ids" format:"uuid"`
+	CreditGrantIDs []string `json:"credit_grant_ids,omitzero" format:"uuid"`
 	// An array of credit type IDs. This must not be specified if credit_grant_ids is
 	// specified.
-	CreditTypeIDs param.Field[[]string] `json:"credit_type_ids" format:"uuid"`
+	CreditTypeIDs []string `json:"credit_type_ids,omitzero" format:"uuid"`
 	// An array of Metronome customer IDs. This must not be specified if
 	// credit_grant_ids is specified.
-	CustomerIDs param.Field[[]string] `json:"customer_ids" format:"uuid"`
-	// Only return credit grants that are effective before this timestamp (exclusive).
-	EffectiveBefore param.Field[time.Time] `json:"effective_before" format:"date-time"`
-	// Only return credit grants that expire at or after this timestamp.
-	NotExpiringBefore param.Field[time.Time] `json:"not_expiring_before" format:"date-time"`
+	CustomerIDs []string `json:"customer_ids,omitzero" format:"uuid"`
+	paramObj
 }
 
 func (r V1CreditGrantListParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CreditGrantListParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CreditGrantListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1CreditGrantListParams]'s query parameters as
 // `url.Values`.
-func (r V1CreditGrantListParams) URLQuery() (v url.Values) {
+func (r V1CreditGrantListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -723,47 +683,59 @@ func (r V1CreditGrantListParams) URLQuery() (v url.Values) {
 
 type V1CreditGrantEditParams struct {
 	// the ID of the credit grant
-	ID param.Field[string] `json:"id,required" format:"uuid"`
+	ID string `json:"id,required" format:"uuid"`
 	// the updated credit grant type
-	CreditGrantType param.Field[string] `json:"credit_grant_type"`
+	CreditGrantType param.Opt[string] `json:"credit_grant_type,omitzero"`
 	// the updated expiration date for the credit grant
-	ExpiresAt param.Field[time.Time] `json:"expires_at" format:"date-time"`
+	ExpiresAt param.Opt[time.Time] `json:"expires_at,omitzero" format:"date-time"`
 	// the updated name for the credit grant
-	Name param.Field[string] `json:"name"`
+	Name param.Opt[string] `json:"name,omitzero"`
+	paramObj
 }
 
 func (r V1CreditGrantEditParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CreditGrantEditParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CreditGrantEditParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CreditGrantListEntriesParams struct {
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
-	// Ledgers sort order by date, asc or desc. Defaults to asc.
-	Sort param.Field[V1CreditGrantListEntriesParamsSort] `query:"sort"`
-	// A list of Metronome credit type IDs to fetch ledger entries for. If absent,
-	// ledger entries for all credit types will be returned.
-	CreditTypeIDs param.Field[[]string] `json:"credit_type_ids" format:"uuid"`
-	// A list of Metronome customer IDs to fetch ledger entries for. If absent, ledger
-	// entries for all customers will be returned.
-	CustomerIDs param.Field[[]string] `json:"customer_ids" format:"uuid"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// If supplied, ledger entries will only be returned with an effective_at before
 	// this time. This timestamp must not be in the future. If no timestamp is
 	// supplied, all entries up to the start of the customer's next billing period will
 	// be returned.
-	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	// If supplied, only ledger entries effective at or after this time will be
 	// returned.
-	StartingOn param.Field[time.Time] `json:"starting_on" format:"date-time"`
+	StartingOn param.Opt[time.Time] `json:"starting_on,omitzero" format:"date-time"`
+	// Ledgers sort order by date, asc or desc. Defaults to asc.
+	//
+	// Any of "asc", "desc".
+	Sort V1CreditGrantListEntriesParamsSort `query:"sort,omitzero" json:"-"`
+	// A list of Metronome credit type IDs to fetch ledger entries for. If absent,
+	// ledger entries for all credit types will be returned.
+	CreditTypeIDs []string `json:"credit_type_ids,omitzero" format:"uuid"`
+	// A list of Metronome customer IDs to fetch ledger entries for. If absent, ledger
+	// entries for all customers will be returned.
+	CustomerIDs []string `json:"customer_ids,omitzero" format:"uuid"`
+	paramObj
 }
 
 func (r V1CreditGrantListEntriesParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CreditGrantListEntriesParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CreditGrantListEntriesParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1CreditGrantListEntriesParams]'s query parameters as
 // `url.Values`.
-func (r V1CreditGrantListEntriesParams) URLQuery() (v url.Values) {
+func (r V1CreditGrantListEntriesParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -778,22 +750,19 @@ const (
 	V1CreditGrantListEntriesParamsSortDesc V1CreditGrantListEntriesParamsSort = "desc"
 )
 
-func (r V1CreditGrantListEntriesParamsSort) IsKnown() bool {
-	switch r {
-	case V1CreditGrantListEntriesParamsSortAsc, V1CreditGrantListEntriesParamsSortDesc:
-		return true
-	}
-	return false
-}
-
 type V1CreditGrantVoidParams struct {
-	ID param.Field[string] `json:"id,required" format:"uuid"`
+	ID string `json:"id,required" format:"uuid"`
 	// If true, resets the uniqueness key on this grant so it can be re-used
-	ReleaseUniquenessKey param.Field[bool] `json:"release_uniqueness_key"`
+	ReleaseUniquenessKey param.Opt[bool] `json:"release_uniqueness_key,omitzero"`
 	// If true, void the purchase invoice associated with the grant
-	VoidCreditPurchaseInvoice param.Field[bool] `json:"void_credit_purchase_invoice"`
+	VoidCreditPurchaseInvoice param.Opt[bool] `json:"void_credit_purchase_invoice,omitzero"`
+	paramObj
 }
 
 func (r V1CreditGrantVoidParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CreditGrantVoidParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CreditGrantVoidParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

@@ -26,9 +26,13 @@ func TestV1CustomerAlertGetWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Alerts.Get(context.TODO(), metronome.V1CustomerAlertGetParams{
-		AlertID:          metronome.F("8deed800-1b7a-495d-a207-6c52bac54dc9"),
-		CustomerID:       metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
-		PlansOrContracts: metronome.F(metronome.V1CustomerAlertGetParamsPlansOrContractsPlans),
+		AlertID:    "8deed800-1b7a-495d-a207-6c52bac54dc9",
+		CustomerID: "9b85c1c1-5238-4f2a-a409-61412905e1e1",
+		GroupValues: []metronome.V1CustomerAlertGetParamsGroupValue{{
+			Key:   "key",
+			Value: "value",
+		}},
+		PlansOrContracts: metronome.V1CustomerAlertGetParamsPlansOrContractsPlans,
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -52,9 +56,9 @@ func TestV1CustomerAlertListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Alerts.List(context.TODO(), metronome.V1CustomerAlertListParams{
-		CustomerID:    metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
-		NextPage:      metronome.F("next_page"),
-		AlertStatuses: metronome.F([]metronome.V1CustomerAlertListParamsAlertStatus{metronome.V1CustomerAlertListParamsAlertStatusEnabled}),
+		CustomerID:    "9b85c1c1-5238-4f2a-a409-61412905e1e1",
+		NextPage:      metronome.String("next_page"),
+		AlertStatuses: []string{"ENABLED"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -78,8 +82,8 @@ func TestV1CustomerAlertReset(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.Customers.Alerts.Reset(context.TODO(), metronome.V1CustomerAlertResetParams{
-		AlertID:    metronome.F("5e8691bf-b22a-4672-922d-f80eee940f01"),
-		CustomerID: metronome.F("4c83caf3-8af4-44e2-9aeb-e290531726d9"),
+		AlertID:    "5e8691bf-b22a-4672-922d-f80eee940f01",
+		CustomerID: "4c83caf3-8af4-44e2-9aeb-e290531726d9",
 	})
 	if err != nil {
 		var apierr *metronome.Error

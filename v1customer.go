@@ -4,6 +4,7 @@ package metronome
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -12,10 +13,12 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
+	shimjson "github.com/Metronome-Industries/metronome-go/internal/encoding/json"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -27,20 +30,20 @@ import (
 // the [NewV1CustomerService] method instead.
 type V1CustomerService struct {
 	Options        []option.RequestOption
-	Alerts         *V1CustomerAlertService
-	Plans          *V1CustomerPlanService
-	Invoices       *V1CustomerInvoiceService
-	BillingConfig  *V1CustomerBillingConfigService
-	Commits        *V1CustomerCommitService
-	Credits        *V1CustomerCreditService
-	NamedSchedules *V1CustomerNamedScheduleService
+	Alerts         V1CustomerAlertService
+	Plans          V1CustomerPlanService
+	Invoices       V1CustomerInvoiceService
+	BillingConfig  V1CustomerBillingConfigService
+	Commits        V1CustomerCommitService
+	Credits        V1CustomerCreditService
+	NamedSchedules V1CustomerNamedScheduleService
 }
 
 // NewV1CustomerService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewV1CustomerService(opts ...option.RequestOption) (r *V1CustomerService) {
-	r = &V1CustomerService{}
+func NewV1CustomerService(opts ...option.RequestOption) (r V1CustomerService) {
+	r = V1CustomerService{}
 	r.Options = opts
 	r.Alerts = NewV1CustomerAlertService(opts...)
 	r.Plans = NewV1CustomerPlanService(opts...)
@@ -52,7 +55,40 @@ func NewV1CustomerService(opts ...option.RequestOption) (r *V1CustomerService) {
 	return
 }
 
-// Create a new customer
+// Create a new customer in Metronome and optionally the billing configuration
+// (recommended) which dictates where invoices for the customer will be sent or
+// where payment will be collected.
+//
+// ### Use this endpoint to:
+//
+// Execute your customer provisioning workflows for either PLG motions, where
+// customers originate in your platform, or SLG motions, where customers originate
+// in your sales system.
+//
+// ### Key response fields:
+//
+// This end-point returns the `customer_id` created by the request. This id can be
+// used to fetch relevant billing configurations and create contracts.
+//
+// ### Example workflow:
+//
+//   - Generally, Metronome recommends first creating the customer in the downstream
+//     payment / ERP system when payment method is collected and then creating the
+//     customer in Metronome using the response (i.e. `customer_id`) from the
+//     downstream system. If you do not create a billing configuration on customer
+//     creation, you can add it later.
+//   - Once a customer is created, you can then create a contract for the customer.
+//     In the contract creation process, you will need to add the customer billing
+//     configuration to the contract to ensure Metronome invoices the customer
+//     correctly. This is because a customer can have multiple configurations.
+//   - As part of the customer creation process, set the ingest alias for the
+//     customer which will ensure usage is accurately mapped to the customer. Ingest
+//     aliases can be added or changed after the creation process as well.
+//
+// ### Usage guidelines:
+//
+// For details on different billing configurations for different systems, review
+// the `/setCustomerBillingConfiguration` end-point.
 func (r *V1CustomerService) New(ctx context.Context, body V1CustomerNewParams, opts ...option.RequestOption) (res *V1CustomerNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/customers"
@@ -60,10 +96,16 @@ func (r *V1CustomerService) New(ctx context.Context, body V1CustomerNewParams, o
 	return
 }
 
-// Get a customer by Metronome ID.
+// Get detailed information for a specific customer by their Metronome ID. Returns
+// customer profile data including name, creation date, ingest aliases,
+// configuration settings, and custom fields. Use this endpoint to fetch complete
+// customer details for billing operations or account management.
+//
+// Note: If searching for a customer billing configuration, use the
+// `/getCustomerBillingConfigurations` endpoint.
 func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, opts ...option.RequestOption) (res *V1CustomerGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if query.CustomerID.Value == "" {
+	if query.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
@@ -72,7 +114,11 @@ func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, 
 	return
 }
 
-// List all customers.
+// Gets a paginated list of all customers in your Metronome account. Use this
+// endpoint to browse your customer base, implement customer search functionality,
+// or sync customer data with external systems. Returns customer details including
+// IDs, names, and configuration settings. Supports filtering and pagination
+// parameters for efficient data retrieval.
 func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerDetail], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -90,13 +136,29 @@ func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams
 	return res, nil
 }
 
-// List all customers.
+// Gets a paginated list of all customers in your Metronome account. Use this
+// endpoint to browse your customer base, implement customer search functionality,
+// or sync customer data with external systems. Returns customer details including
+// IDs, names, and configuration settings. Supports filtering and pagination
+// parameters for efficient data retrieval.
 func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[CustomerDetail] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// Archive a customer Note: any alerts associated with the customer will not be
-// triggered.
+// Use this endpoint to archive a customer while preserving auditability. Archiving
+// a customer will automatically archive all contracts as of the current date and
+// void all corresponding invoices. Use this endpoint if a customer is onboarded by
+// mistake.
+//
+// ### Usage guidelines:
+//
+//   - Once a customer is archived, it cannot be unarchived.
+//   - Archived customers can still be viewed through the API or the UI for audit
+//     purposes.
+//   - Ingest aliases remain idempotent for archived customers. In order to reuse an
+//     ingest alias, first remove the ingest alias from the customer prior to
+//     archiving.
+//   - Any alerts associated with the customer will no longer be triggered.
 func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveParams, opts ...option.RequestOption) (res *V1CustomerArchiveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/customers/archive"
@@ -104,12 +166,15 @@ func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveP
 	return
 }
 
-// Get all billable metrics for a given customer.
+// Get all billable metrics available for a specific customer. Supports pagination
+// and filtering by current plan status or archived metrics. Use this endpoint to
+// see which metrics are being tracked for billing calculations for a given
+// customer.
 func (r *V1CustomerService) ListBillableMetrics(ctx context.Context, params V1CustomerListBillableMetricsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerListBillableMetricsResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if params.CustomerID.Value == "" {
+	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
@@ -126,7 +191,10 @@ func (r *V1CustomerService) ListBillableMetrics(ctx context.Context, params V1Cu
 	return res, nil
 }
 
-// Get all billable metrics for a given customer.
+// Get all billable metrics available for a specific customer. Supports pagination
+// and filtering by current plan status or archived metrics. Use this endpoint to
+// see which metrics are being tracked for billing calculations for a given
+// customer.
 func (r *V1CustomerService) ListBillableMetricsAutoPaging(ctx context.Context, params V1CustomerListBillableMetricsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerListBillableMetricsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListBillableMetrics(ctx, params, opts...))
 }
@@ -138,7 +206,7 @@ func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerList
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if params.CustomerID.Value == "" {
+	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
@@ -168,7 +236,7 @@ func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1Cu
 // customer's invoice before they are actually processed.
 func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1CustomerPreviewEventsParams, opts ...option.RequestOption) (res *V1CustomerPreviewEventsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if params.CustomerID.Value == "" {
+	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
@@ -177,13 +245,79 @@ func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1Customer
 	return
 }
 
-// Sets the ingest aliases for a customer. Ingest aliases can be used in the
-// `customer_id` field when sending usage events to Metronome. This call is
-// idempotent. It fully replaces the set of ingest aliases for the given customer.
+// Returns all billing configurations previously set for the customer. Use during
+// the contract provisioning process to fetch the
+// `billing_provider_configuration_id` needed to set the contract billing
+// configuration.
+func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V1CustomerGetBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerGetBillingConfigurationsResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "v1/getCustomerBillingProviderConfigurations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Create a billing configuration for a customer. Once created, these
+// configurations are available to associate to a contract and dictates which
+// downstream system to collect payment in or send the invoice to. You can create
+// multiple configurations per customer. The configuration formats are distinct for
+// each downstream provider.
+//
+// ### Use this endpoint to:
+//
+//   - Add the initial configuration to an existing customer. Once created, the
+//     billing configuration can then be associated to the customer's contract.
+//   - Add a new configuration to an existing customer. This might be used as part of
+//     an upgrade or downgrade workflow where the customer was previously billed
+//     through system A (e.g. Stripe) but will now be billed through system B (e.g.
+//     AWS). Once created, the new configuration can then be associated to the
+//     customer's contract.
+//
+// ### Delivery method options:
+//
+//   - `direct_to_billing_provider`: Use when Metronome should send invoices directly
+//     to the billing provider's API (e.g., Stripe, NetSuite). This is the most
+//     common method for automated billing workflows.
+//   - `tackle`: Use specifically for AWS Marketplace transactions that require
+//     Tackle's co-selling platform for partner attribution and commission tracking.
+//   - `aws_sqs`: Use when you want invoice data delivered to an AWS SQS queue for
+//     custom processing before sending to your billing system.
+//   - `aws_sns`: Use when you want invoice notifications published to an AWS SNS
+//     topic for event-driven billing workflows.
+//
+// ### Key response fields:
+//
+// The id for the customer billing configuration. This id can be used to associate
+// the billing configuration to a contract.
+//
+// ### Usage guidelines:
+//
+// Must use the `delivery_method_id` if you have multiple Stripe accounts connected
+// to Metronome.
+func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	path := "v1/setCustomerBillingProviderConfigurations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return
+}
+
+// Sets the ingest aliases for a customer. Use this endpoint to associate a
+// Metronome customer with an internal ID for easier tracking between systems.
+// Ingest aliases can be used in the `customer_id` field when sending usage events
+// to Metronome.
+//
+// ### Usage guidelines:
+//
+//   - This call is idempotent and fully replaces the set of ingest aliases for the
+//     given customer.
+//   - Switching an ingest alias from one customer to another will associate all
+//     corresponding usage to the new customer.
+//   - Use multiple ingest aliases to model child organizations within a single
+//     Metronome customer.
 func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1CustomerSetIngestAliasesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if params.CustomerID.Value == "" {
+	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
@@ -192,10 +326,14 @@ func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1Custo
 	return
 }
 
-// Updates the specified customer's name.
+// Updates the display name for a customer record. Use this to correct customer
+// names, update business names after rebranding, or maintain accurate customer
+// information for invoicing and reporting. Returns the updated customer object
+// with the new name applied immediately across all billing documents and
+// interfaces.
 func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNameParams, opts ...option.RequestOption) (res *V1CustomerSetNameResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if params.CustomerID.Value == "" {
+	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
@@ -204,11 +342,14 @@ func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNam
 	return
 }
 
-// Updates the specified customer's config.
+// Update configuration settings for a specific customer, such as external system
+// integrations (e.g., Salesforce account ID) and other customer-specific billing
+// parameters. Use this endpoint to modify customer configurations without
+// affecting core customer data like name or ingest aliases.
 func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerUpdateConfigParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if params.CustomerID.Value == "" {
+	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
 	}
@@ -225,36 +366,34 @@ type Customer struct {
 	ExternalID string `json:"external_id,required"`
 	// aliases for this customer that can be used instead of the Metronome customer ID
 	// in usage events
-	IngestAliases []string          `json:"ingest_aliases,required"`
-	Name          string            `json:"name,required"`
-	CustomFields  map[string]string `json:"custom_fields"`
-	JSON          customerJSON      `json:"-"`
+	IngestAliases []string `json:"ingest_aliases,required"`
+	Name          string   `json:"name,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		ExternalID    respjson.Field
+		IngestAliases respjson.Field
+		Name          respjson.Field
+		CustomFields  respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
 }
 
-// customerJSON contains the JSON metadata for the struct [Customer]
-type customerJSON struct {
-	ID            apijson.Field
-	ExternalID    apijson.Field
-	IngestAliases apijson.Field
-	Name          apijson.Field
-	CustomFields  apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *Customer) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r Customer) RawJSON() string { return r.JSON.raw }
+func (r *Customer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerJSON) RawJSON() string {
-	return r.raw
 }
 
 type CustomerDetail struct {
 	// the Metronome ID of the customer
 	ID string `json:"id,required" format:"uuid"`
 	// RFC 3339 timestamp indicating when the customer was created.
-	CreatedAt      time.Time                    `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields   map[string]string            `json:"custom_fields,required"`
 	CustomerConfig CustomerDetailCustomerConfig `json:"customer_config,required"`
 	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
@@ -269,154 +408,111 @@ type CustomerDetail struct {
 	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
 	// This field's availability is dependent on your client's configuration.
 	CurrentBillableStatus CustomerDetailCurrentBillableStatus `json:"current_billable_status"`
-	JSON                  customerDetailJSON                  `json:"-"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		CreatedAt             respjson.Field
+		CustomFields          respjson.Field
+		CustomerConfig        respjson.Field
+		ExternalID            respjson.Field
+		IngestAliases         respjson.Field
+		Name                  respjson.Field
+		ArchivedAt            respjson.Field
+		CurrentBillableStatus respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
 }
 
-// customerDetailJSON contains the JSON metadata for the struct [CustomerDetail]
-type customerDetailJSON struct {
-	ID                    apijson.Field
-	CreatedAt             apijson.Field
-	CustomFields          apijson.Field
-	CustomerConfig        apijson.Field
-	ExternalID            apijson.Field
-	IngestAliases         apijson.Field
-	Name                  apijson.Field
-	ArchivedAt            apijson.Field
-	CurrentBillableStatus apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *CustomerDetail) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CustomerDetail) RawJSON() string { return r.JSON.raw }
+func (r *CustomerDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerDetailJSON) RawJSON() string {
-	return r.raw
 }
 
 type CustomerDetailCustomerConfig struct {
 	// The Salesforce account ID for the customer
-	SalesforceAccountID string                           `json:"salesforce_account_id,required,nullable"`
-	JSON                customerDetailCustomerConfigJSON `json:"-"`
+	SalesforceAccountID string `json:"salesforce_account_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SalesforceAccountID respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
 }
 
-// customerDetailCustomerConfigJSON contains the JSON metadata for the struct
-// [CustomerDetailCustomerConfig]
-type customerDetailCustomerConfigJSON struct {
-	SalesforceAccountID apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *CustomerDetailCustomerConfig) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CustomerDetailCustomerConfig) RawJSON() string { return r.JSON.raw }
+func (r *CustomerDetailCustomerConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerDetailCustomerConfigJSON) RawJSON() string {
-	return r.raw
 }
 
 // This field's availability is dependent on your client's configuration.
 type CustomerDetailCurrentBillableStatus struct {
-	Value       CustomerDetailCurrentBillableStatusValue `json:"value,required"`
-	EffectiveAt time.Time                                `json:"effective_at,nullable" format:"date-time"`
-	JSON        customerDetailCurrentBillableStatusJSON  `json:"-"`
+	// Any of "billable", "unbillable".
+	Value       string    `json:"value,required"`
+	EffectiveAt time.Time `json:"effective_at,nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Value       respjson.Field
+		EffectiveAt respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// customerDetailCurrentBillableStatusJSON contains the JSON metadata for the
-// struct [CustomerDetailCurrentBillableStatus]
-type customerDetailCurrentBillableStatusJSON struct {
-	Value       apijson.Field
-	EffectiveAt apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerDetailCurrentBillableStatus) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CustomerDetailCurrentBillableStatus) RawJSON() string { return r.JSON.raw }
+func (r *CustomerDetailCurrentBillableStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerDetailCurrentBillableStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-type CustomerDetailCurrentBillableStatusValue string
-
-const (
-	CustomerDetailCurrentBillableStatusValueBillable   CustomerDetailCurrentBillableStatusValue = "billable"
-	CustomerDetailCurrentBillableStatusValueUnbillable CustomerDetailCurrentBillableStatusValue = "unbillable"
-)
-
-func (r CustomerDetailCurrentBillableStatusValue) IsKnown() bool {
-	switch r {
-	case CustomerDetailCurrentBillableStatusValueBillable, CustomerDetailCurrentBillableStatusValueUnbillable:
-		return true
-	}
-	return false
 }
 
 type V1CustomerNewResponse struct {
-	Data Customer                  `json:"data,required"`
-	JSON v1CustomerNewResponseJSON `json:"-"`
+	Data Customer `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CustomerNewResponseJSON contains the JSON metadata for the struct
-// [V1CustomerNewResponse]
-type v1CustomerNewResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerNewResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerNewResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerGetResponse struct {
-	Data CustomerDetail            `json:"data,required"`
-	JSON v1CustomerGetResponseJSON `json:"-"`
+	Data CustomerDetail `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CustomerGetResponseJSON contains the JSON metadata for the struct
-// [V1CustomerGetResponse]
-type v1CustomerGetResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerGetResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerGetResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerArchiveResponse struct {
-	Data shared.ID                     `json:"data,required"`
-	JSON v1CustomerArchiveResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CustomerArchiveResponseJSON contains the JSON metadata for the struct
-// [V1CustomerArchiveResponse]
-type v1CustomerArchiveResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerArchiveResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerArchiveResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerArchiveResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerArchiveResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerListBillableMetricsResponse struct {
@@ -431,15 +527,18 @@ type V1CustomerListBillableMetricsResponse struct {
 	// aggregation type is 'count'.
 	AggregationKey string `json:"aggregation_key"`
 	// Specifies the type of aggregation performed on matching events.
+	//
+	// Any of "COUNT", "LATEST", "MAX", "SUM", "UNIQUE".
 	AggregationType V1CustomerListBillableMetricsResponseAggregationType `json:"aggregation_type"`
 	// RFC 3339 timestamp indicating when the billable metric was archived. If not
 	// provided, the billable metric is not archived.
-	ArchivedAt   time.Time         `json:"archived_at" format:"date-time"`
+	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// An optional filtering rule to match the 'event_type' property of an event.
 	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
 	// (DEPRECATED) use property_filters & event_type_filter instead
-	Filter map[string]interface{} `json:"filter"`
+	Filter map[string]any `json:"filter"`
 	// (DEPRECATED) use group_keys instead
 	GroupBy []string `json:"group_by"`
 	// Property names that are used to group usage costs on an invoice. Each entry
@@ -450,37 +549,32 @@ type V1CustomerListBillableMetricsResponse struct {
 	// billable metric.
 	PropertyFilters []shared.PropertyFilter `json:"property_filters"`
 	// The SQL query associated with the billable metric
-	Sql  string                                    `json:"sql"`
-	JSON v1CustomerListBillableMetricsResponseJSON `json:"-"`
+	Sql string `json:"sql"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Name            respjson.Field
+		Aggregate       respjson.Field
+		AggregateKeys   respjson.Field
+		AggregationKey  respjson.Field
+		AggregationType respjson.Field
+		ArchivedAt      respjson.Field
+		CustomFields    respjson.Field
+		EventTypeFilter respjson.Field
+		Filter          respjson.Field
+		GroupBy         respjson.Field
+		GroupKeys       respjson.Field
+		PropertyFilters respjson.Field
+		Sql             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
 }
 
-// v1CustomerListBillableMetricsResponseJSON contains the JSON metadata for the
-// struct [V1CustomerListBillableMetricsResponse]
-type v1CustomerListBillableMetricsResponseJSON struct {
-	ID              apijson.Field
-	Name            apijson.Field
-	Aggregate       apijson.Field
-	AggregateKeys   apijson.Field
-	AggregationKey  apijson.Field
-	AggregationType apijson.Field
-	ArchivedAt      apijson.Field
-	CustomFields    apijson.Field
-	EventTypeFilter apijson.Field
-	Filter          apijson.Field
-	GroupBy         apijson.Field
-	GroupKeys       apijson.Field
-	PropertyFilters apijson.Field
-	Sql             apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *V1CustomerListBillableMetricsResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerListBillableMetricsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerListBillableMetricsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListBillableMetricsResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 // Specifies the type of aggregation performed on matching events.
@@ -494,320 +588,300 @@ const (
 	V1CustomerListBillableMetricsResponseAggregationTypeUnique V1CustomerListBillableMetricsResponseAggregationType = "UNIQUE"
 )
 
-func (r V1CustomerListBillableMetricsResponseAggregationType) IsKnown() bool {
-	switch r {
-	case V1CustomerListBillableMetricsResponseAggregationTypeCount, V1CustomerListBillableMetricsResponseAggregationTypeLatest, V1CustomerListBillableMetricsResponseAggregationTypeMax, V1CustomerListBillableMetricsResponseAggregationTypeSum, V1CustomerListBillableMetricsResponseAggregationTypeUnique:
-		return true
-	}
-	return false
-}
-
 type V1CustomerListCostsResponse struct {
 	CreditTypes    map[string]V1CustomerListCostsResponseCreditType `json:"credit_types,required"`
 	EndTimestamp   time.Time                                        `json:"end_timestamp,required" format:"date-time"`
 	StartTimestamp time.Time                                        `json:"start_timestamp,required" format:"date-time"`
-	JSON           v1CustomerListCostsResponseJSON                  `json:"-"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreditTypes    respjson.Field
+		EndTimestamp   respjson.Field
+		StartTimestamp respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
 }
 
-// v1CustomerListCostsResponseJSON contains the JSON metadata for the struct
-// [V1CustomerListCostsResponse]
-type v1CustomerListCostsResponseJSON struct {
-	CreditTypes    apijson.Field
-	EndTimestamp   apijson.Field
-	StartTimestamp apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *V1CustomerListCostsResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerListCostsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerListCostsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListCostsResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerListCostsResponseCreditType struct {
-	Cost              float64                                                   `json:"cost"`
-	LineItemBreakdown []V1CustomerListCostsResponseCreditTypesLineItemBreakdown `json:"line_item_breakdown"`
-	Name              string                                                    `json:"name"`
-	JSON              v1CustomerListCostsResponseCreditTypeJSON                 `json:"-"`
+	Cost              float64                                                  `json:"cost"`
+	LineItemBreakdown []V1CustomerListCostsResponseCreditTypeLineItemBreakdown `json:"line_item_breakdown"`
+	Name              string                                                   `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cost              respjson.Field
+		LineItemBreakdown respjson.Field
+		Name              respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
 }
 
-// v1CustomerListCostsResponseCreditTypeJSON contains the JSON metadata for the
-// struct [V1CustomerListCostsResponseCreditType]
-type v1CustomerListCostsResponseCreditTypeJSON struct {
-	Cost              apijson.Field
-	LineItemBreakdown apijson.Field
-	Name              apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *V1CustomerListCostsResponseCreditType) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerListCostsResponseCreditType) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerListCostsResponseCreditType) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CustomerListCostsResponseCreditTypeJSON) RawJSON() string {
-	return r.raw
+type V1CustomerListCostsResponseCreditTypeLineItemBreakdown struct {
+	Cost       float64 `json:"cost,required"`
+	Name       string  `json:"name,required"`
+	GroupKey   string  `json:"group_key"`
+	GroupValue string  `json:"group_value,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cost        respjson.Field
+		Name        respjson.Field
+		GroupKey    respjson.Field
+		GroupValue  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-type V1CustomerListCostsResponseCreditTypesLineItemBreakdown struct {
-	Cost       float64                                                     `json:"cost,required"`
-	Name       string                                                      `json:"name,required"`
-	GroupKey   string                                                      `json:"group_key"`
-	GroupValue string                                                      `json:"group_value,nullable"`
-	JSON       v1CustomerListCostsResponseCreditTypesLineItemBreakdownJSON `json:"-"`
-}
-
-// v1CustomerListCostsResponseCreditTypesLineItemBreakdownJSON contains the JSON
-// metadata for the struct
-// [V1CustomerListCostsResponseCreditTypesLineItemBreakdown]
-type v1CustomerListCostsResponseCreditTypesLineItemBreakdownJSON struct {
-	Cost        apijson.Field
-	Name        apijson.Field
-	GroupKey    apijson.Field
-	GroupValue  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerListCostsResponseCreditTypesLineItemBreakdown) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerListCostsResponseCreditTypeLineItemBreakdown) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerListCostsResponseCreditTypeLineItemBreakdown) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerListCostsResponseCreditTypesLineItemBreakdownJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerPreviewEventsResponse struct {
-	Data Invoice                             `json:"data,required"`
-	JSON v1CustomerPreviewEventsResponseJSON `json:"-"`
+	Data Invoice `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CustomerPreviewEventsResponseJSON contains the JSON metadata for the struct
-// [V1CustomerPreviewEventsResponse]
-type v1CustomerPreviewEventsResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerPreviewEventsResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerPreviewEventsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerPreviewEventsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CustomerPreviewEventsResponseJSON) RawJSON() string {
-	return r.raw
+type V1CustomerGetBillingConfigurationsResponse struct {
+	Data []V1CustomerGetBillingConfigurationsResponseData `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerGetBillingConfigurationsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerGetBillingConfigurationsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerGetBillingConfigurationsResponseData struct {
+	// ID of this configuration; can be provided as the
+	// billing_provider_configuration_id when creating a contract.
+	ID         string    `json:"id,required" format:"uuid"`
+	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
+	// The billing provider set for this configuration.
+	//
+	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
+	// "quickbooks_online", "workday", "gcp_marketplace".
+	BillingProvider string `json:"billing_provider,required"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider.
+	Configuration map[string]any `json:"configuration,required"`
+	CustomerID    string         `json:"customer_id,required" format:"uuid"`
+	// The method to use for delivering invoices to this customer.
+	//
+	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+	DeliveryMethod string `json:"delivery_method,required"`
+	// Configuration for the delivery method. The structure of this object is specific
+	// to the delivery method.
+	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration,required"`
+	// ID of the delivery method to use for this customer.
+	DeliveryMethodID string `json:"delivery_method_id,required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                          respjson.Field
+		ArchivedAt                  respjson.Field
+		BillingProvider             respjson.Field
+		Configuration               respjson.Field
+		CustomerID                  respjson.Field
+		DeliveryMethod              respjson.Field
+		DeliveryMethodConfiguration respjson.Field
+		DeliveryMethodID            respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerGetBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerGetBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerSetNameResponse struct {
-	Data Customer                      `json:"data,required"`
-	JSON v1CustomerSetNameResponseJSON `json:"-"`
+	Data Customer `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CustomerSetNameResponseJSON contains the JSON metadata for the struct
-// [V1CustomerSetNameResponse]
-type v1CustomerSetNameResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerSetNameResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerSetNameResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerSetNameResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerSetNameResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerNewParams struct {
 	// This will be truncated to 160 characters if the provided name is longer.
-	Name                                  param.Field[string]                                                    `json:"name,required"`
-	BillingConfig                         param.Field[V1CustomerNewParamsBillingConfig]                          `json:"billing_config"`
-	CustomFields                          param.Field[map[string]string]                                         `json:"custom_fields"`
-	CustomerBillingProviderConfigurations param.Field[[]V1CustomerNewParamsCustomerBillingProviderConfiguration] `json:"customer_billing_provider_configurations"`
+	Name string `json:"name,required"`
 	// (deprecated, use ingest_aliases instead) an alias that can be used to refer to
 	// this customer in usage events
-	ExternalID param.Field[string] `json:"external_id"`
+	ExternalID    param.Opt[string]                `json:"external_id,omitzero"`
+	BillingConfig V1CustomerNewParamsBillingConfig `json:"billing_config,omitzero"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields                          map[string]string                                         `json:"custom_fields,omitzero"`
+	CustomerBillingProviderConfigurations []V1CustomerNewParamsCustomerBillingProviderConfiguration `json:"customer_billing_provider_configurations,omitzero"`
 	// Aliases that can be used to refer to this customer in usage events
-	IngestAliases param.Field[[]string] `json:"ingest_aliases"`
+	IngestAliases []string `json:"ingest_aliases,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties BillingProviderCustomerID, BillingProviderType are required.
 type V1CustomerNewParamsBillingConfig struct {
-	BillingProviderCustomerID param.Field[string]                                              `json:"billing_provider_customer_id,required"`
-	BillingProviderType       param.Field[V1CustomerNewParamsBillingConfigBillingProviderType] `json:"billing_provider_type,required"`
+	BillingProviderCustomerID string `json:"billing_provider_customer_id,required"`
+	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
+	// "quickbooks_online", "workday", "gcp_marketplace".
+	BillingProviderType string `json:"billing_provider_type,omitzero,required"`
 	// True if the aws_product_code is a SAAS subscription product, false otherwise.
-	AwsIsSubscriptionProduct param.Field[bool]                                                   `json:"aws_is_subscription_product"`
-	AwsProductCode           param.Field[string]                                                 `json:"aws_product_code"`
-	AwsRegion                param.Field[V1CustomerNewParamsBillingConfigAwsRegion]              `json:"aws_region"`
-	StripeCollectionMethod   param.Field[V1CustomerNewParamsBillingConfigStripeCollectionMethod] `json:"stripe_collection_method"`
+	AwsIsSubscriptionProduct param.Opt[bool]   `json:"aws_is_subscription_product,omitzero"`
+	AwsProductCode           param.Opt[string] `json:"aws_product_code,omitzero"`
+	// Any of "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2",
+	// "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2",
+	// "ca-central-1", "cn-north-1", "cn-northwest-1", "eu-central-1", "eu-north-1",
+	// "eu-south-1", "eu-west-1", "eu-west-2", "eu-west-3", "me-south-1", "sa-east-1",
+	// "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1",
+	// "us-west-2".
+	AwsRegion string `json:"aws_region,omitzero"`
+	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
+	// "manually_charge_payment_intent".
+	StripeCollectionMethod string `json:"stripe_collection_method,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerNewParamsBillingConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerNewParamsBillingConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerNewParamsBillingConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-type V1CustomerNewParamsBillingConfigBillingProviderType string
-
-const (
-	V1CustomerNewParamsBillingConfigBillingProviderTypeAwsMarketplace   V1CustomerNewParamsBillingConfigBillingProviderType = "aws_marketplace"
-	V1CustomerNewParamsBillingConfigBillingProviderTypeStripe           V1CustomerNewParamsBillingConfigBillingProviderType = "stripe"
-	V1CustomerNewParamsBillingConfigBillingProviderTypeNetsuite         V1CustomerNewParamsBillingConfigBillingProviderType = "netsuite"
-	V1CustomerNewParamsBillingConfigBillingProviderTypeCustom           V1CustomerNewParamsBillingConfigBillingProviderType = "custom"
-	V1CustomerNewParamsBillingConfigBillingProviderTypeAzureMarketplace V1CustomerNewParamsBillingConfigBillingProviderType = "azure_marketplace"
-	V1CustomerNewParamsBillingConfigBillingProviderTypeQuickbooksOnline V1CustomerNewParamsBillingConfigBillingProviderType = "quickbooks_online"
-	V1CustomerNewParamsBillingConfigBillingProviderTypeWorkday          V1CustomerNewParamsBillingConfigBillingProviderType = "workday"
-	V1CustomerNewParamsBillingConfigBillingProviderTypeGcpMarketplace   V1CustomerNewParamsBillingConfigBillingProviderType = "gcp_marketplace"
-)
-
-func (r V1CustomerNewParamsBillingConfigBillingProviderType) IsKnown() bool {
-	switch r {
-	case V1CustomerNewParamsBillingConfigBillingProviderTypeAwsMarketplace, V1CustomerNewParamsBillingConfigBillingProviderTypeStripe, V1CustomerNewParamsBillingConfigBillingProviderTypeNetsuite, V1CustomerNewParamsBillingConfigBillingProviderTypeCustom, V1CustomerNewParamsBillingConfigBillingProviderTypeAzureMarketplace, V1CustomerNewParamsBillingConfigBillingProviderTypeQuickbooksOnline, V1CustomerNewParamsBillingConfigBillingProviderTypeWorkday, V1CustomerNewParamsBillingConfigBillingProviderTypeGcpMarketplace:
-		return true
-	}
-	return false
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
+		"billing_provider_type", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+	)
+	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
+		"aws_region", "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2", "ca-central-1", "cn-north-1", "cn-northwest-1", "eu-central-1", "eu-north-1", "eu-south-1", "eu-west-1", "eu-west-2", "eu-west-3", "me-south-1", "sa-east-1", "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1", "us-west-2",
+	)
+	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
+		"stripe_collection_method", "charge_automatically", "send_invoice", "auto_charge_payment_intent", "manually_charge_payment_intent",
+	)
 }
 
-type V1CustomerNewParamsBillingConfigAwsRegion string
-
-const (
-	V1CustomerNewParamsBillingConfigAwsRegionAfSouth1     V1CustomerNewParamsBillingConfigAwsRegion = "af-south-1"
-	V1CustomerNewParamsBillingConfigAwsRegionApEast1      V1CustomerNewParamsBillingConfigAwsRegion = "ap-east-1"
-	V1CustomerNewParamsBillingConfigAwsRegionApNortheast1 V1CustomerNewParamsBillingConfigAwsRegion = "ap-northeast-1"
-	V1CustomerNewParamsBillingConfigAwsRegionApNortheast2 V1CustomerNewParamsBillingConfigAwsRegion = "ap-northeast-2"
-	V1CustomerNewParamsBillingConfigAwsRegionApNortheast3 V1CustomerNewParamsBillingConfigAwsRegion = "ap-northeast-3"
-	V1CustomerNewParamsBillingConfigAwsRegionApSouth1     V1CustomerNewParamsBillingConfigAwsRegion = "ap-south-1"
-	V1CustomerNewParamsBillingConfigAwsRegionApSoutheast1 V1CustomerNewParamsBillingConfigAwsRegion = "ap-southeast-1"
-	V1CustomerNewParamsBillingConfigAwsRegionApSoutheast2 V1CustomerNewParamsBillingConfigAwsRegion = "ap-southeast-2"
-	V1CustomerNewParamsBillingConfigAwsRegionCaCentral1   V1CustomerNewParamsBillingConfigAwsRegion = "ca-central-1"
-	V1CustomerNewParamsBillingConfigAwsRegionCnNorth1     V1CustomerNewParamsBillingConfigAwsRegion = "cn-north-1"
-	V1CustomerNewParamsBillingConfigAwsRegionCnNorthwest1 V1CustomerNewParamsBillingConfigAwsRegion = "cn-northwest-1"
-	V1CustomerNewParamsBillingConfigAwsRegionEuCentral1   V1CustomerNewParamsBillingConfigAwsRegion = "eu-central-1"
-	V1CustomerNewParamsBillingConfigAwsRegionEuNorth1     V1CustomerNewParamsBillingConfigAwsRegion = "eu-north-1"
-	V1CustomerNewParamsBillingConfigAwsRegionEuSouth1     V1CustomerNewParamsBillingConfigAwsRegion = "eu-south-1"
-	V1CustomerNewParamsBillingConfigAwsRegionEuWest1      V1CustomerNewParamsBillingConfigAwsRegion = "eu-west-1"
-	V1CustomerNewParamsBillingConfigAwsRegionEuWest2      V1CustomerNewParamsBillingConfigAwsRegion = "eu-west-2"
-	V1CustomerNewParamsBillingConfigAwsRegionEuWest3      V1CustomerNewParamsBillingConfigAwsRegion = "eu-west-3"
-	V1CustomerNewParamsBillingConfigAwsRegionMeSouth1     V1CustomerNewParamsBillingConfigAwsRegion = "me-south-1"
-	V1CustomerNewParamsBillingConfigAwsRegionSaEast1      V1CustomerNewParamsBillingConfigAwsRegion = "sa-east-1"
-	V1CustomerNewParamsBillingConfigAwsRegionUsEast1      V1CustomerNewParamsBillingConfigAwsRegion = "us-east-1"
-	V1CustomerNewParamsBillingConfigAwsRegionUsEast2      V1CustomerNewParamsBillingConfigAwsRegion = "us-east-2"
-	V1CustomerNewParamsBillingConfigAwsRegionUsGovEast1   V1CustomerNewParamsBillingConfigAwsRegion = "us-gov-east-1"
-	V1CustomerNewParamsBillingConfigAwsRegionUsGovWest1   V1CustomerNewParamsBillingConfigAwsRegion = "us-gov-west-1"
-	V1CustomerNewParamsBillingConfigAwsRegionUsWest1      V1CustomerNewParamsBillingConfigAwsRegion = "us-west-1"
-	V1CustomerNewParamsBillingConfigAwsRegionUsWest2      V1CustomerNewParamsBillingConfigAwsRegion = "us-west-2"
-)
-
-func (r V1CustomerNewParamsBillingConfigAwsRegion) IsKnown() bool {
-	switch r {
-	case V1CustomerNewParamsBillingConfigAwsRegionAfSouth1, V1CustomerNewParamsBillingConfigAwsRegionApEast1, V1CustomerNewParamsBillingConfigAwsRegionApNortheast1, V1CustomerNewParamsBillingConfigAwsRegionApNortheast2, V1CustomerNewParamsBillingConfigAwsRegionApNortheast3, V1CustomerNewParamsBillingConfigAwsRegionApSouth1, V1CustomerNewParamsBillingConfigAwsRegionApSoutheast1, V1CustomerNewParamsBillingConfigAwsRegionApSoutheast2, V1CustomerNewParamsBillingConfigAwsRegionCaCentral1, V1CustomerNewParamsBillingConfigAwsRegionCnNorth1, V1CustomerNewParamsBillingConfigAwsRegionCnNorthwest1, V1CustomerNewParamsBillingConfigAwsRegionEuCentral1, V1CustomerNewParamsBillingConfigAwsRegionEuNorth1, V1CustomerNewParamsBillingConfigAwsRegionEuSouth1, V1CustomerNewParamsBillingConfigAwsRegionEuWest1, V1CustomerNewParamsBillingConfigAwsRegionEuWest2, V1CustomerNewParamsBillingConfigAwsRegionEuWest3, V1CustomerNewParamsBillingConfigAwsRegionMeSouth1, V1CustomerNewParamsBillingConfigAwsRegionSaEast1, V1CustomerNewParamsBillingConfigAwsRegionUsEast1, V1CustomerNewParamsBillingConfigAwsRegionUsEast2, V1CustomerNewParamsBillingConfigAwsRegionUsGovEast1, V1CustomerNewParamsBillingConfigAwsRegionUsGovWest1, V1CustomerNewParamsBillingConfigAwsRegionUsWest1, V1CustomerNewParamsBillingConfigAwsRegionUsWest2:
-		return true
-	}
-	return false
-}
-
-type V1CustomerNewParamsBillingConfigStripeCollectionMethod string
-
-const (
-	V1CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically V1CustomerNewParamsBillingConfigStripeCollectionMethod = "charge_automatically"
-	V1CustomerNewParamsBillingConfigStripeCollectionMethodSendInvoice         V1CustomerNewParamsBillingConfigStripeCollectionMethod = "send_invoice"
-)
-
-func (r V1CustomerNewParamsBillingConfigStripeCollectionMethod) IsKnown() bool {
-	switch r {
-	case V1CustomerNewParamsBillingConfigStripeCollectionMethodChargeAutomatically, V1CustomerNewParamsBillingConfigStripeCollectionMethodSendInvoice:
-		return true
-	}
-	return false
-}
-
+// The property BillingProvider is required.
 type V1CustomerNewParamsCustomerBillingProviderConfiguration struct {
 	// The billing provider set for this configuration.
-	BillingProvider param.Field[V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider] `json:"billing_provider,required"`
+	//
+	// Any of "aws_marketplace", "azure_marketplace", "gcp_marketplace", "stripe",
+	// "netsuite".
+	BillingProvider string `json:"billing_provider,omitzero,required"`
+	// ID of the delivery method to use for this customer. If not provided, the
+	// `delivery_method` must be provided.
+	DeliveryMethodID param.Opt[string] `json:"delivery_method_id,omitzero" format:"uuid"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider and delivery provider combination. Defaults to an empty
 	// object, however, for most billing provider + delivery method combinations, it
 	// will not be a valid configuration.
-	Configuration param.Field[map[string]interface{}] `json:"configuration"`
+	Configuration map[string]any `json:"configuration,omitzero"`
 	// The method to use for delivering invoices to this customer. If not provided, the
 	// `delivery_method_id` must be provided.
-	DeliveryMethod param.Field[V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod] `json:"delivery_method"`
-	// ID of the delivery method to use for this customer. If not provided, the
-	// `delivery_method` must be provided.
-	DeliveryMethodID param.Field[string] `json:"delivery_method_id" format:"uuid"`
+	//
+	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+	DeliveryMethod string `json:"delivery_method,omitzero"`
+	// Specifies which tax provider Metronome should use for tax calculation when
+	// billing through Stripe. This is only supported for Stripe billing provider
+	// configurations with auto_charge_payment_intent or manual_charge_payment_intent
+	// collection methods.
+	//
+	// Any of "anrok", "avalara", "stripe".
+	TaxProvider string `json:"tax_provider,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerNewParamsCustomerBillingProviderConfiguration) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerNewParamsCustomerBillingProviderConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerNewParamsCustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-// The billing provider set for this configuration.
-type V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider string
-
-const (
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAwsMarketplace   V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "aws_marketplace"
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAzureMarketplace V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "azure_marketplace"
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderGcpMarketplace   V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "gcp_marketplace"
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderStripe           V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "stripe"
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderNetsuite         V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider = "netsuite"
-)
-
-func (r V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProvider) IsKnown() bool {
-	switch r {
-	case V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAwsMarketplace, V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderAzureMarketplace, V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderGcpMarketplace, V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderStripe, V1CustomerNewParamsCustomerBillingProviderConfigurationsBillingProviderNetsuite:
-		return true
-	}
-	return false
-}
-
-// The method to use for delivering invoices to this customer. If not provided, the
-// `delivery_method_id` must be provided.
-type V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod string
-
-const (
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodDirectToBillingProvider V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod = "direct_to_billing_provider"
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodAwsSqs                  V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod = "aws_sqs"
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodTackle                  V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod = "tackle"
-	V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodAwsSns                  V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod = "aws_sns"
-)
-
-func (r V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethod) IsKnown() bool {
-	switch r {
-	case V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodDirectToBillingProvider, V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodAwsSqs, V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodTackle, V1CustomerNewParamsCustomerBillingProviderConfigurationsDeliveryMethodAwsSns:
-		return true
-	}
-	return false
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerBillingProviderConfiguration](
+		"billing_provider", "aws_marketplace", "azure_marketplace", "gcp_marketplace", "stripe", "netsuite",
+	)
+	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerBillingProviderConfiguration](
+		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
+	)
+	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerBillingProviderConfiguration](
+		"tax_provider", "anrok", "avalara", "stripe",
+	)
 }
 
 type V1CustomerGetParams struct {
-	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
+	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	paramObj
 }
 
 type V1CustomerListParams struct {
-	// Filter the customer list by customer_id. Up to 100 ids can be provided.
-	CustomerIDs param.Field[[]string] `query:"customer_ids"`
 	// Filter the customer list by ingest_alias
-	IngestAlias param.Field[string] `query:"ingest_alias"`
+	IngestAlias param.Opt[string] `query:"ingest_alias,omitzero" json:"-"`
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// Filter the customer list to only return archived customers. By default, only
 	// active customers are returned.
-	OnlyArchived param.Field[bool] `query:"only_archived"`
+	OnlyArchived param.Opt[bool] `query:"only_archived,omitzero" json:"-"`
+	// Filter the customer list by customer_id. Up to 100 ids can be provided.
+	CustomerIDs []string `query:"customer_ids,omitzero" json:"-"`
 	// Filter the customer list by salesforce_account_id. Up to 100 ids can be
 	// provided.
-	SalesforceAccountIDs param.Field[[]string] `query:"salesforce_account_ids"`
+	SalesforceAccountIDs []string `query:"salesforce_account_ids,omitzero" json:"-"`
+	paramObj
 }
 
 // URLQuery serializes [V1CustomerListParams]'s query parameters as `url.Values`.
-func (r V1CustomerListParams) URLQuery() (v url.Values) {
+func (r V1CustomerListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -815,29 +889,34 @@ func (r V1CustomerListParams) URLQuery() (v url.Values) {
 }
 
 type V1CustomerArchiveParams struct {
-	ID shared.IDParam `json:"id,required"`
+	ID shared.IDParam
+	paramObj
 }
 
 func (r V1CustomerArchiveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.ID)
+	return shimjson.Marshal(r.ID)
+}
+func (r *V1CustomerArchiveParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.ID)
 }
 
 type V1CustomerListBillableMetricsParams struct {
-	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
+	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
 	// If true, the list of returned metrics will include archived metrics
-	IncludeArchived param.Field[bool] `query:"include_archived"`
+	IncludeArchived param.Opt[bool] `query:"include_archived,omitzero" json:"-"`
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// If true, the list of metrics will be filtered to just ones that are on the
 	// customer's current plan
-	OnCurrentPlan param.Field[bool] `query:"on_current_plan"`
+	OnCurrentPlan param.Opt[bool] `query:"on_current_plan,omitzero" json:"-"`
+	paramObj
 }
 
 // URLQuery serializes [V1CustomerListBillableMetricsParams]'s query parameters as
 // `url.Values`.
-func (r V1CustomerListBillableMetricsParams) URLQuery() (v url.Values) {
+func (r V1CustomerListBillableMetricsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -845,20 +924,21 @@ func (r V1CustomerListBillableMetricsParams) URLQuery() (v url.Values) {
 }
 
 type V1CustomerListCostsParams struct {
-	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
+	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore param.Field[time.Time] `query:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `query:"ending_before,required" format:"date-time" json:"-"`
 	// RFC 3339 timestamp (inclusive)
-	StartingOn param.Field[time.Time] `query:"starting_on,required" format:"date-time"`
+	StartingOn time.Time `query:"starting_on,required" format:"date-time" json:"-"`
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
+	paramObj
 }
 
 // URLQuery serializes [V1CustomerListCostsParams]'s query parameters as
 // `url.Values`.
-func (r V1CustomerListCostsParams) URLQuery() (v url.Values) {
+func (r V1CustomerListCostsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -866,37 +946,50 @@ func (r V1CustomerListCostsParams) URLQuery() (v url.Values) {
 }
 
 type V1CustomerPreviewEventsParams struct {
-	CustomerID param.Field[string]                               `path:"customer_id,required" format:"uuid"`
-	Events     param.Field[[]V1CustomerPreviewEventsParamsEvent] `json:"events,required"`
+	CustomerID string                               `path:"customer_id,required" format:"uuid" json:"-"`
+	Events     []V1CustomerPreviewEventsParamsEvent `json:"events,omitzero,required"`
+	// If set, all zero quantity line items will be filtered out of the response.
+	SkipZeroQtyLineItems param.Opt[bool] `json:"skip_zero_qty_line_items,omitzero"`
 	// If set to "replace", the preview will be generated as if those were the only
 	// events for the specified customer. If set to "merge", the events will be merged
 	// with any existing events for the specified customer. Defaults to "replace".
-	Mode param.Field[V1CustomerPreviewEventsParamsMode] `json:"mode"`
-	// If set, all zero quantity line items will be filtered out of the response.
-	SkipZeroQtyLineItems param.Field[bool] `json:"skip_zero_qty_line_items"`
+	//
+	// Any of "replace", "merge".
+	Mode V1CustomerPreviewEventsParamsMode `json:"mode,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerPreviewEventsParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerPreviewEventsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerPreviewEventsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property EventType is required.
 type V1CustomerPreviewEventsParamsEvent struct {
-	EventType param.Field[string] `json:"event_type,required"`
+	EventType string `json:"event_type,required"`
 	// This has no effect for preview events, but may be set for consistency with Event
 	// objects. They will be processed even if they do not match the customer's ID or
 	// ingest aliases.
-	CustomerID param.Field[string]                 `json:"customer_id"`
-	Properties param.Field[map[string]interface{}] `json:"properties"`
+	CustomerID param.Opt[string] `json:"customer_id,omitzero"`
 	// RFC 3339 formatted. If not provided, the current time will be used.
-	Timestamp param.Field[string] `json:"timestamp"`
+	Timestamp param.Opt[string] `json:"timestamp,omitzero"`
 	// This has no effect for preview events, but may be set for consistency with Event
 	// objects. Duplicate transaction_ids are NOT filtered out, even within the same
 	// request.
-	TransactionID param.Field[string] `json:"transaction_id"`
+	TransactionID param.Opt[string] `json:"transaction_id,omitzero"`
+	Properties    map[string]any    `json:"properties,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerPreviewEventsParamsEvent) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerPreviewEventsParamsEvent
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerPreviewEventsParamsEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // If set to "replace", the preview will be generated as if those were the only
@@ -909,43 +1002,131 @@ const (
 	V1CustomerPreviewEventsParamsModeMerge   V1CustomerPreviewEventsParamsMode = "merge"
 )
 
-func (r V1CustomerPreviewEventsParamsMode) IsKnown() bool {
-	switch r {
-	case V1CustomerPreviewEventsParamsModeReplace, V1CustomerPreviewEventsParamsModeMerge:
-		return true
-	}
-	return false
+type V1CustomerGetBillingConfigurationsParams struct {
+	CustomerID      string          `json:"customer_id,required" format:"uuid"`
+	IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
+	paramObj
+}
+
+func (r V1CustomerGetBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerGetBillingConfigurationsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerGetBillingConfigurationsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerSetBillingConfigurationsParams struct {
+	Data []V1CustomerSetBillingConfigurationsParamsData `json:"data,omitzero,required"`
+	paramObj
+}
+
+func (r V1CustomerSetBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerSetBillingConfigurationsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerSetBillingConfigurationsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties BillingProvider, CustomerID are required.
+type V1CustomerSetBillingConfigurationsParamsData struct {
+	// The billing provider set for this configuration.
+	//
+	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
+	// "quickbooks_online", "workday", "gcp_marketplace".
+	BillingProvider string `json:"billing_provider,omitzero,required"`
+	CustomerID      string `json:"customer_id,required" format:"uuid"`
+	// ID of the delivery method to use for this customer. If not provided, the
+	// `delivery_method` must be provided.
+	DeliveryMethodID param.Opt[string] `json:"delivery_method_id,omitzero" format:"uuid"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider and delivery method combination. Defaults to an empty
+	// object, however, for most billing provider + delivery method combinations, it
+	// will not be a valid configuration. For AWS marketplace configurations, the
+	// aws_is_subscription_product flag can be used to indicate a product with
+	// usage-based pricing. More information can be found
+	// [here](https://docs.metronome.com/invoice-customers/solutions/marketplaces/invoice-aws/#provision-aws-marketplace-customers-in-metronome).
+	Configuration map[string]any `json:"configuration,omitzero"`
+	// The method to use for delivering invoices to this customer. If not provided, the
+	// `delivery_method_id` must be provided.
+	//
+	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+	DeliveryMethod string `json:"delivery_method,omitzero"`
+	// Specifies which tax provider Metronome should use for tax calculation when
+	// billing through Stripe. This is only supported for Stripe billing provider
+	// configurations with auto_charge_payment_intent or manual_charge_payment_intent
+	// collection methods.
+	//
+	// Any of "anrok", "avalara", "stripe".
+	TaxProvider string `json:"tax_provider,omitzero"`
+	paramObj
+}
+
+func (r V1CustomerSetBillingConfigurationsParamsData) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerSetBillingConfigurationsParamsData
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerSetBillingConfigurationsParamsData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
+		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+	)
+	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
+		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
+	)
+	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
+		"tax_provider", "anrok", "avalara", "stripe",
+	)
 }
 
 type V1CustomerSetIngestAliasesParams struct {
-	CustomerID    param.Field[string]   `path:"customer_id,required" format:"uuid"`
-	IngestAliases param.Field[[]string] `json:"ingest_aliases,required"`
+	CustomerID    string   `path:"customer_id,required" format:"uuid" json:"-"`
+	IngestAliases []string `json:"ingest_aliases,omitzero,required"`
+	paramObj
 }
 
 func (r V1CustomerSetIngestAliasesParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerSetIngestAliasesParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerSetIngestAliasesParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerSetNameParams struct {
-	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
+	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
 	// The new name for the customer. This will be truncated to 160 characters if the
 	// provided name is longer.
-	Name param.Field[string] `json:"name,required"`
+	Name string `json:"name,required"`
+	paramObj
 }
 
 func (r V1CustomerSetNameParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerSetNameParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerSetNameParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerUpdateConfigParams struct {
-	CustomerID param.Field[string] `path:"customer_id,required" format:"uuid"`
+	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
 	// Leave in draft or set to auto-advance on invoices sent to Stripe. Falls back to
 	// the client-level config if unset, which defaults to true if unset.
-	LeaveStripeInvoicesInDraft param.Field[bool] `json:"leave_stripe_invoices_in_draft"`
+	LeaveStripeInvoicesInDraft param.Opt[bool] `json:"leave_stripe_invoices_in_draft,omitzero"`
 	// The Salesforce account ID for the customer
-	SalesforceAccountID param.Field[string] `json:"salesforce_account_id"`
+	SalesforceAccountID param.Opt[string] `json:"salesforce_account_id,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerUpdateConfigParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerUpdateConfigParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerUpdateConfigParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

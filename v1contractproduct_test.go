@@ -28,30 +28,30 @@ func TestV1ContractProductNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.Products.New(context.TODO(), metronome.V1ContractProductNewParams{
-		Name:                metronome.F("My Product"),
-		Type:                metronome.F(metronome.V1ContractProductNewParamsTypeUsage),
-		BillableMetricID:    metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		CompositeProductIDs: metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		CompositeTags:       metronome.F([]string{"string"}),
-		CustomFields: metronome.F(map[string]string{
+		Name:                "My Product",
+		Type:                metronome.V1ContractProductNewParamsTypeUsage,
+		BillableMetricID:    metronome.String("13117714-3f05-48e5-a6e9-a66093f13b4d"),
+		CompositeProductIDs: []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+		CompositeTags:       []string{"string"},
+		CustomFields: map[string]string{
 			"foo": "string",
-		}),
-		ExcludeFreeUsage:       metronome.F(true),
-		IsRefundable:           metronome.F(true),
-		NetsuiteInternalItemID: metronome.F("netsuite_internal_item_id"),
-		NetsuiteOverageItemID:  metronome.F("netsuite_overage_item_id"),
-		PresentationGroupKey:   metronome.F([]string{"string"}),
-		PricingGroupKey:        metronome.F([]string{"string"}),
-		QuantityConversion: metronome.F(metronome.QuantityConversionParam{
-			ConversionFactor: metronome.F(0.000000),
-			Operation:        metronome.F(metronome.QuantityConversionOperationMultiply),
-			Name:             metronome.F("name"),
-		}),
-		QuantityRounding: metronome.F(metronome.QuantityRoundingParam{
-			DecimalPlaces:  metronome.F(0.000000),
-			RoundingMethod: metronome.F(metronome.QuantityRoundingRoundingMethodRoundUp),
-		}),
-		Tags: metronome.F([]string{"string"}),
+		},
+		ExcludeFreeUsage:       metronome.Bool(true),
+		IsRefundable:           metronome.Bool(true),
+		NetsuiteInternalItemID: metronome.String("netsuite_internal_item_id"),
+		NetsuiteOverageItemID:  metronome.String("netsuite_overage_item_id"),
+		PresentationGroupKey:   []string{"string"},
+		PricingGroupKey:        []string{"string"},
+		QuantityConversion: metronome.QuantityConversionParam{
+			ConversionFactor: 0,
+			Operation:        metronome.QuantityConversionOperationMultiply,
+			Name:             metronome.String("name"),
+		},
+		QuantityRounding: metronome.QuantityRoundingParam{
+			DecimalPlaces:  0,
+			RoundingMethod: metronome.QuantityRoundingRoundingMethodRoundUp,
+		},
+		Tags: []string{"string"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -76,7 +76,7 @@ func TestV1ContractProductGet(t *testing.T) {
 	)
 	_, err := client.V1.Contracts.Products.Get(context.TODO(), metronome.V1ContractProductGetParams{
 		ID: shared.IDParam{
-			ID: metronome.F("d84e7f4e-7a70-4fe4-be02-7a5027beffcc"),
+			ID: "d84e7f4e-7a70-4fe4-be02-7a5027beffcc",
 		},
 	})
 	if err != nil {
@@ -101,28 +101,28 @@ func TestV1ContractProductUpdateWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.Products.Update(context.TODO(), metronome.V1ContractProductUpdateParams{
-		ProductID:              metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		StartingAt:             metronome.F(time.Now()),
-		BillableMetricID:       metronome.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		CompositeProductIDs:    metronome.F([]string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}),
-		CompositeTags:          metronome.F([]string{"string"}),
-		ExcludeFreeUsage:       metronome.F(true),
-		IsRefundable:           metronome.F(true),
-		Name:                   metronome.F("My Updated Product"),
-		NetsuiteInternalItemID: metronome.F("netsuite_internal_item_id"),
-		NetsuiteOverageItemID:  metronome.F("netsuite_overage_item_id"),
-		PresentationGroupKey:   metronome.F([]string{"string"}),
-		PricingGroupKey:        metronome.F([]string{"string"}),
-		QuantityConversion: metronome.F(metronome.QuantityConversionParam{
-			ConversionFactor: metronome.F(0.000000),
-			Operation:        metronome.F(metronome.QuantityConversionOperationMultiply),
-			Name:             metronome.F("name"),
-		}),
-		QuantityRounding: metronome.F(metronome.QuantityRoundingParam{
-			DecimalPlaces:  metronome.F(0.000000),
-			RoundingMethod: metronome.F(metronome.QuantityRoundingRoundingMethodRoundUp),
-		}),
-		Tags: metronome.F([]string{"string"}),
+		ProductID:              "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		StartingAt:             time.Now(),
+		BillableMetricID:       metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		CompositeProductIDs:    []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+		CompositeTags:          []string{"string"},
+		ExcludeFreeUsage:       metronome.Bool(true),
+		IsRefundable:           metronome.Bool(true),
+		Name:                   metronome.String("My Updated Product"),
+		NetsuiteInternalItemID: metronome.String("netsuite_internal_item_id"),
+		NetsuiteOverageItemID:  metronome.String("netsuite_overage_item_id"),
+		PresentationGroupKey:   []string{"string"},
+		PricingGroupKey:        []string{"string"},
+		QuantityConversion: metronome.QuantityConversionParam{
+			ConversionFactor: 0,
+			Operation:        metronome.QuantityConversionOperationMultiply,
+			Name:             metronome.String("name"),
+		},
+		QuantityRounding: metronome.QuantityRoundingParam{
+			DecimalPlaces:  0,
+			RoundingMethod: metronome.QuantityRoundingRoundingMethodRoundUp,
+		},
+		Tags: []string{"string"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -146,9 +146,9 @@ func TestV1ContractProductListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.Products.List(context.TODO(), metronome.V1ContractProductListParams{
-		Limit:         metronome.F(int64(1)),
-		NextPage:      metronome.F("next_page"),
-		ArchiveFilter: metronome.F(metronome.V1ContractProductListParamsArchiveFilterNotArchived),
+		Limit:         metronome.Int(1),
+		NextPage:      metronome.String("next_page"),
+		ArchiveFilter: metronome.V1ContractProductListParamsArchiveFilterNotArchived,
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -172,7 +172,7 @@ func TestV1ContractProductArchive(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.Products.Archive(context.TODO(), metronome.V1ContractProductArchiveParams{
-		ProductID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		ProductID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 	})
 	if err != nil {
 		var apierr *metronome.Error

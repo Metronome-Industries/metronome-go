@@ -28,21 +28,21 @@ func TestV1ContractRateCardNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.New(context.TODO(), metronome.V1ContractRateCardNewParams{
-		Name: metronome.F("My Rate Card"),
-		Aliases: metronome.F([]metronome.V1ContractRateCardNewParamsAlias{{
-			Name:         metronome.F("my-rate-card"),
-			EndingBefore: metronome.F(time.Now()),
-			StartingAt:   metronome.F(time.Now()),
-		}}),
-		CreditTypeConversions: metronome.F([]metronome.V1ContractRateCardNewParamsCreditTypeConversion{{
-			CustomCreditTypeID:  metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-			FiatPerCustomCredit: metronome.F(2.000000),
-		}}),
-		CustomFields: metronome.F(map[string]string{
+		Name: "My Rate Card",
+		Aliases: []metronome.V1ContractRateCardNewParamsAlias{{
+			Name:         "my-rate-card",
+			EndingBefore: metronome.Time(time.Now()),
+			StartingAt:   metronome.Time(time.Now()),
+		}},
+		CreditTypeConversions: []metronome.V1ContractRateCardNewParamsCreditTypeConversion{{
+			CustomCreditTypeID:  "2714e483-4ff1-48e4-9e25-ac732e8f24f2",
+			FiatPerCustomCredit: 2,
+		}},
+		CustomFields: map[string]string{
 			"foo": "string",
-		}),
-		Description:      metronome.F("My Rate Card Description"),
-		FiatCreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+		},
+		Description:      metronome.String("My Rate Card Description"),
+		FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -67,7 +67,7 @@ func TestV1ContractRateCardGet(t *testing.T) {
 	)
 	_, err := client.V1.Contracts.RateCards.Get(context.TODO(), metronome.V1ContractRateCardGetParams{
 		ID: shared.IDParam{
-			ID: metronome.F("f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe"),
+			ID: "f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe",
 		},
 	})
 	if err != nil {
@@ -92,14 +92,14 @@ func TestV1ContractRateCardUpdateWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.Update(context.TODO(), metronome.V1ContractRateCardUpdateParams{
-		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Aliases: metronome.F([]metronome.V1ContractRateCardUpdateParamsAlias{{
-			Name:         metronome.F("name"),
-			EndingBefore: metronome.F(time.Now()),
-			StartingAt:   metronome.F(time.Now()),
-		}}),
-		Description: metronome.F("My Updated Rate Card Description"),
-		Name:        metronome.F("My Updated Rate Card"),
+		RateCardID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		Aliases: []metronome.V1ContractRateCardUpdateParamsAlias{{
+			Name:         "name",
+			EndingBefore: metronome.Time(time.Now()),
+			StartingAt:   metronome.Time(time.Now()),
+		}},
+		Description: metronome.String("My Updated Rate Card Description"),
+		Name:        metronome.String("My Updated Rate Card"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -123,8 +123,8 @@ func TestV1ContractRateCardListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.List(context.TODO(), metronome.V1ContractRateCardListParams{
-		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("next_page"),
+		Limit:    metronome.Int(1),
+		NextPage: metronome.String("next_page"),
 		Body:     map[string]interface{}{},
 	})
 	if err != nil {
@@ -150,7 +150,7 @@ func TestV1ContractRateCardArchive(t *testing.T) {
 	)
 	_, err := client.V1.Contracts.RateCards.Archive(context.TODO(), metronome.V1ContractRateCardArchiveParams{
 		ID: shared.IDParam{
-			ID: metronome.F("12b21470-4570-40df-8998-449d0b0bc52f"),
+			ID: "12b21470-4570-40df-8998-449d0b0bc52f",
 		},
 	})
 	if err != nil {
@@ -175,22 +175,22 @@ func TestV1ContractRateCardGetRateScheduleWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.GetRateSchedule(context.TODO(), metronome.V1ContractRateCardGetRateScheduleParams{
-		RateCardID:   metronome.F("f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe"),
-		StartingAt:   metronome.F(time.Now()),
-		Limit:        metronome.F(int64(1)),
-		NextPage:     metronome.F("next_page"),
-		EndingBefore: metronome.F(time.Now()),
-		Selectors: metronome.F([]metronome.V1ContractRateCardGetRateScheduleParamsSelector{{
-			BillingFrequency: metronome.F(metronome.V1ContractRateCardGetRateScheduleParamsSelectorsBillingFrequencyMonthly),
-			PartialPricingGroupValues: metronome.F(map[string]string{
+		RateCardID:   "f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe",
+		StartingAt:   time.Now(),
+		Limit:        metronome.Int(1),
+		NextPage:     metronome.String("next_page"),
+		EndingBefore: metronome.Time(time.Now()),
+		Selectors: []metronome.V1ContractRateCardGetRateScheduleParamsSelector{{
+			BillingFrequency: "MONTHLY",
+			PartialPricingGroupValues: map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
-			}),
-			PricingGroupValues: metronome.F(map[string]string{
+			},
+			PricingGroupValues: map[string]string{
 				"foo": "string",
-			}),
-			ProductID: metronome.F("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
-		}}),
+			},
+			ProductID: metronome.String("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
+		}},
 	})
 	if err != nil {
 		var apierr *metronome.Error

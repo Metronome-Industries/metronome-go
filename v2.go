@@ -14,14 +14,14 @@ import (
 // the [NewV2Service] method instead.
 type V2Service struct {
 	Options   []option.RequestOption
-	Contracts *V2ContractService
+	Contracts V2ContractService
 }
 
 // NewV2Service generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
-func NewV2Service(opts ...option.RequestOption) (r *V2Service) {
-	r = &V2Service{}
+func NewV2Service(opts ...option.RequestOption) (r V2Service) {
+	r = V2Service{}
 	r.Options = opts
 	r.Contracts = NewV2ContractService(opts...)
 	return

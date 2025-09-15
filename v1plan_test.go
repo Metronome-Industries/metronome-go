@@ -26,8 +26,8 @@ func TestV1PlanListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Plans.List(context.TODO(), metronome.V1PlanListParams{
-		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("next_page"),
+		Limit:    metronome.Int(1),
+		NextPage: metronome.String("next_page"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -51,7 +51,7 @@ func TestV1PlanGetDetails(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Plans.GetDetails(context.TODO(), metronome.V1PlanGetDetailsParams{
-		PlanID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		PlanID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -75,9 +75,9 @@ func TestV1PlanListChargesWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Plans.ListCharges(context.TODO(), metronome.V1PlanListChargesParams{
-		PlanID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("next_page"),
+		PlanID:   "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		Limit:    metronome.Int(1),
+		NextPage: metronome.String("next_page"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -101,10 +101,10 @@ func TestV1PlanListCustomersWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Plans.ListCustomers(context.TODO(), metronome.V1PlanListCustomersParams{
-		PlanID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("next_page"),
-		Status:   metronome.F(metronome.V1PlanListCustomersParamsStatusAll),
+		PlanID:   "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		Limit:    metronome.Int(1),
+		NextPage: metronome.String("next_page"),
+		Status:   metronome.V1PlanListCustomersParamsStatusAll,
 	})
 	if err != nil {
 		var apierr *metronome.Error

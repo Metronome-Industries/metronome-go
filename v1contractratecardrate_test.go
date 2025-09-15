@@ -28,22 +28,22 @@ func TestV1ContractRateCardRateListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.Rates.List(context.TODO(), metronome.V1ContractRateCardRateListParams{
-		At:         metronome.F(time.Now()),
-		RateCardID: metronome.F("f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe"),
-		Limit:      metronome.F(int64(1)),
-		NextPage:   metronome.F("next_page"),
-		Selectors: metronome.F([]metronome.V1ContractRateCardRateListParamsSelector{{
-			BillingFrequency: metronome.F(metronome.V1ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly),
-			PartialPricingGroupValues: metronome.F(map[string]string{
+		At:         time.Now(),
+		RateCardID: "f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe",
+		Limit:      metronome.Int(1),
+		NextPage:   metronome.String("next_page"),
+		Selectors: []metronome.V1ContractRateCardRateListParamsSelector{{
+			BillingFrequency: "MONTHLY",
+			PartialPricingGroupValues: map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
-			}),
-			PricingGroupValues: metronome.F(map[string]string{
+			},
+			PricingGroupValues: map[string]string{
 				"foo": "string",
-			}),
-			ProductID:   metronome.F("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
-			ProductTags: metronome.F([]string{"string"}),
-		}}),
+			},
+			ProductID:   metronome.String("d6300dbb-882e-4d2d-8dec-5125d16b65d0"),
+			ProductTags: []string{"string"},
+		}},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -67,36 +67,36 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.Rates.Add(context.TODO(), metronome.V1ContractRateCardRateAddParams{
-		Entitled:         metronome.F(true),
-		ProductID:        metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-		RateCardID:       metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		RateType:         metronome.F(metronome.V1ContractRateCardRateAddParamsRateTypeFlat),
-		StartingAt:       metronome.F(time.Now()),
-		BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddParamsBillingFrequencyMonthly),
-		CommitRate: metronome.F(metronome.V1ContractRateCardRateAddParamsCommitRate{
-			RateType: metronome.F(metronome.V1ContractRateCardRateAddParamsCommitRateRateTypeFlat),
-			Price:    metronome.F(0.000000),
-			Tiers: metronome.F([]shared.TierParam{{
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
-			}}),
-		}),
-		CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-		CustomRate: metronome.F(map[string]interface{}{
+		Entitled:         true,
+		ProductID:        "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		RateCardID:       "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		RateType:         metronome.V1ContractRateCardRateAddParamsRateTypeFlat,
+		StartingAt:       time.Now(),
+		BillingFrequency: metronome.V1ContractRateCardRateAddParamsBillingFrequencyMonthly,
+		CommitRate: shared.CommitRateParam{
+			RateType: shared.CommitRateRateTypeFlat,
+			Price:    metronome.Float(0),
+			Tiers: []shared.TierParam{{
+				Price: 0,
+				Size:  metronome.Float(0),
+			}},
+		},
+		CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+		CustomRate: map[string]any{
 			"foo": "bar",
-		}),
-		EndingBefore: metronome.F(time.Now()),
-		IsProrated:   metronome.F(true),
-		Price:        metronome.F(100.000000),
-		PricingGroupValues: metronome.F(map[string]string{
+		},
+		EndingBefore: metronome.Time(time.Now()),
+		IsProrated:   metronome.Bool(true),
+		Price:        metronome.Float(100),
+		PricingGroupValues: map[string]string{
 			"foo": "string",
-		}),
-		Quantity: metronome.F(0.000000),
-		Tiers: metronome.F([]shared.TierParam{{
-			Price: metronome.F(0.000000),
-			Size:  metronome.F(0.000000),
-		}}),
-		UseListPrices: metronome.F(true),
+		},
+		Quantity: metronome.Float(0),
+		Tiers: []shared.TierParam{{
+			Price: 0,
+			Size:  metronome.Float(0),
+		}},
+		UseListPrices: metronome.Bool(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -120,70 +120,70 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.Rates.AddMany(context.TODO(), metronome.V1ContractRateCardRateAddManyParams{
-		RateCardID: metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Rates: metronome.F([]metronome.V1ContractRateCardRateAddManyParamsRate{{
-			Entitled:         metronome.F(true),
-			ProductID:        metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-			RateType:         metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesRateTypeFlat),
-			StartingAt:       metronome.F(time.Now()),
-			BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly),
-			CommitRate: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRate{
-				RateType: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
-				Price:    metronome.F(0.000000),
-				Tiers: metronome.F([]shared.TierParam{{
-					Price: metronome.F(0.000000),
-					Size:  metronome.F(0.000000),
-				}}),
-			}),
-			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-			CustomRate: metronome.F(map[string]interface{}{
+		RateCardID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		Rates: []metronome.V1ContractRateCardRateAddManyParamsRate{{
+			Entitled:         true,
+			ProductID:        "13117714-3f05-48e5-a6e9-a66093f13b4d",
+			RateType:         "FLAT",
+			StartingAt:       time.Now(),
+			BillingFrequency: "MONTHLY",
+			CommitRate: shared.CommitRateParam{
+				RateType: shared.CommitRateRateTypeFlat,
+				Price:    metronome.Float(0),
+				Tiers: []shared.TierParam{{
+					Price: 0,
+					Size:  metronome.Float(0),
+				}},
+			},
+			CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+			CustomRate: map[string]any{
 				"foo": "bar",
-			}),
-			EndingBefore: metronome.F(time.Now()),
-			IsProrated:   metronome.F(true),
-			Price:        metronome.F(100.000000),
-			PricingGroupValues: metronome.F(map[string]string{
+			},
+			EndingBefore: metronome.Time(time.Now()),
+			IsProrated:   metronome.Bool(true),
+			Price:        metronome.Float(100),
+			PricingGroupValues: map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
-			}),
-			Quantity: metronome.F(0.000000),
-			Tiers: metronome.F([]shared.TierParam{{
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
-			}}),
-			UseListPrices: metronome.F(true),
+			},
+			Quantity: metronome.Float(0),
+			Tiers: []shared.TierParam{{
+				Price: 0,
+				Size:  metronome.Float(0),
+			}},
+			UseListPrices: metronome.Bool(true),
 		}, {
-			Entitled:         metronome.F(true),
-			ProductID:        metronome.F("13117714-3f05-48e5-a6e9-a66093f13b4d"),
-			RateType:         metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesRateTypeFlat),
-			StartingAt:       metronome.F(time.Now()),
-			BillingFrequency: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly),
-			CommitRate: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRate{
-				RateType: metronome.F(metronome.V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat),
-				Price:    metronome.F(0.000000),
-				Tiers: metronome.F([]shared.TierParam{{
-					Price: metronome.F(0.000000),
-					Size:  metronome.F(0.000000),
-				}}),
-			}),
-			CreditTypeID: metronome.F("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
-			CustomRate: metronome.F(map[string]interface{}{
+			Entitled:         true,
+			ProductID:        "13117714-3f05-48e5-a6e9-a66093f13b4d",
+			RateType:         "FLAT",
+			StartingAt:       time.Now(),
+			BillingFrequency: "MONTHLY",
+			CommitRate: shared.CommitRateParam{
+				RateType: shared.CommitRateRateTypeFlat,
+				Price:    metronome.Float(0),
+				Tiers: []shared.TierParam{{
+					Price: 0,
+					Size:  metronome.Float(0),
+				}},
+			},
+			CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+			CustomRate: map[string]any{
 				"foo": "bar",
-			}),
-			EndingBefore: metronome.F(time.Now()),
-			IsProrated:   metronome.F(true),
-			Price:        metronome.F(120.000000),
-			PricingGroupValues: metronome.F(map[string]string{
+			},
+			EndingBefore: metronome.Time(time.Now()),
+			IsProrated:   metronome.Bool(true),
+			Price:        metronome.Float(120),
+			PricingGroupValues: map[string]string{
 				"region": "us-east-2",
 				"cloud":  "aws",
-			}),
-			Quantity: metronome.F(0.000000),
-			Tiers: metronome.F([]shared.TierParam{{
-				Price: metronome.F(0.000000),
-				Size:  metronome.F(0.000000),
-			}}),
-			UseListPrices: metronome.F(true),
-		}}),
+			},
+			Quantity: metronome.Float(0),
+			Tiers: []shared.TierParam{{
+				Price: 0,
+				Size:  metronome.Float(0),
+			}},
+			UseListPrices: metronome.Bool(true),
+		}},
 	})
 	if err != nil {
 		var apierr *metronome.Error

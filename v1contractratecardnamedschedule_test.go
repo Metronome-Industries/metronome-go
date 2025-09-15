@@ -27,10 +27,10 @@ func TestV1ContractRateCardNamedScheduleGetWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Contracts.RateCards.NamedSchedules.Get(context.TODO(), metronome.V1ContractRateCardNamedScheduleGetParams{
-		ContractID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		CustomerID:   metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
-		ScheduleName: metronome.F("my-schedule"),
-		CoveringDate: metronome.F(time.Now()),
+		ContractID:   "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		CustomerID:   "9b85c1c1-5238-4f2a-a409-61412905e1e1",
+		ScheduleName: "my-schedule",
+		CoveringDate: metronome.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -54,14 +54,14 @@ func TestV1ContractRateCardNamedScheduleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.V1.Contracts.RateCards.NamedSchedules.Update(context.TODO(), metronome.V1ContractRateCardNamedScheduleUpdateParams{
-		ContractID:   metronome.F("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		CustomerID:   metronome.F("9b85c1c1-5238-4f2a-a409-61412905e1e1"),
-		ScheduleName: metronome.F("my-schedule"),
-		StartingAt:   metronome.F(time.Now()),
-		Value: metronome.F[any](map[string]interface{}{
+		ContractID:   "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		CustomerID:   "9b85c1c1-5238-4f2a-a409-61412905e1e1",
+		ScheduleName: "my-schedule",
+		StartingAt:   time.Now(),
+		Value: map[string]interface{}{
 			"my_key": "my_value",
-		}),
-		EndingBefore: metronome.F(time.Now()),
+		},
+		EndingBefore: metronome.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error

@@ -26,7 +26,7 @@ func TestV1InvoiceRegenerate(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Invoices.Regenerate(context.TODO(), metronome.V1InvoiceRegenerateParams{
-		ID: metronome.F("6a37bb88-8538-48c5-b37b-a41c836328bd"),
+		ID: "6a37bb88-8538-48c5-b37b-a41c836328bd",
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -50,7 +50,7 @@ func TestV1InvoiceVoid(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Invoices.Void(context.TODO(), metronome.V1InvoiceVoidParams{
-		ID: metronome.F("6a37bb88-8538-48c5-b37b-a41c836328bd"),
+		ID: "6a37bb88-8538-48c5-b37b-a41c836328bd",
 	})
 	if err != nil {
 		var apierr *metronome.Error

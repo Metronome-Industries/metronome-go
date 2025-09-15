@@ -10,9 +10,11 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -29,14 +31,55 @@ type V1CustomerAlertService struct {
 // NewV1CustomerAlertService generates a new service that applies the given options
 // to each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewV1CustomerAlertService(opts ...option.RequestOption) (r *V1CustomerAlertService) {
-	r = &V1CustomerAlertService{}
+func NewV1CustomerAlertService(opts ...option.RequestOption) (r V1CustomerAlertService) {
+	r = V1CustomerAlertService{}
 	r.Options = opts
 	return
 }
 
-// Get the customer alert status and alert information for the specified customer
-// and alert
+// Retrieve the real-time evaluation status for a specific alert-customer pair.
+// This endpoint provides instant visibility into whether a customer has triggered
+// an alert condition, enabling you to monitor account health and take proactive
+// action based on current alert states.
+//
+// ### Use this endpoint to:
+//
+//   - Check if a specific customer is currently violating an alert threshold
+//     (`in_alarm` status)
+//   - Verify alert configuration details and threshold values for a customer
+//   - Integrate alert status checks into customer support tools or admin interfaces
+//
+// ### Key response fields:
+//
+// A CustomerAlert object containing:
+//
+// - `customer_status`: The current evaluation state
+//
+//   - `ok` - Customer is within acceptable thresholds
+//   - `in_alarm`- Customer has breached the alert threshold
+//   - `evaluating` - Alert has yet to be evaluated (typically due to a customer or
+//     alert having just been created)
+//   - `null` - Alert has been archived
+//   - `triggered_by`: Additional context about what caused the alert to trigger
+//     (when applicable)
+//   - alert: Complete alert configuration including:
+//   - Alert ID, name, and type
+//   - Current threshold values and credit type information
+//   - Alert status (enabled, disabled, or archived)
+//   - Last update timestamp
+//   - Any applied filters (credit grant types, custom fields, group values)
+//
+// ### Usage guidelines:
+//
+//   - Customer status: Returns the current evaluation state, not historical data.
+//     For alert history, use webhook notifications or event logs
+//   - Archived alerts: Returns null for customer_status if the alert has been
+//     archived, but still includes the alert configuration details
+//   - Integration patterns: This endpoint can be used to check a customer's alert
+//     status, but shouldn't be scraped. You should instead rely on the webhook
+//     notification to understand when customers are moved to IN_ALARM.
+//   - Error handling: Returns 404 if either the customer or alert ID doesn't exist
+//     or isn't accessible to your organization
 func (r *V1CustomerAlertService) Get(ctx context.Context, body V1CustomerAlertGetParams, opts ...option.RequestOption) (res *V1CustomerAlertGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/customer-alerts/get"
@@ -44,15 +87,107 @@ func (r *V1CustomerAlertService) Get(ctx context.Context, body V1CustomerAlertGe
 	return
 }
 
-// Fetch all customer alert statuses and alert information for a customer
-func (r *V1CustomerAlertService) List(ctx context.Context, params V1CustomerAlertListParams, opts ...option.RequestOption) (res *V1CustomerAlertListResponse, err error) {
+// Retrieve all alert configurations and their current statuses for a specific
+// customer in a single API call. This endpoint provides a comprehensive view of
+// all alerts monitoring a customer account.
+//
+// ### Use this endpoint to:
+//
+// - Display all active alerts for a customer in dashboards or admin panels
+// - Quickly identify which alerts a customer is currently triggering
+// - Audit alert coverage for specific accounts
+// - Filter alerts by status (enabled, disabled, or archived)
+//
+// ### Key response fields:
+//
+// - data: Array of CustomerAlert objects, each containing:
+//   - Current evaluation status (`ok`, `in_alarm`, `evaluating`, or `null`)
+//   - Complete alert configuration and threshold details
+//   - Alert metadata including type, name, and last update time
+//
+// - `next_page`: Pagination cursor for retrieving additional results
+//
+// ### Usage guidelines:
+//
+//   - Default behavior: Returns only enabled alerts unless alert_statuses filter is
+//     specified
+//   - Pagination: Use the `next_page` cursor to retrieve all results for customers
+//     with many alerts
+func (r *V1CustomerAlertService) List(ctx context.Context, params V1CustomerAlertListParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[CustomerAlert], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/customer-alerts/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
-// Reset state for an alert by customer id and force re-evaluation
+// Retrieve all alert configurations and their current statuses for a specific
+// customer in a single API call. This endpoint provides a comprehensive view of
+// all alerts monitoring a customer account.
+//
+// ### Use this endpoint to:
+//
+// - Display all active alerts for a customer in dashboards or admin panels
+// - Quickly identify which alerts a customer is currently triggering
+// - Audit alert coverage for specific accounts
+// - Filter alerts by status (enabled, disabled, or archived)
+//
+// ### Key response fields:
+//
+// - data: Array of CustomerAlert objects, each containing:
+//   - Current evaluation status (`ok`, `in_alarm`, `evaluating`, or `null`)
+//   - Complete alert configuration and threshold details
+//   - Alert metadata including type, name, and last update time
+//
+// - `next_page`: Pagination cursor for retrieving additional results
+//
+// ### Usage guidelines:
+//
+//   - Default behavior: Returns only enabled alerts unless alert_statuses filter is
+//     specified
+//   - Pagination: Use the `next_page` cursor to retrieve all results for customers
+//     with many alerts
+func (r *V1CustomerAlertService) ListAutoPaging(ctx context.Context, params V1CustomerAlertListParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[CustomerAlert] {
+	return pagination.NewCursorPageWithoutLimitAutoPager(r.List(ctx, params, opts...))
+}
+
+// Force an immediate re-evaluation of a specific alert for a customer, clearing
+// any previous state and triggering a fresh assessment against current thresholds.
+// This endpoint ensures alert accuracy after configuration changes or data
+// corrections.
+//
+// ### Use this endpoint to:
+//
+// - Clear false positive alerts after fixing data issues
+// - Re-evaluate alerts after adjusting customer balances or credits
+// - Test alert behavior during development and debugging
+// - Resolve stuck alerts that may be in an incorrect state
+// - Trigger immediate evaluation after threshold modifications
+//
+// ### Key response fields:
+//
+//   - 200 Success: Confirmation that the alert has been reset and re-evaluation
+//     initiated
+//   - No response body is returned - the operation completes asynchronously
+//
+// ### Usage guidelines:
+//
+//   - Immediate effect: Triggers re-evaluation instantly, which may result in new
+//     webhook notifications if thresholds are breached
+//   - State clearing: Removes any cached evaluation state, ensuring a fresh
+//     assessment
+//   - Use sparingly: Intended for exceptional cases, not routine operations
+//   - Asynchronous processing: The reset completes immediately, but re-evaluation
+//     happens in the background
 func (r *V1CustomerAlertService) Reset(ctx context.Context, body V1CustomerAlertResetParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -65,27 +200,25 @@ type CustomerAlert struct {
 	Alert CustomerAlertAlert `json:"alert,required"`
 	// The status of the customer alert. If the alert is archived, null will be
 	// returned.
-	CustomerStatus CustomerAlertCustomerStatus `json:"customer_status,required,nullable"`
+	//
+	// Any of "ok", "in_alarm", "evaluating".
+	CustomerStatus CustomerAlertCustomerStatus `json:"customer_status,required"`
 	// If present, indicates the reason the alert was triggered.
-	TriggeredBy string            `json:"triggered_by,nullable"`
-	JSON        customerAlertJSON `json:"-"`
+	TriggeredBy string `json:"triggered_by,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Alert          respjson.Field
+		CustomerStatus respjson.Field
+		TriggeredBy    respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
 }
 
-// customerAlertJSON contains the JSON metadata for the struct [CustomerAlert]
-type customerAlertJSON struct {
-	Alert          apijson.Field
-	CustomerStatus apijson.Field
-	TriggeredBy    apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *CustomerAlert) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CustomerAlert) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlert) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerAlertJSON) RawJSON() string {
-	return r.raw
 }
 
 type CustomerAlertAlert struct {
@@ -94,11 +227,25 @@ type CustomerAlertAlert struct {
 	// Name of the alert
 	Name string `json:"name,required"`
 	// Status of the alert
-	Status CustomerAlertAlertStatus `json:"status,required"`
+	//
+	// Any of "enabled", "archived", "disabled".
+	Status string `json:"status,required"`
 	// Threshold value of the alert policy
 	Threshold float64 `json:"threshold,required"`
 	// Type of the alert
-	Type CustomerAlertAlertType `json:"type,required"`
+	//
+	// Any of "low_credit_balance_reached", "spend_threshold_reached",
+	// "monthly_invoice_total_spend_threshold_reached",
+	// "low_remaining_days_in_plan_reached", "low_remaining_credit_percentage_reached",
+	// "usage_threshold_reached", "low_remaining_days_for_commit_segment_reached",
+	// "low_remaining_commit_balance_reached",
+	// "low_remaining_commit_percentage_reached",
+	// "low_remaining_days_for_contract_credit_segment_reached",
+	// "low_remaining_contract_credit_balance_reached",
+	// "low_remaining_contract_credit_percentage_reached",
+	// "low_remaining_contract_credit_and_commit_balance_reached",
+	// "invoice_total_reached".
+	Type string `json:"type,required"`
 	// Timestamp for when the alert was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// An array of strings, representing a way to filter the credit grant this alert
@@ -120,170 +267,90 @@ type CustomerAlertAlert struct {
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
-	UniquenessKey string                 `json:"uniqueness_key"`
-	JSON          customerAlertAlertJSON `json:"-"`
+	UniquenessKey string `json:"uniqueness_key"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		Threshold              respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		CreditGrantTypeFilters respjson.Field
+		CreditType             respjson.Field
+		CustomFieldFilters     respjson.Field
+		GroupKeyFilter         respjson.Field
+		GroupValues            respjson.Field
+		InvoiceTypesFilter     respjson.Field
+		UniquenessKey          respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
 }
 
-// customerAlertAlertJSON contains the JSON metadata for the struct
-// [CustomerAlertAlert]
-type customerAlertAlertJSON struct {
-	ID                     apijson.Field
-	Name                   apijson.Field
-	Status                 apijson.Field
-	Threshold              apijson.Field
-	Type                   apijson.Field
-	UpdatedAt              apijson.Field
-	CreditGrantTypeFilters apijson.Field
-	CreditType             apijson.Field
-	CustomFieldFilters     apijson.Field
-	GroupKeyFilter         apijson.Field
-	GroupValues            apijson.Field
-	InvoiceTypesFilter     apijson.Field
-	UniquenessKey          apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *CustomerAlertAlert) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlert) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlert) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerAlertAlertJSON) RawJSON() string {
-	return r.raw
-}
-
-// Status of the alert
-type CustomerAlertAlertStatus string
-
-const (
-	CustomerAlertAlertStatusEnabled  CustomerAlertAlertStatus = "enabled"
-	CustomerAlertAlertStatusArchived CustomerAlertAlertStatus = "archived"
-	CustomerAlertAlertStatusDisabled CustomerAlertAlertStatus = "disabled"
-)
-
-func (r CustomerAlertAlertStatus) IsKnown() bool {
-	switch r {
-	case CustomerAlertAlertStatusEnabled, CustomerAlertAlertStatusArchived, CustomerAlertAlertStatusDisabled:
-		return true
-	}
-	return false
-}
-
-// Type of the alert
-type CustomerAlertAlertType string
-
-const (
-	CustomerAlertAlertTypeLowCreditBalanceReached                           CustomerAlertAlertType = "low_credit_balance_reached"
-	CustomerAlertAlertTypeSpendThresholdReached                             CustomerAlertAlertType = "spend_threshold_reached"
-	CustomerAlertAlertTypeMonthlyInvoiceTotalSpendThresholdReached          CustomerAlertAlertType = "monthly_invoice_total_spend_threshold_reached"
-	CustomerAlertAlertTypeLowRemainingDaysInPlanReached                     CustomerAlertAlertType = "low_remaining_days_in_plan_reached"
-	CustomerAlertAlertTypeLowRemainingCreditPercentageReached               CustomerAlertAlertType = "low_remaining_credit_percentage_reached"
-	CustomerAlertAlertTypeUsageThresholdReached                             CustomerAlertAlertType = "usage_threshold_reached"
-	CustomerAlertAlertTypeLowRemainingDaysForCommitSegmentReached           CustomerAlertAlertType = "low_remaining_days_for_commit_segment_reached"
-	CustomerAlertAlertTypeLowRemainingCommitBalanceReached                  CustomerAlertAlertType = "low_remaining_commit_balance_reached"
-	CustomerAlertAlertTypeLowRemainingCommitPercentageReached               CustomerAlertAlertType = "low_remaining_commit_percentage_reached"
-	CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached   CustomerAlertAlertType = "low_remaining_days_for_contract_credit_segment_reached"
-	CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached          CustomerAlertAlertType = "low_remaining_contract_credit_balance_reached"
-	CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached       CustomerAlertAlertType = "low_remaining_contract_credit_percentage_reached"
-	CustomerAlertAlertTypeLowRemainingContractCreditAndCommitBalanceReached CustomerAlertAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
-	CustomerAlertAlertTypeInvoiceTotalReached                               CustomerAlertAlertType = "invoice_total_reached"
-)
-
-func (r CustomerAlertAlertType) IsKnown() bool {
-	switch r {
-	case CustomerAlertAlertTypeLowCreditBalanceReached, CustomerAlertAlertTypeSpendThresholdReached, CustomerAlertAlertTypeMonthlyInvoiceTotalSpendThresholdReached, CustomerAlertAlertTypeLowRemainingDaysInPlanReached, CustomerAlertAlertTypeLowRemainingCreditPercentageReached, CustomerAlertAlertTypeUsageThresholdReached, CustomerAlertAlertTypeLowRemainingDaysForCommitSegmentReached, CustomerAlertAlertTypeLowRemainingCommitBalanceReached, CustomerAlertAlertTypeLowRemainingCommitPercentageReached, CustomerAlertAlertTypeLowRemainingDaysForContractCreditSegmentReached, CustomerAlertAlertTypeLowRemainingContractCreditBalanceReached, CustomerAlertAlertTypeLowRemainingContractCreditPercentageReached, CustomerAlertAlertTypeLowRemainingContractCreditAndCommitBalanceReached, CustomerAlertAlertTypeInvoiceTotalReached:
-		return true
-	}
-	return false
 }
 
 type CustomerAlertAlertCustomFieldFilter struct {
-	Entity CustomerAlertAlertCustomFieldFiltersEntity `json:"entity,required"`
-	Key    string                                     `json:"key,required"`
-	Value  string                                     `json:"value,required"`
-	JSON   customerAlertAlertCustomFieldFilterJSON    `json:"-"`
+	// Any of "Contract", "Commit", "ContractCredit".
+	Entity string `json:"entity,required"`
+	Key    string `json:"key,required"`
+	Value  string `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entity      respjson.Field
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// customerAlertAlertCustomFieldFilterJSON contains the JSON metadata for the
-// struct [CustomerAlertAlertCustomFieldFilter]
-type customerAlertAlertCustomFieldFilterJSON struct {
-	Entity      apijson.Field
-	Key         apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerAlertAlertCustomFieldFilter) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlertCustomFieldFilter) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlertCustomFieldFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerAlertAlertCustomFieldFilterJSON) RawJSON() string {
-	return r.raw
-}
-
-type CustomerAlertAlertCustomFieldFiltersEntity string
-
-const (
-	CustomerAlertAlertCustomFieldFiltersEntityContract       CustomerAlertAlertCustomFieldFiltersEntity = "Contract"
-	CustomerAlertAlertCustomFieldFiltersEntityCommit         CustomerAlertAlertCustomFieldFiltersEntity = "Commit"
-	CustomerAlertAlertCustomFieldFiltersEntityContractCredit CustomerAlertAlertCustomFieldFiltersEntity = "ContractCredit"
-)
-
-func (r CustomerAlertAlertCustomFieldFiltersEntity) IsKnown() bool {
-	switch r {
-	case CustomerAlertAlertCustomFieldFiltersEntityContract, CustomerAlertAlertCustomFieldFiltersEntityCommit, CustomerAlertAlertCustomFieldFiltersEntityContractCredit:
-		return true
-	}
-	return false
 }
 
 // Scopes alert evaluation to a specific presentation group key on individual line
 // items. Only present for spend alerts.
 type CustomerAlertAlertGroupKeyFilter struct {
-	Key   string                               `json:"key,required"`
-	Value string                               `json:"value,required"`
-	JSON  customerAlertAlertGroupKeyFilterJSON `json:"-"`
+	Key   string `json:"key,required"`
+	Value string `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// customerAlertAlertGroupKeyFilterJSON contains the JSON metadata for the struct
-// [CustomerAlertAlertGroupKeyFilter]
-type customerAlertAlertGroupKeyFilterJSON struct {
-	Key         apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerAlertAlertGroupKeyFilter) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlertGroupKeyFilter) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlertGroupKeyFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerAlertAlertGroupKeyFilterJSON) RawJSON() string {
-	return r.raw
 }
 
 type CustomerAlertAlertGroupValue struct {
-	Key   string                           `json:"key,required"`
-	Value string                           `json:"value,required"`
-	JSON  customerAlertAlertGroupValueJSON `json:"-"`
+	Key   string `json:"key,required"`
+	Value string `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// customerAlertAlertGroupValueJSON contains the JSON metadata for the struct
-// [CustomerAlertAlertGroupValue]
-type customerAlertAlertGroupValueJSON struct {
-	Key         apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomerAlertAlertGroupValue) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlertGroupValue) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlertGroupValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customerAlertAlertGroupValueJSON) RawJSON() string {
-	return r.raw
 }
 
 // The status of the customer alert. If the alert is archived, null will be
@@ -296,70 +363,62 @@ const (
 	CustomerAlertCustomerStatusEvaluating CustomerAlertCustomerStatus = "evaluating"
 )
 
-func (r CustomerAlertCustomerStatus) IsKnown() bool {
-	switch r {
-	case CustomerAlertCustomerStatusOk, CustomerAlertCustomerStatusInAlarm, CustomerAlertCustomerStatusEvaluating:
-		return true
-	}
-	return false
-}
-
 type V1CustomerAlertGetResponse struct {
-	Data CustomerAlert                  `json:"data,required"`
-	JSON v1CustomerAlertGetResponseJSON `json:"-"`
+	Data CustomerAlert `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1CustomerAlertGetResponseJSON contains the JSON metadata for the struct
-// [V1CustomerAlertGetResponse]
-type v1CustomerAlertGetResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerAlertGetResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomerAlertGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerAlertGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerAlertGetResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomerAlertListResponse struct {
-	Data     []CustomerAlert                 `json:"data,required"`
-	NextPage string                          `json:"next_page,required,nullable"`
-	JSON     v1CustomerAlertListResponseJSON `json:"-"`
-}
-
-// v1CustomerAlertListResponseJSON contains the JSON metadata for the struct
-// [V1CustomerAlertListResponse]
-type v1CustomerAlertListResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomerAlertListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomerAlertListResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1CustomerAlertGetParams struct {
 	// The Metronome ID of the alert
-	AlertID param.Field[string] `json:"alert_id,required" format:"uuid"`
+	AlertID string `json:"alert_id,required" format:"uuid"`
 	// The Metronome ID of the customer
-	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
+	// Only present for `spend_threshold_reached` alerts. Retrieve the alert for a
+	// specific group key-value pair.
+	GroupValues []V1CustomerAlertGetParamsGroupValue `json:"group_values,omitzero"`
 	// When parallel alerts are enabled during migration, this flag denotes whether to
 	// fetch alerts for plans or contracts.
-	PlansOrContracts param.Field[V1CustomerAlertGetParamsPlansOrContracts] `json:"plans_or_contracts"`
+	//
+	// Any of "PLANS", "CONTRACTS".
+	PlansOrContracts V1CustomerAlertGetParamsPlansOrContracts `json:"plans_or_contracts,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerAlertGetParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerAlertGetParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertGetParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Scopes alert evaluation to a specific presentation group key on individual line
+// items. Only present for spend alerts.
+//
+// The properties Key, Value are required.
+type V1CustomerAlertGetParamsGroupValue struct {
+	Key   string `json:"key,required"`
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r V1CustomerAlertGetParamsGroupValue) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerAlertGetParamsGroupValue
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertGetParamsGroupValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // When parallel alerts are enabled during migration, this flag denotes whether to
@@ -371,60 +430,48 @@ const (
 	V1CustomerAlertGetParamsPlansOrContractsContracts V1CustomerAlertGetParamsPlansOrContracts = "CONTRACTS"
 )
 
-func (r V1CustomerAlertGetParamsPlansOrContracts) IsKnown() bool {
-	switch r {
-	case V1CustomerAlertGetParamsPlansOrContractsPlans, V1CustomerAlertGetParamsPlansOrContractsContracts:
-		return true
-	}
-	return false
-}
-
 type V1CustomerAlertListParams struct {
 	// The Metronome ID of the customer
-	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// Optionally filter by alert status. If absent, only enabled alerts will be
 	// returned.
-	AlertStatuses param.Field[[]V1CustomerAlertListParamsAlertStatus] `json:"alert_statuses"`
+	//
+	// Any of "ENABLED", "DISABLED", "ARCHIVED".
+	AlertStatuses []string `json:"alert_statuses,omitzero"`
+	paramObj
 }
 
 func (r V1CustomerAlertListParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerAlertListParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1CustomerAlertListParams]'s query parameters as
 // `url.Values`.
-func (r V1CustomerAlertListParams) URLQuery() (v url.Values) {
+func (r V1CustomerAlertListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type V1CustomerAlertListParamsAlertStatus string
-
-const (
-	V1CustomerAlertListParamsAlertStatusEnabled  V1CustomerAlertListParamsAlertStatus = "ENABLED"
-	V1CustomerAlertListParamsAlertStatusDisabled V1CustomerAlertListParamsAlertStatus = "DISABLED"
-	V1CustomerAlertListParamsAlertStatusArchived V1CustomerAlertListParamsAlertStatus = "ARCHIVED"
-)
-
-func (r V1CustomerAlertListParamsAlertStatus) IsKnown() bool {
-	switch r {
-	case V1CustomerAlertListParamsAlertStatusEnabled, V1CustomerAlertListParamsAlertStatusDisabled, V1CustomerAlertListParamsAlertStatusArchived:
-		return true
-	}
-	return false
-}
-
 type V1CustomerAlertResetParams struct {
 	// The Metronome ID of the alert
-	AlertID param.Field[string] `json:"alert_id,required" format:"uuid"`
+	AlertID string `json:"alert_id,required" format:"uuid"`
 	// The Metronome ID of the customer
-	CustomerID param.Field[string] `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
+	paramObj
 }
 
 func (r V1CustomerAlertResetParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomerAlertResetParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertResetParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

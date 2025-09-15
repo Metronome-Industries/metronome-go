@@ -10,10 +10,11 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
 	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 	"github.com/Metronome-Industries/metronome-go/shared"
 )
 
@@ -30,13 +31,21 @@ type V1ContractRateCardRateService struct {
 // NewV1ContractRateCardRateService generates a new service that applies the given
 // options to each request. These options are applied after the parent client's
 // options (if there is one), and before any request-specific options.
-func NewV1ContractRateCardRateService(opts ...option.RequestOption) (r *V1ContractRateCardRateService) {
-	r = &V1ContractRateCardRateService{}
+func NewV1ContractRateCardRateService(opts ...option.RequestOption) (r V1ContractRateCardRateService) {
+	r = V1ContractRateCardRateService{}
 	r.Options = opts
 	return
 }
 
-// Get all rates for a rate card at a point in time
+// Understand the rate schedule at a given timestamp, optionally filtering the list
+// of rates returned based on properties such as `product_id` and
+// `pricing_group_values`. For example, you may want to display the current price
+// for a given product in your product experience - use this endpoint to fetch that
+// information from its source of truth in Metronome.
+//
+// If you want to understand the rates for a specific customer's contract,
+// inclusive of contract-level overrides, use the `getContractRateSchedule`
+// endpoint.
 func (r *V1ContractRateCardRateService) List(ctx context.Context, params V1ContractRateCardRateListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1ContractRateCardRateListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -54,7 +63,15 @@ func (r *V1ContractRateCardRateService) List(ctx context.Context, params V1Contr
 	return res, nil
 }
 
-// Get all rates for a rate card at a point in time
+// Understand the rate schedule at a given timestamp, optionally filtering the list
+// of rates returned based on properties such as `product_id` and
+// `pricing_group_values`. For example, you may want to display the current price
+// for a given product in your product experience - use this endpoint to fetch that
+// information from its source of truth in Metronome.
+//
+// If you want to understand the rates for a specific customer's contract,
+// inclusive of contract-level overrides, use the `getContractRateSchedule`
+// endpoint.
 func (r *V1ContractRateCardRateService) ListAutoPaging(ctx context.Context, params V1ContractRateCardRateListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1ContractRateCardRateListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -76,46 +93,43 @@ func (r *V1ContractRateCardRateService) AddMany(ctx context.Context, body V1Cont
 }
 
 type V1ContractRateCardRateListResponse struct {
-	Entitled            bool                                               `json:"entitled,required"`
-	ProductCustomFields map[string]string                                  `json:"product_custom_fields,required"`
-	ProductID           string                                             `json:"product_id,required" format:"uuid"`
-	ProductName         string                                             `json:"product_name,required"`
-	ProductTags         []string                                           `json:"product_tags,required"`
-	Rate                shared.Rate                                        `json:"rate,required"`
-	StartingAt          time.Time                                          `json:"starting_at,required" format:"date-time"`
-	BillingFrequency    V1ContractRateCardRateListResponseBillingFrequency `json:"billing_frequency"`
+	Entitled bool `json:"entitled,required"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
+	ProductID           string            `json:"product_id,required" format:"uuid"`
+	ProductName         string            `json:"product_name,required"`
+	ProductTags         []string          `json:"product_tags,required"`
+	Rate                shared.Rate       `json:"rate,required"`
+	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency V1ContractRateCardRateListResponseBillingFrequency `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
-	CommitRate         V1ContractRateCardRateListResponseCommitRate `json:"commit_rate"`
-	EndingBefore       time.Time                                    `json:"ending_before" format:"date-time"`
-	PricingGroupValues map[string]string                            `json:"pricing_group_values"`
-	JSON               v1ContractRateCardRateListResponseJSON       `json:"-"`
+	CommitRate         shared.CommitRate `json:"commit_rate"`
+	EndingBefore       time.Time         `json:"ending_before" format:"date-time"`
+	PricingGroupValues map[string]string `json:"pricing_group_values"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entitled            respjson.Field
+		ProductCustomFields respjson.Field
+		ProductID           respjson.Field
+		ProductName         respjson.Field
+		ProductTags         respjson.Field
+		Rate                respjson.Field
+		StartingAt          respjson.Field
+		BillingFrequency    respjson.Field
+		CommitRate          respjson.Field
+		EndingBefore        respjson.Field
+		PricingGroupValues  respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
 }
 
-// v1ContractRateCardRateListResponseJSON contains the JSON metadata for the struct
-// [V1ContractRateCardRateListResponse]
-type v1ContractRateCardRateListResponseJSON struct {
-	Entitled            apijson.Field
-	ProductCustomFields apijson.Field
-	ProductID           apijson.Field
-	ProductName         apijson.Field
-	ProductTags         apijson.Field
-	Rate                apijson.Field
-	StartingAt          apijson.Field
-	BillingFrequency    apijson.Field
-	CommitRate          apijson.Field
-	EndingBefore        apijson.Field
-	PricingGroupValues  apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardRateListResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardRateListResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardRateListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardRateListResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardRateListResponseBillingFrequency string
@@ -127,91 +141,32 @@ const (
 	V1ContractRateCardRateListResponseBillingFrequencyWeekly    V1ContractRateCardRateListResponseBillingFrequency = "WEEKLY"
 )
 
-func (r V1ContractRateCardRateListResponseBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateListResponseBillingFrequencyMonthly, V1ContractRateCardRateListResponseBillingFrequencyQuarterly, V1ContractRateCardRateListResponseBillingFrequencyAnnual, V1ContractRateCardRateListResponseBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-// A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit.
-type V1ContractRateCardRateListResponseCommitRate struct {
-	RateType V1ContractRateCardRateListResponseCommitRateRateType `json:"rate_type,required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
-	Price float64 `json:"price"`
-	// Only set for TIERED rate_type.
-	Tiers []shared.Tier                                    `json:"tiers"`
-	JSON  v1ContractRateCardRateListResponseCommitRateJSON `json:"-"`
-}
-
-// v1ContractRateCardRateListResponseCommitRateJSON contains the JSON metadata for
-// the struct [V1ContractRateCardRateListResponseCommitRate]
-type v1ContractRateCardRateListResponseCommitRateJSON struct {
-	RateType    apijson.Field
-	Price       apijson.Field
-	Tiers       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardRateListResponseCommitRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardRateListResponseCommitRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardRateListResponseCommitRateRateType string
-
-const (
-	V1ContractRateCardRateListResponseCommitRateRateTypeFlat         V1ContractRateCardRateListResponseCommitRateRateType = "FLAT"
-	V1ContractRateCardRateListResponseCommitRateRateTypePercentage   V1ContractRateCardRateListResponseCommitRateRateType = "PERCENTAGE"
-	V1ContractRateCardRateListResponseCommitRateRateTypeSubscription V1ContractRateCardRateListResponseCommitRateRateType = "SUBSCRIPTION"
-	V1ContractRateCardRateListResponseCommitRateRateTypeTiered       V1ContractRateCardRateListResponseCommitRateRateType = "TIERED"
-	V1ContractRateCardRateListResponseCommitRateRateTypeCustom       V1ContractRateCardRateListResponseCommitRateRateType = "CUSTOM"
-)
-
-func (r V1ContractRateCardRateListResponseCommitRateRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateListResponseCommitRateRateTypeFlat, V1ContractRateCardRateListResponseCommitRateRateTypePercentage, V1ContractRateCardRateListResponseCommitRateRateTypeSubscription, V1ContractRateCardRateListResponseCommitRateRateTypeTiered, V1ContractRateCardRateListResponseCommitRateRateTypeCustom:
-		return true
-	}
-	return false
-}
-
 type V1ContractRateCardRateAddResponse struct {
 	Data V1ContractRateCardRateAddResponseData `json:"data,required"`
-	JSON v1ContractRateCardRateAddResponseJSON `json:"-"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ContractRateCardRateAddResponseJSON contains the JSON metadata for the struct
-// [V1ContractRateCardRateAddResponse]
-type v1ContractRateCardRateAddResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardRateAddResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardRateAddResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardRateAddResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardRateAddResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardRateAddResponseData struct {
-	RateType V1ContractRateCardRateAddResponseDataRateType `json:"rate_type,required"`
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED".
+	RateType string `json:"rate_type,required"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
-	CommitRate V1ContractRateCardRateAddResponseDataCommitRate `json:"commit_rate"`
-	CreditType shared.CreditTypeData                           `json:"credit_type"`
+	CommitRate shared.CommitRate     `json:"commit_rate"`
+	CreditType shared.CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
-	CustomRate map[string]interface{} `json:"custom_rate"`
+	CustomRate map[string]any `json:"custom_rate"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
 	// set to true.
 	IsProrated bool `json:"is_prorated"`
@@ -228,143 +183,73 @@ type V1ContractRateCardRateAddResponseData struct {
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
-	UseListPrices bool                                      `json:"use_list_prices"`
-	JSON          v1ContractRateCardRateAddResponseDataJSON `json:"-"`
+	UseListPrices bool `json:"use_list_prices"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RateType           respjson.Field
+		CommitRate         respjson.Field
+		CreditType         respjson.Field
+		CustomRate         respjson.Field
+		IsProrated         respjson.Field
+		Price              respjson.Field
+		PricingGroupValues respjson.Field
+		Quantity           respjson.Field
+		Tiers              respjson.Field
+		UseListPrices      respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
 }
 
-// v1ContractRateCardRateAddResponseDataJSON contains the JSON metadata for the
-// struct [V1ContractRateCardRateAddResponseData]
-type v1ContractRateCardRateAddResponseDataJSON struct {
-	RateType           apijson.Field
-	CommitRate         apijson.Field
-	CreditType         apijson.Field
-	CustomRate         apijson.Field
-	IsProrated         apijson.Field
-	Price              apijson.Field
-	PricingGroupValues apijson.Field
-	Quantity           apijson.Field
-	Tiers              apijson.Field
-	UseListPrices      apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardRateAddResponseData) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardRateAddResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardRateAddResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardRateAddResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardRateAddResponseDataRateType string
-
-const (
-	V1ContractRateCardRateAddResponseDataRateTypeFlat         V1ContractRateCardRateAddResponseDataRateType = "FLAT"
-	V1ContractRateCardRateAddResponseDataRateTypePercentage   V1ContractRateCardRateAddResponseDataRateType = "PERCENTAGE"
-	V1ContractRateCardRateAddResponseDataRateTypeSubscription V1ContractRateCardRateAddResponseDataRateType = "SUBSCRIPTION"
-	V1ContractRateCardRateAddResponseDataRateTypeCustom       V1ContractRateCardRateAddResponseDataRateType = "CUSTOM"
-	V1ContractRateCardRateAddResponseDataRateTypeTiered       V1ContractRateCardRateAddResponseDataRateType = "TIERED"
-)
-
-func (r V1ContractRateCardRateAddResponseDataRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddResponseDataRateTypeFlat, V1ContractRateCardRateAddResponseDataRateTypePercentage, V1ContractRateCardRateAddResponseDataRateTypeSubscription, V1ContractRateCardRateAddResponseDataRateTypeCustom, V1ContractRateCardRateAddResponseDataRateTypeTiered:
-		return true
-	}
-	return false
-}
-
-// A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit.
-type V1ContractRateCardRateAddResponseDataCommitRate struct {
-	RateType V1ContractRateCardRateAddResponseDataCommitRateRateType `json:"rate_type,required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
-	Price float64 `json:"price"`
-	// Only set for TIERED rate_type.
-	Tiers []shared.Tier                                       `json:"tiers"`
-	JSON  v1ContractRateCardRateAddResponseDataCommitRateJSON `json:"-"`
-}
-
-// v1ContractRateCardRateAddResponseDataCommitRateJSON contains the JSON metadata
-// for the struct [V1ContractRateCardRateAddResponseDataCommitRate]
-type v1ContractRateCardRateAddResponseDataCommitRateJSON struct {
-	RateType    apijson.Field
-	Price       apijson.Field
-	Tiers       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardRateAddResponseDataCommitRate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardRateAddResponseDataCommitRateJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1ContractRateCardRateAddResponseDataCommitRateRateType string
-
-const (
-	V1ContractRateCardRateAddResponseDataCommitRateRateTypeFlat         V1ContractRateCardRateAddResponseDataCommitRateRateType = "FLAT"
-	V1ContractRateCardRateAddResponseDataCommitRateRateTypePercentage   V1ContractRateCardRateAddResponseDataCommitRateRateType = "PERCENTAGE"
-	V1ContractRateCardRateAddResponseDataCommitRateRateTypeSubscription V1ContractRateCardRateAddResponseDataCommitRateRateType = "SUBSCRIPTION"
-	V1ContractRateCardRateAddResponseDataCommitRateRateTypeTiered       V1ContractRateCardRateAddResponseDataCommitRateRateType = "TIERED"
-	V1ContractRateCardRateAddResponseDataCommitRateRateTypeCustom       V1ContractRateCardRateAddResponseDataCommitRateRateType = "CUSTOM"
-)
-
-func (r V1ContractRateCardRateAddResponseDataCommitRateRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddResponseDataCommitRateRateTypeFlat, V1ContractRateCardRateAddResponseDataCommitRateRateTypePercentage, V1ContractRateCardRateAddResponseDataCommitRateRateTypeSubscription, V1ContractRateCardRateAddResponseDataCommitRateRateTypeTiered, V1ContractRateCardRateAddResponseDataCommitRateRateTypeCustom:
-		return true
-	}
-	return false
 }
 
 type V1ContractRateCardRateAddManyResponse struct {
 	// The ID of the rate card to which the rates were added.
-	Data shared.ID                                 `json:"data,required"`
-	JSON v1ContractRateCardRateAddManyResponseJSON `json:"-"`
+	Data shared.ID `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// v1ContractRateCardRateAddManyResponseJSON contains the JSON metadata for the
-// struct [V1ContractRateCardRateAddManyResponse]
-type v1ContractRateCardRateAddManyResponseJSON struct {
-	Data        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1ContractRateCardRateAddManyResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1ContractRateCardRateAddManyResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractRateCardRateAddManyResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1ContractRateCardRateAddManyResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type V1ContractRateCardRateListParams struct {
 	// inclusive starting point for the rates schedule
-	At param.Field[time.Time] `json:"at,required" format:"date-time"`
+	At time.Time `json:"at,required" format:"date-time"`
 	// ID of the rate card to get the schedule for
-	RateCardID param.Field[string] `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id,required" format:"uuid"`
 	// Max number of results that should be returned
-	Limit param.Field[int64] `query:"limit"`
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// List of rate selectors, rates matching ANY of the selector will be included in
 	// the response Passing no selectors will result in all rates being returned.
-	Selectors param.Field[[]V1ContractRateCardRateListParamsSelector] `json:"selectors"`
+	Selectors []V1ContractRateCardRateListParamsSelector `json:"selectors,omitzero"`
+	paramObj
 }
 
 func (r V1ContractRateCardRateListParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardRateListParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardRateListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1ContractRateCardRateListParams]'s query parameters as
 // `url.Values`.
-func (r V1ContractRateCardRateListParams) URLQuery() (v url.Values) {
+func (r V1ContractRateCardRateListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -372,91 +257,93 @@ func (r V1ContractRateCardRateListParams) URLQuery() (v url.Values) {
 }
 
 type V1ContractRateCardRateListParamsSelector struct {
+	// Rates matching the product id will be included in the response.
+	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
 	// Subscription rates matching the billing frequency will be included in the
 	// response.
-	BillingFrequency param.Field[V1ContractRateCardRateListParamsSelectorsBillingFrequency] `json:"billing_frequency"`
+	//
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// List of pricing group key value pairs, rates containing the matching key / value
 	// pairs will be included in the response.
-	PartialPricingGroupValues param.Field[map[string]string] `json:"partial_pricing_group_values"`
+	PartialPricingGroupValues map[string]string `json:"partial_pricing_group_values,omitzero"`
 	// List of pricing group key value pairs, rates matching all of the key / value
 	// pairs will be included in the response.
-	PricingGroupValues param.Field[map[string]string] `json:"pricing_group_values"`
-	// Rates matching the product id will be included in the response.
-	ProductID param.Field[string] `json:"product_id" format:"uuid"`
+	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
 	// List of product tags, rates matching any of the tags will be included in the
 	// response.
-	ProductTags param.Field[[]string] `json:"product_tags"`
+	ProductTags []string `json:"product_tags,omitzero"`
+	paramObj
 }
 
 func (r V1ContractRateCardRateListParamsSelector) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardRateListParamsSelector
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardRateListParamsSelector) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-// Subscription rates matching the billing frequency will be included in the
-// response.
-type V1ContractRateCardRateListParamsSelectorsBillingFrequency string
-
-const (
-	V1ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly   V1ContractRateCardRateListParamsSelectorsBillingFrequency = "MONTHLY"
-	V1ContractRateCardRateListParamsSelectorsBillingFrequencyQuarterly V1ContractRateCardRateListParamsSelectorsBillingFrequency = "QUARTERLY"
-	V1ContractRateCardRateListParamsSelectorsBillingFrequencyAnnual    V1ContractRateCardRateListParamsSelectorsBillingFrequency = "ANNUAL"
-	V1ContractRateCardRateListParamsSelectorsBillingFrequencyWeekly    V1ContractRateCardRateListParamsSelectorsBillingFrequency = "WEEKLY"
-)
-
-func (r V1ContractRateCardRateListParamsSelectorsBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateListParamsSelectorsBillingFrequencyMonthly, V1ContractRateCardRateListParamsSelectorsBillingFrequencyQuarterly, V1ContractRateCardRateListParamsSelectorsBillingFrequencyAnnual, V1ContractRateCardRateListParamsSelectorsBillingFrequencyWeekly:
-		return true
-	}
-	return false
+func init() {
+	apijson.RegisterFieldValidator[V1ContractRateCardRateListParamsSelector](
+		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+	)
 }
 
 type V1ContractRateCardRateAddParams struct {
-	Entitled param.Field[bool] `json:"entitled,required"`
+	Entitled bool `json:"entitled,required"`
 	// ID of the product to add a rate for
-	ProductID param.Field[string] `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id,required" format:"uuid"`
 	// ID of the rate card to update
-	RateCardID param.Field[string]                                  `json:"rate_card_id,required" format:"uuid"`
-	RateType   param.Field[V1ContractRateCardRateAddParamsRateType] `json:"rate_type,required"`
+	RateCardID string `json:"rate_card_id,required" format:"uuid"`
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	RateType V1ContractRateCardRateAddParamsRateType `json:"rate_type,omitzero,required"`
 	// inclusive effective date
-	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
-	// Optional. Frequency to bill subscriptions with. Required for subscription type
-	// products with Flat rate.
-	BillingFrequency param.Field[V1ContractRateCardRateAddParamsBillingFrequency] `json:"billing_frequency"`
-	// A distinct rate on the rate card. You can choose to use this rate rather than
-	// list rate when consuming a credit or commit.
-	CommitRate param.Field[V1ContractRateCardRateAddParamsCommitRate] `json:"commit_rate"`
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
 	// The Metronome ID of the credit type to associate with price, defaults to USD
 	// (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
 	// rates use the credit type of associated rates.
-	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
-	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
-	// processors.
-	CustomRate param.Field[map[string]interface{}] `json:"custom_rate"`
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// exclusive end date
-	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
 	// set to true.
-	IsProrated param.Field[bool] `json:"is_prorated"`
+	IsProrated param.Opt[bool] `json:"is_prorated,omitzero"`
 	// Default price. For FLAT and SUBSCRIPTION rate_type, this must be >=0. For
 	// PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this
 	// must be >=0 and <=1.
-	Price param.Field[float64] `json:"price"`
-	// Optional. List of pricing group key value pairs which will be used to calculate
-	// the price.
-	PricingGroupValues param.Field[map[string]string] `json:"pricing_group_values"`
+	Price param.Opt[float64] `json:"price,omitzero"`
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-	Quantity param.Field[float64] `json:"quantity"`
-	// Only set for TIERED rate_type.
-	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
+	Quantity param.Opt[float64] `json:"quantity,omitzero"`
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
-	UseListPrices param.Field[bool] `json:"use_list_prices"`
+	UseListPrices param.Opt[bool] `json:"use_list_prices,omitzero"`
+	// Optional. Frequency to bill subscriptions with. Required for subscription type
+	// products with Flat rate.
+	//
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency V1ContractRateCardRateAddParamsBillingFrequency `json:"billing_frequency,omitzero"`
+	// A distinct rate on the rate card. You can choose to use this rate rather than
+	// list rate when consuming a credit or commit.
+	CommitRate shared.CommitRateParam `json:"commit_rate,omitzero"`
+	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+	// processors.
+	CustomRate map[string]any `json:"custom_rate,omitzero"`
+	// Optional. List of pricing group key value pairs which will be used to calculate
+	// the price.
+	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.TierParam `json:"tiers,omitzero"`
+	paramObj
 }
 
 func (r V1ContractRateCardRateAddParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardRateAddParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardRateAddParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractRateCardRateAddParamsRateType string
@@ -469,14 +356,6 @@ const (
 	V1ContractRateCardRateAddParamsRateTypeCustom       V1ContractRateCardRateAddParamsRateType = "CUSTOM"
 )
 
-func (r V1ContractRateCardRateAddParamsRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddParamsRateTypeFlat, V1ContractRateCardRateAddParamsRateTypePercentage, V1ContractRateCardRateAddParamsRateTypeSubscription, V1ContractRateCardRateAddParamsRateTypeTiered, V1ContractRateCardRateAddParamsRateTypeCustom:
-		return true
-	}
-	return false
-}
-
 // Optional. Frequency to bill subscriptions with. Required for subscription type
 // products with Flat rate.
 type V1ContractRateCardRateAddParamsBillingFrequency string
@@ -488,166 +367,80 @@ const (
 	V1ContractRateCardRateAddParamsBillingFrequencyWeekly    V1ContractRateCardRateAddParamsBillingFrequency = "WEEKLY"
 )
 
-func (r V1ContractRateCardRateAddParamsBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddParamsBillingFrequencyMonthly, V1ContractRateCardRateAddParamsBillingFrequencyQuarterly, V1ContractRateCardRateAddParamsBillingFrequencyAnnual, V1ContractRateCardRateAddParamsBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-// A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit.
-type V1ContractRateCardRateAddParamsCommitRate struct {
-	RateType param.Field[V1ContractRateCardRateAddParamsCommitRateRateType] `json:"rate_type,required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
-	Price param.Field[float64] `json:"price"`
-	// Only set for TIERED rate_type.
-	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
-}
-
-func (r V1ContractRateCardRateAddParamsCommitRate) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractRateCardRateAddParamsCommitRateRateType string
-
-const (
-	V1ContractRateCardRateAddParamsCommitRateRateTypeFlat         V1ContractRateCardRateAddParamsCommitRateRateType = "FLAT"
-	V1ContractRateCardRateAddParamsCommitRateRateTypePercentage   V1ContractRateCardRateAddParamsCommitRateRateType = "PERCENTAGE"
-	V1ContractRateCardRateAddParamsCommitRateRateTypeSubscription V1ContractRateCardRateAddParamsCommitRateRateType = "SUBSCRIPTION"
-	V1ContractRateCardRateAddParamsCommitRateRateTypeTiered       V1ContractRateCardRateAddParamsCommitRateRateType = "TIERED"
-	V1ContractRateCardRateAddParamsCommitRateRateTypeCustom       V1ContractRateCardRateAddParamsCommitRateRateType = "CUSTOM"
-)
-
-func (r V1ContractRateCardRateAddParamsCommitRateRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddParamsCommitRateRateTypeFlat, V1ContractRateCardRateAddParamsCommitRateRateTypePercentage, V1ContractRateCardRateAddParamsCommitRateRateTypeSubscription, V1ContractRateCardRateAddParamsCommitRateRateTypeTiered, V1ContractRateCardRateAddParamsCommitRateRateTypeCustom:
-		return true
-	}
-	return false
-}
-
 type V1ContractRateCardRateAddManyParams struct {
-	RateCardID param.Field[string]                                    `json:"rate_card_id,required" format:"uuid"`
-	Rates      param.Field[[]V1ContractRateCardRateAddManyParamsRate] `json:"rates,required"`
+	RateCardID string                                    `json:"rate_card_id,required" format:"uuid"`
+	Rates      []V1ContractRateCardRateAddManyParamsRate `json:"rates,omitzero,required"`
+	paramObj
 }
 
 func (r V1ContractRateCardRateAddManyParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardRateAddManyParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardRateAddManyParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Entitled, ProductID, RateType, StartingAt are required.
 type V1ContractRateCardRateAddManyParamsRate struct {
-	Entitled param.Field[bool] `json:"entitled,required"`
+	Entitled bool `json:"entitled,required"`
 	// ID of the product to add a rate for
-	ProductID param.Field[string]                                           `json:"product_id,required" format:"uuid"`
-	RateType  param.Field[V1ContractRateCardRateAddManyParamsRatesRateType] `json:"rate_type,required"`
+	ProductID string `json:"product_id,required" format:"uuid"`
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	RateType string `json:"rate_type,omitzero,required"`
 	// inclusive effective date
-	StartingAt param.Field[time.Time] `json:"starting_at,required" format:"date-time"`
-	// Optional. Frequency to bill subscriptions with. Required for subscription type
-	// products with Flat rate.
-	BillingFrequency param.Field[V1ContractRateCardRateAddManyParamsRatesBillingFrequency] `json:"billing_frequency"`
-	// A distinct rate on the rate card. You can choose to use this rate rather than
-	// list rate when consuming a credit or commit.
-	CommitRate param.Field[V1ContractRateCardRateAddManyParamsRatesCommitRate] `json:"commit_rate"`
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
 	// "The Metronome ID of the credit type to associate with price, defaults to USD
 	// (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
 	// rates use the credit type of associated rates."
-	CreditTypeID param.Field[string] `json:"credit_type_id" format:"uuid"`
-	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
-	// processors.
-	CustomRate param.Field[map[string]interface{}] `json:"custom_rate"`
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// exclusive end date
-	EndingBefore param.Field[time.Time] `json:"ending_before" format:"date-time"`
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
 	// set to true.
-	IsProrated param.Field[bool] `json:"is_prorated"`
+	IsProrated param.Opt[bool] `json:"is_prorated,omitzero"`
 	// Default price. For FLAT and SUBSCRIPTION rate_type, this must be >=0. For
 	// PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this
 	// must be >=0 and <=1.
-	Price param.Field[float64] `json:"price"`
-	// Optional. List of pricing group key value pairs which will be used to calculate
-	// the price.
-	PricingGroupValues param.Field[map[string]string] `json:"pricing_group_values"`
+	Price param.Opt[float64] `json:"price,omitzero"`
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-	Quantity param.Field[float64] `json:"quantity"`
-	// Only set for TIERED rate_type.
-	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
+	Quantity param.Opt[float64] `json:"quantity,omitzero"`
 	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
 	// using list prices rather than the standard rates for this product on the
 	// contract.
-	UseListPrices param.Field[bool] `json:"use_list_prices"`
+	UseListPrices param.Opt[bool] `json:"use_list_prices,omitzero"`
+	// Optional. Frequency to bill subscriptions with. Required for subscription type
+	// products with Flat rate.
+	//
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency string `json:"billing_frequency,omitzero"`
+	// A distinct rate on the rate card. You can choose to use this rate rather than
+	// list rate when consuming a credit or commit.
+	CommitRate shared.CommitRateParam `json:"commit_rate,omitzero"`
+	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+	// processors.
+	CustomRate map[string]any `json:"custom_rate,omitzero"`
+	// Optional. List of pricing group key value pairs which will be used to calculate
+	// the price.
+	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.TierParam `json:"tiers,omitzero"`
+	paramObj
 }
 
 func (r V1ContractRateCardRateAddManyParamsRate) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1ContractRateCardRateAddManyParamsRate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardRateAddManyParamsRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-type V1ContractRateCardRateAddManyParamsRatesRateType string
-
-const (
-	V1ContractRateCardRateAddManyParamsRatesRateTypeFlat         V1ContractRateCardRateAddManyParamsRatesRateType = "FLAT"
-	V1ContractRateCardRateAddManyParamsRatesRateTypePercentage   V1ContractRateCardRateAddManyParamsRatesRateType = "PERCENTAGE"
-	V1ContractRateCardRateAddManyParamsRatesRateTypeSubscription V1ContractRateCardRateAddManyParamsRatesRateType = "SUBSCRIPTION"
-	V1ContractRateCardRateAddManyParamsRatesRateTypeTiered       V1ContractRateCardRateAddManyParamsRatesRateType = "TIERED"
-	V1ContractRateCardRateAddManyParamsRatesRateTypeCustom       V1ContractRateCardRateAddManyParamsRatesRateType = "CUSTOM"
-)
-
-func (r V1ContractRateCardRateAddManyParamsRatesRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddManyParamsRatesRateTypeFlat, V1ContractRateCardRateAddManyParamsRatesRateTypePercentage, V1ContractRateCardRateAddManyParamsRatesRateTypeSubscription, V1ContractRateCardRateAddManyParamsRatesRateTypeTiered, V1ContractRateCardRateAddManyParamsRatesRateTypeCustom:
-		return true
-	}
-	return false
-}
-
-// Optional. Frequency to bill subscriptions with. Required for subscription type
-// products with Flat rate.
-type V1ContractRateCardRateAddManyParamsRatesBillingFrequency string
-
-const (
-	V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly   V1ContractRateCardRateAddManyParamsRatesBillingFrequency = "MONTHLY"
-	V1ContractRateCardRateAddManyParamsRatesBillingFrequencyQuarterly V1ContractRateCardRateAddManyParamsRatesBillingFrequency = "QUARTERLY"
-	V1ContractRateCardRateAddManyParamsRatesBillingFrequencyAnnual    V1ContractRateCardRateAddManyParamsRatesBillingFrequency = "ANNUAL"
-	V1ContractRateCardRateAddManyParamsRatesBillingFrequencyWeekly    V1ContractRateCardRateAddManyParamsRatesBillingFrequency = "WEEKLY"
-)
-
-func (r V1ContractRateCardRateAddManyParamsRatesBillingFrequency) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddManyParamsRatesBillingFrequencyMonthly, V1ContractRateCardRateAddManyParamsRatesBillingFrequencyQuarterly, V1ContractRateCardRateAddManyParamsRatesBillingFrequencyAnnual, V1ContractRateCardRateAddManyParamsRatesBillingFrequencyWeekly:
-		return true
-	}
-	return false
-}
-
-// A distinct rate on the rate card. You can choose to use this rate rather than
-// list rate when consuming a credit or commit.
-type V1ContractRateCardRateAddManyParamsRatesCommitRate struct {
-	RateType param.Field[V1ContractRateCardRateAddManyParamsRatesCommitRateRateType] `json:"rate_type,required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
-	Price param.Field[float64] `json:"price"`
-	// Only set for TIERED rate_type.
-	Tiers param.Field[[]shared.TierParam] `json:"tiers"`
-}
-
-func (r V1ContractRateCardRateAddManyParamsRatesCommitRate) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type V1ContractRateCardRateAddManyParamsRatesCommitRateRateType string
-
-const (
-	V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat         V1ContractRateCardRateAddManyParamsRatesCommitRateRateType = "FLAT"
-	V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypePercentage   V1ContractRateCardRateAddManyParamsRatesCommitRateRateType = "PERCENTAGE"
-	V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeSubscription V1ContractRateCardRateAddManyParamsRatesCommitRateRateType = "SUBSCRIPTION"
-	V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeTiered       V1ContractRateCardRateAddManyParamsRatesCommitRateRateType = "TIERED"
-	V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeCustom       V1ContractRateCardRateAddManyParamsRatesCommitRateRateType = "CUSTOM"
-)
-
-func (r V1ContractRateCardRateAddManyParamsRatesCommitRateRateType) IsKnown() bool {
-	switch r {
-	case V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeFlat, V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypePercentage, V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeSubscription, V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeTiered, V1ContractRateCardRateAddManyParamsRatesCommitRateRateTypeCustom:
-		return true
-	}
-	return false
+func init() {
+	apijson.RegisterFieldValidator[V1ContractRateCardRateAddManyParamsRate](
+		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM",
+	)
+	apijson.RegisterFieldValidator[V1ContractRateCardRateAddManyParamsRate](
+		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+	)
 }

@@ -26,8 +26,8 @@ func TestV1PricingUnitListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.PricingUnits.List(context.TODO(), metronome.V1PricingUnitListParams{
-		Limit:    metronome.F(int64(1)),
-		NextPage: metronome.F("next_page"),
+		Limit:    metronome.Int(1),
+		NextPage: metronome.String("next_page"),
 	})
 	if err != nil {
 		var apierr *metronome.Error

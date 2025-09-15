@@ -9,9 +9,11 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/param"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/packages/respjson"
 )
 
 // V1CustomFieldService contains methods and other services that help with
@@ -27,14 +29,41 @@ type V1CustomFieldService struct {
 // NewV1CustomFieldService generates a new service that applies the given options
 // to each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewV1CustomFieldService(opts ...option.RequestOption) (r *V1CustomFieldService) {
-	r = &V1CustomFieldService{}
+func NewV1CustomFieldService(opts ...option.RequestOption) (r V1CustomFieldService) {
+	r = V1CustomFieldService{}
 	r.Options = opts
 	return
 }
 
-// Add a key to the allow list for a given entity. There is a 100 character limit
-// on custom field keys.
+// Creates a new custom field key for a given entity (e.g. billable metric,
+// contract, alert).
+//
+// Custom fields are properties that you can add to Metronome objects to store
+// metadata like foreign keys or other descriptors. This metadata can get
+// transferred to or accessed by other systems to contextualize Metronome data and
+// power business processes. For example, to service workflows like revenue
+// recognition, reconciliation, and invoicing, custom fields help Metronome know
+// the relationship between entities in the platform and third-party systems.
+//
+// ### Use this endpoint to:
+//
+//   - Create a new custom field key for Customer objects in Metronome. You can then
+//     use the Set Custom Field Values endpoint to set the value of this key for a
+//     specific customer.
+//   - Specify whether the key should enforce uniqueness. If the key is set to
+//     enforce uniqueness and you attempt to set a custom field value for the key
+//     that already exists, it will fail.
+//
+// ### Usage guidelines:
+//
+//   - Custom fields set on commits, credits, and contracts can be used to scope
+//     alert evaluation. For example, you can create a spend threshold alert that
+//     only considers spend associated with contracts with custom field key
+//     `contract_type` and value `paygo`
+//   - Custom fields set on products can be used in the Stripe integration to set
+//     metadata on invoices.
+//   - Custom fields for customers, contracts, invoices, products, commits, scheduled
+//     charges, and subscriptions are passed down to the invoice.
 func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAddKeyParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -43,7 +72,10 @@ func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAdd
 	return
 }
 
-// Deletes one or more custom fields on an instance of a Metronome entity.
+// Remove specific custom field values from a Metronome entity instance by
+// specifying the field keys to delete. Use this endpoint to clean up unwanted
+// custom field data while preserving other fields on the same entity. Requires the
+// entity type, entity ID, and array of keys to remove.
 func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFieldDeleteValuesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -52,15 +84,39 @@ func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFi
 	return
 }
 
-// List all active custom field keys, optionally filtered by entity type.
-func (r *V1CustomFieldService) ListKeys(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) (res *V1CustomFieldListKeysResponse, err error) {
+// Retrieve all your active custom field keys, with optional filtering by entity
+// type (customer, contract, product, etc.). Use this endpoint to discover what
+// custom field keys are available before setting values on entities or to audit
+// your custom field configuration across different entity types.
+func (r *V1CustomFieldService) ListKeys(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1CustomFieldListKeysResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/customFields/listKeys"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
-// Remove a key from the allow list for a given entity.
+// Retrieve all your active custom field keys, with optional filtering by entity
+// type (customer, contract, product, etc.). Use this endpoint to discover what
+// custom field keys are available before setting values on entities or to audit
+// your custom field configuration across different entity types.
+func (r *V1CustomFieldService) ListKeysAutoPaging(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[V1CustomFieldListKeysResponse] {
+	return pagination.NewCursorPageWithoutLimitAutoPager(r.ListKeys(ctx, params, opts...))
+}
+
+// Removes a custom field key from the allowlist for a specific entity type,
+// preventing future use of that key across all instances of the entity. Existing
+// values for this key on entity instances will no longer be accessible once the
+// key is removed.
 func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomFieldRemoveKeyParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -69,13 +125,10 @@ func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomField
 	return
 }
 
-// Sets one or more custom fields on an instance of a Metronome entity. If a
-// key/value pair passed in this request matches one already set on the entity, its
-// value will be overwritten. Any key/value pairs that exist on the entity that do
-// not match those passed in this request will remain untouched. This endpoint is
-// transactional and will update all key/value pairs or no key/value pairs. Partial
-// updates are not supported. There is a 200 character limit on custom field
-// values.
+// Sets custom field values on a specific Metronome entity instance. Overwrites
+// existing values for matching keys while preserving other fields. All updates are
+// transactional—either all values are set or none are. Custom field values are
+// limited to 200 characters each.
 func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomFieldSetValuesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -85,92 +138,69 @@ func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomField
 }
 
 type V1CustomFieldListKeysResponse struct {
-	Data     []V1CustomFieldListKeysResponseData `json:"data,required"`
-	NextPage string                              `json:"next_page,required,nullable"`
-	JSON     v1CustomFieldListKeysResponseJSON   `json:"-"`
+	EnforceUniqueness bool `json:"enforce_uniqueness,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity V1CustomFieldListKeysResponseEntity `json:"entity,required"`
+	Key    string                              `json:"key,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EnforceUniqueness respjson.Field
+		Entity            respjson.Field
+		Key               respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
 }
 
-// v1CustomFieldListKeysResponseJSON contains the JSON metadata for the struct
-// [V1CustomFieldListKeysResponse]
-type v1CustomFieldListKeysResponseJSON struct {
-	Data        apijson.Field
-	NextPage    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V1CustomFieldListKeysResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r V1CustomFieldListKeysResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomFieldListKeysResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r v1CustomFieldListKeysResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomFieldListKeysResponseData struct {
-	EnforceUniqueness bool                                    `json:"enforce_uniqueness,required"`
-	Entity            V1CustomFieldListKeysResponseDataEntity `json:"entity,required"`
-	Key               string                                  `json:"key,required"`
-	JSON              v1CustomFieldListKeysResponseDataJSON   `json:"-"`
-}
-
-// v1CustomFieldListKeysResponseDataJSON contains the JSON metadata for the struct
-// [V1CustomFieldListKeysResponseData]
-type v1CustomFieldListKeysResponseDataJSON struct {
-	EnforceUniqueness apijson.Field
-	Entity            apijson.Field
-	Key               apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *V1CustomFieldListKeysResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v1CustomFieldListKeysResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type V1CustomFieldListKeysResponseDataEntity string
+type V1CustomFieldListKeysResponseEntity string
 
 const (
-	V1CustomFieldListKeysResponseDataEntityAlert               V1CustomFieldListKeysResponseDataEntity = "alert"
-	V1CustomFieldListKeysResponseDataEntityBillableMetric      V1CustomFieldListKeysResponseDataEntity = "billable_metric"
-	V1CustomFieldListKeysResponseDataEntityCharge              V1CustomFieldListKeysResponseDataEntity = "charge"
-	V1CustomFieldListKeysResponseDataEntityCommit              V1CustomFieldListKeysResponseDataEntity = "commit"
-	V1CustomFieldListKeysResponseDataEntityContractCredit      V1CustomFieldListKeysResponseDataEntity = "contract_credit"
-	V1CustomFieldListKeysResponseDataEntityContractProduct     V1CustomFieldListKeysResponseDataEntity = "contract_product"
-	V1CustomFieldListKeysResponseDataEntityContract            V1CustomFieldListKeysResponseDataEntity = "contract"
-	V1CustomFieldListKeysResponseDataEntityCreditGrant         V1CustomFieldListKeysResponseDataEntity = "credit_grant"
-	V1CustomFieldListKeysResponseDataEntityCustomerPlan        V1CustomFieldListKeysResponseDataEntity = "customer_plan"
-	V1CustomFieldListKeysResponseDataEntityCustomer            V1CustomFieldListKeysResponseDataEntity = "customer"
-	V1CustomFieldListKeysResponseDataEntityDiscount            V1CustomFieldListKeysResponseDataEntity = "discount"
-	V1CustomFieldListKeysResponseDataEntityInvoice             V1CustomFieldListKeysResponseDataEntity = "invoice"
-	V1CustomFieldListKeysResponseDataEntityPlan                V1CustomFieldListKeysResponseDataEntity = "plan"
-	V1CustomFieldListKeysResponseDataEntityProfessionalService V1CustomFieldListKeysResponseDataEntity = "professional_service"
-	V1CustomFieldListKeysResponseDataEntityProduct             V1CustomFieldListKeysResponseDataEntity = "product"
-	V1CustomFieldListKeysResponseDataEntityRateCard            V1CustomFieldListKeysResponseDataEntity = "rate_card"
-	V1CustomFieldListKeysResponseDataEntityScheduledCharge     V1CustomFieldListKeysResponseDataEntity = "scheduled_charge"
-	V1CustomFieldListKeysResponseDataEntitySubscription        V1CustomFieldListKeysResponseDataEntity = "subscription"
+	V1CustomFieldListKeysResponseEntityAlert               V1CustomFieldListKeysResponseEntity = "alert"
+	V1CustomFieldListKeysResponseEntityBillableMetric      V1CustomFieldListKeysResponseEntity = "billable_metric"
+	V1CustomFieldListKeysResponseEntityCharge              V1CustomFieldListKeysResponseEntity = "charge"
+	V1CustomFieldListKeysResponseEntityCommit              V1CustomFieldListKeysResponseEntity = "commit"
+	V1CustomFieldListKeysResponseEntityContractCredit      V1CustomFieldListKeysResponseEntity = "contract_credit"
+	V1CustomFieldListKeysResponseEntityContractProduct     V1CustomFieldListKeysResponseEntity = "contract_product"
+	V1CustomFieldListKeysResponseEntityContract            V1CustomFieldListKeysResponseEntity = "contract"
+	V1CustomFieldListKeysResponseEntityCreditGrant         V1CustomFieldListKeysResponseEntity = "credit_grant"
+	V1CustomFieldListKeysResponseEntityCustomerPlan        V1CustomFieldListKeysResponseEntity = "customer_plan"
+	V1CustomFieldListKeysResponseEntityCustomer            V1CustomFieldListKeysResponseEntity = "customer"
+	V1CustomFieldListKeysResponseEntityDiscount            V1CustomFieldListKeysResponseEntity = "discount"
+	V1CustomFieldListKeysResponseEntityInvoice             V1CustomFieldListKeysResponseEntity = "invoice"
+	V1CustomFieldListKeysResponseEntityPlan                V1CustomFieldListKeysResponseEntity = "plan"
+	V1CustomFieldListKeysResponseEntityProfessionalService V1CustomFieldListKeysResponseEntity = "professional_service"
+	V1CustomFieldListKeysResponseEntityProduct             V1CustomFieldListKeysResponseEntity = "product"
+	V1CustomFieldListKeysResponseEntityRateCard            V1CustomFieldListKeysResponseEntity = "rate_card"
+	V1CustomFieldListKeysResponseEntityScheduledCharge     V1CustomFieldListKeysResponseEntity = "scheduled_charge"
+	V1CustomFieldListKeysResponseEntitySubscription        V1CustomFieldListKeysResponseEntity = "subscription"
 )
 
-func (r V1CustomFieldListKeysResponseDataEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldListKeysResponseDataEntityAlert, V1CustomFieldListKeysResponseDataEntityBillableMetric, V1CustomFieldListKeysResponseDataEntityCharge, V1CustomFieldListKeysResponseDataEntityCommit, V1CustomFieldListKeysResponseDataEntityContractCredit, V1CustomFieldListKeysResponseDataEntityContractProduct, V1CustomFieldListKeysResponseDataEntityContract, V1CustomFieldListKeysResponseDataEntityCreditGrant, V1CustomFieldListKeysResponseDataEntityCustomerPlan, V1CustomFieldListKeysResponseDataEntityCustomer, V1CustomFieldListKeysResponseDataEntityDiscount, V1CustomFieldListKeysResponseDataEntityInvoice, V1CustomFieldListKeysResponseDataEntityPlan, V1CustomFieldListKeysResponseDataEntityProfessionalService, V1CustomFieldListKeysResponseDataEntityProduct, V1CustomFieldListKeysResponseDataEntityRateCard, V1CustomFieldListKeysResponseDataEntityScheduledCharge, V1CustomFieldListKeysResponseDataEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldAddKeyParams struct {
-	EnforceUniqueness param.Field[bool]                            `json:"enforce_uniqueness,required"`
-	Entity            param.Field[V1CustomFieldAddKeyParamsEntity] `json:"entity,required"`
-	Key               param.Field[string]                          `json:"key,required"`
+	EnforceUniqueness bool `json:"enforce_uniqueness,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity V1CustomFieldAddKeyParamsEntity `json:"entity,omitzero,required"`
+	Key    string                          `json:"key,required"`
+	paramObj
 }
 
 func (r V1CustomFieldAddKeyParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldAddKeyParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldAddKeyParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomFieldAddKeyParamsEntity string
@@ -196,22 +226,23 @@ const (
 	V1CustomFieldAddKeyParamsEntitySubscription        V1CustomFieldAddKeyParamsEntity = "subscription"
 )
 
-func (r V1CustomFieldAddKeyParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldAddKeyParamsEntityAlert, V1CustomFieldAddKeyParamsEntityBillableMetric, V1CustomFieldAddKeyParamsEntityCharge, V1CustomFieldAddKeyParamsEntityCommit, V1CustomFieldAddKeyParamsEntityContractCredit, V1CustomFieldAddKeyParamsEntityContractProduct, V1CustomFieldAddKeyParamsEntityContract, V1CustomFieldAddKeyParamsEntityCreditGrant, V1CustomFieldAddKeyParamsEntityCustomerPlan, V1CustomFieldAddKeyParamsEntityCustomer, V1CustomFieldAddKeyParamsEntityDiscount, V1CustomFieldAddKeyParamsEntityInvoice, V1CustomFieldAddKeyParamsEntityPlan, V1CustomFieldAddKeyParamsEntityProfessionalService, V1CustomFieldAddKeyParamsEntityProduct, V1CustomFieldAddKeyParamsEntityRateCard, V1CustomFieldAddKeyParamsEntityScheduledCharge, V1CustomFieldAddKeyParamsEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldDeleteValuesParams struct {
-	Entity   param.Field[V1CustomFieldDeleteValuesParamsEntity] `json:"entity,required"`
-	EntityID param.Field[string]                                `json:"entity_id,required" format:"uuid"`
-	Keys     param.Field[[]string]                              `json:"keys,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity   V1CustomFieldDeleteValuesParamsEntity `json:"entity,omitzero,required"`
+	EntityID string                                `json:"entity_id,required" format:"uuid"`
+	Keys     []string                              `json:"keys,omitzero,required"`
+	paramObj
 }
 
 func (r V1CustomFieldDeleteValuesParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldDeleteValuesParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldDeleteValuesParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomFieldDeleteValuesParamsEntity string
@@ -237,72 +268,52 @@ const (
 	V1CustomFieldDeleteValuesParamsEntitySubscription        V1CustomFieldDeleteValuesParamsEntity = "subscription"
 )
 
-func (r V1CustomFieldDeleteValuesParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldDeleteValuesParamsEntityAlert, V1CustomFieldDeleteValuesParamsEntityBillableMetric, V1CustomFieldDeleteValuesParamsEntityCharge, V1CustomFieldDeleteValuesParamsEntityCommit, V1CustomFieldDeleteValuesParamsEntityContractCredit, V1CustomFieldDeleteValuesParamsEntityContractProduct, V1CustomFieldDeleteValuesParamsEntityContract, V1CustomFieldDeleteValuesParamsEntityCreditGrant, V1CustomFieldDeleteValuesParamsEntityCustomerPlan, V1CustomFieldDeleteValuesParamsEntityCustomer, V1CustomFieldDeleteValuesParamsEntityDiscount, V1CustomFieldDeleteValuesParamsEntityInvoice, V1CustomFieldDeleteValuesParamsEntityPlan, V1CustomFieldDeleteValuesParamsEntityProfessionalService, V1CustomFieldDeleteValuesParamsEntityProduct, V1CustomFieldDeleteValuesParamsEntityRateCard, V1CustomFieldDeleteValuesParamsEntityScheduledCharge, V1CustomFieldDeleteValuesParamsEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldListKeysParams struct {
 	// Cursor that indicates where the next page of results should start.
-	NextPage param.Field[string] `query:"next_page"`
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// Optional list of entity types to return keys for
-	Entities param.Field[[]V1CustomFieldListKeysParamsEntity] `json:"entities"`
+	//
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entities []string `json:"entities,omitzero"`
+	paramObj
 }
 
 func (r V1CustomFieldListKeysParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldListKeysParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldListKeysParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1CustomFieldListKeysParams]'s query parameters as
 // `url.Values`.
-func (r V1CustomFieldListKeysParams) URLQuery() (v url.Values) {
+func (r V1CustomFieldListKeysParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type V1CustomFieldListKeysParamsEntity string
-
-const (
-	V1CustomFieldListKeysParamsEntityAlert               V1CustomFieldListKeysParamsEntity = "alert"
-	V1CustomFieldListKeysParamsEntityBillableMetric      V1CustomFieldListKeysParamsEntity = "billable_metric"
-	V1CustomFieldListKeysParamsEntityCharge              V1CustomFieldListKeysParamsEntity = "charge"
-	V1CustomFieldListKeysParamsEntityCommit              V1CustomFieldListKeysParamsEntity = "commit"
-	V1CustomFieldListKeysParamsEntityContractCredit      V1CustomFieldListKeysParamsEntity = "contract_credit"
-	V1CustomFieldListKeysParamsEntityContractProduct     V1CustomFieldListKeysParamsEntity = "contract_product"
-	V1CustomFieldListKeysParamsEntityContract            V1CustomFieldListKeysParamsEntity = "contract"
-	V1CustomFieldListKeysParamsEntityCreditGrant         V1CustomFieldListKeysParamsEntity = "credit_grant"
-	V1CustomFieldListKeysParamsEntityCustomerPlan        V1CustomFieldListKeysParamsEntity = "customer_plan"
-	V1CustomFieldListKeysParamsEntityCustomer            V1CustomFieldListKeysParamsEntity = "customer"
-	V1CustomFieldListKeysParamsEntityDiscount            V1CustomFieldListKeysParamsEntity = "discount"
-	V1CustomFieldListKeysParamsEntityInvoice             V1CustomFieldListKeysParamsEntity = "invoice"
-	V1CustomFieldListKeysParamsEntityPlan                V1CustomFieldListKeysParamsEntity = "plan"
-	V1CustomFieldListKeysParamsEntityProfessionalService V1CustomFieldListKeysParamsEntity = "professional_service"
-	V1CustomFieldListKeysParamsEntityProduct             V1CustomFieldListKeysParamsEntity = "product"
-	V1CustomFieldListKeysParamsEntityRateCard            V1CustomFieldListKeysParamsEntity = "rate_card"
-	V1CustomFieldListKeysParamsEntityScheduledCharge     V1CustomFieldListKeysParamsEntity = "scheduled_charge"
-	V1CustomFieldListKeysParamsEntitySubscription        V1CustomFieldListKeysParamsEntity = "subscription"
-)
-
-func (r V1CustomFieldListKeysParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldListKeysParamsEntityAlert, V1CustomFieldListKeysParamsEntityBillableMetric, V1CustomFieldListKeysParamsEntityCharge, V1CustomFieldListKeysParamsEntityCommit, V1CustomFieldListKeysParamsEntityContractCredit, V1CustomFieldListKeysParamsEntityContractProduct, V1CustomFieldListKeysParamsEntityContract, V1CustomFieldListKeysParamsEntityCreditGrant, V1CustomFieldListKeysParamsEntityCustomerPlan, V1CustomFieldListKeysParamsEntityCustomer, V1CustomFieldListKeysParamsEntityDiscount, V1CustomFieldListKeysParamsEntityInvoice, V1CustomFieldListKeysParamsEntityPlan, V1CustomFieldListKeysParamsEntityProfessionalService, V1CustomFieldListKeysParamsEntityProduct, V1CustomFieldListKeysParamsEntityRateCard, V1CustomFieldListKeysParamsEntityScheduledCharge, V1CustomFieldListKeysParamsEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldRemoveKeyParams struct {
-	Entity param.Field[V1CustomFieldRemoveKeyParamsEntity] `json:"entity,required"`
-	Key    param.Field[string]                             `json:"key,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity V1CustomFieldRemoveKeyParamsEntity `json:"entity,omitzero,required"`
+	Key    string                             `json:"key,required"`
+	paramObj
 }
 
 func (r V1CustomFieldRemoveKeyParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldRemoveKeyParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldRemoveKeyParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomFieldRemoveKeyParamsEntity string
@@ -328,22 +339,24 @@ const (
 	V1CustomFieldRemoveKeyParamsEntitySubscription        V1CustomFieldRemoveKeyParamsEntity = "subscription"
 )
 
-func (r V1CustomFieldRemoveKeyParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldRemoveKeyParamsEntityAlert, V1CustomFieldRemoveKeyParamsEntityBillableMetric, V1CustomFieldRemoveKeyParamsEntityCharge, V1CustomFieldRemoveKeyParamsEntityCommit, V1CustomFieldRemoveKeyParamsEntityContractCredit, V1CustomFieldRemoveKeyParamsEntityContractProduct, V1CustomFieldRemoveKeyParamsEntityContract, V1CustomFieldRemoveKeyParamsEntityCreditGrant, V1CustomFieldRemoveKeyParamsEntityCustomerPlan, V1CustomFieldRemoveKeyParamsEntityCustomer, V1CustomFieldRemoveKeyParamsEntityDiscount, V1CustomFieldRemoveKeyParamsEntityInvoice, V1CustomFieldRemoveKeyParamsEntityPlan, V1CustomFieldRemoveKeyParamsEntityProfessionalService, V1CustomFieldRemoveKeyParamsEntityProduct, V1CustomFieldRemoveKeyParamsEntityRateCard, V1CustomFieldRemoveKeyParamsEntityScheduledCharge, V1CustomFieldRemoveKeyParamsEntitySubscription:
-		return true
-	}
-	return false
-}
-
 type V1CustomFieldSetValuesParams struct {
-	CustomFields param.Field[map[string]string]                  `json:"custom_fields,required"`
-	Entity       param.Field[V1CustomFieldSetValuesParamsEntity] `json:"entity,required"`
-	EntityID     param.Field[string]                             `json:"entity_id,required" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields,omitzero,required"`
+	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
+	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
+	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
+	// "scheduled_charge", "subscription".
+	Entity   V1CustomFieldSetValuesParamsEntity `json:"entity,omitzero,required"`
+	EntityID string                             `json:"entity_id,required" format:"uuid"`
+	paramObj
 }
 
 func (r V1CustomFieldSetValuesParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow V1CustomFieldSetValuesParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomFieldSetValuesParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomFieldSetValuesParamsEntity string
@@ -368,11 +381,3 @@ const (
 	V1CustomFieldSetValuesParamsEntityScheduledCharge     V1CustomFieldSetValuesParamsEntity = "scheduled_charge"
 	V1CustomFieldSetValuesParamsEntitySubscription        V1CustomFieldSetValuesParamsEntity = "subscription"
 )
-
-func (r V1CustomFieldSetValuesParamsEntity) IsKnown() bool {
-	switch r {
-	case V1CustomFieldSetValuesParamsEntityAlert, V1CustomFieldSetValuesParamsEntityBillableMetric, V1CustomFieldSetValuesParamsEntityCharge, V1CustomFieldSetValuesParamsEntityCommit, V1CustomFieldSetValuesParamsEntityContractCredit, V1CustomFieldSetValuesParamsEntityContractProduct, V1CustomFieldSetValuesParamsEntityContract, V1CustomFieldSetValuesParamsEntityCreditGrant, V1CustomFieldSetValuesParamsEntityCustomerPlan, V1CustomFieldSetValuesParamsEntityCustomer, V1CustomFieldSetValuesParamsEntityDiscount, V1CustomFieldSetValuesParamsEntityInvoice, V1CustomFieldSetValuesParamsEntityPlan, V1CustomFieldSetValuesParamsEntityProfessionalService, V1CustomFieldSetValuesParamsEntityProduct, V1CustomFieldSetValuesParamsEntityRateCard, V1CustomFieldSetValuesParamsEntityScheduledCharge, V1CustomFieldSetValuesParamsEntitySubscription:
-		return true
-	}
-	return false
-}
