@@ -1,5 +1,42 @@
 # Changelog
 
+## 1.0.0 (2025-09-15)
+
+Full Changelog: [v0.3.0...v1.0.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.3.0...v1.0.0)
+
+### ⚠ BREAKING CHANGES
+
+* **api:** add pagination support to multiple endpoints - Added pagination to CustomerList, AlertList, InvoiceList, CommitList, CreditList, CreditGrantList, CustomerAlerts, UsageList, CustomFields list, and ContractListBalances endpoints.
+* **api:** enhance subscriptions and commits/credits - Added Individual enum to SubscriptionConfig and rate_type enums to UpdateCredit/UpdateCommit.
+* **go-sdk:** migrate to V2 code generator - Migrated Go SDK to V2 code generator with improved type safety, better error handling, and enhanced struct generation. Existing Go SDK integrations will require updates to new method signatures and package structure. See our Migration Guide for detailed step-by-step instructions.
+* **api:** add comprehensive shared types to SDK - Added 34 new shared types including BaseThresholdCommit, BaseUsageFilter, Commit, CommitHierarchyConfiguration, CommitRate, CommitSpecifier, CommitSpecifierInput, Contract, ContractV2, ContractWithoutAmendments, Credit, CreditTypeData, Discount, EventTypeFilter, HierarchyConfiguration, ID, Override, OverrideTier, OverwriteRate, PaymentGateConfig, PaymentGateConfigV2, PrepaidBalanceThresholdConfiguration, PrepaidBalanceThresholdConfigurationV2, PropertyFilter, ProService, Rate, RecurringCommitSubscriptionConfig, ScheduledCharge, ScheduleDuration, SchedulePointInTime, SpendThresholdConfiguration, SpendThresholdConfigurationV2, Subscription, Tier, and UpdateBaseThresholdCommit.
+
+### Features
+
+* **api:** add archived_at field to CustomerBillingConfiguration ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+* **api:** add comprehensive shared types to SDK - Added 34 new shared types including BaseThresholdCommit, BaseUsageFilter, Commit, CommitHierarchyConfiguration, CommitRate, CommitSpecifier, CommitSpecifierInput, Contract, ContractV2, ContractWithoutAmendments, Credit, CreditTypeData, Discount, EventTypeFilter, HierarchyConfiguration, ID, Override, OverrideTier, OverwriteRate, PaymentGateConfig, PaymentGateConfigV2, PrepaidBalanceThresholdConfiguration, PrepaidBalanceThresholdConfigurationV2, PropertyFilter, ProService, Rate, RecurringCommitSubscriptionConfig, ScheduledCharge, ScheduleDuration, SchedulePointInTime, SpendThresholdConfiguration, SpendThresholdConfigurationV2, Subscription, Tier, and UpdateBaseThresholdCommit. ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+* **api:** add created_at field to Commit ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+* **api:** add customer billing configuration endpoints - Added set and retrieve endpoints for customer billing configurations. ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+* **api:** add pagination support to multiple endpoints - Added pagination to CustomerList, AlertList, InvoiceList, CommitList, CreditList, CreditGrantList, CustomerAlerts, UsageList, CustomFields list, and ContractListBalances endpoints. ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+* **api:** Add support for granular spend threshold alerts with group key filters. ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+* **api:** enhance subscriptions and commits/credits - Added Individual enum to SubscriptionConfig and rate_type enums to UpdateCredit/UpdateCommit. ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+* **go-sdk:** migrate to V2 code generator - Migrated Go SDK to V2 code generator with improved type safety, better error handling, and enhanced struct generation. Existing Go SDK integrations will require updates to new method signatures and package structure. See our Migration Guide for detailed step-by-step instructions. ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+
+
+### Bug Fixes
+
+* close body before retrying ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+
+
+### Chores
+
+* revert version bump ([1b6a079](https://github.com/Metronome-Industries/metronome-go/commit/1b6a079925f74d8c09f69f09d0ec1383c723583e))
+
+
+### Documentation
+
+* enhance API documentation - Added more detailed descriptions and styling improvements, and enhanced usage filter documentation with additional context. ([c9e9fc1](https://github.com/Metronome-Industries/metronome-go/commit/c9e9fc1eb9a16656fb423fa81abc6e34b63bece5))
+
 ## 0.3.0 (2025-08-15)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.2.0...v0.3.0)
