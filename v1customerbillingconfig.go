@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewV1CustomerBillingConfigService(opts ...option.RequestOption) (r V1Custom
 
 // Set the billing configuration for a given customer.
 func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1CustomerBillingConfigNewParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -50,7 +51,7 @@ func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1Custo
 
 // Fetch the billing configuration for the given customer.
 func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1CustomerBillingConfigGetParams, opts ...option.RequestOption) (res *V1CustomerBillingConfigGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1Custom
 // Delete the billing configuration for a given customer. Note: this is unsupported
 // for Azure and AWS Marketplace customers.
 func (r *V1CustomerBillingConfigService) Delete(ctx context.Context, body V1CustomerBillingConfigDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")

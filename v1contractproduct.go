@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -45,7 +46,7 @@ func NewV1ContractProductService(opts ...option.RequestOption) (r V1ContractProd
 // an ERP system. Give the product a meaningful name as they will appear on
 // customer invoices.
 func (r *V1ContractProductService) New(ctx context.Context, body V1ContractProductNewParams, opts ...option.RequestOption) (res *V1ContractProductNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/products/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *V1ContractProductService) New(ctx context.Context, body V1ContractProdu
 
 // Retrieve a product by its ID, including all metadata and historical changes.
 func (r *V1ContractProductService) Get(ctx context.Context, body V1ContractProductGetParams, opts ...option.RequestOption) (res *V1ContractProductGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/products/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -71,7 +72,7 @@ func (r *V1ContractProductService) Get(ctx context.Context, body V1ContractProdu
 //   - Product type cannot be changed after creation. For incorrect product types,
 //     create a new product and archive the original instead.
 func (r *V1ContractProductService) Update(ctx context.Context, body V1ContractProductUpdateParams, opts ...option.RequestOption) (res *V1ContractProductUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/products/update"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -82,7 +83,7 @@ func (r *V1ContractProductService) Update(ctx context.Context, body V1ContractPr
 // products unless explicitly requested via the `archive_filter` parameter.
 func (r *V1ContractProductService) List(ctx context.Context, params V1ContractProductListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1ContractProductListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contract-pricing/products/list"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -109,7 +110,7 @@ func (r *V1ContractProductService) ListAutoPaging(ctx context.Context, params V1
 // option for newly created rates. Once you archive a product, you can still
 // retrieve it in the UI and API, but you cannot unarchive it.
 func (r *V1ContractProductService) Archive(ctx context.Context, body V1ContractProductArchiveParams, opts ...option.RequestOption) (res *V1ContractProductArchiveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/products/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
