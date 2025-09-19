@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -79,7 +80,7 @@ func NewV1ContractRateCardService(opts ...option.RequestOption) (r V1ContractRat
 //     the original rate card's alias schedule will be updated. The alias will
 //     reference the rate card to which it was most recently assigned.
 func (r *V1ContractRateCardService) New(ctx context.Context, body V1ContractRateCardNewParams, opts ...option.RequestOption) (res *V1ContractRateCardNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -89,7 +90,7 @@ func (r *V1ContractRateCardService) New(ctx context.Context, body V1ContractRate
 // aliases. This endpoint does not return rates - use the dedicated getRates or
 // getRateSchedule endpoints to understand the rates on a rate card.
 func (r *V1ContractRateCardService) Get(ctx context.Context, body V1ContractRateCardGetParams, opts ...option.RequestOption) (res *V1ContractRateCardGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -148,7 +149,7 @@ func (r *V1ContractRateCardService) Get(ctx context.Context, body V1ContractRate
 //     your PLG workflow using that alias will automatically reference the new rate
 //     card
 func (r *V1ContractRateCardService) Update(ctx context.Context, body V1ContractRateCardUpdateParams, opts ...option.RequestOption) (res *V1ContractRateCardUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/update"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -159,7 +160,7 @@ func (r *V1ContractRateCardService) Update(ctx context.Context, body V1ContractR
 // getRates or getRateSchedule endpoints.
 func (r *V1ContractRateCardService) List(ctx context.Context, params V1ContractRateCardListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1ContractRateCardListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contract-pricing/rate-cards/list"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -187,7 +188,7 @@ func (r *V1ContractRateCardService) ListAutoPaging(ctx context.Context, params V
 // Returns the archived rate card ID and stops the rate card from appearing in
 // contract creation workflows.
 func (r *V1ContractRateCardService) Archive(ctx context.Context, body V1ContractRateCardArchiveParams, opts ...option.RequestOption) (res *V1ContractRateCardArchiveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -206,7 +207,7 @@ func (r *V1ContractRateCardService) Archive(ctx context.Context, body V1Contract
 // inclusive of contract-level overrides, use the `getContractRateSchedule`
 // endpoint.
 func (r *V1ContractRateCardService) GetRateSchedule(ctx context.Context, params V1ContractRateCardGetRateScheduleParams, opts ...option.RequestOption) (res *V1ContractRateCardGetRateScheduleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/getRateSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
