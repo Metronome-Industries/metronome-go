@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -80,7 +81,7 @@ func NewV1CustomerInvoiceService(opts ...option.RequestOption) (r V1CustomerInvo
 //   - For voided invoices, the response will indicate VOID status but retain all
 //     original line item details
 func (r *V1CustomerInvoiceService) Get(ctx context.Context, params V1CustomerInvoiceGetParams, opts ...option.RequestOption) (res *V1CustomerInvoiceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -142,7 +143,7 @@ func (r *V1CustomerInvoiceService) Get(ctx context.Context, params V1CustomerInv
 //     status
 func (r *V1CustomerInvoiceService) List(ctx context.Context, params V1CustomerInvoiceListParams, opts ...option.RequestOption) (res *pagination.CursorPage[Invoice], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -213,7 +214,7 @@ func (r *V1CustomerInvoiceService) ListAutoPaging(ctx context.Context, params V1
 
 // Add a one time charge to the specified invoice
 func (r *V1CustomerInvoiceService) AddCharge(ctx context.Context, params V1CustomerInvoiceAddChargeParams, opts ...option.RequestOption) (res *V1CustomerInvoiceAddChargeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -263,7 +264,7 @@ func (r *V1CustomerInvoiceService) AddCharge(ctx context.Context, params V1Custo
 //     periods with no usage
 func (r *V1CustomerInvoiceService) ListBreakdowns(ctx context.Context, params V1CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerInvoiceListBreakdownsResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")

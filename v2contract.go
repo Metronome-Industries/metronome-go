@@ -5,6 +5,7 @@ package metronome
 import (
 	"context"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -52,7 +53,7 @@ func NewV2ContractService(opts ...option.RequestOption) (r V2ContractService) {
 //     balances and ledgers in the credit and commit responses. Using these fields
 //     will cause the query to be slower.
 func (r *V2ContractService) Get(ctx context.Context, body V2ContractGetParams, opts ...option.RequestOption) (res *V2ContractGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -74,7 +75,7 @@ func (r *V2ContractService) Get(ctx context.Context, body V2ContractGetParams, o
 // filter the list of returned contracts. For example, to list only currently
 // active contracts, pass `covering_date` equal to the current time.
 func (r *V2ContractService) List(ctx context.Context, body V2ContractListParams, opts ...option.RequestOption) (res *V2ContractListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -103,7 +104,7 @@ func (r *V2ContractService) List(ctx context.Context, body V2ContractListParams,
 //   - Contract editing must be enabled to use this endpoint. Reach out to your
 //     Metronome representative to learn more.
 func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams, opts ...option.RequestOption) (res *V2ContractEditResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -126,7 +127,7 @@ func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams,
 //     finalized invoice. You can void the invoice beforehand and then remove the
 //     access schedule segment.
 func (r *V2ContractService) EditCommit(ctx context.Context, body V2ContractEditCommitParams, opts ...option.RequestOption) (res *V2ContractEditCommitResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/commits/edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -149,7 +150,7 @@ func (r *V2ContractService) EditCommit(ctx context.Context, body V2ContractEditC
 //     invoice. You can void the invoice beforehand and then remove the access
 //     schedule segment.
 func (r *V2ContractService) EditCredit(ctx context.Context, body V2ContractEditCreditParams, opts ...option.RequestOption) (res *V2ContractEditCreditResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/credits/edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -171,7 +172,7 @@ func (r *V2ContractService) EditCredit(ctx context.Context, body V2ContractEditC
 //   - Details on each individual edit - for example showing that in one edit, a user
 //     added two discounts and incremented a subscription quantity.
 func (r *V2ContractService) GetEditHistory(ctx context.Context, body V2ContractGetEditHistoryParams, opts ...option.RequestOption) (res *V2ContractGetEditHistoryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/getEditHistory"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

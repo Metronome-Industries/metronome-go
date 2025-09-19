@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
@@ -65,7 +66,7 @@ func NewV1CustomFieldService(opts ...option.RequestOption) (r V1CustomFieldServi
 //   - Custom fields for customers, contracts, invoices, products, commits, scheduled
 //     charges, and subscriptions are passed down to the invoice.
 func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAddKeyParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/customFields/addKey"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -77,7 +78,7 @@ func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAdd
 // custom field data while preserving other fields on the same entity. Requires the
 // entity type, entity ID, and array of keys to remove.
 func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFieldDeleteValuesParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/customFields/deleteValues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -90,7 +91,7 @@ func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFi
 // your custom field configuration across different entity types.
 func (r *V1CustomFieldService) ListKeys(ctx context.Context, params V1CustomFieldListKeysParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1CustomFieldListKeysResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/customFields/listKeys"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -118,7 +119,7 @@ func (r *V1CustomFieldService) ListKeysAutoPaging(ctx context.Context, params V1
 // values for this key on entity instances will no longer be accessible once the
 // key is removed.
 func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomFieldRemoveKeyParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/customFields/removeKey"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -130,7 +131,7 @@ func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomField
 // transactional—either all values are set or none are. Custom field values are
 // limited to 200 characters each.
 func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomFieldSetValuesParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/customFields/setValues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)

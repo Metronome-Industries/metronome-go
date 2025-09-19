@@ -5,6 +5,7 @@ package metronome
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewV1ContractRateCardProductOrderService(opts ...option.RequestOption) (r V
 // of specific products on the rate card by moving them relative to their current
 // location.
 func (r *V1ContractRateCardProductOrderService) Update(ctx context.Context, body V1ContractRateCardProductOrderUpdateParams, opts ...option.RequestOption) (res *V1ContractRateCardProductOrderUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/moveRateCardProducts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *V1ContractRateCardProductOrderService) Update(ctx context.Context, body
 // products will appear on customers' invoices. Use this endpoint to set the order
 // of products on the rate card.
 func (r *V1ContractRateCardProductOrderService) Set(ctx context.Context, body V1ContractRateCardProductOrderSetParams, opts ...option.RequestOption) (res *V1ContractRateCardProductOrderSetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/setRateCardProductsOrder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -71,7 +72,7 @@ func NewV1BillableMetricService(opts ...option.RequestOption) (r V1BillableMetri
 //     throughput workflows.
 //   - Use SQL billable metrics if you require more flexible aggregation options.
 func (r *V1BillableMetricService) New(ctx context.Context, body V1BillableMetricNewParams, opts ...option.RequestOption) (res *V1BillableMetricNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/billable-metrics/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -89,7 +90,7 @@ func (r *V1BillableMetricService) New(ctx context.Context, body V1BillableMetric
 //     longer process new usage events but remain accessible for historical
 //     reference.
 func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetricGetParams, opts ...option.RequestOption) (res *V1BillableMetricGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.BillableMetricID == "" {
 		err = errors.New("missing required billable_metric_id parameter")
 		return
@@ -106,7 +107,7 @@ func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetri
 // parameter to include them.
 func (r *V1BillableMetricService) List(ctx context.Context, query V1BillableMetricListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1BillableMetricListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/billable-metrics"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -140,7 +141,7 @@ func (r *V1BillableMetricService) ListAutoPaging(ctx context.Context, query V1Bi
 // Archived billable metrics will be returned on the `getBillableMetric` and
 // `listBillableMetrics` endpoints with a populated `archived_at` field.
 func (r *V1BillableMetricService) Archive(ctx context.Context, body V1BillableMetricArchiveParams, opts ...option.RequestOption) (res *V1BillableMetricArchiveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/billable-metrics/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

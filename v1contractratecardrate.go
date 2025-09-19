@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -48,7 +49,7 @@ func NewV1ContractRateCardRateService(opts ...option.RequestOption) (r V1Contrac
 // endpoint.
 func (r *V1ContractRateCardRateService) List(ctx context.Context, params V1ContractRateCardRateListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1ContractRateCardRateListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contract-pricing/rate-cards/getRates"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -78,7 +79,7 @@ func (r *V1ContractRateCardRateService) ListAutoPaging(ctx context.Context, para
 
 // Add a new rate
 func (r *V1ContractRateCardRateService) Add(ctx context.Context, body V1ContractRateCardRateAddParams, opts ...option.RequestOption) (res *V1ContractRateCardRateAddResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/addRate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -86,7 +87,7 @@ func (r *V1ContractRateCardRateService) Add(ctx context.Context, body V1Contract
 
 // Add new rates
 func (r *V1ContractRateCardRateService) AddMany(ctx context.Context, body V1ContractRateCardRateAddManyParams, opts ...option.RequestOption) (res *V1ContractRateCardRateAddManyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/addRates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

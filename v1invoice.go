@@ -5,6 +5,7 @@ package metronome
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
@@ -51,7 +52,7 @@ func NewV1InvoiceService(opts ...option.RequestOption) (r V1InvoiceService) {
 // If an invoice is attached to a contract with a billing provider on it, the
 // regenerated invoice will be distributed based on the configuration.
 func (r *V1InvoiceService) Regenerate(ctx context.Context, body V1InvoiceRegenerateParams, opts ...option.RequestOption) (res *V1InvoiceRegenerateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/invoices/regenerate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *V1InvoiceService) Regenerate(ctx context.Context, body V1InvoiceRegener
 // collected. Returns the voided invoice ID with the status change applied
 // immediately to stop any payment processing.
 func (r *V1InvoiceService) Void(ctx context.Context, body V1InvoiceVoidParams, opts ...option.RequestOption) (res *V1InvoiceVoidResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/invoices/void"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

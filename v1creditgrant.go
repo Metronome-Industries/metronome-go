@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewV1CreditGrantService(opts ...option.RequestOption) (r V1CreditGrantServi
 
 // Create a new credit grant
 func (r *V1CreditGrantService) New(ctx context.Context, body V1CreditGrantNewParams, opts ...option.RequestOption) (res *V1CreditGrantNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/createGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *V1CreditGrantService) New(ctx context.Context, body V1CreditGrantNewPar
 // List credit grants. This list does not included voided grants.
 func (r *V1CreditGrantService) List(ctx context.Context, params V1CreditGrantListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CreditGrantListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/credits/listGrants"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -70,7 +71,7 @@ func (r *V1CreditGrantService) ListAutoPaging(ctx context.Context, params V1Cred
 
 // Edit an existing credit grant
 func (r *V1CreditGrantService) Edit(ctx context.Context, body V1CreditGrantEditParams, opts ...option.RequestOption) (res *V1CreditGrantEditResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/editGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *V1CreditGrantService) Edit(ctx context.Context, body V1CreditGrantEditP
 // with voided credit grants are not included.
 func (r *V1CreditGrantService) ListEntries(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1CreditGrantListEntriesResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/credits/listEntries"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -105,7 +106,7 @@ func (r *V1CreditGrantService) ListEntriesAutoPaging(ctx context.Context, params
 
 // Void a credit grant
 func (r *V1CreditGrantService) Void(ctx context.Context, body V1CreditGrantVoidParams, opts ...option.RequestOption) (res *V1CreditGrantVoidResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/voidGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
