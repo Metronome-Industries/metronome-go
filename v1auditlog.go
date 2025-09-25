@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
@@ -77,7 +78,7 @@ func NewV1AuditLogService(opts ...option.RequestOption) (r V1AuditLogService) {
 //   - Sort order: Default is `date_asc`; use `date_desc` for newest first
 func (r *V1AuditLogService) List(ctx context.Context, query V1AuditLogListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1AuditLogListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/auditLogs"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

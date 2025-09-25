@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.1 (2025-09-25)
+
+Full Changelog: [v1.0.0...v1.0.1](https://github.com/Metronome-Industries/metronome-go/compare/v1.0.0...v1.0.1)
+
+### Bug Fixes
+
+* bugfix for setting JSON keys with special characters ([4d23ab2](https://github.com/Metronome-Industries/metronome-go/commit/4d23ab2de34f833cf346f37ddb57fb7f29f5e9b1))
+* use slices.Concat instead of sometimes modifying r.Options ([a7a98fd](https://github.com/Metronome-Industries/metronome-go/commit/a7a98fd2bc7038683b60247d6c0cc0a26451183f))
+
+
+### Chores
+
+* bump minimum go version to 1.22 ([ecf5220](https://github.com/Metronome-Industries/metronome-go/commit/ecf522089b64aade1c708be90f7edc3728afaf83))
+* do not install brew dependencies in ./scripts/bootstrap by default ([cf01d47](https://github.com/Metronome-Industries/metronome-go/commit/cf01d4722bbe3547eafdf8d915a2ba8f761ca9ed))
+* update more docs for 1.22 ([df56a50](https://github.com/Metronome-Industries/metronome-go/commit/df56a50627ba190d00aee601123d5b720bfd2d29))
+
 ## 1.0.0 (2025-09-15)
 
 Full Changelog: [v0.3.0...v1.0.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.3.0...v1.0.0)

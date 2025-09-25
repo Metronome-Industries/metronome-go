@@ -5,6 +5,7 @@ package metronome
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/Metronome-Industries/metronome-go/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
@@ -79,7 +80,7 @@ func NewV1AlertService(opts ...option.RequestOption) (r V1AlertService) {
 //     evaluations in real-time as usage events stream in, unlike competitors who
 //     rely on periodic polling or batch evaluation cycles
 func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ...option.RequestOption) (res *V1AlertNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/alerts/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -113,7 +114,7 @@ func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ..
 //   - Historical preservation: Archive operation maintains alert history and
 //     configuration for compliance and auditing
 func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams, opts ...option.RequestOption) (res *V1AlertArchiveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/alerts/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
