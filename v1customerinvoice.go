@@ -335,9 +335,7 @@ type Invoice struct {
 	Type        string                `json:"type,required"`
 	AmendmentID string                `json:"amendment_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
-	//
-	// Any of "billable", "unbillable".
-	BillableStatus InvoiceBillableStatus `json:"billable_status"`
+	BillableStatus any `json:"billable_status"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	ContractCustomFields map[string]string       `json:"contract_custom_fields"`
 	ContractID           string                  `json:"contract_id" format:"uuid"`
@@ -714,14 +712,6 @@ func (r *InvoiceLineItemTier) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// This field's availability is dependent on your client's configuration.
-type InvoiceBillableStatus string
-
-const (
-	InvoiceBillableStatusBillable   InvoiceBillableStatus = "billable"
-	InvoiceBillableStatusUnbillable InvoiceBillableStatus = "unbillable"
-)
-
 type InvoiceCorrectionRecord struct {
 	CorrectedInvoiceID       string                                          `json:"corrected_invoice_id,required" format:"uuid"`
 	Memo                     string                                          `json:"memo,required"`
@@ -750,15 +740,27 @@ type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	BillingProviderType string `json:"billing_provider_type,required"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
-	ExternalStatus    string    `json:"external_status"`
-	InvoiceID         string    `json:"invoice_id"`
+	ExternalStatus string `json:"external_status"`
+	InvoiceID      string `json:"invoice_id"`
+	// The subtotal amount invoiced, if available from the billing provider.
+	InvoicedSubTotal float64 `json:"invoiced_sub_total"`
+	// The total amount invoiced, if available from the billing provider.
+	InvoicedTotal     float64   `json:"invoiced_total"`
 	IssuedAtTimestamp time.Time `json:"issued_at_timestamp" format:"date-time"`
+	// A URL to the PDF of the invoice, if available from the billing provider.
+	PdfURL string `json:"pdf_url" format:"uri"`
+	// Tax details for the invoice, if available from the billing provider.
+	Tax InvoiceCorrectionRecordCorrectedExternalInvoiceTax `json:"tax"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingProviderType respjson.Field
 		ExternalStatus      respjson.Field
 		InvoiceID           respjson.Field
+		InvoicedSubTotal    respjson.Field
+		InvoicedTotal       respjson.Field
 		IssuedAtTimestamp   respjson.Field
+		PdfURL              respjson.Field
+		Tax                 respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -770,21 +772,57 @@ func (r *InvoiceCorrectionRecordCorrectedExternalInvoice) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Tax details for the invoice, if available from the billing provider.
+type InvoiceCorrectionRecordCorrectedExternalInvoiceTax struct {
+	// The total tax amount applied to the invoice.
+	TotalTaxAmount float64 `json:"total_tax_amount"`
+	// The total taxable amount of the invoice.
+	TotalTaxableAmount float64 `json:"total_taxable_amount"`
+	// The transaction ID associated with the tax calculation.
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TotalTaxAmount     respjson.Field
+		TotalTaxableAmount respjson.Field
+		TransactionID      respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvoiceCorrectionRecordCorrectedExternalInvoiceTax) RawJSON() string { return r.JSON.raw }
+func (r *InvoiceCorrectionRecordCorrectedExternalInvoiceTax) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type InvoiceExternalInvoice struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace".
 	BillingProviderType string `json:"billing_provider_type,required"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
-	ExternalStatus    string    `json:"external_status"`
-	InvoiceID         string    `json:"invoice_id"`
+	ExternalStatus string `json:"external_status"`
+	InvoiceID      string `json:"invoice_id"`
+	// The subtotal amount invoiced, if available from the billing provider.
+	InvoicedSubTotal float64 `json:"invoiced_sub_total"`
+	// The total amount invoiced, if available from the billing provider.
+	InvoicedTotal     float64   `json:"invoiced_total"`
 	IssuedAtTimestamp time.Time `json:"issued_at_timestamp" format:"date-time"`
+	// A URL to the PDF of the invoice, if available from the billing provider.
+	PdfURL string `json:"pdf_url" format:"uri"`
+	// Tax details for the invoice, if available from the billing provider.
+	Tax InvoiceExternalInvoiceTax `json:"tax"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingProviderType respjson.Field
 		ExternalStatus      respjson.Field
 		InvoiceID           respjson.Field
+		InvoicedSubTotal    respjson.Field
+		InvoicedTotal       respjson.Field
 		IssuedAtTimestamp   respjson.Field
+		PdfURL              respjson.Field
+		Tax                 respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -793,6 +831,30 @@ type InvoiceExternalInvoice struct {
 // Returns the unmodified JSON received from the API
 func (r InvoiceExternalInvoice) RawJSON() string { return r.JSON.raw }
 func (r *InvoiceExternalInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Tax details for the invoice, if available from the billing provider.
+type InvoiceExternalInvoiceTax struct {
+	// The total tax amount applied to the invoice.
+	TotalTaxAmount float64 `json:"total_tax_amount"`
+	// The total taxable amount of the invoice.
+	TotalTaxableAmount float64 `json:"total_taxable_amount"`
+	// The transaction ID associated with the tax calculation.
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TotalTaxAmount     respjson.Field
+		TotalTaxableAmount respjson.Field
+		TransactionID      respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvoiceExternalInvoiceTax) RawJSON() string { return r.JSON.raw }
+func (r *InvoiceExternalInvoiceTax) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -275,6 +275,9 @@ type ContractV2Override = shared.ContractV2Override
 type ContractV2OverrideOverrideSpecifier = shared.ContractV2OverrideOverrideSpecifier
 
 // This is an alias to an internal type.
+type ContractV2OverrideOverwriteRate = shared.ContractV2OverrideOverwriteRate
+
+// This is an alias to an internal type.
 type ContractV2OverrideProduct = shared.ContractV2OverrideProduct
 
 // This is an alias to an internal type.

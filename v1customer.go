@@ -159,7 +159,7 @@ func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1Customer
 //   - Ingest aliases remain idempotent for archived customers. In order to reuse an
 //     ingest alias, first remove the ingest alias from the customer prior to
 //     archiving.
-//   - Any alerts associated with the customer will no longer be triggered.
+//   - Any notifications associated with the customer will no longer be triggered.
 func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveParams, opts ...option.RequestOption) (res *V1CustomerArchiveResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/customers/archive"
@@ -404,6 +404,8 @@ type CustomerDetail struct {
 	// in usage events
 	IngestAliases []string `json:"ingest_aliases,required"`
 	Name          string   `json:"name,required"`
+	// RFC 3339 timestamp indicating when the customer was last updated.
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// RFC 3339 timestamp indicating when the customer was archived. Null if the
 	// customer is active.
 	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
@@ -418,6 +420,7 @@ type CustomerDetail struct {
 		ExternalID            respjson.Field
 		IngestAliases         respjson.Field
 		Name                  respjson.Field
+		UpdatedAt             respjson.Field
 		ArchivedAt            respjson.Field
 		CurrentBillableStatus respjson.Field
 		ExtraFields           map[string]respjson.Field

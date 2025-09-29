@@ -34,16 +34,15 @@ func NewV1AlertService(opts ...option.RequestOption) (r V1AlertService) {
 	return
 }
 
-// Create a new alert to monitor customer spending, balances, and billing metrics
-// in real-time. Metronome's alert system provides industry-leading speed with
-// immediate evaluation capabilities, enabling you to proactively manage customer
-// accounts and prevent revenue leakage.
+// Create a new threshold notification to monitor customer spending, balances, and
+// billing metrics in real-time. Metronome's notification system provides
+// industry-leading speed with immediate evaluation capabilities, enabling you to
+// proactively manage customer accounts and prevent revenue leakage.
 //
-// This endpoint creates configurable alerts that continuously monitor various
-// billing thresholds including spend limits, credit balances, commitment
-// utilization, and invoice totals. Alerts can be configured globally for all
-// customers or targeted to specific customer accounts. Custom fields can be used
-// on certain alert types to further target alerts to groups of customers.
+// This endpoint creates configurable threshold notifications that continuously
+// monitor various billing thresholds including spend limits, credit balances,
+// commitment utilization, and invoice totals. Threshold notifications can be
+// configured globally for all customers or targeted to specific customer accounts.
 //
 // ### Use this endpoint to:
 //
@@ -59,26 +58,27 @@ func NewV1AlertService(opts ...option.RequestOption) (r V1AlertService) {
 //
 // A successful response returns a CustomerAlert object containing:
 //
-// - The alert configuration with its unique ID and current status
-// - The customer's evaluation status (ok, in_alarm, or evaluating)
-// - Alert metadata including type, threshold values, and update timestamps
+//   - The threshold notification configuration with its unique ID and current status
+//   - The customer's evaluation status (ok, in_alarm, or evaluating)
+//   - Threshold notification metadata including type, threshold values, and update
+//     timestamps
 //
 // ### Usage guidelines:
 //
 //   - Immediate evaluation: Set `evaluate_on_create` : `true` (default) for instant
 //     evaluation against existing customers
-//   - Uniqueness constraints: Each alert must have a unique `uniqueness_key` within
-//     your organization. Use `release_uniqueness_key` : `true` when archiving to
-//     reuse keys
-//   - Alert type requirements: Different alert types require specific fields (e.g.,
-//     `billable_metric_id` for usage alerts, `credit_type_id` for credit-based
-//     alerts)
-//   - Webhook delivery: Alerts trigger webhook notifications for real-time
-//     integration with your systems. Configure webhook endpoints before creating
-//     alerts
-//   - Performance at scale: Metronome's event-driven architecture processes alert
-//     evaluations in real-time as usage events stream in, unlike competitors who
-//     rely on periodic polling or batch evaluation cycles
+//   - Uniqueness constraints: Each threshold notification must have a unique
+//     `uniqueness_key` within your organization. Use `release_uniqueness_key` :
+//     `true` when archiving to reuse keys
+//   - Notification type requirements: Different threshold notification types require
+//     specific fields (e.g., `billable_metric_id` for usage notifications,
+//     `credit_type_id` for credit-based threshold notifications)
+//   - Webhook delivery: Threshold notifications trigger webhook notifications for
+//     real-time integration with your systems. Configure webhook endpoints before
+//     creating threshold notifications
+//   - Performance at scale: Metronome's event-driven architecture processes
+//     threshold notification evaluations in real-time as usage events stream in,
+//     unlike competitors who rely on periodic polling or batch evaluation cycles
 func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ...option.RequestOption) (res *V1AlertNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/alerts/create"
@@ -86,33 +86,34 @@ func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ..
 	return
 }
 
-// Permanently disable an alert and remove it from active monitoring across all
-// customers. Archived alerts stop evaluating immediately and can optionally
-// release their uniqueness key for reuse in future alert configurations.
+// Permanently disable a threshold notification and remove it from active
+// monitoring across all customers. Archived threshold notifications stop
+// evaluating immediately and can optionally release their uniqueness key for reuse
+// in future threshold notification configurations.
 //
 // ### Use this endpoint to:
 //
-// - Decommission alerts that are no longer needed
-// - Clean up test or deprecated alert configurations
-// - Free up uniqueness keys for reuse with new alerts
-// - Stop alert evaluations without losing historical configuration data
-// - Disable outdated monitoring rules during pricing model transitions
+//   - Decommission threshold notifications that are no longer needed
+//   - Clean up test or deprecated threshold notification configurations
+//   - Free up uniqueness keys for reuse with new threshold notifications
+//   - Stop threshold notification evaluations without losing historical
+//     configuration data
+//   - Disable outdated monitoring rules during pricing model transitions
 //
 // ### Key response fields:
 //
-// - data: Object containing the archived alert's ID
-// - Alert evaluation stops immediately for all affected customers
-// - Historical alert data and configurations remain accessible for audit purposes
+// - data: Object containing the archived threshold notification's ID
 //
 // ### Usage guidelines:
 //
-//   - Irreversible for evaluation: Archived alerts cannot be re-enabled; create a
-//     new alert to resume monitoring
+//   - Irreversible for evaluation: Archived threshold notifications cannot be
+//     re-enabled; create a new threshold notification to resume monitoring
 //   - Uniqueness key handling: Set `release_uniqueness_key` : `true` to reuse the
-//     key in future alerts
-//   - Immediate effect: Alert evaluation stops instantly across all customers
-//   - Historical preservation: Archive operation maintains alert history and
-//     configuration for compliance and auditing
+//     key in future threshold notifications
+//   - Immediate effect: Threshold notification evaluation stops instantly across all
+//     customers
+//   - Historical preservation: Archive operation maintains threshold notification
+//     history and configuration for compliance and auditing
 func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams, opts ...option.RequestOption) (res *V1AlertArchiveResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/alerts/archive"
@@ -153,7 +154,7 @@ func (r *V1AlertArchiveResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1AlertNewParams struct {
-	// Type of the alert
+	// Type of the threshold notification
 	//
 	// Any of "low_credit_balance_reached", "spend_threshold_reached",
 	// "monthly_invoice_total_spend_threshold_reached",
@@ -167,44 +168,46 @@ type V1AlertNewParams struct {
 	// "low_remaining_contract_credit_and_commit_balance_reached",
 	// "invoice_total_reached".
 	AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero,required"`
-	// Name of the alert
+	// Name of the threshold notification
 	Name string `json:"name,required"`
-	// Threshold value of the alert policy. Depending upon the alert type, this number
-	// may represent a financial amount, the days remaining, or a percentage reached.
+	// Threshold value of the notification policy. Depending upon the notification
+	// type, this number may represent a financial amount, the days remaining, or a
+	// percentage reached.
 	Threshold float64 `json:"threshold,required"`
-	// For alerts of type `usage_threshold_reached`, specifies which billable metric to
-	// track the usage for.
+	// For threshold notifications of type `usage_threshold_reached`, specifies which
+	// billable metric to track the usage for.
 	BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
-	// ID of the credit's currency, defaults to USD. If the specific alert type
+	// ID of the credit's currency, defaults to USD. If the specific notification type
 	// requires a pricing unit/currency, find the ID in the
 	// [Metronome app](https://app.metronome.com/offering/pricing-units).
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// If provided, will create this alert for this specific customer. To create an
-	// alert for all customers, do not specify a `customer_id`.
+	// If provided, will create this threshold notification for this specific customer.
+	// To create a notification for all customers, do not specify a `customer_id`.
 	CustomerID param.Opt[string] `json:"customer_id,omitzero" format:"uuid"`
-	// If true, the alert will evaluate immediately on customers that already meet the
-	// alert threshold. If false, it will only evaluate on future customers that
-	// trigger the alert threshold. Defaults to true.
+	// If true, the threshold notification will evaluate immediately on customers that
+	// already meet the notification threshold. If false, it will only evaluate on
+	// future customers that trigger the threshold. Defaults to true.
 	EvaluateOnCreate param.Opt[bool] `json:"evaluate_on_create,omitzero"`
-	// If provided, will create this alert for this specific plan. To create an alert
-	// for all customers, do not specify a `plan_id`.
+	// If provided, will create this threshold notification for this specific plan. To
+	// create a notification for all customers, do not specify a `plan_id`.
 	PlanID param.Opt[string] `json:"plan_id,omitzero" format:"uuid"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
 	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
-	// An array of strings, representing a way to filter the credit grant this alert
-	// applies to, by looking at the credit_grant_type field on the credit grant. This
-	// field is only defined for CreditPercentage and CreditBalance alerts
+	// An array of strings, representing a way to filter the credit grant this
+	// threshold notification applies to, by looking at the credit_grant_type field on
+	// the credit grant. This field is only defined for CreditPercentage and
+	// CreditBalance notifications
 	CreditGrantTypeFilters []string `json:"credit_grant_type_filters,omitzero"`
-	// A list of custom field filters for alert types that support advanced filtering.
-	// Only present for contract invoices.
+	// A list of custom field filters for threshold notification types that support
+	// advanced filtering. Only present for contract invoices.
 	CustomFieldFilters []V1AlertNewParamsCustomFieldFilter `json:"custom_field_filters,omitzero"`
-	// Only present for `spend_threshold_reached` alerts. Scope alert to a specific
-	// group key on individual line items.
+	// Only present for `spend_threshold_reached` notifications. Scope notification to
+	// a specific group key on individual line items.
 	GroupValues []V1AlertNewParamsGroupValue `json:"group_values,omitzero"`
-	// Only supported for invoice_total_reached alerts. A list of invoice types to
-	// evaluate.
+	// Only supported for invoice_total_reached threshold notifications. A list of
+	// invoice types to evaluate.
 	InvoiceTypesFilter []string `json:"invoice_types_filter,omitzero"`
 	paramObj
 }
@@ -217,7 +220,7 @@ func (r *V1AlertNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Type of the alert
+// Type of the threshold notification
 type V1AlertNewParamsAlertType string
 
 const (
@@ -276,9 +279,10 @@ func (r *V1AlertNewParamsGroupValue) UnmarshalJSON(data []byte) error {
 }
 
 type V1AlertArchiveParams struct {
-	// The Metronome ID of the alert
+	// The Metronome ID of the threshold notification
 	ID string `json:"id,required" format:"uuid"`
-	// If true, resets the uniqueness key on this alert so it can be re-used
+	// If true, resets the uniqueness key on this threshold notification so it can be
+	// re-used
 	ReleaseUniquenessKey param.Opt[bool] `json:"release_uniqueness_key,omitzero"`
 	paramObj
 }
