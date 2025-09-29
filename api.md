@@ -478,3 +478,49 @@ Methods:
 
 - <code title="post /v1/contract-pricing/rate-cards/getNamedSchedule">client.V1.Contracts.NamedSchedules.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1ContractNamedScheduleService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1ContractNamedScheduleGetParams">V1ContractNamedScheduleGetParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1ContractNamedScheduleGetResponse">V1ContractNamedScheduleGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v1/contract-pricing/rate-cards/updateNamedSchedule">client.V1.Contracts.NamedSchedules.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1ContractNamedScheduleService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#V1ContractNamedScheduleUpdateParams">V1ContractNamedScheduleUpdateParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+# Packages
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PackageNewResponse">PackageNewResponse</a>
+
+Methods:
+
+- <code title="post /v1/packages/create">client.Packages.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PackageService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PackageNewParams">PackageNewParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PackageNewResponse">PackageNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# Notifications
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationNewResponse">NotificationNewResponse</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationGetResponse">NotificationGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationUpdateResponse">NotificationUpdateResponse</a>
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationArchiveResponse">NotificationArchiveResponse</a>
+
+Methods:
+
+- <code title="post /v2/notifications/create">client.Notifications.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationNewParams">NotificationNewParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationNewResponse">NotificationNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v2/notifications/get">client.Notifications.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationGetParams">NotificationGetParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationGetResponse">NotificationGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v2/notifications/edit">client.Notifications.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationUpdateParams">NotificationUpdateParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationUpdateResponse">NotificationUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v2/notifications/archive">client.Notifications.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationService.Archive">Archive</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationArchiveParams">NotificationArchiveParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationArchiveResponse">NotificationArchiveResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Offset
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationOffsetListResponse">NotificationOffsetListResponse</a>
+
+Methods:
+
+- <code title="post /v2/notifications/offset/list">client.Notifications.Offset.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationOffsetService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationOffsetListParams">NotificationOffsetListParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationOffsetListResponse">NotificationOffsetListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## System
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationSystemListResponse">NotificationSystemListResponse</a>
+
+Methods:
+
+- <code title="post /v2/notifications/system/list">client.Notifications.System.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationSystemService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationSystemListResponse">NotificationSystemListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>

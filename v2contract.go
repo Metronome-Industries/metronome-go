@@ -520,7 +520,7 @@ type V2ContractGetEditHistoryResponseDataAddOverride struct {
 	Multiplier            float64                                                            `json:"multiplier"`
 	OverrideSpecifiers    []V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier `json:"override_specifiers"`
 	OverrideTiers         []shared.OverrideTier                                              `json:"override_tiers"`
-	OverwriteRate         shared.OverwriteRate                                               `json:"overwrite_rate"`
+	OverwriteRate         V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate       `json:"overwrite_rate"`
 	Priority              float64                                                            `json:"priority"`
 	Product               V2ContractGetEditHistoryResponseDataAddOverrideProduct             `json:"product"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
@@ -584,6 +584,45 @@ func (r V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier) RawJSO
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate struct {
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	RateType   string                `json:"rate_type,required"`
+	CreditType shared.CreditTypeData `json:"credit_type"`
+	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+	// processors.
+	CustomRate map[string]any `json:"custom_rate"`
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
+	IsProrated bool `json:"is_prorated"`
+	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+	Price float64 `json:"price"`
+	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+	Quantity float64 `json:"quantity"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.Tier `json:"tiers"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RateType    respjson.Field
+		CreditType  respjson.Field
+		CustomRate  respjson.Field
+		IsProrated  respjson.Field
+		Price       respjson.Field
+		Quantity    respjson.Field
+		Tiers       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1725,12 +1764,15 @@ type V2ContractGetEditHistoryResponseDataUpdateRecurringCommit struct {
 	AccessAmount  V2ContractGetEditHistoryResponseDataUpdateRecurringCommitAccessAmount  `json:"access_amount"`
 	EndingBefore  time.Time                                                              `json:"ending_before" format:"date-time"`
 	InvoiceAmount V2ContractGetEditHistoryResponseDataUpdateRecurringCommitInvoiceAmount `json:"invoice_amount"`
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType string `json:"rate_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
 		AccessAmount  respjson.Field
 		EndingBefore  respjson.Field
 		InvoiceAmount respjson.Field
+		RateType      respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -1788,11 +1830,14 @@ type V2ContractGetEditHistoryResponseDataUpdateRecurringCredit struct {
 	ID           string                                                                `json:"id,required" format:"uuid"`
 	AccessAmount V2ContractGetEditHistoryResponseDataUpdateRecurringCreditAccessAmount `json:"access_amount"`
 	EndingBefore time.Time                                                             `json:"ending_before" format:"date-time"`
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType string `json:"rate_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		AccessAmount respjson.Field
 		EndingBefore respjson.Field
+		RateType     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2095,12 +2140,16 @@ type V2ContractEditParams struct {
 	// invoices. Defaults to true.
 	AllowContractEndingBeforeFinalizedInvoice param.Opt[bool] `json:"allow_contract_ending_before_finalized_invoice,omitzero"`
 	// Optional uniqueness key to prevent duplicate contract edits.
-	UniquenessKey                           param.Opt[string]                                  `json:"uniqueness_key,omitzero"`
-	AddCommits                              []V2ContractEditParamsAddCommit                    `json:"add_commits,omitzero"`
-	AddCredits                              []V2ContractEditParamsAddCredit                    `json:"add_credits,omitzero"`
-	AddDiscounts                            []V2ContractEditParamsAddDiscount                  `json:"add_discounts,omitzero"`
-	AddOverrides                            []V2ContractEditParamsAddOverride                  `json:"add_overrides,omitzero"`
-	AddPrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfigurationV2Param `json:"add_prepaid_balance_threshold_configuration,omitzero"`
+	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
+	// Update the billing provider configuration on the contract. Currently only
+	// supports adding a billing provider configuration to a contract that does not
+	// already have one.
+	AddBillingProviderConfigurationUpdate   V2ContractEditParamsAddBillingProviderConfigurationUpdate `json:"add_billing_provider_configuration_update,omitzero"`
+	AddCommits                              []V2ContractEditParamsAddCommit                           `json:"add_commits,omitzero"`
+	AddCredits                              []V2ContractEditParamsAddCredit                           `json:"add_credits,omitzero"`
+	AddDiscounts                            []V2ContractEditParamsAddDiscount                         `json:"add_discounts,omitzero"`
+	AddOverrides                            []V2ContractEditParamsAddOverride                         `json:"add_overrides,omitzero"`
+	AddPrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfigurationV2Param        `json:"add_prepaid_balance_threshold_configuration,omitzero"`
 	// This field's availability is dependent on your client's configuration.
 	AddProfessionalServices        []V2ContractEditParamsAddProfessionalService `json:"add_professional_services,omitzero"`
 	AddRecurringCommits            []V2ContractEditParamsAddRecurringCommit     `json:"add_recurring_commits,omitzero"`
@@ -2144,6 +2193,80 @@ func (r V2ContractEditParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *V2ContractEditParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the billing provider configuration on the contract. Currently only
+// supports adding a billing provider configuration to a contract that does not
+// already have one.
+//
+// The properties BillingProviderConfiguration, Schedule are required.
+type V2ContractEditParamsAddBillingProviderConfigurationUpdate struct {
+	BillingProviderConfiguration V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration `json:"billing_provider_configuration,omitzero,required"`
+	// Indicates when the billing provider will be active on the contract. Any charges
+	// accrued during the schedule will be billed to the indicated billing provider.
+	Schedule V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule `json:"schedule,omitzero,required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddBillingProviderConfigurationUpdate) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddBillingProviderConfigurationUpdate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration struct {
+	BillingProviderConfigurationID param.Opt[string] `json:"billing_provider_configuration_id,omitzero" format:"uuid"`
+	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
+	// "quickbooks_online", "workday", "gcp_marketplace".
+	BillingProvider string `json:"billing_provider,omitzero"`
+	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+	DeliveryMethod string `json:"delivery_method,omitzero"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration](
+		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+	)
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration](
+		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
+	)
+}
+
+// Indicates when the billing provider will be active on the contract. Any charges
+// accrued during the schedule will be billed to the indicated billing provider.
+//
+// The property EffectiveAt is required.
+type V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule struct {
+	// When the billing provider update will take effect.
+	//
+	// Any of "START_OF_CURRENT_PERIOD".
+	EffectiveAt string `json:"effective_at,omitzero,required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule](
+		"effective_at", "START_OF_CURRENT_PERIOD",
+	)
 }
 
 // The properties ProductID, Type are required.
@@ -3877,6 +4000,11 @@ type V2ContractEditParamsUpdateRecurringCommit struct {
 	EndingBefore      param.Opt[time.Time]                                   `json:"ending_before,omitzero" format:"date-time"`
 	AccessAmount      V2ContractEditParamsUpdateRecurringCommitAccessAmount  `json:"access_amount,omitzero"`
 	InvoiceAmount     V2ContractEditParamsUpdateRecurringCommitInvoiceAmount `json:"invoice_amount,omitzero"`
+	// If provided, updates the recurring commit to use the specified rate type when
+	// generating future commits.
+	//
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType string `json:"rate_type,omitzero"`
 	paramObj
 }
 
@@ -3886,6 +4014,12 @@ func (r V2ContractEditParamsUpdateRecurringCommit) MarshalJSON() (data []byte, e
 }
 func (r *V2ContractEditParamsUpdateRecurringCommit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdateRecurringCommit](
+		"rate_type", "LIST_RATE", "COMMIT_RATE",
+	)
 }
 
 type V2ContractEditParamsUpdateRecurringCommitAccessAmount struct {
@@ -3921,6 +4055,11 @@ type V2ContractEditParamsUpdateRecurringCredit struct {
 	RecurringCreditID string                                                `json:"recurring_credit_id,required" format:"uuid"`
 	EndingBefore      param.Opt[time.Time]                                  `json:"ending_before,omitzero" format:"date-time"`
 	AccessAmount      V2ContractEditParamsUpdateRecurringCreditAccessAmount `json:"access_amount,omitzero"`
+	// If provided, updates the recurring credit to use the specified rate type when
+	// generating future credits.
+	//
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType string `json:"rate_type,omitzero"`
 	paramObj
 }
 
@@ -3930,6 +4069,12 @@ func (r V2ContractEditParamsUpdateRecurringCredit) MarshalJSON() (data []byte, e
 }
 func (r *V2ContractEditParamsUpdateRecurringCredit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdateRecurringCredit](
+		"rate_type", "LIST_RATE", "COMMIT_RATE",
+	)
 }
 
 type V2ContractEditParamsUpdateRecurringCreditAccessAmount struct {
@@ -4112,9 +4257,11 @@ type V2ContractEditCommitParams struct {
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers      []shared.CommitSpecifierInputParam        `json:"specifiers,omitzero"`
-	AccessSchedule  V2ContractEditCommitParamsAccessSchedule  `json:"access_schedule,omitzero"`
-	InvoiceSchedule V2ContractEditCommitParamsInvoiceSchedule `json:"invoice_schedule,omitzero"`
+	Specifiers     []shared.CommitSpecifierInputParam       `json:"specifiers,omitzero"`
+	AccessSchedule V2ContractEditCommitParamsAccessSchedule `json:"access_schedule,omitzero"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfigurationParam  `json:"hierarchy_configuration,omitzero"`
+	InvoiceSchedule        V2ContractEditCommitParamsInvoiceSchedule `json:"invoice_schedule,omitzero"`
 	// If provided, updates the commit to use the specified rate type for current and
 	// future invoices. Previously finalized invoices will need to be voided and
 	// regenerated to reflect the rate type change.
@@ -4291,6 +4438,8 @@ type V2ContractEditCreditParams struct {
 	// body of `specifiers`.
 	Specifiers     []shared.CommitSpecifierInputParam       `json:"specifiers,omitzero"`
 	AccessSchedule V2ContractEditCreditParamsAccessSchedule `json:"access_schedule,omitzero"`
+	// Optional configuration for credit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
 	// If provided, updates the credit to use the specified rate type for current and
 	// future invoices. Previously finalized invoices will need to be voided and
 	// regenerated to reflect the rate type change.

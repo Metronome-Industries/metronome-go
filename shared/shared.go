@@ -2094,7 +2094,7 @@ type ContractV2Override struct {
 	Multiplier            float64                               `json:"multiplier"`
 	OverrideSpecifiers    []ContractV2OverrideOverrideSpecifier `json:"override_specifiers"`
 	OverrideTiers         []OverrideTier                        `json:"override_tiers"`
-	OverwriteRate         OverwriteRate                         `json:"overwrite_rate"`
+	OverwriteRate         ContractV2OverrideOverwriteRate       `json:"overwrite_rate"`
 	Priority              float64                               `json:"priority"`
 	Product               ContractV2OverrideProduct             `json:"product"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
@@ -2156,6 +2156,43 @@ type ContractV2OverrideOverrideSpecifier struct {
 // Returns the unmodified JSON received from the API
 func (r ContractV2OverrideOverrideSpecifier) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2OverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2OverrideOverwriteRate struct {
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	RateType   string         `json:"rate_type,required"`
+	CreditType CreditTypeData `json:"credit_type"`
+	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+	// processors.
+	CustomRate map[string]any `json:"custom_rate"`
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
+	IsProrated bool `json:"is_prorated"`
+	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+	Price float64 `json:"price"`
+	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+	Quantity float64 `json:"quantity"`
+	// Only set for TIERED rate_type.
+	Tiers []Tier `json:"tiers"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RateType    respjson.Field
+		CreditType  respjson.Field
+		CustomRate  respjson.Field
+		IsProrated  respjson.Field
+		Price       respjson.Field
+		Quantity    respjson.Field
+		Tiers       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2OverrideOverwriteRate) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2OverrideOverwriteRate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3088,7 +3125,7 @@ type ContractWithoutAmendments struct {
 	Transitions            []ContractWithoutAmendmentsTransition           `json:"transitions,required"`
 	UsageStatementSchedule ContractWithoutAmendmentsUsageStatementSchedule `json:"usage_statement_schedule,required"`
 	Credits                []Credit                                        `json:"credits"`
-	// This field's availability is dependent on your client's configuration.
+	// This field's availability is dependent on your client's
 	Discounts    []Discount `json:"discounts"`
 	EndingBefore time.Time  `json:"ending_before" format:"date-time"`
 	// Either a **parent** configuration with a list of children or a **child**

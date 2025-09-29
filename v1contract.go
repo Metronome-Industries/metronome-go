@@ -430,11 +430,12 @@ func (r *V1ContractService) SetUsageFilter(ctx context.Context, body V1ContractS
 	return
 }
 
-// Update or and an end date to a contract. Ending a contract early will impact
+// Update or add an end date to a contract. Ending a contract early will impact
 // draft usage statements, truncate any terms, and remove upcoming scheduled
 // invoices. Moving the date into the future will only extend the contract length.
-// Terms and scheduled invoices are not extended. Use this if a contract's end date
-// has changed or if a perpetual contract ends.
+// Terms and scheduled invoices are not extended. In-advance subscriptions will not
+// be extended. Use this if a contract's end date has changed or if a perpetual
+// contract ends.
 func (r *V1ContractService) UpdateEndDate(ctx context.Context, body V1ContractUpdateEndDateParams, opts ...option.RequestOption) (res *V1ContractUpdateEndDateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/updateEndDate"

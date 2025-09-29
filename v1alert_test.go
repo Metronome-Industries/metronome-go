@@ -43,7 +43,7 @@ func TestV1AlertNewWithOptionalParams(t *testing.T) {
 			Key:   "key",
 			Value: metronome.String("value"),
 		}},
-		InvoiceTypesFilter: []string{"PLAN_ARREARS, SCHEDULED, USAGE, CORRECTION, CREDIT_PURCHASE, or SEAT_PURCHASE"},
+		InvoiceTypesFilter: []string{"SCHEDULED or USAGE"},
 		PlanID:             metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		UniquenessKey:      metronome.String("x"),
 	})
