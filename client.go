@@ -20,6 +20,7 @@ type Client struct {
 	V2            V2Service
 	V1            V1Service
 	Packages      PackageService
+	Payments      PaymentService
 	Notifications NotificationService
 }
 
@@ -53,6 +54,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.V2 = NewV2Service(opts...)
 	r.V1 = NewV1Service(opts...)
 	r.Packages = NewPackageService(opts...)
+	r.Payments = NewPaymentService(opts...)
 	r.Notifications = NewNotificationService(opts...)
 
 	return
