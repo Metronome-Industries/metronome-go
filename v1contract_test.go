@@ -185,6 +185,11 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				ContractID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				CustomerID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			},
+			ParentBehavior: metronome.V1ContractNewParamsHierarchyConfigurationParentBehavior{
+				InvoiceConsolidationType: "CONCATENATE",
+			},
+			Payer:                  "SELF",
+			UsageStatementBehavior: "CONSOLIDATE",
 		},
 		MultiplierOverridePrioritization: metronome.V1ContractNewParamsMultiplierOverridePrioritizationLowestMultiplier,
 		Name:                             metronome.String("name"),

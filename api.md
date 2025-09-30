@@ -489,16 +489,6 @@ Methods:
 
 - <code title="post /v1/packages/create">client.Packages.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PackageService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PackageNewParams">PackageNewParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PackageNewResponse">PackageNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-# Payments
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PaymentListResponse">PaymentListResponse</a>
-
-Methods:
-
-- <code title="post /v1/payments/list">client.Payments.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PaymentService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PaymentListParams">PaymentListParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#BodyCursorPage">BodyCursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PaymentListResponse">PaymentListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 # Notifications
 
 Response Types:
@@ -534,3 +524,13 @@ Response Types:
 Methods:
 
 - <code title="post /v2/notifications/system/list">client.Notifications.System.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationSystemService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#NotificationSystemListResponse">NotificationSystemListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# Payments
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PaymentListResponse">PaymentListResponse</a>
+
+Methods:
+
+- <code title="post /v1/payments/list">client.Payments.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PaymentService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PaymentListParams">PaymentListParams</a>) (<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/packages/pagination#BodyCursorPage">BodyCursorPage</a>[<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go">metronome</a>.<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go#PaymentListResponse">PaymentListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
