@@ -1366,7 +1366,7 @@ type ContractV2 struct {
 	HasMore ContractV2HasMore `json:"has_more"`
 	// Either a **parent** configuration with a list of children or a **child**
 	// configuration with a single parent.
-	HierarchyConfiguration HierarchyConfigurationUnion `json:"hierarchy_configuration"`
+	HierarchyConfiguration ContractV2HierarchyConfigurationUnion `json:"hierarchy_configuration"`
 	// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 	// prices automatically. EXPLICIT prioritization requires specifying priorities for
 	// each multiplier; the one with the lowest priority value will be prioritized
@@ -2684,6 +2684,172 @@ type ContractV2HasMore struct {
 // Returns the unmodified JSON received from the API
 func (r ContractV2HasMore) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2HasMore) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ContractV2HierarchyConfigurationUnion contains all possible properties and
+// values from [ContractV2HierarchyConfigurationParentHierarchyConfiguration],
+// [ContractV2HierarchyConfigurationChildHierarchyConfigurationV2].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type ContractV2HierarchyConfigurationUnion struct {
+	// This field is from variant
+	// [ContractV2HierarchyConfigurationParentHierarchyConfiguration].
+	Children []ContractV2HierarchyConfigurationParentHierarchyConfigurationChild `json:"children"`
+	// This field is from variant
+	// [ContractV2HierarchyConfigurationParentHierarchyConfiguration].
+	ParentBehavior ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior `json:"parent_behavior"`
+	// This field is from variant
+	// [ContractV2HierarchyConfigurationChildHierarchyConfigurationV2].
+	Parent ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent `json:"parent"`
+	// This field is from variant
+	// [ContractV2HierarchyConfigurationChildHierarchyConfigurationV2].
+	Payer string `json:"payer"`
+	// This field is from variant
+	// [ContractV2HierarchyConfigurationChildHierarchyConfigurationV2].
+	UsageStatementBehavior string `json:"usage_statement_behavior"`
+	JSON                   struct {
+		Children               respjson.Field
+		ParentBehavior         respjson.Field
+		Parent                 respjson.Field
+		Payer                  respjson.Field
+		UsageStatementBehavior respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+func (u ContractV2HierarchyConfigurationUnion) AsContractV2HierarchyConfigurationParentHierarchyConfiguration() (v ContractV2HierarchyConfigurationParentHierarchyConfiguration) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ContractV2HierarchyConfigurationUnion) AsContractV2HierarchyConfigurationChildHierarchyConfigurationV2() (v ContractV2HierarchyConfigurationChildHierarchyConfigurationV2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ContractV2HierarchyConfigurationUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ContractV2HierarchyConfigurationUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2HierarchyConfigurationParentHierarchyConfiguration struct {
+	// List of contracts that belong to this parent.
+	Children       []ContractV2HierarchyConfigurationParentHierarchyConfigurationChild        `json:"children,required"`
+	ParentBehavior ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior `json:"parent_behavior"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children       respjson.Field
+		ParentBehavior respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2HierarchyConfigurationParentHierarchyConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2HierarchyConfigurationParentHierarchyConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2HierarchyConfigurationParentHierarchyConfigurationChild struct {
+	ContractID string `json:"contract_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CustomerID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2HierarchyConfigurationParentHierarchyConfigurationChild) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2HierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior struct {
+	// Indicates the desired behavior of consolidated invoices generated by the parent
+	// in a customer hierarchy **CONCATENATE**: Statements on the invoices of child
+	// customers will be appended to the consolidated invoice **NONE**: Do not generate
+	// consolidated invoices
+	//
+	// Any of "CONCATENATE", "NONE".
+	InvoiceConsolidationType string `json:"invoice_consolidation_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceConsolidationType respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2 struct {
+	// The single parent contract/customer for this child.
+	Parent ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent `json:"parent,required"`
+	// Indicates whether the child or parent should pay for the child's invoice charges
+	//
+	// Any of "SELF", "PARENT".
+	Payer string `json:"payer"`
+	// Indicates the behavior of the child's invoice statements on the parent's
+	// invoices **CONSOLIDATE**: Child's invoice statements will be added to parent's
+	// consolidated invoices **SEPARATE**: Child's invoice statements will appear not
+	// appear on parent's consolidated invoices
+	//
+	// Any of "CONSOLIDATE", "SEPARATE".
+	UsageStatementBehavior string `json:"usage_statement_behavior"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Parent                 respjson.Field
+		Payer                  respjson.Field
+		UsageStatementBehavior respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2HierarchyConfigurationChildHierarchyConfigurationV2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2HierarchyConfigurationChildHierarchyConfigurationV2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The single parent contract/customer for this child.
+type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent struct {
+	ContractID string `json:"contract_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CustomerID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4174,12 +4340,21 @@ func (r *EventTypeFilterParam) UnmarshalJSON(data []byte) error {
 type HierarchyConfigurationUnion struct {
 	// This field is from variant [HierarchyConfigurationParentHierarchyConfiguration].
 	Children []HierarchyConfigurationParentHierarchyConfigurationChild `json:"children"`
+	// This field is from variant [HierarchyConfigurationParentHierarchyConfiguration].
+	ParentBehavior HierarchyConfigurationParentHierarchyConfigurationParentBehavior `json:"parent_behavior"`
 	// This field is from variant [HierarchyConfigurationChildHierarchyConfiguration].
 	Parent HierarchyConfigurationChildHierarchyConfigurationParent `json:"parent"`
-	JSON   struct {
-		Children respjson.Field
-		Parent   respjson.Field
-		raw      string
+	// This field is from variant [HierarchyConfigurationChildHierarchyConfiguration].
+	Payer string `json:"payer"`
+	// This field is from variant [HierarchyConfigurationChildHierarchyConfiguration].
+	UsageStatementBehavior string `json:"usage_statement_behavior"`
+	JSON                   struct {
+		Children               respjson.Field
+		ParentBehavior         respjson.Field
+		Parent                 respjson.Field
+		Payer                  respjson.Field
+		UsageStatementBehavior respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -4202,12 +4377,14 @@ func (r *HierarchyConfigurationUnion) UnmarshalJSON(data []byte) error {
 
 type HierarchyConfigurationParentHierarchyConfiguration struct {
 	// List of contracts that belong to this parent.
-	Children []HierarchyConfigurationParentHierarchyConfigurationChild `json:"children,required"`
+	Children       []HierarchyConfigurationParentHierarchyConfigurationChild        `json:"children,required"`
+	ParentBehavior HierarchyConfigurationParentHierarchyConfigurationParentBehavior `json:"parent_behavior"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Children    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Children       respjson.Field
+		ParentBehavior respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -4235,14 +4412,51 @@ func (r *HierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type HierarchyConfigurationParentHierarchyConfigurationParentBehavior struct {
+	// Indicates the desired behavior of consolidated invoices generated by the parent
+	// in a customer hierarchy **CONCATENATE**: Statements on the invoices of child
+	// customers will be appended to the consolidated invoice **NONE**: Do not generate
+	// consolidated invoices
+	//
+	// Any of "CONCATENATE", "NONE".
+	InvoiceConsolidationType string `json:"invoice_consolidation_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceConsolidationType respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HierarchyConfigurationParentHierarchyConfigurationParentBehavior) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *HierarchyConfigurationParentHierarchyConfigurationParentBehavior) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type HierarchyConfigurationChildHierarchyConfiguration struct {
 	// The single parent contract/customer for this child.
 	Parent HierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
+	// Indicates whether the parent should pay for the child's invoice charges
+	//
+	// Any of "SELF", "PARENT".
+	Payer string `json:"payer"`
+	// Indicates the behavior of the child's invoice statements on the parent's
+	// invoices **CONSOLIDATE**: Child's invoice statements will be added to parent's
+	// consolidated invoices **SEPARATE**: Child's invoice statements will appear not
+	// appear on parent's consolidated invoices
+	//
+	// Any of "CONSOLIDATE", "SEPARATE".
+	UsageStatementBehavior string `json:"usage_statement_behavior"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Parent      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Parent                 respjson.Field
+		Payer                  respjson.Field
+		UsageStatementBehavior respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
