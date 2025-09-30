@@ -1214,7 +1214,7 @@ type V1ContractNewParamsCommitPaymentGateConfig struct {
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
 	//
-	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
+	// Any of "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED".
 	TaxType string `json:"tax_type,omitzero"`
 	paramObj
 }
@@ -1232,7 +1232,7 @@ func init() {
 		"payment_gate_type", "NONE", "STRIPE", "EXTERNAL",
 	)
 	apijson.RegisterFieldValidator[V1ContractNewParamsCommitPaymentGateConfig](
-		"tax_type", "NONE", "STRIPE", "ANROK", "PRECALCULATED",
+		"tax_type", "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED",
 	)
 }
 
@@ -2856,7 +2856,7 @@ type V1ContractAmendParamsCommitPaymentGateConfig struct {
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
 	//
-	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
+	// Any of "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED".
 	TaxType string `json:"tax_type,omitzero"`
 	paramObj
 }
@@ -2874,7 +2874,7 @@ func init() {
 		"payment_gate_type", "NONE", "STRIPE", "EXTERNAL",
 	)
 	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitPaymentGateConfig](
-		"tax_type", "NONE", "STRIPE", "ANROK", "PRECALCULATED",
+		"tax_type", "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED",
 	)
 }
 
