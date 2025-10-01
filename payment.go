@@ -71,7 +71,7 @@ func (r *PaymentService) ListAutoPaging(ctx context.Context, body PaymentListPar
 //
 // Attempting to payment on an ineligible Invoice or Customer will result in a
 // `400` response.
-func (r *PaymentService) Attempt(ctx context.Context, body PaymentAttemptParams, opts ...option.RequestOption) (res *PaymentAttemptResponse, err error) {
+func (r *PaymentService) AttemptPayment(ctx context.Context, body PaymentAttemptPaymentParams, opts ...option.RequestOption) (res *PaymentAttemptPaymentResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/payments/attempt"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -183,8 +183,8 @@ const (
 	PaymentListResponseStatusCanceled             PaymentListResponseStatus = "canceled"
 )
 
-type PaymentAttemptResponse struct {
-	Data PaymentAttemptResponseData `json:"data,required"`
+type PaymentAttemptPaymentResponse struct {
+	Data PaymentAttemptPaymentResponseData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -194,22 +194,22 @@ type PaymentAttemptResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PaymentAttemptResponse) RawJSON() string { return r.JSON.raw }
-func (r *PaymentAttemptResponse) UnmarshalJSON(data []byte) error {
+func (r PaymentAttemptPaymentResponse) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAttemptPaymentResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PaymentAttemptResponseData struct {
-	ID             string                                   `json:"id,required" format:"uuid"`
-	Amount         float64                                  `json:"amount"`
-	AmountPaid     float64                                  `json:"amount_paid"`
-	ContractID     string                                   `json:"contract_id" format:"uuid"`
-	CreatedAt      time.Time                                `json:"created_at" format:"date-time"`
-	CustomerID     string                                   `json:"customer_id" format:"uuid"`
-	ErrorMessage   string                                   `json:"error_message"`
-	FiatCreditType shared.CreditTypeData                    `json:"fiat_credit_type"`
-	InvoiceID      string                                   `json:"invoice_id" format:"uuid"`
-	PaymentGateway PaymentAttemptResponseDataPaymentGateway `json:"payment_gateway"`
+type PaymentAttemptPaymentResponseData struct {
+	ID             string                                          `json:"id,required" format:"uuid"`
+	Amount         float64                                         `json:"amount"`
+	AmountPaid     float64                                         `json:"amount_paid"`
+	ContractID     string                                          `json:"contract_id" format:"uuid"`
+	CreatedAt      time.Time                                       `json:"created_at" format:"date-time"`
+	CustomerID     string                                          `json:"customer_id" format:"uuid"`
+	ErrorMessage   string                                          `json:"error_message"`
+	FiatCreditType shared.CreditTypeData                           `json:"fiat_credit_type"`
+	InvoiceID      string                                          `json:"invoice_id" format:"uuid"`
+	PaymentGateway PaymentAttemptPaymentResponseDataPaymentGateway `json:"payment_gateway"`
 	// Any of "pending", "requires_intervention", "paid", "canceled".
 	Status    string    `json:"status"`
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
@@ -233,13 +233,13 @@ type PaymentAttemptResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PaymentAttemptResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PaymentAttemptResponseData) UnmarshalJSON(data []byte) error {
+func (r PaymentAttemptPaymentResponseData) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAttemptPaymentResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PaymentAttemptResponseDataPaymentGateway struct {
-	Stripe PaymentAttemptResponseDataPaymentGatewayStripe `json:"stripe,required"`
+type PaymentAttemptPaymentResponseDataPaymentGateway struct {
+	Stripe PaymentAttemptPaymentResponseDataPaymentGatewayStripe `json:"stripe,required"`
 	// Any of "stripe".
 	Type string `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -252,14 +252,14 @@ type PaymentAttemptResponseDataPaymentGateway struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PaymentAttemptResponseDataPaymentGateway) RawJSON() string { return r.JSON.raw }
-func (r *PaymentAttemptResponseDataPaymentGateway) UnmarshalJSON(data []byte) error {
+func (r PaymentAttemptPaymentResponseDataPaymentGateway) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAttemptPaymentResponseDataPaymentGateway) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PaymentAttemptResponseDataPaymentGatewayStripe struct {
-	PaymentIntentID string                                              `json:"payment_intent_id,required"`
-	Error           PaymentAttemptResponseDataPaymentGatewayStripeError `json:"error"`
+type PaymentAttemptPaymentResponseDataPaymentGatewayStripe struct {
+	PaymentIntentID string                                                     `json:"payment_intent_id,required"`
+	Error           PaymentAttemptPaymentResponseDataPaymentGatewayStripeError `json:"error"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PaymentIntentID respjson.Field
@@ -270,12 +270,12 @@ type PaymentAttemptResponseDataPaymentGatewayStripe struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PaymentAttemptResponseDataPaymentGatewayStripe) RawJSON() string { return r.JSON.raw }
-func (r *PaymentAttemptResponseDataPaymentGatewayStripe) UnmarshalJSON(data []byte) error {
+func (r PaymentAttemptPaymentResponseDataPaymentGatewayStripe) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAttemptPaymentResponseDataPaymentGatewayStripe) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PaymentAttemptResponseDataPaymentGatewayStripeError struct {
+type PaymentAttemptPaymentResponseDataPaymentGatewayStripeError struct {
 	Code        string `json:"code"`
 	DeclineCode string `json:"decline_code"`
 	Type        string `json:"type"`
@@ -290,8 +290,10 @@ type PaymentAttemptResponseDataPaymentGatewayStripeError struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PaymentAttemptResponseDataPaymentGatewayStripeError) RawJSON() string { return r.JSON.raw }
-func (r *PaymentAttemptResponseDataPaymentGatewayStripeError) UnmarshalJSON(data []byte) error {
+func (r PaymentAttemptPaymentResponseDataPaymentGatewayStripeError) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PaymentAttemptPaymentResponseDataPaymentGatewayStripeError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -315,16 +317,16 @@ func (r *PaymentListParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PaymentAttemptParams struct {
+type PaymentAttemptPaymentParams struct {
 	CustomerID string `json:"customer_id,required" format:"uuid"`
 	InvoiceID  string `json:"invoice_id,required" format:"uuid"`
 	paramObj
 }
 
-func (r PaymentAttemptParams) MarshalJSON() (data []byte, err error) {
-	type shadow PaymentAttemptParams
+func (r PaymentAttemptPaymentParams) MarshalJSON() (data []byte, err error) {
+	type shadow PaymentAttemptPaymentParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PaymentAttemptParams) UnmarshalJSON(data []byte) error {
+func (r *PaymentAttemptPaymentParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
