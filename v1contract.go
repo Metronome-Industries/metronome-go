@@ -275,6 +275,39 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 	return
 }
 
+// Get the history of subscription seats schedule over time for a given
+// `subscription_id`. This endpoint provides information about seat assignments and
+// total quantities for different time periods, allowing you to track how seat
+// assignments have changed over time.
+//
+// ### Use this endpoint to:
+//
+//   - Track changes to seat assignments over time
+//   - Get seat schedule for a specific date using the `covering_date` parameter
+//   - Get seat schedule history with optional date range filtering using
+//     `starting_at` and `ending_before`
+//
+// ### Key response fields:
+//
+//   - data: array of seat schedule entries with time periods, quantity, and
+//     assignments
+//   - next_page: cursor for pagination to retrieve additional results
+//
+// ### Usage guidelines:
+//
+//   - Use `covering_date` to get the active seats for a specific point in time.
+//     `covering_date` cannot be used with `starting_at` or `ending_before`.
+//   - Use `starting_at` and `ending_before` to filter results by time range.
+//     `starting_at` and `ending_before` cannot be used with `covering_date`.
+//   - Maximum limit is 10 seat schedule entries per request
+//   - Results are ordered by `starting_at` timestamp
+func (r *V1ContractService) GetSubscriptionSeatsScheduleHistory(ctx context.Context, body V1ContractGetSubscriptionSeatsScheduleHistoryParams, opts ...option.RequestOption) (res *V1ContractGetSubscriptionSeatsScheduleHistoryResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contracts/getSubscriptionSeatsScheduleHistory"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Retrieve a comprehensive view of all available balances (commits and credits)
 // for a customer. This endpoint provides real-time visibility into prepaid funds,
 // postpaid commitments, promotional credits, and other balance types that can
@@ -536,6 +569,53 @@ type V1ContractNewHistoricalInvoicesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r V1ContractNewHistoricalInvoicesResponse) RawJSON() string { return r.JSON.raw }
 func (r *V1ContractNewHistoricalInvoicesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractGetSubscriptionSeatsScheduleHistoryResponse struct {
+	Data []V1ContractGetSubscriptionSeatsScheduleHistoryResponseData `json:"data,required"`
+	// Cursor for the next page of results
+	NextPage string `json:"next_page,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		NextPage    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractGetSubscriptionSeatsScheduleHistoryResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionSeatsScheduleHistoryResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractGetSubscriptionSeatsScheduleHistoryResponseData struct {
+	// Array of seat IDs that are assigned in this period
+	AssignedSeatIDs []string `json:"assigned_seat_ids,required"`
+	// The end time of this seat schedule period (null if ongoing)
+	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	// The start time of this seat schedule period
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	// Total number of assigned and unassigned seats in this period
+	TotalQuantity int64 `json:"total_quantity,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AssignedSeatIDs respjson.Field
+		EndingBefore    respjson.Field
+		StartingAt      respjson.Field
+		TotalQuantity   respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractGetSubscriptionSeatsScheduleHistoryResponseData) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractGetSubscriptionSeatsScheduleHistoryResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3613,6 +3693,37 @@ func (r V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQu
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractGetSubscriptionSeatsScheduleHistoryParams struct {
+	ContractID     string `json:"contract_id,required" format:"uuid"`
+	CustomerID     string `json:"customer_id,required" format:"uuid"`
+	SubscriptionID string `json:"subscription_id,required" format:"uuid"`
+	// Get the seats history segment for the covering date. Cannot be used with
+	// `starting_at` or `ending_before`.
+	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+	// Cursor for pagination. Use the value from the `next_page` field of the previous
+	// response to retrieve the next page of results.
+	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Include seats history segments that are active at or before this timestamp. Use
+	// with `starting_at` to get a specific time range. If not set, there's no upper
+	// bound.
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	// Maximum number of seat schedule entries to return. Defaults to 10.
+	Limit param.Opt[int64] `json:"limit,omitzero"`
+	// Include seats history segments that are active at or after this timestamp. Use
+	// with `ending_before` to get a specific time range. If not set, there's no lower
+	// bound.
+	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	paramObj
+}
+
+func (r V1ContractGetSubscriptionSeatsScheduleHistoryParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractGetSubscriptionSeatsScheduleHistoryParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractGetSubscriptionSeatsScheduleHistoryParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
