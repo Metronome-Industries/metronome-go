@@ -41,7 +41,7 @@ func TestPaymentListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPaymentAttempt(t *testing.T) {
+func TestPaymentAttemptPayment(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -53,7 +53,7 @@ func TestPaymentAttempt(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Payments.Attempt(context.TODO(), metronome.PaymentAttemptParams{
+	_, err := client.Payments.AttemptPayment(context.TODO(), metronome.PaymentAttemptPaymentParams{
 		CustomerID: "13117714-3f05-48e5-a6e9-a66093f13b4d",
 		InvoiceID:  "6162d87b-e5db-4a33-b7f2-76ce6ead4e85",
 	})

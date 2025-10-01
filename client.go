@@ -20,8 +20,8 @@ type Client struct {
 	V2            V2Service
 	V1            V1Service
 	Packages      PackageService
-	Notifications NotificationService
 	Payments      PaymentService
+	Notifications NotificationService
 }
 
 // DefaultClientOptions read from the environment (METRONOME_BEARER_TOKEN,
@@ -54,8 +54,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.V2 = NewV2Service(opts...)
 	r.V1 = NewV1Service(opts...)
 	r.Packages = NewPackageService(opts...)
-	r.Notifications = NewNotificationService(opts...)
 	r.Payments = NewPaymentService(opts...)
+	r.Notifications = NewNotificationService(opts...)
 
 	return
 }
