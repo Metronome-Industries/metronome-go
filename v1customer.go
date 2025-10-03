@@ -9,17 +9,18 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	shimjson "github.com/Metronome-Industries/metronome-go/internal/encoding/json"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
+	shimjson "github.com/Metronome-Industries/metronome-go/v2/internal/encoding/json"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // V1CustomerService contains methods and other services that help with interacting
@@ -90,7 +91,7 @@ func NewV1CustomerService(opts ...option.RequestOption) (r V1CustomerService) {
 // For details on different billing configurations for different systems, review
 // the `/setCustomerBillingConfiguration` end-point.
 func (r *V1CustomerService) New(ctx context.Context, body V1CustomerNewParams, opts ...option.RequestOption) (res *V1CustomerNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/customers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -104,7 +105,7 @@ func (r *V1CustomerService) New(ctx context.Context, body V1CustomerNewParams, o
 // Note: If searching for a customer billing configuration, use the
 // `/getCustomerBillingConfigurations` endpoint.
 func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, opts ...option.RequestOption) (res *V1CustomerGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -121,7 +122,7 @@ func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, 
 // parameters for efficient data retrieval.
 func (r *V1CustomerService) List(ctx context.Context, query V1CustomerListParams, opts ...option.RequestOption) (res *pagination.CursorPage[CustomerDetail], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/customers"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -158,9 +159,9 @@ func (r *V1CustomerService) ListAutoPaging(ctx context.Context, query V1Customer
 //   - Ingest aliases remain idempotent for archived customers. In order to reuse an
 //     ingest alias, first remove the ingest alias from the customer prior to
 //     archiving.
-//   - Any alerts associated with the customer will no longer be triggered.
+//   - Any notifications associated with the customer will no longer be triggered.
 func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveParams, opts ...option.RequestOption) (res *V1CustomerArchiveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/customers/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -172,7 +173,7 @@ func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveP
 // customer.
 func (r *V1CustomerService) ListBillableMetrics(ctx context.Context, params V1CustomerListBillableMetricsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerListBillableMetricsResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -204,7 +205,7 @@ func (r *V1CustomerService) ListBillableMetricsAutoPaging(ctx context.Context, p
 // UNIQUE-type billable metric.
 func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerListCostsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerListCostsResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -235,7 +236,7 @@ func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1Cu
 // provided events. This is useful for testing how new events will affect the
 // customer's invoice before they are actually processed.
 func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1CustomerPreviewEventsParams, opts ...option.RequestOption) (res *V1CustomerPreviewEventsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -250,7 +251,7 @@ func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1Customer
 // `billing_provider_configuration_id` needed to set the contract billing
 // configuration.
 func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V1CustomerGetBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerGetBillingConfigurationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/getCustomerBillingProviderConfigurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -294,7 +295,7 @@ func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V
 // Must use the `delivery_method_id` if you have multiple Stripe accounts connected
 // to Metronome.
 func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/setCustomerBillingProviderConfigurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -315,7 +316,7 @@ func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V
 //   - Use multiple ingest aliases to model child organizations within a single
 //     Metronome customer.
 func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1CustomerSetIngestAliasesParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -332,7 +333,7 @@ func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1Custo
 // with the new name applied immediately across all billing documents and
 // interfaces.
 func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNameParams, opts ...option.RequestOption) (res *V1CustomerSetNameResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -347,7 +348,7 @@ func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNam
 // parameters. Use this endpoint to modify customer configurations without
 // affecting core customer data like name or ingest aliases.
 func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerUpdateConfigParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -403,6 +404,8 @@ type CustomerDetail struct {
 	// in usage events
 	IngestAliases []string `json:"ingest_aliases,required"`
 	Name          string   `json:"name,required"`
+	// RFC 3339 timestamp indicating when the customer was last updated.
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// RFC 3339 timestamp indicating when the customer was archived. Null if the
 	// customer is active.
 	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
@@ -417,6 +420,7 @@ type CustomerDetail struct {
 		ExternalID            respjson.Field
 		IngestAliases         respjson.Field
 		Name                  respjson.Field
+		UpdatedAt             respjson.Field
 		ArchivedAt            respjson.Field
 		CurrentBillableStatus respjson.Field
 		ExtraFields           map[string]respjson.Field

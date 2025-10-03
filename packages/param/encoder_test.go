@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
 )
 
 type Struct struct {

@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go"
-	"github.com/Metronome-Industries/metronome-go/internal/testutil"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/testutil"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 func TestV2ContractGetWithOptionalParams(t *testing.T) {
@@ -87,6 +87,16 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 	_, err := client.V2.Contracts.Edit(context.TODO(), metronome.V2ContractEditParams{
 		ContractID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		CustomerID: "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		AddBillingProviderConfigurationUpdate: metronome.V2ContractEditParamsAddBillingProviderConfigurationUpdate{
+			BillingProviderConfiguration: metronome.V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration{
+				BillingProvider:                "aws_marketplace",
+				BillingProviderConfigurationID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DeliveryMethod:                 "direct_to_billing_provider",
+			},
+			Schedule: metronome.V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule{
+				EffectiveAt: "START_OF_CURRENT_PERIOD",
+			},
+		},
 		AddCommits: []metronome.V2ContractEditParamsAddCommit{{
 			ProductID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			Type:      "PREPAID",
@@ -664,6 +674,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				Quantity:  metronome.Float(0),
 				UnitPrice: metronome.Float(0),
 			},
+			RateType: "LIST_RATE",
 		}},
 		UpdateRecurringCredits: []metronome.V2ContractEditParamsUpdateRecurringCredit{{
 			RecurringCreditID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -672,6 +683,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				UnitPrice: metronome.Float(0),
 			},
 			EndingBefore: metronome.Time(time.Now()),
+			RateType:     "LIST_RATE",
 		}},
 		UpdateScheduledCharges: []metronome.V2ContractEditParamsUpdateScheduledCharge{{
 			ScheduledChargeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -770,7 +782,14 @@ func TestV2ContractEditCommitWithOptionalParams(t *testing.T) {
 		},
 		ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 		ApplicableProductTags: []string{"string"},
-		InvoiceContractID:     metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
+			ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
+				OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: "ALL",
+				},
+			},
+		},
+		InvoiceContractID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		InvoiceSchedule: metronome.V2ContractEditCommitParamsInvoiceSchedule{
 			AddScheduleItems: []metronome.V2ContractEditCommitParamsInvoiceScheduleAddScheduleItem{{
 				Timestamp: time.Now(),
@@ -845,9 +864,16 @@ func TestV2ContractEditCreditWithOptionalParams(t *testing.T) {
 		},
 		ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 		ApplicableProductTags: []string{"string"},
-		Priority:              metronome.Float(0),
-		ProductID:             metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		RateType:              metronome.V2ContractEditCreditParamsRateTypeListRate,
+		HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
+			ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
+				OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+					Type: "ALL",
+				},
+			},
+		},
+		Priority:  metronome.Float(0),
+		ProductID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		RateType:  metronome.V2ContractEditCreditParamsRateTypeListRate,
 		Specifiers: []shared.CommitSpecifierInputParam{{
 			PresentationGroupValues: map[string]string{
 				"foo": "string",

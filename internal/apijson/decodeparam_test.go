@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
 	"reflect"
 	"testing"
 )

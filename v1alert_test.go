@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Metronome-Industries/metronome-go"
-	"github.com/Metronome-Industries/metronome-go/internal/testutil"
-	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/v2"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/testutil"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
 )
 
 func TestV1AlertNewWithOptionalParams(t *testing.T) {
@@ -43,7 +43,7 @@ func TestV1AlertNewWithOptionalParams(t *testing.T) {
 			Key:   "key",
 			Value: metronome.String("value"),
 		}},
-		InvoiceTypesFilter: []string{"PLAN_ARREARS, SCHEDULED, USAGE, CORRECTION, CREDIT_PURCHASE, or SEAT_PURCHASE"},
+		InvoiceTypesFilter: []string{"SCHEDULED or USAGE"},
 		PlanID:             metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		UniquenessKey:      metronome.String("x"),
 	})

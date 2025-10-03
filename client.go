@@ -6,18 +6,22 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"slices"
 
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
 )
 
 // Client creates a struct with services and top level methods that help with
 // interacting with the metronome API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options []option.RequestOption
-	V2      V2Service
-	V1      V1Service
+	Options       []option.RequestOption
+	V2            V2Service
+	V1            V1Service
+	Packages      PackageService
+	Payments      PaymentService
+	Notifications NotificationService
 }
 
 // DefaultClientOptions read from the environment (METRONOME_BEARER_TOKEN,
@@ -49,6 +53,9 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r.V2 = NewV2Service(opts...)
 	r.V1 = NewV1Service(opts...)
+	r.Packages = NewPackageService(opts...)
+	r.Payments = NewPaymentService(opts...)
+	r.Notifications = NewNotificationService(opts...)
 
 	return
 }
@@ -85,7 +92,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 // For even greater flexibility, see [option.WithResponseInto] and
 // [option.WithResponseBodyInto].
 func (r *Client) Execute(ctx context.Context, method string, path string, params any, res any, opts ...option.RequestOption) error {
-	opts = append(r.Options, opts...)
+	opts = slices.Concat(r.Options, opts)
 	return requestconfig.ExecuteNewRequest(ctx, method, path, params, res, opts...)
 }
 

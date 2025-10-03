@@ -8,16 +8,17 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // V1CustomerInvoiceService contains methods and other services that help with
@@ -80,7 +81,7 @@ func NewV1CustomerInvoiceService(opts ...option.RequestOption) (r V1CustomerInvo
 //   - For voided invoices, the response will indicate VOID status but retain all
 //     original line item details
 func (r *V1CustomerInvoiceService) Get(ctx context.Context, params V1CustomerInvoiceGetParams, opts ...option.RequestOption) (res *V1CustomerInvoiceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -142,7 +143,7 @@ func (r *V1CustomerInvoiceService) Get(ctx context.Context, params V1CustomerInv
 //     status
 func (r *V1CustomerInvoiceService) List(ctx context.Context, params V1CustomerInvoiceListParams, opts ...option.RequestOption) (res *pagination.CursorPage[Invoice], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -213,7 +214,7 @@ func (r *V1CustomerInvoiceService) ListAutoPaging(ctx context.Context, params V1
 
 // Add a one time charge to the specified invoice
 func (r *V1CustomerInvoiceService) AddCharge(ctx context.Context, params V1CustomerInvoiceAddChargeParams, opts ...option.RequestOption) (res *V1CustomerInvoiceAddChargeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -263,7 +264,7 @@ func (r *V1CustomerInvoiceService) AddCharge(ctx context.Context, params V1Custo
 //     periods with no usage
 func (r *V1CustomerInvoiceService) ListBreakdowns(ctx context.Context, params V1CustomerInvoiceListBreakdownsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerInvoiceListBreakdownsResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -334,9 +335,7 @@ type Invoice struct {
 	Type        string                `json:"type,required"`
 	AmendmentID string                `json:"amendment_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
-	//
-	// Any of "billable", "unbillable".
-	BillableStatus InvoiceBillableStatus `json:"billable_status"`
+	BillableStatus any `json:"billable_status"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	ContractCustomFields map[string]string       `json:"contract_custom_fields"`
 	ContractID           string                  `json:"contract_id" format:"uuid"`
@@ -713,14 +712,6 @@ func (r *InvoiceLineItemTier) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// This field's availability is dependent on your client's configuration.
-type InvoiceBillableStatus string
-
-const (
-	InvoiceBillableStatusBillable   InvoiceBillableStatus = "billable"
-	InvoiceBillableStatusUnbillable InvoiceBillableStatus = "unbillable"
-)
-
 type InvoiceCorrectionRecord struct {
 	CorrectedInvoiceID       string                                          `json:"corrected_invoice_id,required" format:"uuid"`
 	Memo                     string                                          `json:"memo,required"`
@@ -749,15 +740,27 @@ type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	BillingProviderType string `json:"billing_provider_type,required"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
-	ExternalStatus    string    `json:"external_status"`
-	InvoiceID         string    `json:"invoice_id"`
+	ExternalStatus string `json:"external_status"`
+	InvoiceID      string `json:"invoice_id"`
+	// The subtotal amount invoiced, if available from the billing provider.
+	InvoicedSubTotal float64 `json:"invoiced_sub_total"`
+	// The total amount invoiced, if available from the billing provider.
+	InvoicedTotal     float64   `json:"invoiced_total"`
 	IssuedAtTimestamp time.Time `json:"issued_at_timestamp" format:"date-time"`
+	// A URL to the PDF of the invoice, if available from the billing provider.
+	PdfURL string `json:"pdf_url" format:"uri"`
+	// Tax details for the invoice, if available from the billing provider.
+	Tax InvoiceCorrectionRecordCorrectedExternalInvoiceTax `json:"tax"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingProviderType respjson.Field
 		ExternalStatus      respjson.Field
 		InvoiceID           respjson.Field
+		InvoicedSubTotal    respjson.Field
+		InvoicedTotal       respjson.Field
 		IssuedAtTimestamp   respjson.Field
+		PdfURL              respjson.Field
+		Tax                 respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -769,21 +772,57 @@ func (r *InvoiceCorrectionRecordCorrectedExternalInvoice) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Tax details for the invoice, if available from the billing provider.
+type InvoiceCorrectionRecordCorrectedExternalInvoiceTax struct {
+	// The total tax amount applied to the invoice.
+	TotalTaxAmount float64 `json:"total_tax_amount"`
+	// The total taxable amount of the invoice.
+	TotalTaxableAmount float64 `json:"total_taxable_amount"`
+	// The transaction ID associated with the tax calculation.
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TotalTaxAmount     respjson.Field
+		TotalTaxableAmount respjson.Field
+		TransactionID      respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvoiceCorrectionRecordCorrectedExternalInvoiceTax) RawJSON() string { return r.JSON.raw }
+func (r *InvoiceCorrectionRecordCorrectedExternalInvoiceTax) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type InvoiceExternalInvoice struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace".
 	BillingProviderType string `json:"billing_provider_type,required"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
-	ExternalStatus    string    `json:"external_status"`
-	InvoiceID         string    `json:"invoice_id"`
+	ExternalStatus string `json:"external_status"`
+	InvoiceID      string `json:"invoice_id"`
+	// The subtotal amount invoiced, if available from the billing provider.
+	InvoicedSubTotal float64 `json:"invoiced_sub_total"`
+	// The total amount invoiced, if available from the billing provider.
+	InvoicedTotal     float64   `json:"invoiced_total"`
 	IssuedAtTimestamp time.Time `json:"issued_at_timestamp" format:"date-time"`
+	// A URL to the PDF of the invoice, if available from the billing provider.
+	PdfURL string `json:"pdf_url" format:"uri"`
+	// Tax details for the invoice, if available from the billing provider.
+	Tax InvoiceExternalInvoiceTax `json:"tax"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingProviderType respjson.Field
 		ExternalStatus      respjson.Field
 		InvoiceID           respjson.Field
+		InvoicedSubTotal    respjson.Field
+		InvoicedTotal       respjson.Field
 		IssuedAtTimestamp   respjson.Field
+		PdfURL              respjson.Field
+		Tax                 respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -792,6 +831,30 @@ type InvoiceExternalInvoice struct {
 // Returns the unmodified JSON received from the API
 func (r InvoiceExternalInvoice) RawJSON() string { return r.JSON.raw }
 func (r *InvoiceExternalInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Tax details for the invoice, if available from the billing provider.
+type InvoiceExternalInvoiceTax struct {
+	// The total tax amount applied to the invoice.
+	TotalTaxAmount float64 `json:"total_tax_amount"`
+	// The total taxable amount of the invoice.
+	TotalTaxableAmount float64 `json:"total_taxable_amount"`
+	// The transaction ID associated with the tax calculation.
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TotalTaxAmount     respjson.Field
+		TotalTaxableAmount respjson.Field
+		TransactionID      respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvoiceExternalInvoiceTax) RawJSON() string { return r.JSON.raw }
+func (r *InvoiceExternalInvoiceTax) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal"
-	"github.com/Metronome-Industries/metronome-go/internal/apierror"
-	"github.com/Metronome-Industries/metronome-go/internal/apiform"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/v2/internal"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apierror"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiform"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

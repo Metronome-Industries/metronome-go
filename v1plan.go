@@ -8,16 +8,17 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // V1PlanService contains methods and other services that help with interacting
@@ -42,7 +43,7 @@ func NewV1PlanService(opts ...option.RequestOption) (r V1PlanService) {
 // List all available plans.
 func (r *V1PlanService) List(ctx context.Context, query V1PlanListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1PlanListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/plans"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -64,7 +65,7 @@ func (r *V1PlanService) ListAutoPaging(ctx context.Context, query V1PlanListPara
 
 // Fetch high level details of a specific plan.
 func (r *V1PlanService) GetDetails(ctx context.Context, query V1PlanGetDetailsParams, opts ...option.RequestOption) (res *V1PlanGetDetailsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.PlanID == "" {
 		err = errors.New("missing required plan_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *V1PlanService) GetDetails(ctx context.Context, query V1PlanGetDetailsPa
 // Fetches a list of charges of a specific plan.
 func (r *V1PlanService) ListCharges(ctx context.Context, params V1PlanListChargesParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1PlanListChargesResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.PlanID == "" {
 		err = errors.New("missing required plan_id parameter")
@@ -105,7 +106,7 @@ func (r *V1PlanService) ListChargesAutoPaging(ctx context.Context, params V1Plan
 // active plans are included)
 func (r *V1PlanService) ListCustomers(ctx context.Context, params V1PlanListCustomersParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1PlanListCustomersResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.PlanID == "" {
 		err = errors.New("missing required plan_id parameter")

@@ -6,16 +6,17 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // V1ContractRateCardRateService contains methods and other services that help with
@@ -48,7 +49,7 @@ func NewV1ContractRateCardRateService(opts ...option.RequestOption) (r V1Contrac
 // endpoint.
 func (r *V1ContractRateCardRateService) List(ctx context.Context, params V1ContractRateCardRateListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1ContractRateCardRateListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contract-pricing/rate-cards/getRates"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -78,7 +79,7 @@ func (r *V1ContractRateCardRateService) ListAutoPaging(ctx context.Context, para
 
 // Add a new rate
 func (r *V1ContractRateCardRateService) Add(ctx context.Context, body V1ContractRateCardRateAddParams, opts ...option.RequestOption) (res *V1ContractRateCardRateAddResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/addRate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -86,7 +87,7 @@ func (r *V1ContractRateCardRateService) Add(ctx context.Context, body V1Contract
 
 // Add new rates
 func (r *V1ContractRateCardRateService) AddMany(ctx context.Context, body V1ContractRateCardRateAddManyParams, opts ...option.RequestOption) (res *V1ContractRateCardRateAddManyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/addRates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

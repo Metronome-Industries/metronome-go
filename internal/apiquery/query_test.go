@@ -1,7 +1,7 @@
 package apiquery
 
 import (
-	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
 	"net/url"
 	"testing"
 	"time"
