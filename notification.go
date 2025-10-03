@@ -92,6 +92,8 @@ func (r *NotificationNewResponse) UnmarshalJSON(data []byte) error {
 type NotificationNewResponseData struct {
 	// ID for this offset notification configuration
 	ID string `json:"id,required" format:"uuid"`
+	// When this notification configuration was archived
+	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
 	// RFC 3339 timestamp when this notification configuration was created.
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Who created this notification configuration
@@ -106,6 +108,7 @@ type NotificationNewResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
+		ArchivedAt      respjson.Field
 		CreatedAt       respjson.Field
 		CreatedBy       respjson.Field
 		EnvironmentType respjson.Field
@@ -165,6 +168,8 @@ func (r *NotificationGetResponse) UnmarshalJSON(data []byte) error {
 type NotificationGetResponseData struct {
 	// ID for this offset notification configuration
 	ID string `json:"id,required" format:"uuid"`
+	// When this notification configuration was archived
+	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
 	// RFC 3339 timestamp when this notification configuration was created.
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Who created this notification configuration
@@ -179,6 +184,7 @@ type NotificationGetResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
+		ArchivedAt      respjson.Field
 		CreatedAt       respjson.Field
 		CreatedBy       respjson.Field
 		EnvironmentType respjson.Field
@@ -254,6 +260,9 @@ type NotificationUpdateResponseDataUnion struct {
 	ID string `json:"id"`
 	// This field is from variant
 	// [NotificationUpdateResponseDataLifecycleEventOffsetNotificationConfig].
+	ArchivedAt time.Time `json:"archived_at"`
+	// This field is from variant
+	// [NotificationUpdateResponseDataLifecycleEventOffsetNotificationConfig].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant
 	// [NotificationUpdateResponseDataLifecycleEventOffsetNotificationConfig].
@@ -269,6 +278,7 @@ type NotificationUpdateResponseDataUnion struct {
 		Type            respjson.Field
 		IsEnabled       respjson.Field
 		ID              respjson.Field
+		ArchivedAt      respjson.Field
 		CreatedAt       respjson.Field
 		CreatedBy       respjson.Field
 		EnvironmentType respjson.Field
@@ -362,6 +372,8 @@ func (r *NotificationUpdateResponseDataLifecycleEventSystemNotificationConfigPol
 type NotificationUpdateResponseDataLifecycleEventOffsetNotificationConfig struct {
 	// ID for this offset notification configuration
 	ID string `json:"id,required" format:"uuid"`
+	// When this notification configuration was archived
+	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
 	// RFC 3339 timestamp when this notification configuration was created.
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Who created this notification configuration
@@ -376,6 +388,7 @@ type NotificationUpdateResponseDataLifecycleEventOffsetNotificationConfig struct
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
+		ArchivedAt      respjson.Field
 		CreatedAt       respjson.Field
 		CreatedBy       respjson.Field
 		EnvironmentType respjson.Field
@@ -439,6 +452,8 @@ func (r *NotificationArchiveResponse) UnmarshalJSON(data []byte) error {
 type NotificationArchiveResponseData struct {
 	// ID for this offset notification configuration
 	ID string `json:"id,required" format:"uuid"`
+	// When this notification configuration was archived
+	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
 	// RFC 3339 timestamp when this notification configuration was created.
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Who created this notification configuration
@@ -453,6 +468,7 @@ type NotificationArchiveResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
+		ArchivedAt      respjson.Field
 		CreatedAt       respjson.Field
 		CreatedBy       respjson.Field
 		EnvironmentType respjson.Field
