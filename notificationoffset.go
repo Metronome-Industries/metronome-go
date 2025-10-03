@@ -65,6 +65,8 @@ func (r *NotificationOffsetListResponse) UnmarshalJSON(data []byte) error {
 type NotificationOffsetListResponseData struct {
 	// ID for this offset notification configuration
 	ID string `json:"id,required" format:"uuid"`
+	// When this notification configuration was archived
+	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
 	// RFC 3339 timestamp when this notification configuration was created.
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Who created this notification configuration
@@ -79,6 +81,7 @@ type NotificationOffsetListResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
+		ArchivedAt      respjson.Field
 		CreatedAt       respjson.Field
 		CreatedBy       respjson.Field
 		EnvironmentType respjson.Field
