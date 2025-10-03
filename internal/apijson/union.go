@@ -2,7 +2,7 @@ package apijson
 
 import (
 	"errors"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
 	"reflect"
 
 	"github.com/tidwall/gjson"
