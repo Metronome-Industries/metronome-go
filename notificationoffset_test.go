@@ -26,8 +26,9 @@ func TestNotificationOffsetListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Notifications.Offset.List(context.TODO(), metronome.NotificationOffsetListParams{
-		Cursor: metronome.String("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Limit:  metronome.Float(20),
+		ArchiveFilter: metronome.NotificationOffsetListParamsArchiveFilterNotArchived,
+		Cursor:        metronome.String("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
+		Limit:         metronome.Float(20),
 	})
 	if err != nil {
 		var apierr *metronome.Error

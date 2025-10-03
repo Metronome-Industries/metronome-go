@@ -36,7 +36,7 @@ func NewNotificationOffsetService(opts ...option.RequestOption) (r NotificationO
 
 // List offset lifecycle event notification configurations. These are user-created
 // notifications that trigger at a specified time offset relative to lifecycle
-// events.
+// events. Returns a maximum of 400 results per request.
 func (r *NotificationOffsetService) List(ctx context.Context, body NotificationOffsetListParams, opts ...option.RequestOption) (res *NotificationOffsetListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notifications/offset/list"
@@ -125,6 +125,11 @@ func (r *NotificationOffsetListResponseDataPolicy) UnmarshalJSON(data []byte) er
 type NotificationOffsetListParams struct {
 	Cursor param.Opt[string]  `json:"cursor,omitzero"`
 	Limit  param.Opt[float64] `json:"limit,omitzero"`
+	// Filter options for the notification configurations. If not provided, defaults to
+	// NOT_ARCHIVED.
+	//
+	// Any of "ARCHIVED", "NOT_ARCHIVED", "ALL".
+	ArchiveFilter NotificationOffsetListParamsArchiveFilter `json:"archive_filter,omitzero"`
 	paramObj
 }
 
@@ -135,3 +140,13 @@ func (r NotificationOffsetListParams) MarshalJSON() (data []byte, err error) {
 func (r *NotificationOffsetListParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Filter options for the notification configurations. If not provided, defaults to
+// NOT_ARCHIVED.
+type NotificationOffsetListParamsArchiveFilter string
+
+const (
+	NotificationOffsetListParamsArchiveFilterArchived    NotificationOffsetListParamsArchiveFilter = "ARCHIVED"
+	NotificationOffsetListParamsArchiveFilterNotArchived NotificationOffsetListParamsArchiveFilter = "NOT_ARCHIVED"
+	NotificationOffsetListParamsArchiveFilterAll         NotificationOffsetListParamsArchiveFilter = "ALL"
+)
