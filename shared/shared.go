@@ -5844,6 +5844,8 @@ func (r *SpendThresholdConfigurationV2Param) UnmarshalJSON(data []byte) error {
 }
 
 type Subscription struct {
+	// Previous, current, and next billing periods for the subscription.
+	BillingPeriods SubscriptionBillingPeriods `json:"billing_periods,required"`
 	// Any of "ADVANCE", "ARREARS".
 	CollectionSchedule SubscriptionCollectionSchedule `json:"collection_schedule,required"`
 	Proration          SubscriptionProration          `json:"proration,required"`
@@ -5868,6 +5870,7 @@ type Subscription struct {
 	Name             string            `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		BillingPeriods         respjson.Field
 		CollectionSchedule     respjson.Field
 		Proration              respjson.Field
 		QuantityManagementMode respjson.Field
@@ -5888,6 +5891,81 @@ type Subscription struct {
 // Returns the unmodified JSON received from the API
 func (r Subscription) RawJSON() string { return r.JSON.raw }
 func (r *Subscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Previous, current, and next billing periods for the subscription.
+type SubscriptionBillingPeriods struct {
+	Current  SubscriptionBillingPeriodsCurrent  `json:"current"`
+	Next     SubscriptionBillingPeriodsNext     `json:"next"`
+	Previous SubscriptionBillingPeriodsPrevious `json:"previous"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Current     respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubscriptionBillingPeriods) RawJSON() string { return r.JSON.raw }
+func (r *SubscriptionBillingPeriods) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SubscriptionBillingPeriodsCurrent struct {
+	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubscriptionBillingPeriodsCurrent) RawJSON() string { return r.JSON.raw }
+func (r *SubscriptionBillingPeriodsCurrent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SubscriptionBillingPeriodsNext struct {
+	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubscriptionBillingPeriodsNext) RawJSON() string { return r.JSON.raw }
+func (r *SubscriptionBillingPeriodsNext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SubscriptionBillingPeriodsPrevious struct {
+	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubscriptionBillingPeriodsPrevious) RawJSON() string { return r.JSON.raw }
+func (r *SubscriptionBillingPeriodsPrevious) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

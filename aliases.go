@@ -904,6 +904,20 @@ type SpendThresholdConfigurationV2Param = shared.SpendThresholdConfigurationV2Pa
 // This is an alias to an internal type.
 type Subscription = shared.Subscription
 
+// Previous, current, and next billing periods for the subscription.
+//
+// This is an alias to an internal type.
+type SubscriptionBillingPeriods = shared.SubscriptionBillingPeriods
+
+// This is an alias to an internal type.
+type SubscriptionBillingPeriodsCurrent = shared.SubscriptionBillingPeriodsCurrent
+
+// This is an alias to an internal type.
+type SubscriptionBillingPeriodsNext = shared.SubscriptionBillingPeriodsNext
+
+// This is an alias to an internal type.
+type SubscriptionBillingPeriodsPrevious = shared.SubscriptionBillingPeriodsPrevious
+
 // This is an alias to an internal type.
 type SubscriptionCollectionSchedule = shared.SubscriptionCollectionSchedule
 
