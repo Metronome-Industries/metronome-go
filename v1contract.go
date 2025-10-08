@@ -3710,7 +3710,8 @@ type V1ContractGetSubscriptionSeatsScheduleHistoryParams struct {
 	// with `starting_at` to get a specific time range. If not set, there's no upper
 	// bound.
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	// Maximum number of seat schedule entries to return. Defaults to 10.
+	// Maximum number of seat schedule entries to return. Defaults to 10. Required
+	// range: 1 <= x <= 10.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Include seats history segments that are active at or after this timestamp. Use
 	// with `ending_before` to get a specific time range. If not set, there's no lower
