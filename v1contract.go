@@ -301,9 +301,9 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 //     `starting_at` and `ending_before` cannot be used with `covering_date`.
 //   - Maximum limit is 10 seat schedule entries per request
 //   - Results are ordered by `starting_at` timestamp
-func (r *V1ContractService) GetSubscriptionSeatsScheduleHistory(ctx context.Context, body V1ContractGetSubscriptionSeatsScheduleHistoryParams, opts ...option.RequestOption) (res *V1ContractGetSubscriptionSeatsScheduleHistoryResponse, err error) {
+func (r *V1ContractService) GetSubscriptionSeatsHistory(ctx context.Context, body V1ContractGetSubscriptionSeatsHistoryParams, opts ...option.RequestOption) (res *V1ContractGetSubscriptionSeatsHistoryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/getSubscriptionSeatsScheduleHistory"
+	path := "v1/contracts/getSubscriptionSeatsHistory"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -572,8 +572,8 @@ func (r *V1ContractNewHistoricalInvoicesResponse) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type V1ContractGetSubscriptionSeatsScheduleHistoryResponse struct {
-	Data []V1ContractGetSubscriptionSeatsScheduleHistoryResponseData `json:"data,required"`
+type V1ContractGetSubscriptionSeatsHistoryResponse struct {
+	Data []V1ContractGetSubscriptionSeatsHistoryResponseData `json:"data,required"`
 	// Cursor for the next page of results
 	NextPage string `json:"next_page,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -586,12 +586,12 @@ type V1ContractGetSubscriptionSeatsScheduleHistoryResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetSubscriptionSeatsScheduleHistoryResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetSubscriptionSeatsScheduleHistoryResponse) UnmarshalJSON(data []byte) error {
+func (r V1ContractGetSubscriptionSeatsHistoryResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionSeatsHistoryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type V1ContractGetSubscriptionSeatsScheduleHistoryResponseData struct {
+type V1ContractGetSubscriptionSeatsHistoryResponseData struct {
 	// Array of seat IDs that are assigned in this period
 	AssignedSeatIDs []string `json:"assigned_seat_ids,required"`
 	// The end time of this seat schedule period (null if ongoing)
@@ -612,10 +612,8 @@ type V1ContractGetSubscriptionSeatsScheduleHistoryResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetSubscriptionSeatsScheduleHistoryResponseData) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractGetSubscriptionSeatsScheduleHistoryResponseData) UnmarshalJSON(data []byte) error {
+func (r V1ContractGetSubscriptionSeatsHistoryResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionSeatsHistoryResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3696,7 +3694,7 @@ func (r *V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQ
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type V1ContractGetSubscriptionSeatsScheduleHistoryParams struct {
+type V1ContractGetSubscriptionSeatsHistoryParams struct {
 	ContractID     string `json:"contract_id,required" format:"uuid"`
 	CustomerID     string `json:"customer_id,required" format:"uuid"`
 	SubscriptionID string `json:"subscription_id,required" format:"uuid"`
@@ -3720,11 +3718,11 @@ type V1ContractGetSubscriptionSeatsScheduleHistoryParams struct {
 	paramObj
 }
 
-func (r V1ContractGetSubscriptionSeatsScheduleHistoryParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractGetSubscriptionSeatsScheduleHistoryParams
+func (r V1ContractGetSubscriptionSeatsHistoryParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractGetSubscriptionSeatsHistoryParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractGetSubscriptionSeatsScheduleHistoryParams) UnmarshalJSON(data []byte) error {
+func (r *V1ContractGetSubscriptionSeatsHistoryParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
