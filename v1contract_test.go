@@ -957,7 +957,7 @@ func TestV1ContractNewHistoricalInvoices(t *testing.T) {
 	}
 }
 
-func TestV1ContractGetSubscriptionSeatsScheduleHistoryWithOptionalParams(t *testing.T) {
+func TestV1ContractGetSubscriptionSeatsHistoryWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -969,7 +969,7 @@ func TestV1ContractGetSubscriptionSeatsScheduleHistoryWithOptionalParams(t *test
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.V1.Contracts.GetSubscriptionSeatsScheduleHistory(context.TODO(), metronome.V1ContractGetSubscriptionSeatsScheduleHistoryParams{
+	_, err := client.V1.Contracts.GetSubscriptionSeatsHistory(context.TODO(), metronome.V1ContractGetSubscriptionSeatsHistoryParams{
 		ContractID:     "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		CustomerID:     "13117714-3f05-48e5-a6e9-a66093f13b4d",
 		SubscriptionID: "1a824d53-bde6-4d82-96d7-6347ff227d5c",
