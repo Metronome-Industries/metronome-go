@@ -231,10 +231,10 @@ func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1Cu
 	return pagination.NewCursorPageAutoPager(r.ListCosts(ctx, params, opts...))
 }
 
-// Preview how a set of events will affect a customer's invoice. Generates a draft
-// invoice for a customer using their current contract configuration and the
+// Preview how a set of events will affect a customer's invoices. Generates draft
+// invoices for a customer using their current contract configuration and the
 // provided events. This is useful for testing how new events will affect the
-// customer's invoice before they are actually processed.
+// customer's invoices before they are actually processed.
 func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1CustomerPreviewEventsParams, opts ...option.RequestOption) (res *V1CustomerPreviewEventsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
@@ -655,7 +655,7 @@ func (r *V1CustomerListCostsResponseCreditTypeLineItemBreakdown) UnmarshalJSON(d
 }
 
 type V1CustomerPreviewEventsResponse struct {
-	Data Invoice `json:"data,required"`
+	Data []Invoice `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
