@@ -373,8 +373,8 @@ type V2ContractGetEditHistoryResponseDataAddCommit struct {
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// The schedule that the customer will be invoiced for this commit.
-	InvoiceSchedule shared.SchedulePointInTime `json:"invoice_schedule"`
-	Name            string                     `json:"name"`
+	InvoiceSchedule V2ContractGetEditHistoryResponseDataAddCommitInvoiceSchedule `json:"invoice_schedule"`
+	Name            string                                                       `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
 	// If multiple credits or commits are applicable, the one with the lower priority
@@ -436,6 +436,58 @@ type V2ContractGetEditHistoryResponseDataAddCommitProduct struct {
 // Returns the unmodified JSON received from the API
 func (r V2ContractGetEditHistoryResponseDataAddCommitProduct) RawJSON() string { return r.JSON.raw }
 func (r *V2ContractGetEditHistoryResponseDataAddCommitProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The schedule that the customer will be invoiced for this commit.
+type V2ContractGetEditHistoryResponseDataAddCommitInvoiceSchedule struct {
+	CreditType shared.CreditTypeData `json:"credit_type"`
+	// If true, this schedule will not generate an invoice.
+	DoNotInvoice  bool                                                                       `json:"do_not_invoice"`
+	ScheduleItems []V2ContractGetEditHistoryResponseDataAddCommitInvoiceScheduleScheduleItem `json:"schedule_items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreditType    respjson.Field
+		DoNotInvoice  respjson.Field
+		ScheduleItems respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddCommitInvoiceSchedule) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddCommitInvoiceSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddCommitInvoiceScheduleScheduleItem struct {
+	ID        string    `json:"id,required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount"`
+	InvoiceID string    `json:"invoice_id,nullable" format:"uuid"`
+	Quantity  float64   `json:"quantity"`
+	UnitPrice float64   `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Timestamp   respjson.Field
+		Amount      respjson.Field
+		InvoiceID   respjson.Field
+		Quantity    respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddCommitInvoiceScheduleScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
