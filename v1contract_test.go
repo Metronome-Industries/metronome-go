@@ -957,37 +957,6 @@ func TestV1ContractNewHistoricalInvoices(t *testing.T) {
 	}
 }
 
-func TestV1ContractGetSubscriptionSeatsHistoryWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := metronome.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
-	)
-	_, err := client.V1.Contracts.GetSubscriptionSeatsHistory(context.TODO(), metronome.V1ContractGetSubscriptionSeatsHistoryParams{
-		ContractID:     "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		CustomerID:     "13117714-3f05-48e5-a6e9-a66093f13b4d",
-		SubscriptionID: "1a824d53-bde6-4d82-96d7-6347ff227d5c",
-		CoveringDate:   metronome.Time(time.Now()),
-		Cursor:         metronome.String("cursor"),
-		EndingBefore:   metronome.Time(time.Now()),
-		Limit:          metronome.Int(10),
-		StartingAt:     metronome.Time(time.Now()),
-	})
-	if err != nil {
-		var apierr *metronome.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestV1ContractListBalancesWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
