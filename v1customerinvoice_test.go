@@ -140,6 +140,7 @@ func TestV1CustomerInvoiceListBreakdownsWithOptionalParams(t *testing.T) {
 }
 
 func TestV1CustomerInvoiceGetPdf(t *testing.T) {
+	t.Skip("prism mocking library in JS SDK doesnt support application/pdf")
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte("abc"))
