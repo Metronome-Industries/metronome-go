@@ -977,15 +977,11 @@ func (r *V1CustomerPreviewEventsParams) UnmarshalJSON(data []byte) error {
 // The property EventType is required.
 type V1CustomerPreviewEventsParamsEvent struct {
 	EventType string `json:"event_type,required"`
-	// This has no effect for preview events, but may be set for consistency with Event
-	// objects. They will be processed even if they do not match the customer's ID or
-	// ingest aliases.
-	CustomerID param.Opt[string] `json:"customer_id,omitzero"`
 	// RFC 3339 formatted. If not provided, the current time will be used.
 	Timestamp param.Opt[string] `json:"timestamp,omitzero"`
-	// This has no effect for preview events, but may be set for consistency with Event
-	// objects. Duplicate transaction_ids are NOT filtered out, even within the same
-	// request.
+	// Optional unique identifier for event deduplication. When provided, preview
+	// events are automatically deduplicated against historical events from the past 34
+	// days. Duplicate transaction IDs within the same request will return an error.
 	TransactionID param.Opt[string] `json:"transaction_id,omitzero"`
 	Properties    map[string]any    `json:"properties,omitzero"`
 	paramObj

@@ -212,8 +212,7 @@ func TestV1CustomerPreviewEventsWithOptionalParams(t *testing.T) {
 	_, err := client.V1.Customers.PreviewEvents(context.TODO(), metronome.V1CustomerPreviewEventsParams{
 		CustomerID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		Events: []metronome.V1CustomerPreviewEventsParamsEvent{{
-			EventType:  "heartbeat",
-			CustomerID: metronome.String("x"),
+			EventType: "heartbeat",
 			Properties: map[string]any{
 				"cpu_hours":       "bar",
 				"memory_gb_hours": "bar",
