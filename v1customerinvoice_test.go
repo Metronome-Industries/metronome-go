@@ -3,15 +3,19 @@
 package metronome_test
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go"
-	"github.com/Metronome-Industries/metronome-go/internal/testutil"
-	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/v2"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/testutil"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
 )
 
 func TestV1CustomerInvoiceGetWithOptionalParams(t *testing.T) {
@@ -132,5 +136,43 @@ func TestV1CustomerInvoiceListBreakdownsWithOptionalParams(t *testing.T) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
 		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestV1CustomerInvoiceGetPdf(t *testing.T) {
+	t.Skip("prism mocking library in JS SDK doesnt support application/pdf")
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Write([]byte("abc"))
+	}))
+	defer server.Close()
+	baseURL := server.URL
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	resp, err := client.V1.Customers.Invoices.GetPdf(context.TODO(), metronome.V1CustomerInvoiceGetPdfParams{
+		CustomerID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		InvoiceID:  "6a37bb88-8538-48c5-b37b-a41c836328bd",
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	if !bytes.Equal(b, []byte("abc")) {
+		t.Fatalf("return value not %s: %s", "abc", b)
 	}
 }

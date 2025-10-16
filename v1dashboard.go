@@ -5,12 +5,13 @@ package metronome
 import (
 	"context"
 	"net/http"
+	"slices"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
 )
 
 // V1DashboardService contains methods and other services that help with
@@ -63,7 +64,7 @@ func NewV1DashboardService(opts ...option.RequestOption) (r V1DashboardService) 
 // - Iframe implementation: Embed the returned URL directly in an iframe element
 // - Responsive design: Dashboards automatically adapt to container dimensions
 func (r *V1DashboardService) GetEmbeddableURL(ctx context.Context, body V1DashboardGetEmbeddableURLParams, opts ...option.RequestOption) (res *V1DashboardGetEmbeddableURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/dashboards/getEmbeddableUrl"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

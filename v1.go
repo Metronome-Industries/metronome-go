@@ -3,7 +3,7 @@
 package metronome
 
 import (
-	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
 )
 
 // V1Service contains methods and other services that help with interacting with
@@ -27,6 +27,7 @@ type V1Service struct {
 	Services        V1ServiceService
 	Invoices        V1InvoiceService
 	Contracts       V1ContractService
+	Payments        V1PaymentService
 }
 
 // NewV1Service generates a new service that applies the given options to each
@@ -48,5 +49,6 @@ func NewV1Service(opts ...option.RequestOption) (r V1Service) {
 	r.Services = NewV1ServiceService(opts...)
 	r.Invoices = NewV1InvoiceService(opts...)
 	r.Contracts = NewV1ContractService(opts...)
+	r.Payments = NewV1PaymentService(opts...)
 	return
 }

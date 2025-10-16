@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go"
-	"github.com/Metronome-Industries/metronome-go/internal/testutil"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/testutil"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 func TestV1ContractNewWithOptionalParams(t *testing.T) {
@@ -185,6 +185,11 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				ContractID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				CustomerID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			},
+			ParentBehavior: metronome.V1ContractNewParamsHierarchyConfigurationParentBehavior{
+				InvoiceConsolidationType: "CONCATENATE",
+			},
+			Payer:                  "SELF",
+			UsageStatementBehavior: "CONSOLIDATE",
 		},
 		MultiplierOverridePrioritization: metronome.V1ContractNewParamsMultiplierOverridePrioritizationLowestMultiplier,
 		Name:                             metronome.String("name"),

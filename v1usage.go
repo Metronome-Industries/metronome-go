@@ -7,17 +7,18 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	shimjson "github.com/Metronome-Industries/metronome-go/internal/encoding/json"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
+	shimjson "github.com/Metronome-Industries/metronome-go/v2/internal/encoding/json"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // V1UsageService contains methods and other services that help with interacting
@@ -74,7 +75,7 @@ func NewV1UsageService(opts ...option.RequestOption) (r V1UsageService) {
 //   - Null values: Group values may be null when no usage matches that group
 func (r *V1UsageService) List(ctx context.Context, params V1UsageListParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1UsageListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/usage"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -132,8 +133,7 @@ func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListP
 // ingestion, supports backdating 34 days, and is built to handle mission-critical
 // usage data with enterprise-grade reliability. Metronome supports 100,000 events
 // per second without requiring pre-aggregation or rollups and can scale up from
-// there. See
-// [Getting usage into Metronome](https://docs.metronome.com/connect-metronome/) to
+// there. See the [Send usage events](/guides/events/send-usage-events) guide to
 // learn more about usage events.
 //
 // ### Use this endpoint to:
@@ -178,6 +178,9 @@ func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListP
 //
 // ```
 //
+// Learn more about
+// [usage event structure definitions](/guides/events/design-usage-events).
+//
 // #### Transaction ID
 //
 // The transaction_id serves as your idempotency key, ensuring events are processed
@@ -213,7 +216,7 @@ func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListP
 // properties for end customers or internal finance teams measuring underlying
 // COGs.
 func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/ingest"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -256,7 +259,7 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 //   - Null handling: `group_value` may be null for unmatched data
 func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListWithGroupsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1UsageListWithGroupsResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/usage/groups"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
@@ -344,7 +347,7 @@ func (r *V1UsageService) ListWithGroupsAutoPaging(ctx context.Context, params V1
 // Instead, implement a sampling strategy to randomly validate a subset of events
 // for observability purposes.
 func (r *V1UsageService) Search(ctx context.Context, body V1UsageSearchParams, opts ...option.RequestOption) (res *[]V1UsageSearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/events/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

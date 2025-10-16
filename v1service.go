@@ -5,11 +5,12 @@ package metronome
 import (
 	"context"
 	"net/http"
+	"slices"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
 )
 
 // V1ServiceService contains methods and other services that help with interacting
@@ -38,7 +39,7 @@ func NewV1ServiceService(opts ...option.RequestOption) (r V1ServiceService) {
 // typically appearing 30+ days before first use to ensure smooth allowlist
 // updates.
 func (r *V1ServiceService) List(ctx context.Context, opts ...option.RequestOption) (res *V1ServiceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/services"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

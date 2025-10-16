@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go"
-	"github.com/Metronome-Industries/metronome-go/internal"
-	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/v2"
+	"github.com/Metronome-Industries/metronome-go/v2/internal"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
 )
 
 type closureTransport struct {

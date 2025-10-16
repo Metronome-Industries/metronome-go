@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go"
-	"github.com/Metronome-Industries/metronome-go/internal/testutil"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/testutil"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 func TestV1CustomerNewWithOptionalParams(t *testing.T) {
@@ -212,8 +212,7 @@ func TestV1CustomerPreviewEventsWithOptionalParams(t *testing.T) {
 	_, err := client.V1.Customers.PreviewEvents(context.TODO(), metronome.V1CustomerPreviewEventsParams{
 		CustomerID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		Events: []metronome.V1CustomerPreviewEventsParamsEvent{{
-			EventType:  "heartbeat",
-			CustomerID: metronome.String("x"),
+			EventType: "heartbeat",
 			Properties: map[string]any{
 				"cpu_hours":       "bar",
 				"memory_gb_hours": "bar",

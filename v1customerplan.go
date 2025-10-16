@@ -8,16 +8,17 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // V1CustomerPlanService contains methods and other services that help with
@@ -42,7 +43,7 @@ func NewV1CustomerPlanService(opts ...option.RequestOption) (r V1CustomerPlanSer
 // List the given customer's plans in reverse-chronological order.
 func (r *V1CustomerPlanService) List(ctx context.Context, params V1CustomerPlanListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerPlanListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
@@ -70,7 +71,7 @@ func (r *V1CustomerPlanService) ListAutoPaging(ctx context.Context, params V1Cus
 // [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)
 // for details on the price adjustments.
 func (r *V1CustomerPlanService) Add(ctx context.Context, params V1CustomerPlanAddParams, opts ...option.RequestOption) (res *V1CustomerPlanAddResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *V1CustomerPlanService) Add(ctx context.Context, params V1CustomerPlanAd
 
 // Change the end date of a customer's plan.
 func (r *V1CustomerPlanService) End(ctx context.Context, params V1CustomerPlanEndParams, opts ...option.RequestOption) (res *V1CustomerPlanEndResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -101,7 +102,7 @@ func (r *V1CustomerPlanService) End(ctx context.Context, params V1CustomerPlanEn
 // for details.
 func (r *V1CustomerPlanService) ListPriceAdjustments(ctx context.Context, params V1CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerPlanListPriceAdjustmentsResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")

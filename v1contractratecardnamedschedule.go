@@ -5,13 +5,14 @@ package metronome
 import (
 	"context"
 	"net/http"
+	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
 )
 
 // V1ContractRateCardNamedScheduleService contains methods and other services that
@@ -36,7 +37,7 @@ func NewV1ContractRateCardNamedScheduleService(opts ...option.RequestOption) (r 
 // Get a named schedule for the given contract. This endpoint's availability is
 // dependent on your client's configuration.
 func (r *V1ContractRateCardNamedScheduleService) Get(ctx context.Context, body V1ContractRateCardNamedScheduleGetParams, opts ...option.RequestOption) (res *V1ContractRateCardNamedScheduleGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/getNamedSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *V1ContractRateCardNamedScheduleService) Get(ctx context.Context, body V
 // Update a named schedule for the given contract. This endpoint's availability is
 // dependent on your client's configuration.
 func (r *V1ContractRateCardNamedScheduleService) Update(ctx context.Context, body V1ContractRateCardNamedScheduleUpdateParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/contracts/updateNamedSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)

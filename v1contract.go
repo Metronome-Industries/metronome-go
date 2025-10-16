@@ -7,16 +7,17 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // V1ContractService contains methods and other services that help with interacting
@@ -168,7 +169,7 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 //     `usage_filters` to route the correct usage to each contract.
 //     [Read more about usage filters](https://docs.metronome.com/manage-product-access/provision-customer/#create-a-usage-filter).
 func (r *V1ContractService) New(ctx context.Context, body V1ContractNewParams, opts ...option.RequestOption) (res *V1ContractNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -177,7 +178,7 @@ func (r *V1ContractService) New(ctx context.Context, body V1ContractNewParams, o
 // This is the v1 endpoint to get a contract. New clients should implement using
 // the v2 endpoint.
 func (r *V1ContractService) Get(ctx context.Context, body V1ContractGetParams, opts ...option.RequestOption) (res *V1ContractGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -191,7 +192,7 @@ func (r *V1ContractService) Get(ctx context.Context, body V1ContractGetParams, o
 // ⚠️ Note: This is the legacy v1 endpoint - new integrations should use the v2
 // endpoint for enhanced features.
 func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams, opts ...option.RequestOption) (res *V1ContractListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -216,7 +217,7 @@ func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams,
 // upstream of the commit, whether that is via contract editing, rate editing, or
 // other actions that cause an invoice to be recalculated.
 func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1ContractAddManualBalanceEntryParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/contracts/addManualBalanceLedgerEntry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -229,7 +230,7 @@ func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1Co
 // reach out to your Metronome representative for more details. Once contract
 // editing is enabled, access to this endpoint will be removed.
 func (r *V1ContractService) Amend(ctx context.Context, body V1ContractAmendParams, opts ...option.RequestOption) (res *V1ContractAmendResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/amend"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -256,7 +257,7 @@ func (r *V1ContractService) Amend(ctx context.Context, body V1ContractAmendParam
 // the `include_archived` parameter to `true` or in the Metronome UI when the "Show
 // archived" option is enabled.
 func (r *V1ContractService) Archive(ctx context.Context, body V1ContractArchiveParams, opts ...option.RequestOption) (res *V1ContractArchiveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -268,7 +269,7 @@ func (r *V1ContractService) Archive(ctx context.Context, body V1ContractArchiveP
 // before creation. Ideal for billing migrations or correcting past billing
 // periods.
 func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1ContractNewHistoricalInvoicesParams, opts ...option.RequestOption) (res *V1ContractNewHistoricalInvoicesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/createHistoricalInvoices"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -310,7 +311,7 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 //   - Manual adjustments: Includes all manual ledger entries, even future-dated ones
 func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) (res *pagination.BodyCursorPage[V1ContractListBalancesResponseUnion], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contracts/customerBalances/list"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, body, &res, opts...)
@@ -371,7 +372,7 @@ func (r *V1ContractService) ListBalancesAutoPaging(ctx context.Context, body V1C
 // paying, inclusive of any negotiated discounts or promotions, use this endpoint.
 // This endpoint only returns rates that are entitled.
 func (r *V1ContractService) GetRateSchedule(ctx context.Context, params V1ContractGetRateScheduleParams, opts ...option.RequestOption) (res *V1ContractGetRateScheduleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/getContractRateSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
@@ -388,7 +389,7 @@ func (r *V1ContractService) GetRateSchedule(ctx context.Context, params V1Contra
 // increment or decrement the quantity on a subscription at any point in the past
 // or future.
 func (r *V1ContractService) GetSubscriptionQuantityHistory(ctx context.Context, body V1ContractGetSubscriptionQuantityHistoryParams, opts ...option.RequestOption) (res *V1ContractGetSubscriptionQuantityHistoryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/getSubscriptionQuantityHistory"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -397,7 +398,7 @@ func (r *V1ContractService) GetSubscriptionQuantityHistory(ctx context.Context, 
 // Create a new scheduled invoice for Professional Services terms on a contract.
 // This endpoint's availability is dependent on your client's configuration.
 func (r *V1ContractService) ScheduleProServicesInvoice(ctx context.Context, body V1ContractScheduleProServicesInvoiceParams, opts ...option.RequestOption) (res *V1ContractScheduleProServicesInvoiceResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/scheduleProServicesInvoice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -422,20 +423,21 @@ func (r *V1ContractService) ScheduleProServicesInvoice(ctx context.Context, body
 // To use usage filters, the `group_key` must be defined on the billable metrics
 // underlying the rate card on the contracts.
 func (r *V1ContractService) SetUsageFilter(ctx context.Context, body V1ContractSetUsageFilterParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/contracts/setUsageFilter"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
 
-// Update or and an end date to a contract. Ending a contract early will impact
+// Update or add an end date to a contract. Ending a contract early will impact
 // draft usage statements, truncate any terms, and remove upcoming scheduled
 // invoices. Moving the date into the future will only extend the contract length.
-// Terms and scheduled invoices are not extended. Use this if a contract's end date
-// has changed or if a perpetual contract ends.
+// Terms and scheduled invoices are not extended. In-advance subscriptions will not
+// be extended. Use this if a contract's end date has changed or if a perpetual
+// contract ends.
 func (r *V1ContractService) UpdateEndDate(ctx context.Context, body V1ContractUpdateEndDateParams, opts ...option.RequestOption) (res *V1ContractUpdateEndDateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/updateEndDate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -1212,7 +1214,7 @@ type V1ContractNewParamsCommitPaymentGateConfig struct {
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
 	//
-	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
+	// Any of "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED".
 	TaxType string `json:"tax_type,omitzero"`
 	paramObj
 }
@@ -1230,7 +1232,7 @@ func init() {
 		"payment_gate_type", "NONE", "STRIPE", "EXTERNAL",
 	)
 	apijson.RegisterFieldValidator[V1ContractNewParamsCommitPaymentGateConfig](
-		"tax_type", "NONE", "STRIPE", "ANROK", "PRECALCULATED",
+		"tax_type", "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED",
 	)
 }
 
@@ -1496,9 +1498,20 @@ func (r *V1ContractNewParamsDiscountScheduleScheduleItem) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property Parent is required.
 type V1ContractNewParamsHierarchyConfiguration struct {
-	Parent V1ContractNewParamsHierarchyConfigurationParent `json:"parent,omitzero,required"`
+	Parent         V1ContractNewParamsHierarchyConfigurationParent         `json:"parent,omitzero"`
+	ParentBehavior V1ContractNewParamsHierarchyConfigurationParentBehavior `json:"parent_behavior,omitzero"`
+	// Indicates whether the parent should pay for the child's invoice charges
+	//
+	// Any of "SELF", "PARENT".
+	Payer string `json:"payer,omitzero"`
+	// Indicates the behavior of the child's invoice statements on the parent's
+	// invoices **CONSOLIDATE**: Child's invoice statements will be added to parent's
+	// consolidated invoices **SEPARATE**: Child's invoice statements will appear not
+	// appear on parent's consolidated invoices
+	//
+	// Any of "CONSOLIDATE", "SEPARATE".
+	UsageStatementBehavior string `json:"usage_statement_behavior,omitzero"`
 	paramObj
 }
 
@@ -1508,6 +1521,15 @@ func (r V1ContractNewParamsHierarchyConfiguration) MarshalJSON() (data []byte, e
 }
 func (r *V1ContractNewParamsHierarchyConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfiguration](
+		"payer", "SELF", "PARENT",
+	)
+	apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfiguration](
+		"usage_statement_behavior", "CONSOLIDATE", "SEPARATE",
+	)
 }
 
 // The properties ContractID, CustomerID are required.
@@ -1523,6 +1545,31 @@ func (r V1ContractNewParamsHierarchyConfigurationParent) MarshalJSON() (data []b
 }
 func (r *V1ContractNewParamsHierarchyConfigurationParent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractNewParamsHierarchyConfigurationParentBehavior struct {
+	// Indicates the desired behavior of consolidated invoices generated by the parent
+	// in a customer hierarchy **CONCATENATE**: Statements on the invoices of child
+	// customers will be appended to the consolidated invoice **NONE**: Do not generate
+	// consolidated invoices
+	//
+	// Any of "CONCATENATE", "NONE".
+	InvoiceConsolidationType string `json:"invoice_consolidation_type,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsHierarchyConfigurationParentBehavior) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsHierarchyConfigurationParentBehavior
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsHierarchyConfigurationParentBehavior) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfigurationParentBehavior](
+		"invoice_consolidation_type", "CONCATENATE", "NONE",
+	)
 }
 
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
@@ -2809,7 +2856,7 @@ type V1ContractAmendParamsCommitPaymentGateConfig struct {
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
 	//
-	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
+	// Any of "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED".
 	TaxType string `json:"tax_type,omitzero"`
 	paramObj
 }
@@ -2827,7 +2874,7 @@ func init() {
 		"payment_gate_type", "NONE", "STRIPE", "EXTERNAL",
 	)
 	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitPaymentGateConfig](
-		"tax_type", "NONE", "STRIPE", "ANROK", "PRECALCULATED",
+		"tax_type", "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED",
 	)
 }
 

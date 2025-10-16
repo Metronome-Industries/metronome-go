@@ -3,9 +3,9 @@
 package metronome
 
 import (
-	"github.com/Metronome-Industries/metronome-go/internal/apierror"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apierror"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding
@@ -275,6 +275,9 @@ type ContractV2Override = shared.ContractV2Override
 type ContractV2OverrideOverrideSpecifier = shared.ContractV2OverrideOverrideSpecifier
 
 // This is an alias to an internal type.
+type ContractV2OverrideOverwriteRate = shared.ContractV2OverrideOverwriteRate
+
+// This is an alias to an internal type.
 type ContractV2OverrideProduct = shared.ContractV2OverrideProduct
 
 // This is an alias to an internal type.
@@ -329,6 +332,29 @@ type ContractV2CustomerBillingProviderConfiguration = shared.ContractV2CustomerB
 //
 // This is an alias to an internal type.
 type ContractV2HasMore = shared.ContractV2HasMore
+
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+//
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationUnion = shared.ContractV2HierarchyConfigurationUnion
+
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationParentHierarchyConfiguration = shared.ContractV2HierarchyConfigurationParentHierarchyConfiguration
+
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationParentHierarchyConfigurationChild = shared.ContractV2HierarchyConfigurationParentHierarchyConfigurationChild
+
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior = shared.ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior
+
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2 = shared.ContractV2HierarchyConfigurationChildHierarchyConfigurationV2
+
+// The single parent contract/customer for this child.
+//
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent = shared.ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent
 
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 // prices automatically. EXPLICIT prioritization requires specifying priorities for
@@ -558,6 +584,9 @@ type HierarchyConfigurationParentHierarchyConfiguration = shared.HierarchyConfig
 type HierarchyConfigurationParentHierarchyConfigurationChild = shared.HierarchyConfigurationParentHierarchyConfigurationChild
 
 // This is an alias to an internal type.
+type HierarchyConfigurationParentHierarchyConfigurationParentBehavior = shared.HierarchyConfigurationParentHierarchyConfigurationParentBehavior
+
+// This is an alias to an internal type.
 type HierarchyConfigurationChildHierarchyConfiguration = shared.HierarchyConfigurationChildHierarchyConfiguration
 
 // The single parent contract/customer for this child.
@@ -689,6 +718,9 @@ const PaymentGateConfigTaxTypeStripe = shared.PaymentGateConfigTaxTypeStripe
 // Equals "ANROK"
 const PaymentGateConfigTaxTypeAnrok = shared.PaymentGateConfigTaxTypeAnrok
 
+// Equals "AVALARA"
+const PaymentGateConfigTaxTypeAvalara = shared.PaymentGateConfigTaxTypeAvalara
+
 // Equals "PRECALCULATED"
 const PaymentGateConfigTaxTypePrecalculated = shared.PaymentGateConfigTaxTypePrecalculated
 
@@ -750,6 +782,9 @@ const PaymentGateConfigV2TaxTypeStripe = shared.PaymentGateConfigV2TaxTypeStripe
 
 // Equals "ANROK"
 const PaymentGateConfigV2TaxTypeAnrok = shared.PaymentGateConfigV2TaxTypeAnrok
+
+// Equals "AVALARA"
+const PaymentGateConfigV2TaxTypeAvalara = shared.PaymentGateConfigV2TaxTypeAvalara
 
 // Equals "PRECALCULATED"
 const PaymentGateConfigV2TaxTypePrecalculated = shared.PaymentGateConfigV2TaxTypePrecalculated
@@ -868,6 +903,20 @@ type SpendThresholdConfigurationV2Param = shared.SpendThresholdConfigurationV2Pa
 
 // This is an alias to an internal type.
 type Subscription = shared.Subscription
+
+// Previous, current, and next billing periods for the subscription.
+//
+// This is an alias to an internal type.
+type SubscriptionBillingPeriods = shared.SubscriptionBillingPeriods
+
+// This is an alias to an internal type.
+type SubscriptionBillingPeriodsCurrent = shared.SubscriptionBillingPeriodsCurrent
+
+// This is an alias to an internal type.
+type SubscriptionBillingPeriodsNext = shared.SubscriptionBillingPeriodsNext
+
+// This is an alias to an internal type.
+type SubscriptionBillingPeriodsPrevious = shared.SubscriptionBillingPeriodsPrevious
 
 // This is an alias to an internal type.
 type SubscriptionCollectionSchedule = shared.SubscriptionCollectionSchedule
