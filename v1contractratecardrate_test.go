@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go"
-	"github.com/Metronome-Industries/metronome-go/internal/testutil"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/testutil"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 func TestV1ContractRateCardRateListWithOptionalParams(t *testing.T) {
