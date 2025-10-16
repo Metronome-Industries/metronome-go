@@ -3,7 +3,7 @@
 package metronome
 
 import (
-	"github.com/Metronome-Industries/metronome-go/option"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
 )
 
 // V1Service contains methods and other services that help with interacting with

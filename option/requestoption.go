@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 

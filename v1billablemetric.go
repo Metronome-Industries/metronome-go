@@ -12,15 +12,15 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/internal/apiquery"
-	shimjson "github.com/Metronome-Industries/metronome-go/internal/encoding/json"
-	"github.com/Metronome-Industries/metronome-go/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/option"
-	"github.com/Metronome-Industries/metronome-go/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/packages/param"
-	"github.com/Metronome-Industries/metronome-go/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/shared"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
+	shimjson "github.com/Metronome-Industries/metronome-go/v2/internal/encoding/json"
+	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v2/shared"
 )
 
 // V1BillableMetricService contains methods and other services that help with

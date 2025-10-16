@@ -1,5 +1,51 @@
 # Changelog
 
+## 2.0.0 (2025-10-16)
+
+Full Changelog: [v1.0.0...v2.0.0](https://github.com/Metronome-Industries/metronome-go/compare/v1.0.0...v2.0.0)
+
+### ⚠ BREAKING CHANGES
+
+* **api:** Remove customer_id from preview events payload
+* **api:** in getEditHistory endpoint, commit invoice schedule amount, unit price, and quantity are now optional values
+* **api:** Added optional archive_filter param to /notifications/offset/list endpoint
+
+### Features
+
+* Add empty handler for cancelPayment ([1834ac9](https://github.com/Metronome-Industries/metronome-go/commit/1834ac98562bfafc6eccf6f4f791a76aaa810b73))
+* Add payment + billing invoice APIs to the API reference docs ([fb13dc3](https://github.com/Metronome-Industries/metronome-go/commit/fb13dc37da99261ae231ec58ffaf733ce4732cbf))
+* Add payment APIs to the SDK ([647ae25](https://github.com/Metronome-Industries/metronome-go/commit/647ae25a09610df7eea5db4f185ce8493f29d62d))
+* **api:** add billing_periods to Subscription ([80bd971](https://github.com/Metronome-Industries/metronome-go/commit/80bd971036161ab8bb6e6bf088d94d747ac87f48))
+* **api:** add new payments/attempt v1 api endpoint ([6c97f01](https://github.com/Metronome-Industries/metronome-go/commit/6c97f01f81336fb2182407e782044fe10642aeb7))
+* **api:** Added optional archive_filter param to /notifications/offset/list endpoint ([2db1f6d](https://github.com/Metronome-Industries/metronome-go/commit/2db1f6d204620ad0126a3f4e60dc9a4fa6d21fd8))
+* **api:** Remove customer_id from preview events payload ([2ff7b35](https://github.com/Metronome-Industries/metronome-go/commit/2ff7b35911be9f088a3359168c43b89f802cf617))
+* Bump graphql version and fix type errors ([c7bbcf9](https://github.com/Metronome-Industries/metronome-go/commit/c7bbcf961a1b77b0c3012199a88dbf46eb0f06a2))
+* elia/orch 128 add external apis for payments ([884fa27](https://github.com/Metronome-Industries/metronome-go/commit/884fa2772ef56f6f31bc7fbf31372fdef3fe66c4))
+* feat(api):Allow clients retrieve archived config via `/notifications/get` ([bb1bffa](https://github.com/Metronome-Industries/metronome-go/commit/bb1bffa5bf8081a0dd15dbb8701f548044b44fca))
+* internal: releasing x-mint ([aa02da7](https://github.com/Metronome-Industries/metronome-go/commit/aa02da7cfaaecb71aba019c0e513f9d89347921d))
+* internal: Skip retrieve_pdf API SDK tests ([a201c80](https://github.com/Metronome-Industries/metronome-go/commit/a201c80a4152b5a0a7b6bf38ccdc2858f4cd04ec))
+* internal(docs): adding confluent endpoints ([9ed243a](https://github.com/Metronome-Industries/metronome-go/commit/9ed243a03ff5bd6497496e696a99ae768a860283))
+* LAUNCH-516 add getSubscriptionSeatsScheduleHistory api ([d4f435f](https://github.com/Metronome-Industries/metronome-go/commit/d4f435fd70b1d20d79b41f75ed4629d62488ec45))
+* rename getSubscriptionSeatsScheduleHistory to getSubscriptionSeatsHistory ([491fe0f](https://github.com/Metronome-Industries/metronome-go/commit/491fe0f2e32f13e454321a08a056165ce9bf223f))
+* Return array of invoices instead of single invoice and handle multipl… ([bc0f5e2](https://github.com/Metronome-Industries/metronome-go/commit/bc0f5e21e88f905e3a3185bcca9abfb3608b6183))
+* Set up contract get and create with new AH info ([5b01c73](https://github.com/Metronome-Industries/metronome-go/commit/5b01c73254003e7761d115369bbee69dba3809e6))
+* update api docs ([af71781](https://github.com/Metronome-Industries/metronome-go/commit/af71781945d44bbfe911492ccab8e95c880188c0))
+
+
+### Bug Fixes
+
+* **api:** in getEditHistory endpoint, commit invoice schedule amount, unit price, and quantity are now optional values ([1768ad4](https://github.com/Metronome-Industries/metronome-go/commit/1768ad4120f8439f4762833aeda31a93ef9cd891))
+* bugfix for setting JSON keys with special characters ([4d23ab2](https://github.com/Metronome-Industries/metronome-go/commit/4d23ab2de34f833cf346f37ddb57fb7f29f5e9b1))
+* LAUNCH-1130 remove min and max in api spec for better valiation error message ([1744183](https://github.com/Metronome-Industries/metronome-go/commit/1744183e88c697165f820df0dee5913f43844f5f))
+* use slices.Concat instead of sometimes modifying r.Options ([a7a98fd](https://github.com/Metronome-Industries/metronome-go/commit/a7a98fd2bc7038683b60247d6c0cc0a26451183f))
+
+
+### Chores
+
+* bump minimum go version to 1.22 ([ecf5220](https://github.com/Metronome-Industries/metronome-go/commit/ecf522089b64aade1c708be90f7edc3728afaf83))
+* do not install brew dependencies in ./scripts/bootstrap by default ([cf01d47](https://github.com/Metronome-Industries/metronome-go/commit/cf01d4722bbe3547eafdf8d915a2ba8f761ca9ed))
+* update more docs for 1.22 ([df56a50](https://github.com/Metronome-Industries/metronome-go/commit/df56a50627ba190d00aee601123d5b720bfd2d29))
+
 ## 1.0.0 (2025-09-15)
 
 Full Changelog: [v0.3.0...v1.0.0](https://github.com/Metronome-Industries/metronome-go/compare/v0.3.0...v1.0.0)
