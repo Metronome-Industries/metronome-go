@@ -788,6 +788,9 @@ type V1CustomerNewParamsBillingConfig struct {
 	// "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1",
 	// "us-west-2".
 	AwsRegion string `json:"aws_region,omitzero"`
+	// The collection method for the customer's invoices. NOTE:
+	// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
+	//
 	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
 	// "manually_charge_payment_intent".
 	StripeCollectionMethod string `json:"stripe_collection_method,omitzero"`
