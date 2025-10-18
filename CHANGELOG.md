@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0 (2025-10-18)
+
+Full Changelog: [v2.0.0...v2.1.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.0.0...v2.1.0)
+
+### Features
+
+* add beta tag to stripe auto charge items ([7d5f632](https://github.com/Metronome-Industries/metronome-go/commit/7d5f632c0d85ca0bb487edfd18acfaea78598a51))
+
 ## 2.0.0 (2025-10-16)
 
 Full Changelog: [v1.0.0...v2.0.0](https://github.com/Metronome-Industries/metronome-go/compare/v1.0.0...v2.0.0)
