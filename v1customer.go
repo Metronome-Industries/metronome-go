@@ -202,7 +202,8 @@ func (r *V1CustomerService) ListBillableMetricsAutoPaging(ctx context.Context, p
 
 // Fetch daily pending costs for the specified customer, broken down by credit type
 // and line items. Note: this is not supported for customers whose plan includes a
-// UNIQUE-type billable metric.
+// UNIQUE-type billable metric. This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerListCostsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerListCostsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -226,7 +227,8 @@ func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerList
 
 // Fetch daily pending costs for the specified customer, broken down by credit type
 // and line items. Note: this is not supported for customers whose plan includes a
-// UNIQUE-type billable metric.
+// UNIQUE-type billable metric. This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1CustomerListCostsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerListCostsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListCosts(ctx, params, opts...))
 }

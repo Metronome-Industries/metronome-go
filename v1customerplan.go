@@ -40,7 +40,8 @@ func NewV1CustomerPlanService(opts ...option.RequestOption) (r V1CustomerPlanSer
 	return
 }
 
-// List the given customer's plans in reverse-chronological order.
+// List the given customer's plans in reverse-chronological order. This is a Plans
+// (deprecated) endpoint. New clients should implement using Contracts.
 func (r *V1CustomerPlanService) List(ctx context.Context, params V1CustomerPlanListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerPlanListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -62,14 +63,16 @@ func (r *V1CustomerPlanService) List(ctx context.Context, params V1CustomerPlanL
 	return res, nil
 }
 
-// List the given customer's plans in reverse-chronological order.
+// List the given customer's plans in reverse-chronological order. This is a Plans
+// (deprecated) endpoint. New clients should implement using Contracts.
 func (r *V1CustomerPlanService) ListAutoPaging(ctx context.Context, params V1CustomerPlanListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerPlanListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Associate an existing customer with a plan for a specified date range. See the
 // [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)
-// for details on the price adjustments.
+// for details on the price adjustments. This is a Plans (deprecated) endpoint. New
+// clients should implement using Contracts.
 func (r *V1CustomerPlanService) Add(ctx context.Context, params V1CustomerPlanAddParams, opts ...option.RequestOption) (res *V1CustomerPlanAddResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
@@ -81,7 +84,8 @@ func (r *V1CustomerPlanService) Add(ctx context.Context, params V1CustomerPlanAd
 	return
 }
 
-// Change the end date of a customer's plan.
+// Change the end date of a customer's plan. This is a Plans (deprecated) endpoint.
+// New clients should implement using Contracts.
 func (r *V1CustomerPlanService) End(ctx context.Context, params V1CustomerPlanEndParams, opts ...option.RequestOption) (res *V1CustomerPlanEndResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
@@ -99,7 +103,8 @@ func (r *V1CustomerPlanService) End(ctx context.Context, params V1CustomerPlanEn
 
 // Lists a customer plans adjustments. See the
 // [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)
-// for details.
+// for details. This is a Plans (deprecated) endpoint. New clients should implement
+// using Contracts.
 func (r *V1CustomerPlanService) ListPriceAdjustments(ctx context.Context, params V1CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerPlanListPriceAdjustmentsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -127,7 +132,8 @@ func (r *V1CustomerPlanService) ListPriceAdjustments(ctx context.Context, params
 
 // Lists a customer plans adjustments. See the
 // [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)
-// for details.
+// for details. This is a Plans (deprecated) endpoint. New clients should implement
+// using Contracts.
 func (r *V1CustomerPlanService) ListPriceAdjustmentsAutoPaging(ctx context.Context, params V1CustomerPlanListPriceAdjustmentsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerPlanListPriceAdjustmentsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListPriceAdjustments(ctx, params, opts...))
 }
