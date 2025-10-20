@@ -212,7 +212,8 @@ func (r *V1CustomerInvoiceService) ListAutoPaging(ctx context.Context, params V1
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Add a one time charge to the specified invoice
+// Add a one time charge to the specified invoice. This is a Plans (deprecated)
+// endpoint. New clients should implement using Contracts.
 func (r *V1CustomerInvoiceService) AddCharge(ctx context.Context, params V1CustomerInvoiceAddChargeParams, opts ...option.RequestOption) (res *V1CustomerInvoiceAddChargeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {

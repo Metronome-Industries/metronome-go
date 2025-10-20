@@ -36,7 +36,8 @@ func NewV1CustomerBillingConfigService(opts ...option.RequestOption) (r V1Custom
 	return
 }
 
-// Set the billing configuration for a given customer.
+// Set the billing configuration for a given customer. This is a Plans (deprecated)
+// endpoint. New clients should implement using Contracts.
 func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1CustomerBillingConfigNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -49,7 +50,8 @@ func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1Custo
 	return
 }
 
-// Fetch the billing configuration for the given customer.
+// Fetch the billing configuration for the given customer. This is a Plans
+// (deprecated) endpoint. New clients should implement using Contracts.
 func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1CustomerBillingConfigGetParams, opts ...option.RequestOption) (res *V1CustomerBillingConfigGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.CustomerID == "" {
@@ -62,7 +64,8 @@ func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1Custom
 }
 
 // Delete the billing configuration for a given customer. Note: this is unsupported
-// for Azure and AWS Marketplace customers.
+// for Azure and AWS Marketplace customers. This is a Plans (deprecated) endpoint.
+// New clients should implement using Contracts.
 func (r *V1CustomerBillingConfigService) Delete(ctx context.Context, body V1CustomerBillingConfigDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
