@@ -65,7 +65,8 @@ func NewV1CustomerCommitService(opts ...option.RequestOption) (r V1CustomerCommi
 // #### Billing configuration:
 //
 //   - invoice_contract_id is required for postpaid commits and for prepaid commits
-//     with billing (only optional for free prepaid commits)
+//     with billing (only optional for free prepaid commits) unless do_not_invoice is
+//     set to true
 //   - For postpaid commits: access_schedule and invoice_schedule must have matching
 //     amounts
 //   - For postpaid commits: only one schedule item is allowed in both schedules.
@@ -283,7 +284,7 @@ type V1CustomerCommitNewParams struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The contract that this commit will be billed on. This is required for "POSTPAID"
 	// commits and for "PREPAID" commits unless there is no invoice schedule above
-	// (i.e., the commit is 'free').
+	// (i.e., the commit is 'free'), or if do_not_invoice is set to true.
 	InvoiceContractID param.Opt[string] `json:"invoice_contract_id,omitzero" format:"uuid"`
 	// displayed on invoices
 	Name param.Opt[string] `json:"name,omitzero"`
