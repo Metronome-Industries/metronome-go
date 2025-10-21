@@ -3623,6 +3623,8 @@ type V1ContractListBalancesParams struct {
 	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
 	// Include only balances that have any access before the provided date (exclusive)
 	EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
+	// Exclude balances with zero amounts from the response.
+	ExcludeZeroBalances param.Opt[bool] `json:"exclude_zero_balances,omitzero"`
 	// Include archived credits and credits from archived contracts.
 	IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
 	// Include the balance of credits and commits in the response. Setting this flag
