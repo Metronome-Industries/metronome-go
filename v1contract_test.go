@@ -974,6 +974,7 @@ func TestV1ContractListBalancesWithOptionalParams(t *testing.T) {
 		ID:                      metronome.String("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
 		CoveringDate:            metronome.Time(time.Now()),
 		EffectiveBefore:         metronome.Time(time.Now()),
+		ExcludeZeroBalances:     metronome.Bool(true),
 		IncludeArchived:         metronome.Bool(true),
 		IncludeBalance:          metronome.Bool(true),
 		IncludeContractBalances: metronome.Bool(true),
