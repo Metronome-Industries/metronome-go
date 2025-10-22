@@ -379,6 +379,9 @@ type Invoice struct {
 	AmendmentID string                `json:"amendment_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
 	BillableStatus any `json:"billable_status"`
+	// Account hierarchy M3 - Required on invoices with type USAGE_CONSOLIDATED. List
+	// of constituent invoices that were consolidated to create this invoice.
+	ConstituentInvoices []InvoiceConstituentInvoice `json:"constituent_invoices"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	ContractCustomFields map[string]string       `json:"contract_custom_fields"`
 	ContractID           string                  `json:"contract_id" format:"uuid"`
@@ -398,6 +401,9 @@ type Invoice struct {
 	NetPaymentTermsDays float64   `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// Account hierarchy M3 - Required for account hierarchy usage invoices. An object
+	// containing the contract and customer UUIDs that pay for this invoice.
+	Payer InvoicePayer `json:"payer"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	PlanCustomFields map[string]string `json:"plan_custom_fields"`
 	PlanID           string            `json:"plan_id" format:"uuid"`
@@ -420,6 +426,7 @@ type Invoice struct {
 		Type                    respjson.Field
 		AmendmentID             respjson.Field
 		BillableStatus          respjson.Field
+		ConstituentInvoices     respjson.Field
 		ContractCustomFields    respjson.Field
 		ContractID              respjson.Field
 		CorrectionRecord        respjson.Field
@@ -432,6 +439,7 @@ type Invoice struct {
 		IssuedAt                respjson.Field
 		NetPaymentTermsDays     respjson.Field
 		NetsuiteSalesOrderID    respjson.Field
+		Payer                   respjson.Field
 		PlanCustomFields        respjson.Field
 		PlanID                  respjson.Field
 		PlanName                respjson.Field
@@ -517,6 +525,10 @@ type InvoiceLineItem struct {
 	// The start date for the billing period on the invoice.
 	NetsuiteInvoiceBillingStart time.Time `json:"netsuite_invoice_billing_start" format:"date-time"`
 	NetsuiteItemID              string    `json:"netsuite_item_id"`
+	// Account hierarchy M3 - Present on line items from invoices with type
+	// USAGE_CONSOLIDATED. Indicates the original customer, contract, invoice and line
+	// item from which this line item was copied.
+	Origin InvoiceLineItemOrigin `json:"origin"`
 	// Only present for line items paying for a postpaid commit true-up.
 	PostpaidCommit InvoiceLineItemPostpaidCommit `json:"postpaid_commit"`
 	// Includes the presentation group values associated with this line item if
@@ -582,6 +594,7 @@ type InvoiceLineItem struct {
 		NetsuiteInvoiceBillingEnd       respjson.Field
 		NetsuiteInvoiceBillingStart     respjson.Field
 		NetsuiteItemID                  respjson.Field
+		Origin                          respjson.Field
 		PostpaidCommit                  respjson.Field
 		PresentationGroupValues         respjson.Field
 		PricingGroupValues              respjson.Field
@@ -630,6 +643,31 @@ type InvoiceLineItemAppliedCommitOrCredit struct {
 // Returns the unmodified JSON received from the API
 func (r InvoiceLineItemAppliedCommitOrCredit) RawJSON() string { return r.JSON.raw }
 func (r *InvoiceLineItemAppliedCommitOrCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Account hierarchy M3 - Present on line items from invoices with type
+// USAGE_CONSOLIDATED. Indicates the original customer, contract, invoice and line
+// item from which this line item was copied.
+type InvoiceLineItemOrigin struct {
+	ContractID string `json:"contract_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
+	InvoiceID  string `json:"invoice_id,required" format:"uuid"`
+	LineItemID string `json:"line_item_id,required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CustomerID  respjson.Field
+		InvoiceID   respjson.Field
+		LineItemID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvoiceLineItemOrigin) RawJSON() string { return r.JSON.raw }
+func (r *InvoiceLineItemOrigin) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -752,6 +790,26 @@ type InvoiceLineItemTier struct {
 // Returns the unmodified JSON received from the API
 func (r InvoiceLineItemTier) RawJSON() string { return r.JSON.raw }
 func (r *InvoiceLineItemTier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InvoiceConstituentInvoice struct {
+	ContractID string `json:"contract_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
+	InvoiceID  string `json:"invoice_id,required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CustomerID  respjson.Field
+		InvoiceID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvoiceConstituentInvoice) RawJSON() string { return r.JSON.raw }
+func (r *InvoiceConstituentInvoice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -923,6 +981,26 @@ type InvoiceInvoiceAdjustment struct {
 // Returns the unmodified JSON received from the API
 func (r InvoiceInvoiceAdjustment) RawJSON() string { return r.JSON.raw }
 func (r *InvoiceInvoiceAdjustment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Account hierarchy M3 - Required for account hierarchy usage invoices. An object
+// containing the contract and customer UUIDs that pay for this invoice.
+type InvoicePayer struct {
+	ContractID string `json:"contract_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id,required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CustomerID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvoicePayer) RawJSON() string { return r.JSON.raw }
+func (r *InvoicePayer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
