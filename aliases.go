@@ -333,6 +333,29 @@ type ContractV2CustomerBillingProviderConfiguration = shared.ContractV2CustomerB
 // This is an alias to an internal type.
 type ContractV2HasMore = shared.ContractV2HasMore
 
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+//
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationUnion = shared.ContractV2HierarchyConfigurationUnion
+
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationParentHierarchyConfiguration = shared.ContractV2HierarchyConfigurationParentHierarchyConfiguration
+
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationParentHierarchyConfigurationChild = shared.ContractV2HierarchyConfigurationParentHierarchyConfigurationChild
+
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior = shared.ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior
+
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2 = shared.ContractV2HierarchyConfigurationChildHierarchyConfigurationV2
+
+// The single parent contract/customer for this child.
+//
+// This is an alias to an internal type.
+type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent = shared.ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent
+
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
 // prices automatically. EXPLICIT prioritization requires specifying priorities for
 // each multiplier; the one with the lowest priority value will be prioritized
