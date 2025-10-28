@@ -236,7 +236,8 @@ func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1Cu
 // Preview how a set of events will affect a customer's invoices. Generates draft
 // invoices for a customer using their current contract configuration and the
 // provided events. This is useful for testing how new events will affect the
-// customer's invoices before they are actually processed.
+// customer's invoices before they are actually processed. Customers on contracts
+// with SQL billable metrics are not supported.
 func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1CustomerPreviewEventsParams, opts ...option.RequestOption) (res *V1CustomerPreviewEventsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
