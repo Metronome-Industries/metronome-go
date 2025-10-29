@@ -108,7 +108,7 @@ type V1SettingBillingProviderListResponseData struct {
 	// The billing provider set for this configuration.
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,required"`
 	// The method to use for delivering invoices to this customer.
 	//

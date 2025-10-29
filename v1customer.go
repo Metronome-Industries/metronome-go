@@ -700,7 +700,7 @@ type V1CustomerGetBillingConfigurationsResponseData struct {
 	// The billing provider set for this configuration.
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
@@ -779,7 +779,7 @@ func (r *V1CustomerNewParams) UnmarshalJSON(data []byte) error {
 type V1CustomerNewParamsBillingConfig struct {
 	BillingProviderCustomerID string `json:"billing_provider_customer_id,required"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType string `json:"billing_provider_type,omitzero,required"`
 	// True if the aws_product_code is a SAAS subscription product, false otherwise.
 	AwsIsSubscriptionProduct param.Opt[bool]   `json:"aws_is_subscription_product,omitzero"`
@@ -810,7 +810,7 @@ func (r *V1CustomerNewParamsBillingConfig) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
-		"billing_provider_type", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+		"billing_provider_type", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace", "metronome",
 	)
 	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
 		"aws_region", "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2", "ca-central-1", "cn-north-1", "cn-northwest-1", "eu-central-1", "eu-north-1", "eu-south-1", "eu-west-1", "eu-west-2", "eu-west-3", "me-south-1", "sa-east-1", "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1", "us-west-2",
@@ -1047,7 +1047,7 @@ type V1CustomerSetBillingConfigurationsParamsData struct {
 	// The billing provider set for this configuration.
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,omitzero,required"`
 	CustomerID      string `json:"customer_id,required" format:"uuid"`
 	// ID of the delivery method to use for this customer. If not provided, the
@@ -1086,7 +1086,7 @@ func (r *V1CustomerSetBillingConfigurationsParamsData) UnmarshalJSON(data []byte
 
 func init() {
 	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
-		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace", "metronome",
 	)
 	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
 		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",

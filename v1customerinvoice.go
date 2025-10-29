@@ -837,7 +837,7 @@ func (r *InvoiceCorrectionRecord) UnmarshalJSON(data []byte) error {
 
 type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType string `json:"billing_provider_type,required"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
@@ -899,7 +899,7 @@ func (r *InvoiceCorrectionRecordCorrectedExternalInvoiceTax) UnmarshalJSON(data 
 
 type InvoiceExternalInvoice struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType string `json:"billing_provider_type,required"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".

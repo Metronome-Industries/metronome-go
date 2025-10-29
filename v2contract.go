@@ -2271,7 +2271,7 @@ func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdate) UnmarshalJSO
 type V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration struct {
 	BillingProviderConfigurationID param.Opt[string] `json:"billing_provider_configuration_id,omitzero" format:"uuid"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,omitzero"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string `json:"delivery_method,omitzero"`
@@ -2288,7 +2288,7 @@ func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProvide
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration](
-		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace", "metronome",
 	)
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration](
 		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
