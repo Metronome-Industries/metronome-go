@@ -1303,7 +1303,7 @@ func (r *ContractAmendmentResellerRoyalty) UnmarshalJSON(data []byte) error {
 type ContractCustomerBillingProviderConfiguration struct {
 	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,required"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string `json:"delivery_method,required"`
@@ -2641,7 +2641,7 @@ type ContractV2CustomerBillingProviderConfiguration struct {
 	// ID of Customer's billing provider configuration.
 	ID string `json:"id,required" format:"uuid"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,required"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string `json:"delivery_method,required"`
