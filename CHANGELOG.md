@@ -1,5 +1,40 @@
 # Changelog
 
+## 2.1.0 (2025-10-31)
+
+Full Changelog: [v2.0.0...v2.1.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.0.0...v2.1.0)
+
+### Features
+
+* [ORCH-282] plumb `payment_method_id` to the payment gateway object ([a0e3d05](https://github.com/Metronome-Industries/metronome-go/commit/a0e3d057e81046bfdb25dca6f0606a16be2a1045))
+* [ORCH-797] add billing_provider_error to invoice.external_invoice ([1912d1c](https://github.com/Metronome-Industries/metronome-go/commit/1912d1c206d2be8f2ecd0a5a6c8967b38e992f07))
+* Add avalara creds + billing provider APIs to SDK. Add avalara creds API to docs. ([d418a60](https://github.com/Metronome-Industries/metronome-go/commit/d418a60052ba82cf9def540485d0d6c61c0845ca))
+* add beta tag to stripe auto charge items ([7d5f632](https://github.com/Metronome-Industries/metronome-go/commit/7d5f632c0d85ca0bb487edfd18acfaea78598a51))
+* add exclude_zero_balances field behind a FF for anthropic ([54db2b5](https://github.com/Metronome-Industries/metronome-go/commit/54db2b5ca3d2b13df8867e7a4be163f56528fbb5))
+* add METRONOME to BillingProvider type ([b7d50fb](https://github.com/Metronome-Industries/metronome-go/commit/b7d50fb5fc1f044f5695f0a7ebdaa8c61f185694))
+* docs(api) Documentation for seat-based subscription linked recurring commits beta release ([0511bc4](https://github.com/Metronome-Industries/metronome-go/commit/0511bc4acf8e9cfdc271f52e6571567143af853a))
+* ignore_duplicates ([1c418c0](https://github.com/Metronome-Industries/metronome-go/commit/1c418c0f2d749930104972b9203878ff2c4c57ba))
+* internal: moving plans docs to deprecated section of new docs site ([2d4bde1](https://github.com/Metronome-Industries/metronome-go/commit/2d4bde1bc61b962f51fb1f3f9ed081956dedb927))
+* not ready for review ([12ced9f](https://github.com/Metronome-Industries/metronome-go/commit/12ced9f98d31bf9d5414d038148b9d21193bb811))
+* not ready for review ([8ca4e8c](https://github.com/Metronome-Industries/metronome-go/commit/8ca4e8c4cf7e7106eef8072d0139f012b5ac8698))
+* Relax requirement on customer level commits for invoice_contract_id if do_not_invoice is set to true ([c56d159](https://github.com/Metronome-Industries/metronome-go/commit/c56d159cab9959c96490ca83d173c694881f5b6d))
+* update get customer alerts api to include low seat balance type ([f19970a](https://github.com/Metronome-Industries/metronome-go/commit/f19970a1216b8edced6c5b4fff8c185763877cba))
+
+
+### Bug Fixes
+
+* **api:** Make id field required in /v2/notifications/edit ([5d66e21](https://github.com/Metronome-Industries/metronome-go/commit/5d66e21bbd891cdcd382e2fb55d6e50f52bdb13c))
+
+
+### Chores
+
+* **api:** Note SQL BM is not supported in previewCustomerEvents description ([48942d0](https://github.com/Metronome-Industries/metronome-go/commit/48942d046bc05aaeb3ff8755504b557b0afc0f6d))
+
+
+### Documentation
+
+* add migrate amendments to edits page ([56f0192](https://github.com/Metronome-Industries/metronome-go/commit/56f01928cf922e71444dd9c0869821370e47c78c))
+
 ## 2.0.0 (2025-10-16)
 
 Full Changelog: [v1.0.0...v2.0.0](https://github.com/Metronome-Industries/metronome-go/compare/v1.0.0...v2.0.0)
