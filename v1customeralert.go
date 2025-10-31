@@ -270,7 +270,7 @@ type CustomerAlertAlert struct {
 	// "low_remaining_contract_credit_balance_reached",
 	// "low_remaining_contract_credit_percentage_reached",
 	// "low_remaining_contract_credit_and_commit_balance_reached",
-	// "invoice_total_reached".
+	// "low_remaining_seat_balance_reached", "invoice_total_reached".
 	Type string `json:"type,required"`
 	// Timestamp for when the threshold notification was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
