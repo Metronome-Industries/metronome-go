@@ -40,7 +40,8 @@ func NewV1PlanService(opts ...option.RequestOption) (r V1PlanService) {
 	return
 }
 
-// List all available plans.
+// List all available plans. This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1PlanService) List(ctx context.Context, query V1PlanListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1PlanListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -58,12 +59,14 @@ func (r *V1PlanService) List(ctx context.Context, query V1PlanListParams, opts .
 	return res, nil
 }
 
-// List all available plans.
+// List all available plans. This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1PlanService) ListAutoPaging(ctx context.Context, query V1PlanListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1PlanListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// Fetch high level details of a specific plan.
+// Fetch high level details of a specific plan. This is a Plans (deprecated)
+// endpoint. New clients should implement using Contracts.
 func (r *V1PlanService) GetDetails(ctx context.Context, query V1PlanGetDetailsParams, opts ...option.RequestOption) (res *V1PlanGetDetailsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.PlanID == "" {
@@ -75,7 +78,8 @@ func (r *V1PlanService) GetDetails(ctx context.Context, query V1PlanGetDetailsPa
 	return
 }
 
-// Fetches a list of charges of a specific plan.
+// Fetches a list of charges of a specific plan. This is a Plans (deprecated)
+// endpoint. New clients should implement using Contracts.
 func (r *V1PlanService) ListCharges(ctx context.Context, params V1PlanListChargesParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1PlanListChargesResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -97,13 +101,15 @@ func (r *V1PlanService) ListCharges(ctx context.Context, params V1PlanListCharge
 	return res, nil
 }
 
-// Fetches a list of charges of a specific plan.
+// Fetches a list of charges of a specific plan. This is a Plans (deprecated)
+// endpoint. New clients should implement using Contracts.
 func (r *V1PlanService) ListChargesAutoPaging(ctx context.Context, params V1PlanListChargesParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1PlanListChargesResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListCharges(ctx, params, opts...))
 }
 
 // Fetches a list of customers on a specific plan (by default, only currently
-// active plans are included)
+// active plans are included). This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1PlanService) ListCustomers(ctx context.Context, params V1PlanListCustomersParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1PlanListCustomersResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -126,7 +132,8 @@ func (r *V1PlanService) ListCustomers(ctx context.Context, params V1PlanListCust
 }
 
 // Fetches a list of customers on a specific plan (by default, only currently
-// active plans are included)
+// active plans are included). This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1PlanService) ListCustomersAutoPaging(ctx context.Context, params V1PlanListCustomersParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1PlanListCustomersResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListCustomers(ctx, params, opts...))
 }

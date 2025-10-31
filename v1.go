@@ -28,6 +28,7 @@ type V1Service struct {
 	Invoices        V1InvoiceService
 	Contracts       V1ContractService
 	Payments        V1PaymentService
+	Settings        V1SettingService
 }
 
 // NewV1Service generates a new service that applies the given options to each
@@ -50,5 +51,6 @@ func NewV1Service(opts ...option.RequestOption) (r V1Service) {
 	r.Invoices = NewV1InvoiceService(opts...)
 	r.Contracts = NewV1ContractService(opts...)
 	r.Payments = NewV1PaymentService(opts...)
+	r.Settings = NewV1SettingService(opts...)
 	return
 }

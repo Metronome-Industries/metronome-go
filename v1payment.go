@@ -147,10 +147,12 @@ func (r *PaymentPaymentGateway) UnmarshalJSON(data []byte) error {
 type PaymentPaymentGatewayStripe struct {
 	PaymentIntentID string                           `json:"payment_intent_id,required"`
 	Error           PaymentPaymentGatewayStripeError `json:"error"`
+	PaymentMethodID string                           `json:"payment_method_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PaymentIntentID respjson.Field
 		Error           respjson.Field
+		PaymentMethodID respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`

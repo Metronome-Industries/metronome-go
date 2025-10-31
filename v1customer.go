@@ -202,7 +202,8 @@ func (r *V1CustomerService) ListBillableMetricsAutoPaging(ctx context.Context, p
 
 // Fetch daily pending costs for the specified customer, broken down by credit type
 // and line items. Note: this is not supported for customers whose plan includes a
-// UNIQUE-type billable metric.
+// UNIQUE-type billable metric. This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerListCostsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CustomerListCostsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -226,7 +227,8 @@ func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerList
 
 // Fetch daily pending costs for the specified customer, broken down by credit type
 // and line items. Note: this is not supported for customers whose plan includes a
-// UNIQUE-type billable metric.
+// UNIQUE-type billable metric. This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1CustomerListCostsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CustomerListCostsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListCosts(ctx, params, opts...))
 }
@@ -234,7 +236,8 @@ func (r *V1CustomerService) ListCostsAutoPaging(ctx context.Context, params V1Cu
 // Preview how a set of events will affect a customer's invoices. Generates draft
 // invoices for a customer using their current contract configuration and the
 // provided events. This is useful for testing how new events will affect the
-// customer's invoices before they are actually processed.
+// customer's invoices before they are actually processed. Customers on contracts
+// with SQL billable metrics are not supported.
 func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1CustomerPreviewEventsParams, opts ...option.RequestOption) (res *V1CustomerPreviewEventsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
@@ -697,7 +700,7 @@ type V1CustomerGetBillingConfigurationsResponseData struct {
 	// The billing provider set for this configuration.
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
@@ -776,7 +779,7 @@ func (r *V1CustomerNewParams) UnmarshalJSON(data []byte) error {
 type V1CustomerNewParamsBillingConfig struct {
 	BillingProviderCustomerID string `json:"billing_provider_customer_id,required"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType string `json:"billing_provider_type,omitzero,required"`
 	// True if the aws_product_code is a SAAS subscription product, false otherwise.
 	AwsIsSubscriptionProduct param.Opt[bool]   `json:"aws_is_subscription_product,omitzero"`
@@ -788,6 +791,9 @@ type V1CustomerNewParamsBillingConfig struct {
 	// "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1",
 	// "us-west-2".
 	AwsRegion string `json:"aws_region,omitzero"`
+	// The collection method for the customer's invoices. NOTE:
+	// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
+	//
 	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
 	// "manually_charge_payment_intent".
 	StripeCollectionMethod string `json:"stripe_collection_method,omitzero"`
@@ -804,7 +810,7 @@ func (r *V1CustomerNewParamsBillingConfig) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
-		"billing_provider_type", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+		"billing_provider_type", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace", "metronome",
 	)
 	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
 		"aws_region", "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2", "ca-central-1", "cn-north-1", "cn-northwest-1", "eu-central-1", "eu-north-1", "eu-south-1", "eu-west-1", "eu-west-2", "eu-west-3", "me-south-1", "sa-east-1", "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1", "us-west-2",
@@ -953,13 +959,16 @@ func (r V1CustomerListCostsParams) URLQuery() (v url.Values, err error) {
 }
 
 type V1CustomerPreviewEventsParams struct {
-	CustomerID string                               `path:"customer_id,required" format:"uuid" json:"-"`
-	Events     []V1CustomerPreviewEventsParamsEvent `json:"events,omitzero,required"`
-	// If set, all zero quantity line items will be filtered out of the response.
+	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	// Array of usage events to include in the preview calculation. Must contain at
+	// least one event in `merge` mode.
+	Events []V1CustomerPreviewEventsParamsEvent `json:"events,omitzero,required"`
+	// When `true`, line items with zero quantity are excluded from the response.
 	SkipZeroQtyLineItems param.Opt[bool] `json:"skip_zero_qty_line_items,omitzero"`
-	// If set to "replace", the preview will be generated as if those were the only
-	// events for the specified customer. If set to "merge", the events will be merged
-	// with any existing events for the specified customer. Defaults to "replace".
+	// Controls how the provided events are combined with existing usage data. Use
+	// `replace` to calculate the preview as if these are the only events for the
+	// customer, ignoring all historical usage. Use `merge` to combine these events
+	// with the customer's existing usage. Defaults to `replace`.
 	//
 	// Any of "replace", "merge".
 	Mode V1CustomerPreviewEventsParamsMode `json:"mode,omitzero"`
@@ -995,9 +1004,10 @@ func (r *V1CustomerPreviewEventsParamsEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// If set to "replace", the preview will be generated as if those were the only
-// events for the specified customer. If set to "merge", the events will be merged
-// with any existing events for the specified customer. Defaults to "replace".
+// Controls how the provided events are combined with existing usage data. Use
+// `replace` to calculate the preview as if these are the only events for the
+// customer, ignoring all historical usage. Use `merge` to combine these events
+// with the customer's existing usage. Defaults to `replace`.
 type V1CustomerPreviewEventsParamsMode string
 
 const (
@@ -1037,7 +1047,7 @@ type V1CustomerSetBillingConfigurationsParamsData struct {
 	// The billing provider set for this configuration.
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,omitzero,required"`
 	CustomerID      string `json:"customer_id,required" format:"uuid"`
 	// ID of the delivery method to use for this customer. If not provided, the
@@ -1076,7 +1086,7 @@ func (r *V1CustomerSetBillingConfigurationsParamsData) UnmarshalJSON(data []byte
 
 func init() {
 	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
-		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace", "metronome",
 	)
 	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
 		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",

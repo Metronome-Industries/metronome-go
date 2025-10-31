@@ -36,7 +36,8 @@ func NewV1CustomerBillingConfigService(opts ...option.RequestOption) (r V1Custom
 	return
 }
 
-// Set the billing configuration for a given customer.
+// Set the billing configuration for a given customer. This is a Plans (deprecated)
+// endpoint. New clients should implement using Contracts.
 func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1CustomerBillingConfigNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -49,7 +50,8 @@ func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1Custo
 	return
 }
 
-// Fetch the billing configuration for the given customer.
+// Fetch the billing configuration for the given customer. This is a Plans
+// (deprecated) endpoint. New clients should implement using Contracts.
 func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1CustomerBillingConfigGetParams, opts ...option.RequestOption) (res *V1CustomerBillingConfigGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.CustomerID == "" {
@@ -62,7 +64,8 @@ func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1Custom
 }
 
 // Delete the billing configuration for a given customer. Note: this is unsupported
-// for Azure and AWS Marketplace customers.
+// for Azure and AWS Marketplace customers. This is a Plans (deprecated) endpoint.
+// New clients should implement using Contracts.
 func (r *V1CustomerBillingConfigService) Delete(ctx context.Context, body V1CustomerBillingConfigDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -118,6 +121,9 @@ type V1CustomerBillingConfigGetResponseData struct {
 	// Any of "Subscribed", "Unsubscribed", "Suspended", "PendingFulfillmentStart".
 	AzureSubscriptionStatus   string `json:"azure_subscription_status"`
 	BillingProviderCustomerID string `json:"billing_provider_customer_id"`
+	// The collection method for the customer's invoices. NOTE:
+	// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
+	//
 	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
 	// "manually_charge_payment_intent".
 	StripeCollectionMethod string `json:"stripe_collection_method"`
@@ -147,7 +153,7 @@ func (r *V1CustomerBillingConfigGetResponseData) UnmarshalJSON(data []byte) erro
 type V1CustomerBillingConfigNewParams struct {
 	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType V1CustomerBillingConfigNewParamsBillingProviderType `path:"billing_provider_type,omitzero,required" json:"-"`
 	// The customer ID in the billing provider's system. For Azure, this is the
 	// subscription ID.
@@ -160,6 +166,9 @@ type V1CustomerBillingConfigNewParams struct {
 	// "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1",
 	// "us-west-2".
 	AwsRegion V1CustomerBillingConfigNewParamsAwsRegion `json:"aws_region,omitzero"`
+	// The collection method for the customer's invoices. NOTE:
+	// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
+	//
 	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
 	// "manually_charge_payment_intent".
 	StripeCollectionMethod V1CustomerBillingConfigNewParamsStripeCollectionMethod `json:"stripe_collection_method,omitzero"`
@@ -185,6 +194,7 @@ const (
 	V1CustomerBillingConfigNewParamsBillingProviderTypeQuickbooksOnline V1CustomerBillingConfigNewParamsBillingProviderType = "quickbooks_online"
 	V1CustomerBillingConfigNewParamsBillingProviderTypeWorkday          V1CustomerBillingConfigNewParamsBillingProviderType = "workday"
 	V1CustomerBillingConfigNewParamsBillingProviderTypeGcpMarketplace   V1CustomerBillingConfigNewParamsBillingProviderType = "gcp_marketplace"
+	V1CustomerBillingConfigNewParamsBillingProviderTypeMetronome        V1CustomerBillingConfigNewParamsBillingProviderType = "metronome"
 )
 
 type V1CustomerBillingConfigNewParamsAwsRegion string
@@ -217,6 +227,8 @@ const (
 	V1CustomerBillingConfigNewParamsAwsRegionUsWest2      V1CustomerBillingConfigNewParamsAwsRegion = "us-west-2"
 )
 
+// The collection method for the customer's invoices. NOTE:
+// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
 type V1CustomerBillingConfigNewParamsStripeCollectionMethod string
 
 const (
@@ -229,7 +241,7 @@ const (
 type V1CustomerBillingConfigGetParams struct {
 	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType V1CustomerBillingConfigGetParamsBillingProviderType `path:"billing_provider_type,omitzero,required" json:"-"`
 	paramObj
 }
@@ -245,12 +257,13 @@ const (
 	V1CustomerBillingConfigGetParamsBillingProviderTypeQuickbooksOnline V1CustomerBillingConfigGetParamsBillingProviderType = "quickbooks_online"
 	V1CustomerBillingConfigGetParamsBillingProviderTypeWorkday          V1CustomerBillingConfigGetParamsBillingProviderType = "workday"
 	V1CustomerBillingConfigGetParamsBillingProviderTypeGcpMarketplace   V1CustomerBillingConfigGetParamsBillingProviderType = "gcp_marketplace"
+	V1CustomerBillingConfigGetParamsBillingProviderTypeMetronome        V1CustomerBillingConfigGetParamsBillingProviderType = "metronome"
 )
 
 type V1CustomerBillingConfigDeleteParams struct {
 	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType V1CustomerBillingConfigDeleteParamsBillingProviderType `path:"billing_provider_type,omitzero,required" json:"-"`
 	paramObj
 }
@@ -266,4 +279,5 @@ const (
 	V1CustomerBillingConfigDeleteParamsBillingProviderTypeQuickbooksOnline V1CustomerBillingConfigDeleteParamsBillingProviderType = "quickbooks_online"
 	V1CustomerBillingConfigDeleteParamsBillingProviderTypeWorkday          V1CustomerBillingConfigDeleteParamsBillingProviderType = "workday"
 	V1CustomerBillingConfigDeleteParamsBillingProviderTypeGcpMarketplace   V1CustomerBillingConfigDeleteParamsBillingProviderType = "gcp_marketplace"
+	V1CustomerBillingConfigDeleteParamsBillingProviderTypeMetronome        V1CustomerBillingConfigDeleteParamsBillingProviderType = "metronome"
 )

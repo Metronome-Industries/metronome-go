@@ -2271,7 +2271,7 @@ func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdate) UnmarshalJSO
 type V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration struct {
 	BillingProviderConfigurationID param.Opt[string] `json:"billing_provider_configuration_id,omitzero" format:"uuid"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace".
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider,omitzero"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string `json:"delivery_method,omitzero"`
@@ -2288,7 +2288,7 @@ func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProvide
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration](
-		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace",
+		"billing_provider", "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace", "quickbooks_online", "workday", "gcp_marketplace", "metronome",
 	)
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration](
 		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
@@ -3177,7 +3177,9 @@ type V2ContractEditParamsAddRecurringCommitSubscriptionConfig struct {
 	ApplySeatIncreaseConfig V2ContractEditParamsAddRecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero,required"`
 	// ID of the subscription to configure on the recurring commit/credit.
 	SubscriptionID string `json:"subscription_id,required"`
-	// If set to POOLED, allocation added per seat is pooled across the account.
+	// If set to POOLED, allocation added per seat is pooled across the account. (BETA)
+	// If set to INDIVIDUAL, each seat in the subscription will have its own
+	// allocation.
 	//
 	// Any of "POOLED", "INDIVIDUAL".
 	Allocation string `json:"allocation,omitzero"`
@@ -3350,7 +3352,9 @@ type V2ContractEditParamsAddRecurringCreditSubscriptionConfig struct {
 	ApplySeatIncreaseConfig V2ContractEditParamsAddRecurringCreditSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero,required"`
 	// ID of the subscription to configure on the recurring commit/credit.
 	SubscriptionID string `json:"subscription_id,required"`
-	// If set to POOLED, allocation added per seat is pooled across the account.
+	// If set to POOLED, allocation added per seat is pooled across the account. (BETA)
+	// If set to INDIVIDUAL, each seat in the subscription will have its own
+	// allocation.
 	//
 	// Any of "POOLED", "INDIVIDUAL".
 	Allocation string `json:"allocation,omitzero"`
@@ -3594,6 +3598,11 @@ type V2ContractEditParamsAddSubscription struct {
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
 	// directly on the subscription. `initial_quantity` must be provided with this
 	// option. Compatible with recurring commits/credits that use POOLED allocation.
+	// **SEAT_BASED**: (BETA) Use when you want to pass specific seat identifiers (e.g.
+	// add user_123) to increment and decrement a subscription quantity, rather than
+	// directly providing the quantity. You must use a **SEAT_BASED** subscription to
+	// use a linked recurring credit with an allocation per seat. `seat_config` must be
+	// provided with this option.
 	//
 	// Any of "SEAT_BASED", "QUANTITY_ONLY".
 	QuantityManagementMode string `json:"quantity_management_mode,omitzero"`

@@ -38,7 +38,8 @@ func NewV1CreditGrantService(opts ...option.RequestOption) (r V1CreditGrantServi
 	return
 }
 
-// Create a new credit grant
+// Create a new credit grant. This is a Plans (deprecated) endpoint. New clients
+// should implement using Contracts.
 func (r *V1CreditGrantService) New(ctx context.Context, body V1CreditGrantNewParams, opts ...option.RequestOption) (res *V1CreditGrantNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/createGrant"
@@ -46,7 +47,8 @@ func (r *V1CreditGrantService) New(ctx context.Context, body V1CreditGrantNewPar
 	return
 }
 
-// List credit grants. This list does not included voided grants.
+// List credit grants. This list does not included voided grants. This is a Plans
+// (deprecated) endpoint. New clients should implement using Contracts.
 func (r *V1CreditGrantService) List(ctx context.Context, params V1CreditGrantListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1CreditGrantListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -64,12 +66,14 @@ func (r *V1CreditGrantService) List(ctx context.Context, params V1CreditGrantLis
 	return res, nil
 }
 
-// List credit grants. This list does not included voided grants.
+// List credit grants. This list does not included voided grants. This is a Plans
+// (deprecated) endpoint. New clients should implement using Contracts.
 func (r *V1CreditGrantService) ListAutoPaging(ctx context.Context, params V1CreditGrantListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1CreditGrantListResponse] {
 	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Edit an existing credit grant
+// Edit an existing credit grant. This is a Plans (deprecated) endpoint. New
+// clients should implement using Contracts.
 func (r *V1CreditGrantService) Edit(ctx context.Context, body V1CreditGrantEditParams, opts ...option.RequestOption) (res *V1CreditGrantEditResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/editGrant"
@@ -79,7 +83,8 @@ func (r *V1CreditGrantService) Edit(ctx context.Context, body V1CreditGrantEditP
 
 // Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
 // Ledger entries are returned in chronological order. Ledger entries associated
-// with voided credit grants are not included.
+// with voided credit grants are not included. This is a Plans (deprecated)
+// endpoint. New clients should implement using Contracts.
 func (r *V1CreditGrantService) ListEntries(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1CreditGrantListEntriesResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -99,12 +104,14 @@ func (r *V1CreditGrantService) ListEntries(ctx context.Context, params V1CreditG
 
 // Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
 // Ledger entries are returned in chronological order. Ledger entries associated
-// with voided credit grants are not included.
+// with voided credit grants are not included. This is a Plans (deprecated)
+// endpoint. New clients should implement using Contracts.
 func (r *V1CreditGrantService) ListEntriesAutoPaging(ctx context.Context, params V1CreditGrantListEntriesParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[V1CreditGrantListEntriesResponse] {
 	return pagination.NewCursorPageWithoutLimitAutoPager(r.ListEntries(ctx, params, opts...))
 }
 
-// Void a credit grant
+// Void a credit grant. This is a Plans (deprecated) endpoint. New clients should
+// implement using Contracts.
 func (r *V1CreditGrantService) Void(ctx context.Context, body V1CreditGrantVoidParams, opts ...option.RequestOption) (res *V1CreditGrantVoidResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/voidGrant"
