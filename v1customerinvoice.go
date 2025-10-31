@@ -839,6 +839,8 @@ type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType string `json:"billing_provider_type,required"`
+	// Error message from the billing provider, if available.
+	BillingProviderError string `json:"billing_provider_error"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
 	ExternalStatus string `json:"external_status"`
@@ -854,16 +856,17 @@ type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	Tax InvoiceCorrectionRecordCorrectedExternalInvoiceTax `json:"tax"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BillingProviderType respjson.Field
-		ExternalStatus      respjson.Field
-		InvoiceID           respjson.Field
-		InvoicedSubTotal    respjson.Field
-		InvoicedTotal       respjson.Field
-		IssuedAtTimestamp   respjson.Field
-		PdfURL              respjson.Field
-		Tax                 respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		BillingProviderType  respjson.Field
+		BillingProviderError respjson.Field
+		ExternalStatus       respjson.Field
+		InvoiceID            respjson.Field
+		InvoicedSubTotal     respjson.Field
+		InvoicedTotal        respjson.Field
+		IssuedAtTimestamp    respjson.Field
+		PdfURL               respjson.Field
+		Tax                  respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
@@ -901,6 +904,8 @@ type InvoiceExternalInvoice struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProviderType string `json:"billing_provider_type,required"`
+	// Error message from the billing provider, if available.
+	BillingProviderError string `json:"billing_provider_error"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
 	ExternalStatus string `json:"external_status"`
@@ -916,16 +921,17 @@ type InvoiceExternalInvoice struct {
 	Tax InvoiceExternalInvoiceTax `json:"tax"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BillingProviderType respjson.Field
-		ExternalStatus      respjson.Field
-		InvoiceID           respjson.Field
-		InvoicedSubTotal    respjson.Field
-		InvoicedTotal       respjson.Field
-		IssuedAtTimestamp   respjson.Field
-		PdfURL              respjson.Field
-		Tax                 respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		BillingProviderType  respjson.Field
+		BillingProviderError respjson.Field
+		ExternalStatus       respjson.Field
+		InvoiceID            respjson.Field
+		InvoicedSubTotal     respjson.Field
+		InvoicedTotal        respjson.Field
+		IssuedAtTimestamp    respjson.Field
+		PdfURL               respjson.Field
+		Tax                  respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
