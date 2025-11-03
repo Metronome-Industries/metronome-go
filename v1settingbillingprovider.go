@@ -139,7 +139,7 @@ func (r *V1SettingBillingProviderListResponseData) UnmarshalJSON(data []byte) er
 type V1SettingBillingProviderNewParams struct {
 	// The billing provider set for this configuration.
 	//
-	// Any of "aws_marketplace", "azure_marketplace".
+	// Any of "aws_marketplace", "azure_marketplace", "gcp_marketplace".
 	BillingProvider V1SettingBillingProviderNewParamsBillingProvider `json:"billing_provider,omitzero,required"`
 	// Account-level configuration for the billing provider. The structure of this
 	// object is specific to the billing provider and delivery provider combination.
@@ -166,6 +166,7 @@ type V1SettingBillingProviderNewParamsBillingProvider string
 const (
 	V1SettingBillingProviderNewParamsBillingProviderAwsMarketplace   V1SettingBillingProviderNewParamsBillingProvider = "aws_marketplace"
 	V1SettingBillingProviderNewParamsBillingProviderAzureMarketplace V1SettingBillingProviderNewParamsBillingProvider = "azure_marketplace"
+	V1SettingBillingProviderNewParamsBillingProviderGcpMarketplace   V1SettingBillingProviderNewParamsBillingProvider = "gcp_marketplace"
 )
 
 // The method to use for delivering invoices for this configuration.
