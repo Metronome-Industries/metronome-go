@@ -166,7 +166,7 @@ type V1AlertNewParams struct {
 	// "low_remaining_contract_credit_balance_reached",
 	// "low_remaining_contract_credit_percentage_reached",
 	// "low_remaining_contract_credit_and_commit_balance_reached",
-	// "invoice_total_reached".
+	// "invoice_total_reached", "low_remaining_seat_balance_reached".
 	AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero,required"`
 	// Name of the threshold notification
 	Name string `json:"name,required"`
@@ -238,6 +238,7 @@ const (
 	V1AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached       V1AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
 	V1AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached V1AlertNewParamsAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
 	V1AlertNewParamsAlertTypeInvoiceTotalReached                               V1AlertNewParamsAlertType = "invoice_total_reached"
+	V1AlertNewParamsAlertTypeLowRemainingSeatBalanceReached                    V1AlertNewParamsAlertType = "low_remaining_seat_balance_reached"
 )
 
 // The properties Entity, Key, Value are required.
