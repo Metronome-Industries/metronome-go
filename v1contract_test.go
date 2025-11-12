@@ -414,6 +414,11 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			},
 			ResellerContractValue: metronome.Float(0),
 		}},
+		RevenueSystemConfiguration: metronome.V1ContractNewParamsRevenueSystemConfiguration{
+			DeliveryMethod:               "direct_to_billing_provider",
+			Provider:                     "netsuite",
+			RevenueSystemConfigurationID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		},
 		SalesforceOpportunityID: metronome.String("salesforce_opportunity_id"),
 		ScheduledCharges: []metronome.V1ContractNewParamsScheduledCharge{{
 			ProductID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",

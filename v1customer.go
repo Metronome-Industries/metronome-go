@@ -762,6 +762,7 @@ type V1CustomerNewParams struct {
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields                          map[string]string                                         `json:"custom_fields,omitzero"`
 	CustomerBillingProviderConfigurations []V1CustomerNewParamsCustomerBillingProviderConfiguration `json:"customer_billing_provider_configurations,omitzero"`
+	CustomerRevenueSystemConfigurations   []V1CustomerNewParamsCustomerRevenueSystemConfiguration   `json:"customer_revenue_system_configurations,omitzero"`
 	// Aliases that can be used to refer to this customer in usage events
 	IngestAliases []string `json:"ingest_aliases,omitzero"`
 	paramObj
@@ -867,6 +868,44 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerBillingProviderConfiguration](
 		"tax_provider", "anrok", "avalara", "stripe",
+	)
+}
+
+// The property Provider is required.
+type V1CustomerNewParamsCustomerRevenueSystemConfiguration struct {
+	// The revenue system provider set for this configuration.
+	//
+	// Any of "netsuite".
+	Provider string `json:"provider,omitzero,required"`
+	// ID of the delivery method to use for this customer. If not provided, the
+	// `delivery_method` must be provided.
+	DeliveryMethodID param.Opt[string] `json:"delivery_method_id,omitzero" format:"uuid"`
+	// Configuration for the revenue system provider. The structure of this object is
+	// specific to the revenue system provider. For NetSuite, this should contain
+	// `netsuite_customer_id`.
+	Configuration map[string]any `json:"configuration,omitzero"`
+	// The method to use for delivering invoices to this customer. If not provided, the
+	// `delivery_method_id` must be provided.
+	//
+	// Any of "direct_to_billing_provider".
+	DeliveryMethod string `json:"delivery_method,omitzero"`
+	paramObj
+}
+
+func (r V1CustomerNewParamsCustomerRevenueSystemConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerNewParamsCustomerRevenueSystemConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerNewParamsCustomerRevenueSystemConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerRevenueSystemConfiguration](
+		"provider", "netsuite",
+	)
+	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerRevenueSystemConfiguration](
+		"delivery_method", "direct_to_billing_provider",
 	)
 }
 
