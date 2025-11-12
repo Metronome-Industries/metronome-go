@@ -454,9 +454,10 @@ type V1UsageSearchResponseMatchedBillableMetric struct {
 	// key must be one of the property filter names and is not applicable when the
 	// aggregation type is 'count'.
 	AggregationKey string `json:"aggregation_key"`
-	// Specifies the type of aggregation performed on matching events.
+	// Specifies the type of aggregation performed on matching events. Includes
+	// "custom_sql" for events search endpoint responses.
 	//
-	// Any of "COUNT", "LATEST", "MAX", "SUM", "UNIQUE".
+	// Any of "COUNT", "LATEST", "MAX", "SUM", "UNIQUE", "custom_sql".
 	AggregationType string `json:"aggregation_type"`
 	// RFC 3339 timestamp indicating when the billable metric was archived. If not
 	// provided, the billable metric is not archived.
