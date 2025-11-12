@@ -50,6 +50,14 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
 		}},
+		CustomerRevenueSystemConfigurations: []metronome.V1CustomerNewParamsCustomerRevenueSystemConfiguration{{
+			Provider: "netsuite",
+			Configuration: map[string]any{
+				"foo": "bar",
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		}},
 		ExternalID:    metronome.String("x"),
 		IngestAliases: []string{"team@example.com"},
 	})

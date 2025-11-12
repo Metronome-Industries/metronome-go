@@ -921,7 +921,10 @@ type V1ContractNewParams struct {
 	RecurringCredits     []V1ContractNewParamsRecurringCredit     `json:"recurring_credits,omitzero"`
 	// This field's availability is dependent on your client's configuration.
 	ResellerRoyalties []V1ContractNewParamsResellerRoyalty `json:"reseller_royalties,omitzero"`
-	ScheduledCharges  []V1ContractNewParamsScheduledCharge `json:"scheduled_charges,omitzero"`
+	// The revenue system configuration associated with a contract. Provide either an
+	// ID or the provider and delivery method.
+	RevenueSystemConfiguration V1ContractNewParamsRevenueSystemConfiguration `json:"revenue_system_configuration,omitzero"`
+	ScheduledCharges           []V1ContractNewParamsScheduledCharge          `json:"scheduled_charges,omitzero"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
 	// usage invoice. The charge's `timestamp` must match the usage invoice's
 	// `ending_before` date for consolidation to occur. This field cannot be modified
@@ -2208,6 +2211,41 @@ func (r V1ContractNewParamsResellerRoyaltyGcpOptions) MarshalJSON() (data []byte
 }
 func (r *V1ContractNewParamsResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The revenue system configuration associated with a contract. Provide either an
+// ID or the provider and delivery method.
+type V1ContractNewParamsRevenueSystemConfiguration struct {
+	// The Metronome ID of the revenue system configuration. Use when a customer has
+	// multiple configurations with the same provider and delivery method. Otherwise,
+	// specify the provider and delivery_method.
+	RevenueSystemConfigurationID param.Opt[string] `json:"revenue_system_configuration_id,omitzero" format:"uuid"`
+	// Do not specify if using revenue_system_configuration_id.
+	//
+	// Any of "direct_to_billing_provider".
+	DeliveryMethod string `json:"delivery_method,omitzero"`
+	// Do not specify if using revenue_system_configuration_id.
+	//
+	// Any of "netsuite".
+	Provider string `json:"provider,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRevenueSystemConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRevenueSystemConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRevenueSystemConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRevenueSystemConfiguration](
+		"delivery_method", "direct_to_billing_provider",
+	)
+	apijson.RegisterFieldValidator[V1ContractNewParamsRevenueSystemConfiguration](
+		"provider", "netsuite",
+	)
 }
 
 // The properties ProductID, Schedule are required.
