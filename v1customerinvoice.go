@@ -841,6 +841,8 @@ type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	BillingProviderType string `json:"billing_provider_type,required"`
 	// Error message from the billing provider, if available.
 	BillingProviderError string `json:"billing_provider_error"`
+	// The ID of the payment in the external system, if available.
+	ExternalPaymentID string `json:"external_payment_id"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
 	ExternalStatus string `json:"external_status"`
@@ -858,6 +860,7 @@ type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	JSON struct {
 		BillingProviderType  respjson.Field
 		BillingProviderError respjson.Field
+		ExternalPaymentID    respjson.Field
 		ExternalStatus       respjson.Field
 		InvoiceID            respjson.Field
 		InvoicedSubTotal     respjson.Field
@@ -906,6 +909,8 @@ type InvoiceExternalInvoice struct {
 	BillingProviderType string `json:"billing_provider_type,required"`
 	// Error message from the billing provider, if available.
 	BillingProviderError string `json:"billing_provider_error"`
+	// The ID of the payment in the external system, if available.
+	ExternalPaymentID string `json:"external_payment_id"`
 	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
 	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
 	ExternalStatus string `json:"external_status"`
@@ -923,6 +928,7 @@ type InvoiceExternalInvoice struct {
 	JSON struct {
 		BillingProviderType  respjson.Field
 		BillingProviderError respjson.Field
+		ExternalPaymentID    respjson.Field
 		ExternalStatus       respjson.Field
 		InvoiceID            respjson.Field
 		InvoicedSubTotal     respjson.Field
