@@ -302,7 +302,7 @@ func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V
 // to Metronome.
 func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/setCustomerBillingProviderConfigurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -323,7 +323,7 @@ func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V
 //     Metronome customer.
 func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1CustomerSetIngestAliasesParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -355,7 +355,7 @@ func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNam
 // affecting core customer data like name or ingest aliases.
 func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerUpdateConfigParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return

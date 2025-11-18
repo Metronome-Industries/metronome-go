@@ -67,7 +67,7 @@ func NewV1CustomFieldService(opts ...option.RequestOption) (r V1CustomFieldServi
 //     charges, and subscriptions are passed down to the invoice.
 func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAddKeyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customFields/addKey"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -79,7 +79,7 @@ func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAdd
 // entity type, entity ID, and array of keys to remove.
 func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFieldDeleteValuesParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customFields/deleteValues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -120,7 +120,7 @@ func (r *V1CustomFieldService) ListKeysAutoPaging(ctx context.Context, params V1
 // key is removed.
 func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomFieldRemoveKeyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customFields/removeKey"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -132,7 +132,7 @@ func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomField
 // limited to 200 characters each.
 func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomFieldSetValuesParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customFields/setValues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return

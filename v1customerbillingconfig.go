@@ -40,7 +40,7 @@ func NewV1CustomerBillingConfigService(opts ...option.RequestOption) (r V1Custom
 // endpoint. New clients should implement using Contracts.
 func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1CustomerBillingConfigNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -68,7 +68,7 @@ func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1Custom
 // New clients should implement using Contracts.
 func (r *V1CustomerBillingConfigService) Delete(ctx context.Context, body V1CustomerBillingConfigDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return

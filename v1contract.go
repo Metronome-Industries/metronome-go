@@ -218,7 +218,7 @@ func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams,
 // other actions that cause an invoice to be recalculated.
 func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1ContractAddManualBalanceEntryParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/contracts/addManualBalanceLedgerEntry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -424,7 +424,7 @@ func (r *V1ContractService) ScheduleProServicesInvoice(ctx context.Context, body
 // underlying the rate card on the contracts.
 func (r *V1ContractService) SetUsageFilter(ctx context.Context, body V1ContractSetUsageFilterParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/contracts/setUsageFilter"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
