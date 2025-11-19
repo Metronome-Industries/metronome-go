@@ -489,8 +489,13 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			InitialQuantity:        metronome.Float(0),
 			Name:                   metronome.String("name"),
 			QuantityManagementMode: "SEAT_BASED",
-			StartingAt:             metronome.Time(time.Now()),
-			TemporaryID:            metronome.String("temporary_id"),
+			SeatConfig: metronome.V1ContractNewParamsSubscriptionSeatConfig{
+				InitialSeatIDs:         []string{"string"},
+				SeatGroupKey:           "seat_group_key",
+				InitialUnassignedSeats: metronome.Float(0),
+			},
+			StartingAt:  metronome.Time(time.Now()),
+			TemporaryID: metronome.String("temporary_id"),
 		}},
 		TotalContractValue: metronome.Float(0),
 		Transition: metronome.V1ContractNewParamsTransition{

@@ -934,8 +934,8 @@ type SubscriptionProration = shared.SubscriptionProration
 // QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
 // directly on the subscription. `initial_quantity` must be provided with this
 // option. Compatible with recurring commits/credits that use POOLED allocation.
-// **SEAT_BASED**: (BETA) Use when you want to pass specific seat identifiers (e.g.
-// add user_123) to increment and decrement a subscription quantity, rather than
+// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+// user_123) to increment and decrement a subscription quantity, rather than
 // directly providing the quantity. You must use a **SEAT_BASED** subscription to
 // use a linked recurring credit with an allocation per seat. `seat_config` must be
 // provided with this option.
@@ -957,6 +957,9 @@ type SubscriptionSubscriptionRate = shared.SubscriptionSubscriptionRate
 
 // This is an alias to an internal type.
 type SubscriptionSubscriptionRateProduct = shared.SubscriptionSubscriptionRateProduct
+
+// This is an alias to an internal type.
+type SubscriptionSeatConfig = shared.SubscriptionSeatConfig
 
 // This is an alias to an internal type.
 type Tier = shared.Tier
