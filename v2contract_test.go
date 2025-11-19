@@ -522,8 +522,13 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			InitialQuantity:        metronome.Float(0),
 			Name:                   metronome.String("name"),
 			QuantityManagementMode: "SEAT_BASED",
-			StartingAt:             metronome.Time(time.Now()),
-			TemporaryID:            metronome.String("temporary_id"),
+			SeatConfig: metronome.V2ContractEditParamsAddSubscriptionSeatConfig{
+				InitialSeatIDs:         []string{"string"},
+				SeatGroupKey:           "seat_group_key",
+				InitialUnassignedSeats: metronome.Float(0),
+			},
+			StartingAt:  metronome.Time(time.Now()),
+			TemporaryID: metronome.String("temporary_id"),
 		}},
 		AllowContractEndingBeforeFinalizedInvoice: metronome.Bool(true),
 		ArchiveCommits: []metronome.V2ContractEditParamsArchiveCommit{{
@@ -738,6 +743,24 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				Quantity:      metronome.Float(0),
 				QuantityDelta: metronome.Float(0),
 			}},
+			SeatUpdates: metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdates{
+				AddSeatIDs: []metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID{{
+					SeatIDs:    []string{"string"},
+					StartingAt: time.Now(),
+				}},
+				AddUnassignedSeats: []metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat{{
+					Quantity:   1,
+					StartingAt: time.Now(),
+				}},
+				RemoveSeatIDs: []metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID{{
+					SeatIDs:    []string{"string"},
+					StartingAt: time.Now(),
+				}},
+				RemoveUnassignedSeats: []metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat{{
+					Quantity:   1,
+					StartingAt: time.Now(),
+				}},
+			},
 		}},
 	})
 	if err != nil {

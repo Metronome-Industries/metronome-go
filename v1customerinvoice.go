@@ -843,8 +843,9 @@ type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	BillingProviderError string `json:"billing_provider_error"`
 	// The ID of the payment in the external system, if available.
 	ExternalPaymentID string `json:"external_payment_id"`
-	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
-	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
+	// Any of "DRAFT", "FINALIZED", "PAID", "PARTIALLY_PAID", "UNCOLLECTIBLE", "VOID",
+	// "DELETED", "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT",
+	// "QUEUED".
 	ExternalStatus string `json:"external_status"`
 	InvoiceID      string `json:"invoice_id"`
 	// The subtotal amount invoiced, if available from the billing provider.
@@ -911,8 +912,9 @@ type InvoiceExternalInvoice struct {
 	BillingProviderError string `json:"billing_provider_error"`
 	// The ID of the payment in the external system, if available.
 	ExternalPaymentID string `json:"external_payment_id"`
-	// Any of "DRAFT", "FINALIZED", "PAID", "UNCOLLECTIBLE", "VOID", "DELETED",
-	// "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT", "QUEUED".
+	// Any of "DRAFT", "FINALIZED", "PAID", "PARTIALLY_PAID", "UNCOLLECTIBLE", "VOID",
+	// "DELETED", "PAYMENT_FAILED", "INVALID_REQUEST_ERROR", "SKIPPED", "SENT",
+	// "QUEUED".
 	ExternalStatus string `json:"external_status"`
 	InvoiceID      string `json:"invoice_id"`
 	// The subtotal amount invoiced, if available from the billing provider.
