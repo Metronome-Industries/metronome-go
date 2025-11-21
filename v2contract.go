@@ -4407,6 +4407,9 @@ func (r *V2ContractEditParamsUpdateSpendThresholdConfiguration) UnmarshalJSON(da
 type V2ContractEditParamsUpdateSubscription struct {
 	SubscriptionID string               `json:"subscription_id,required" format:"uuid"`
 	EndingBefore   param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	// Update the subscription's quantity management mode from QUANTITY_ONLY to
+	// SEAT_BASED with the provided seat_group_key.
+	QuantityManagementModeUpdate V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate `json:"quantity_management_mode_update,omitzero"`
 	// Quantity changes are applied on the effective date based on the order which they
 	// are sent. For example, if I scheduled the quantity to be 12 on May 21 and then
 	// scheduled a quantity delta change of -1, the result from that day would be 11.
@@ -4420,6 +4423,45 @@ func (r V2ContractEditParamsUpdateSubscription) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V2ContractEditParamsUpdateSubscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the subscription's quantity management mode from QUANTITY_ONLY to
+// SEAT_BASED with the provided seat_group_key.
+//
+// The properties QuantityManagementMode, SeatConfig are required.
+type V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate struct {
+	// Any of "SEAT_BASED".
+	QuantityManagementMode string                                                                       `json:"quantity_management_mode,omitzero,required"`
+	SeatConfig             V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig `json:"seat_config,omitzero,required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate](
+		"quantity_management_mode", "SEAT_BASED",
+	)
+}
+
+// The property SeatGroupKey is required.
+type V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig struct {
+	SeatGroupKey string `json:"seat_group_key,required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

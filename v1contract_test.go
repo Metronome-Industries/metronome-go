@@ -602,7 +602,10 @@ func TestV1ContractAddManualBalanceEntryWithOptionalParams(t *testing.T) {
 		Reason:     "Reason for entry",
 		SegmentID:  "66368e29-3f97-4d15-a6e9-120897f0070a",
 		ContractID: metronome.String("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Timestamp:  metronome.Time(time.Now()),
+		PerGroupAmounts: map[string]float64{
+			"foo": 0,
+		},
+		Timestamp: metronome.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error
