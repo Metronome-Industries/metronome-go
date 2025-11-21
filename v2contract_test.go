@@ -738,6 +738,12 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		UpdateSubscriptions: []metronome.V2ContractEditParamsUpdateSubscription{{
 			SubscriptionID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			EndingBefore:   metronome.Time(time.Now()),
+			QuantityManagementModeUpdate: metronome.V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate{
+				QuantityManagementMode: "SEAT_BASED",
+				SeatConfig: metronome.V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig{
+					SeatGroupKey: "seat_group_key",
+				},
+			},
 			QuantityUpdates: []metronome.V2ContractEditParamsUpdateSubscriptionQuantityUpdate{{
 				StartingAt:    time.Now(),
 				Quantity:      metronome.Float(0),

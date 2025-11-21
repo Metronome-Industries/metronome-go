@@ -2662,6 +2662,9 @@ type V1ContractAddManualBalanceEntryParams struct {
 	// RFC 3339 timestamp indicating when the manual adjustment takes place. If not
 	// provided, it will default to the start of the segment.
 	Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
+	// If using individually configured commits/credits attached to seat managed
+	// subscriptions, the amount to add for each seat. Must sum to total amount.
+	PerGroupAmounts map[string]float64 `json:"per_group_amounts,omitzero"`
 	paramObj
 }
 
