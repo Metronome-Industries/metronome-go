@@ -564,6 +564,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			},
 			ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 			ApplicableProductTags: []string{"string"},
+			Description:           metronome.String("description"),
 			HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
 				ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
 					OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
@@ -589,6 +590,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					UnitPrice: metronome.Float(0),
 				}},
 			},
+			Name:                 metronome.String("name"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Priority:             metronome.Float(0),
 			ProductID:            metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -617,6 +619,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			},
 			ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 			ApplicableProductTags: []string{"string"},
+			Description:           metronome.String("description"),
 			HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
 				ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
 					OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
@@ -624,6 +627,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					},
 				},
 			},
+			Name:                 metronome.String("name"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Priority:             metronome.Float(0),
 			ProductID:            metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -811,6 +815,7 @@ func TestV2ContractEditCommitWithOptionalParams(t *testing.T) {
 		},
 		ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 		ApplicableProductTags: []string{"string"},
+		Description:           metronome.String("description"),
 		HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
 			ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
 				OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
@@ -837,6 +842,7 @@ func TestV2ContractEditCommitWithOptionalParams(t *testing.T) {
 				UnitPrice: metronome.Float(0),
 			}},
 		},
+		Name:      metronome.String("name"),
 		Priority:  metronome.Float(0),
 		ProductID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		RateType:  metronome.V2ContractEditCommitParamsRateTypeListRate,
@@ -893,6 +899,7 @@ func TestV2ContractEditCreditWithOptionalParams(t *testing.T) {
 		},
 		ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 		ApplicableProductTags: []string{"string"},
+		Description:           metronome.String("description"),
 		HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
 			ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
 				OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
@@ -900,6 +907,7 @@ func TestV2ContractEditCreditWithOptionalParams(t *testing.T) {
 				},
 			},
 		},
+		Name:      metronome.String("name"),
 		Priority:  metronome.Float(0),
 		ProductID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		RateType:  metronome.V2ContractEditCreditParamsRateTypeListRate,
