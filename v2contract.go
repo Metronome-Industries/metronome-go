@@ -1250,6 +1250,7 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,nullable"`
+	Description           string   `json:"description"`
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfiguration                             `json:"hierarchy_configuration"`
 	InvoiceSchedule        V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceSchedule `json:"invoice_schedule"`
@@ -1277,6 +1278,7 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 		AccessSchedule         respjson.Field
 		ApplicableProductIDs   respjson.Field
 		ApplicableProductTags  respjson.Field
+		Description            respjson.Field
 		HierarchyConfiguration respjson.Field
 		InvoiceSchedule        respjson.Field
 		Name                   respjson.Field
@@ -1480,6 +1482,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleUpdateSc
 type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 	ID             string                                                         `json:"id,required" format:"uuid"`
 	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCreditAccessSchedule `json:"access_schedule"`
+	Description    string                                                         `json:"description"`
 	// Optional configuration for credit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	Name                   string                              `json:"name"`
@@ -1496,6 +1499,7 @@ type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessSchedule         respjson.Field
+		Description            respjson.Field
 		HierarchyConfiguration respjson.Field
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
@@ -3892,6 +3896,8 @@ type V2ContractEditParamsUpdateCommit struct {
 	NetsuiteSalesOrderID param.Opt[string]  `json:"netsuite_sales_order_id,omitzero"`
 	Priority             param.Opt[float64] `json:"priority,omitzero"`
 	RolloverFraction     param.Opt[float64] `json:"rollover_fraction,omitzero"`
+	Description          param.Opt[string]  `json:"description,omitzero"`
+	Name                 param.Opt[string]  `json:"name,omitzero"`
 	ProductID            param.Opt[string]  `json:"product_id,omitzero" format:"uuid"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
@@ -4059,6 +4065,8 @@ type V2ContractEditParamsUpdateCredit struct {
 	CreditID             string             `json:"credit_id,required" format:"uuid"`
 	NetsuiteSalesOrderID param.Opt[string]  `json:"netsuite_sales_order_id,omitzero"`
 	Priority             param.Opt[float64] `json:"priority,omitzero"`
+	Description          param.Opt[string]  `json:"description,omitzero"`
+	Name                 param.Opt[string]  `json:"name,omitzero"`
 	ProductID            param.Opt[string]  `json:"product_id,omitzero" format:"uuid"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
@@ -4589,9 +4597,13 @@ type V2ContractEditCommitParams struct {
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
 	Priority param.Opt[float64] `json:"priority,omitzero"`
+	// Updated description for the commit
+	Description param.Opt[string] `json:"description,omitzero"`
 	// ID of contract to use for invoicing
 	InvoiceContractID param.Opt[string] `json:"invoice_contract_id,omitzero" format:"uuid"`
-	ProductID         param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Updated name for the commit
+	Name      param.Opt[string] `json:"name,omitzero"`
+	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
@@ -4771,8 +4783,12 @@ type V2ContractEditCreditParams struct {
 	CustomerID string `json:"customer_id,required" format:"uuid"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
-	Priority  param.Opt[float64] `json:"priority,omitzero"`
-	ProductID param.Opt[string]  `json:"product_id,omitzero" format:"uuid"`
+	Priority param.Opt[float64] `json:"priority,omitzero"`
+	// Updated description for the credit
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Updated name for the credit
+	Name      param.Opt[string] `json:"name,omitzero"`
+	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
 	// Which products the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
