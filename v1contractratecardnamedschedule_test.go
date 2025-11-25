@@ -58,7 +58,7 @@ func TestV1ContractRateCardNamedScheduleUpdateWithOptionalParams(t *testing.T) {
 		CustomerID:   "9b85c1c1-5238-4f2a-a409-61412905e1e1",
 		ScheduleName: "my-schedule",
 		StartingAt:   time.Now(),
-		Value: map[string]interface{}{
+		Value: map[string]any{
 			"my_key": "my_value",
 		},
 		EndingBefore: metronome.Time(time.Now()),

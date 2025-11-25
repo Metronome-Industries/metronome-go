@@ -125,7 +125,7 @@ func TestV1ContractRateCardListWithOptionalParams(t *testing.T) {
 	_, err := client.V1.Contracts.RateCards.List(context.TODO(), metronome.V1ContractRateCardListParams{
 		Limit:    metronome.Int(1),
 		NextPage: metronome.String("next_page"),
-		Body:     map[string]interface{}{},
+		Body:     map[string]any{},
 	})
 	if err != nil {
 		var apierr *metronome.Error
