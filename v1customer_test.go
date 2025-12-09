@@ -277,7 +277,7 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.V1.Customers.SetBillingConfigurations(context.TODO(), metronome.V1CustomerSetBillingConfigurationsParams{
+	_, err := client.V1.Customers.SetBillingConfigurations(context.TODO(), metronome.V1CustomerSetBillingConfigurationsParams{
 		Data: []metronome.V1CustomerSetBillingConfigurationsParamsData{{
 			BillingProvider: "stripe",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
