@@ -300,11 +300,10 @@ func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V
 //
 // Must use the `delivery_method_id` if you have multiple Stripe accounts connected
 // to Metronome.
-func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
+func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerSetBillingConfigurationsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/setCustomerBillingProviderConfigurations"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
@@ -733,6 +732,60 @@ type V1CustomerGetBillingConfigurationsResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r V1CustomerGetBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
 func (r *V1CustomerGetBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerSetBillingConfigurationsResponse struct {
+	Data []V1CustomerSetBillingConfigurationsResponseData `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerSetBillingConfigurationsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerSetBillingConfigurationsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerSetBillingConfigurationsResponseData struct {
+	// ID of the created configuration
+	ID string `json:"id" format:"uuid"`
+	// The billing provider set for this configuration.
+	//
+	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
+	BillingProvider string `json:"billing_provider"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider and delivery method combination.
+	Configuration map[string]any `json:"configuration"`
+	// ID of the customer this configuration is associated with.
+	CustomerID string `json:"customer_id" format:"uuid"`
+	// ID of the delivery method used for this customer configuration.
+	DeliveryMethodID string `json:"delivery_method_id" format:"uuid"`
+	// The tax provider set for this configuration.
+	//
+	// Any of "anrok", "avalara", "stripe".
+	TaxProvider string `json:"tax_provider"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		BillingProvider  respjson.Field
+		Configuration    respjson.Field
+		CustomerID       respjson.Field
+		DeliveryMethodID respjson.Field
+		TaxProvider      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerSetBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerSetBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
