@@ -13,7 +13,7 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v2/option"
 )
 
-func TestV1SettingUpsertAvalaraCredentials(t *testing.T) {
+func TestV1SettingUpsertAvalaraCredentialsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,6 +30,7 @@ func TestV1SettingUpsertAvalaraCredentials(t *testing.T) {
 		AvalaraPassword:    "my_password_123",
 		AvalaraUsername:    "test@metronome.com",
 		DeliveryMethodIDs:  []string{"9a906ebb-fbc7-42e8-8e29-53bfd2db3aca"},
+		CommitTransactions: metronome.Bool(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error

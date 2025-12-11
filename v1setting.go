@@ -72,6 +72,9 @@ type V1SettingUpsertAvalaraCredentialsParams struct {
 	// The delivery method IDs of the billing provider configurations to update, can be
 	// found in the response of the `/listConfiguredBillingProviders` endpoint.
 	DeliveryMethodIDs []string `json:"delivery_method_ids,omitzero,required"`
+	// Commit transactions if you want Metronome tax calculations used for reporting
+	// and tax filings.
+	CommitTransactions param.Opt[bool] `json:"commit_transactions,omitzero"`
 	paramObj
 }
 
