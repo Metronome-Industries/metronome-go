@@ -29,6 +29,8 @@ func TestV1CustomerBillingConfigNewWithOptionalParams(t *testing.T) {
 		CustomerID:                "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
 		BillingProviderType:       metronome.V1CustomerBillingConfigNewParamsBillingProviderTypeStripe,
 		BillingProviderCustomerID: "cus_AJ6y20bjkOOayM",
+		AwsCustomerAccountID:      metronome.String("aws_customer_account_id"),
+		AwsCustomerID:             metronome.String("aws_customer_id"),
 		AwsProductCode:            metronome.String("aws_product_code"),
 		AwsRegion:                 metronome.V1CustomerBillingConfigNewParamsAwsRegionAfSouth1,
 		StripeCollectionMethod:    metronome.V1CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically,

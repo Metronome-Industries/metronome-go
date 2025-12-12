@@ -32,6 +32,8 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 		BillingConfig: metronome.V1CustomerNewParamsBillingConfig{
 			BillingProviderCustomerID: "billing_provider_customer_id",
 			BillingProviderType:       "aws_marketplace",
+			AwsCustomerAccountID:      metronome.String("aws_customer_account_id"),
+			AwsCustomerID:             metronome.String("aws_customer_id"),
 			AwsIsSubscriptionProduct:  metronome.Bool(true),
 			AwsProductCode:            metronome.String("aws_product_code"),
 			AwsRegion:                 "af-south-1",

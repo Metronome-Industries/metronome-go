@@ -834,7 +834,9 @@ type V1CustomerNewParamsBillingConfig struct {
 	BillingProviderCustomerID string `json:"billing_provider_customer_id,required"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType string `json:"billing_provider_type,omitzero,required"`
+	BillingProviderType  string            `json:"billing_provider_type,omitzero,required"`
+	AwsCustomerAccountID param.Opt[string] `json:"aws_customer_account_id,omitzero"`
+	AwsCustomerID        param.Opt[string] `json:"aws_customer_id,omitzero"`
 	// True if the aws_product_code is a SAAS subscription product, false otherwise.
 	AwsIsSubscriptionProduct param.Opt[bool]   `json:"aws_is_subscription_product,omitzero"`
 	AwsProductCode           param.Opt[string] `json:"aws_product_code,omitzero"`
