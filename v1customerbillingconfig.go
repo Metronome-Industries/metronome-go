@@ -95,6 +95,8 @@ func (r *V1CustomerBillingConfigGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerBillingConfigGetResponseData struct {
+	AwsCustomerAccountID string `json:"aws_customer_account_id"`
+	AwsCustomerID        string `json:"aws_customer_id"`
 	// Contract expiration date for the customer. The expected format is RFC 3339 and
 	// can be retrieved from
 	// [AWS's GetEntitlements API](https://docs.aws.amazon.com/marketplaceentitlement/latest/APIReference/API_GetEntitlements.html).
@@ -129,6 +131,8 @@ type V1CustomerBillingConfigGetResponseData struct {
 	StripeCollectionMethod string `json:"stripe_collection_method"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AwsCustomerAccountID      respjson.Field
+		AwsCustomerID             respjson.Field
 		AwsExpirationDate         respjson.Field
 		AwsIsSubscriptionProduct  respjson.Field
 		AwsProductCode            respjson.Field
@@ -158,6 +162,8 @@ type V1CustomerBillingConfigNewParams struct {
 	// The customer ID in the billing provider's system. For Azure, this is the
 	// subscription ID.
 	BillingProviderCustomerID string            `json:"billing_provider_customer_id,required"`
+	AwsCustomerAccountID      param.Opt[string] `json:"aws_customer_account_id,omitzero"`
+	AwsCustomerID             param.Opt[string] `json:"aws_customer_id,omitzero"`
 	AwsProductCode            param.Opt[string] `json:"aws_product_code,omitzero"`
 	// Any of "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2",
 	// "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2",
