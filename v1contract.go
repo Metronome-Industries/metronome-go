@@ -2218,11 +2218,13 @@ type V1ContractNewParamsRevenueSystemConfiguration struct {
 	// multiple configurations with the same provider and delivery method. Otherwise,
 	// specify the provider and delivery_method.
 	RevenueSystemConfigurationID param.Opt[string] `json:"revenue_system_configuration_id,omitzero" format:"uuid"`
-	// Do not specify if using revenue_system_configuration_id.
+	// How revenue recognition records should be delivered to the revenue system. Do
+	// not specify if using revenue_system_configuration_id.
 	//
 	// Any of "direct_to_billing_provider".
 	DeliveryMethod string `json:"delivery_method,omitzero"`
-	// Do not specify if using revenue_system_configuration_id.
+	// The system that is providing services for revenue recognition. Do not specify if
+	// using revenue_system_configuration_id.
 	//
 	// Any of "netsuite".
 	Provider string `json:"provider,omitzero"`
