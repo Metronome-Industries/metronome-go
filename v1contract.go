@@ -218,7 +218,7 @@ func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams,
 // other actions that cause an invoice to be recalculated.
 func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1ContractAddManualBalanceEntryParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/contracts/addManualBalanceLedgerEntry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -424,7 +424,7 @@ func (r *V1ContractService) ScheduleProServicesInvoice(ctx context.Context, body
 // underlying the rate card on the contracts.
 func (r *V1ContractService) SetUsageFilter(ctx context.Context, body V1ContractSetUsageFilterParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/contracts/setUsageFilter"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -921,7 +921,10 @@ type V1ContractNewParams struct {
 	RecurringCredits     []V1ContractNewParamsRecurringCredit     `json:"recurring_credits,omitzero"`
 	// This field's availability is dependent on your client's configuration.
 	ResellerRoyalties []V1ContractNewParamsResellerRoyalty `json:"reseller_royalties,omitzero"`
-	ScheduledCharges  []V1ContractNewParamsScheduledCharge `json:"scheduled_charges,omitzero"`
+	// The revenue system configuration associated with a contract. Provide either an
+	// ID or the provider and delivery method.
+	RevenueSystemConfiguration V1ContractNewParamsRevenueSystemConfiguration `json:"revenue_system_configuration,omitzero"`
+	ScheduledCharges           []V1ContractNewParamsScheduledCharge          `json:"scheduled_charges,omitzero"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
 	// usage invoice. The charge's `timestamp` must match the usage invoice's
 	// `ending_before` date for consolidation to occur. This field cannot be modified
@@ -1937,9 +1940,8 @@ type V1ContractNewParamsRecurringCommitSubscriptionConfig struct {
 	ApplySeatIncreaseConfig V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero,required"`
 	// ID of the subscription to configure on the recurring commit/credit.
 	SubscriptionID string `json:"subscription_id,required"`
-	// If set to POOLED, allocation added per seat is pooled across the account. (BETA)
-	// If set to INDIVIDUAL, each seat in the subscription will have its own
-	// allocation.
+	// If set to POOLED, allocation added per seat is pooled across the account. If set
+	// to INDIVIDUAL, each seat in the subscription will have its own allocation.
 	//
 	// Any of "INDIVIDUAL", "POOLED".
 	Allocation string `json:"allocation,omitzero"`
@@ -2110,9 +2112,8 @@ type V1ContractNewParamsRecurringCreditSubscriptionConfig struct {
 	ApplySeatIncreaseConfig V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero,required"`
 	// ID of the subscription to configure on the recurring commit/credit.
 	SubscriptionID string `json:"subscription_id,required"`
-	// If set to POOLED, allocation added per seat is pooled across the account. (BETA)
-	// If set to INDIVIDUAL, each seat in the subscription will have its own
-	// allocation.
+	// If set to POOLED, allocation added per seat is pooled across the account. If set
+	// to INDIVIDUAL, each seat in the subscription will have its own allocation.
 	//
 	// Any of "INDIVIDUAL", "POOLED".
 	Allocation string `json:"allocation,omitzero"`
@@ -2208,6 +2209,43 @@ func (r V1ContractNewParamsResellerRoyaltyGcpOptions) MarshalJSON() (data []byte
 }
 func (r *V1ContractNewParamsResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The revenue system configuration associated with a contract. Provide either an
+// ID or the provider and delivery method.
+type V1ContractNewParamsRevenueSystemConfiguration struct {
+	// The Metronome ID of the revenue system configuration. Use when a customer has
+	// multiple configurations with the same provider and delivery method. Otherwise,
+	// specify the provider and delivery_method.
+	RevenueSystemConfigurationID param.Opt[string] `json:"revenue_system_configuration_id,omitzero" format:"uuid"`
+	// How revenue recognition records should be delivered to the revenue system. Do
+	// not specify if using revenue_system_configuration_id.
+	//
+	// Any of "direct_to_billing_provider".
+	DeliveryMethod string `json:"delivery_method,omitzero"`
+	// The system that is providing services for revenue recognition. Do not specify if
+	// using revenue_system_configuration_id.
+	//
+	// Any of "netsuite".
+	Provider string `json:"provider,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRevenueSystemConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRevenueSystemConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRevenueSystemConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRevenueSystemConfiguration](
+		"delivery_method", "direct_to_billing_provider",
+	)
+	apijson.RegisterFieldValidator[V1ContractNewParamsRevenueSystemConfiguration](
+		"provider", "netsuite",
+	)
 }
 
 // The properties ProductID, Schedule are required.
@@ -2367,14 +2405,15 @@ type V1ContractNewParamsSubscription struct {
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
 	// directly on the subscription. `initial_quantity` must be provided with this
 	// option. Compatible with recurring commits/credits that use POOLED allocation.
-	// **SEAT_BASED**: (BETA) Use when you want to pass specific seat identifiers (e.g.
-	// add user_123) to increment and decrement a subscription quantity, rather than
+	// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+	// user_123) to increment and decrement a subscription quantity, rather than
 	// directly providing the quantity. You must use a **SEAT_BASED** subscription to
 	// use a linked recurring credit with an allocation per seat. `seat_config` must be
 	// provided with this option.
 	//
 	// Any of "SEAT_BASED", "QUANTITY_ONLY".
-	QuantityManagementMode string `json:"quantity_management_mode,omitzero"`
+	QuantityManagementMode string                                    `json:"quantity_management_mode,omitzero"`
+	SeatConfig             V1ContractNewParamsSubscriptionSeatConfig `json:"seat_config,omitzero"`
 	paramObj
 }
 
@@ -2447,6 +2486,30 @@ func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionSubscriptionRate](
 		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
 	)
+}
+
+// The properties InitialSeatIDs, SeatGroupKey are required.
+type V1ContractNewParamsSubscriptionSeatConfig struct {
+	// The initial assigned seats on this subscription.
+	InitialSeatIDs []string `json:"initial_seat_ids,omitzero,required"`
+	// The property name, sent on usage events, that identifies the seat ID associated
+	// with the usage event. For example, the property name might be seat_id or
+	// user_id. The property must be set as a group key on billable metrics and a
+	// presentation/pricing group key on contract products. This allows linked
+	// recurring credits with an allocation per seat to be consumed by only one seat's
+	// usage.
+	SeatGroupKey string `json:"seat_group_key,required"`
+	// The initial amount of unassigned seats on this subscription.
+	InitialUnassignedSeats param.Opt[float64] `json:"initial_unassigned_seats,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsSubscriptionSeatConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsSubscriptionSeatConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsSubscriptionSeatConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties FromContractID, Type are required.
@@ -2601,6 +2664,9 @@ type V1ContractAddManualBalanceEntryParams struct {
 	// RFC 3339 timestamp indicating when the manual adjustment takes place. If not
 	// provided, it will default to the start of the segment.
 	Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
+	// If using individually configured commits/credits attached to seat managed
+	// subscriptions, the amount to add for each seat. Must sum to total amount.
+	PerGroupAmounts map[string]float64 `json:"per_group_amounts,omitzero"`
 	paramObj
 }
 

@@ -45,7 +45,11 @@ func TestV1AlertNewWithOptionalParams(t *testing.T) {
 		}},
 		InvoiceTypesFilter: []string{"SCHEDULED or USAGE"},
 		PlanID:             metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		UniquenessKey:      metronome.String("x"),
+		SeatFilter: metronome.V1AlertNewParamsSeatFilter{
+			SeatGroupKey:   "seat_group_key",
+			SeatGroupValue: metronome.String("seat_group_value"),
+		},
+		UniquenessKey: metronome.String("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error

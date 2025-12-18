@@ -522,8 +522,13 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			InitialQuantity:        metronome.Float(0),
 			Name:                   metronome.String("name"),
 			QuantityManagementMode: "SEAT_BASED",
-			StartingAt:             metronome.Time(time.Now()),
-			TemporaryID:            metronome.String("temporary_id"),
+			SeatConfig: metronome.V2ContractEditParamsAddSubscriptionSeatConfig{
+				InitialSeatIDs:         []string{"string"},
+				SeatGroupKey:           "seat_group_key",
+				InitialUnassignedSeats: metronome.Float(0),
+			},
+			StartingAt:  metronome.Time(time.Now()),
+			TemporaryID: metronome.String("temporary_id"),
 		}},
 		AllowContractEndingBeforeFinalizedInvoice: metronome.Bool(true),
 		ArchiveCommits: []metronome.V2ContractEditParamsArchiveCommit{{
@@ -559,6 +564,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			},
 			ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 			ApplicableProductTags: []string{"string"},
+			Description:           metronome.String("description"),
 			HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
 				ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
 					OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
@@ -584,6 +590,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					UnitPrice: metronome.Float(0),
 				}},
 			},
+			Name:                 metronome.String("name"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Priority:             metronome.Float(0),
 			ProductID:            metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -612,6 +619,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			},
 			ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 			ApplicableProductTags: []string{"string"},
+			Description:           metronome.String("description"),
 			HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
 				ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
 					OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
@@ -619,6 +627,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					},
 				},
 			},
+			Name:                 metronome.String("name"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Priority:             metronome.Float(0),
 			ProductID:            metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -733,11 +742,35 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		UpdateSubscriptions: []metronome.V2ContractEditParamsUpdateSubscription{{
 			SubscriptionID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			EndingBefore:   metronome.Time(time.Now()),
+			QuantityManagementModeUpdate: metronome.V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate{
+				QuantityManagementMode: "SEAT_BASED",
+				SeatConfig: metronome.V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig{
+					SeatGroupKey: "seat_group_key",
+				},
+			},
 			QuantityUpdates: []metronome.V2ContractEditParamsUpdateSubscriptionQuantityUpdate{{
 				StartingAt:    time.Now(),
 				Quantity:      metronome.Float(0),
 				QuantityDelta: metronome.Float(0),
 			}},
+			SeatUpdates: metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdates{
+				AddSeatIDs: []metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID{{
+					SeatIDs:    []string{"string"},
+					StartingAt: time.Now(),
+				}},
+				AddUnassignedSeats: []metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat{{
+					Quantity:   1,
+					StartingAt: time.Now(),
+				}},
+				RemoveSeatIDs: []metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID{{
+					SeatIDs:    []string{"string"},
+					StartingAt: time.Now(),
+				}},
+				RemoveUnassignedSeats: []metronome.V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat{{
+					Quantity:   1,
+					StartingAt: time.Now(),
+				}},
+			},
 		}},
 	})
 	if err != nil {
@@ -782,6 +815,7 @@ func TestV2ContractEditCommitWithOptionalParams(t *testing.T) {
 		},
 		ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 		ApplicableProductTags: []string{"string"},
+		Description:           metronome.String("description"),
 		HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
 			ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
 				OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
@@ -808,6 +842,7 @@ func TestV2ContractEditCommitWithOptionalParams(t *testing.T) {
 				UnitPrice: metronome.Float(0),
 			}},
 		},
+		Name:      metronome.String("name"),
 		Priority:  metronome.Float(0),
 		ProductID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		RateType:  metronome.V2ContractEditCommitParamsRateTypeListRate,
@@ -864,6 +899,7 @@ func TestV2ContractEditCreditWithOptionalParams(t *testing.T) {
 		},
 		ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 		ApplicableProductTags: []string{"string"},
+		Description:           metronome.String("description"),
 		HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
 			ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
 				OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
@@ -871,6 +907,7 @@ func TestV2ContractEditCreditWithOptionalParams(t *testing.T) {
 				},
 			},
 		},
+		Name:      metronome.String("name"),
 		Priority:  metronome.Float(0),
 		ProductID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		RateType:  metronome.V2ContractEditCreditParamsRateTypeListRate,

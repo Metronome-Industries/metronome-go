@@ -300,11 +300,10 @@ func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V
 //
 // Must use the `delivery_method_id` if you have multiple Stripe accounts connected
 // to Metronome.
-func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (err error) {
+func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V1CustomerSetBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerSetBillingConfigurationsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/setCustomerBillingProviderConfigurations"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
@@ -323,7 +322,7 @@ func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V
 //     Metronome customer.
 func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1CustomerSetIngestAliasesParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -355,7 +354,7 @@ func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNam
 // affecting core customer data like name or ingest aliases.
 func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerUpdateConfigParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
 		return
@@ -736,6 +735,60 @@ func (r *V1CustomerGetBillingConfigurationsResponseData) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type V1CustomerSetBillingConfigurationsResponse struct {
+	Data []V1CustomerSetBillingConfigurationsResponseData `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerSetBillingConfigurationsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerSetBillingConfigurationsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerSetBillingConfigurationsResponseData struct {
+	// ID of the created configuration
+	ID string `json:"id" format:"uuid"`
+	// The billing provider set for this configuration.
+	//
+	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
+	BillingProvider string `json:"billing_provider"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider and delivery method combination.
+	Configuration map[string]any `json:"configuration"`
+	// ID of the customer this configuration is associated with.
+	CustomerID string `json:"customer_id" format:"uuid"`
+	// ID of the delivery method used for this customer configuration.
+	DeliveryMethodID string `json:"delivery_method_id" format:"uuid"`
+	// The tax provider set for this configuration.
+	//
+	// Any of "anrok", "avalara", "stripe".
+	TaxProvider string `json:"tax_provider"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		BillingProvider  respjson.Field
+		Configuration    respjson.Field
+		CustomerID       respjson.Field
+		DeliveryMethodID respjson.Field
+		TaxProvider      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerSetBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerSetBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1CustomerSetNameResponse struct {
 	Data Customer `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -762,6 +815,7 @@ type V1CustomerNewParams struct {
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields                          map[string]string                                         `json:"custom_fields,omitzero"`
 	CustomerBillingProviderConfigurations []V1CustomerNewParamsCustomerBillingProviderConfiguration `json:"customer_billing_provider_configurations,omitzero"`
+	CustomerRevenueSystemConfigurations   []V1CustomerNewParamsCustomerRevenueSystemConfiguration   `json:"customer_revenue_system_configurations,omitzero"`
 	// Aliases that can be used to refer to this customer in usage events
 	IngestAliases []string `json:"ingest_aliases,omitzero"`
 	paramObj
@@ -780,7 +834,9 @@ type V1CustomerNewParamsBillingConfig struct {
 	BillingProviderCustomerID string `json:"billing_provider_customer_id,required"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType string `json:"billing_provider_type,omitzero,required"`
+	BillingProviderType  string            `json:"billing_provider_type,omitzero,required"`
+	AwsCustomerAccountID param.Opt[string] `json:"aws_customer_account_id,omitzero"`
+	AwsCustomerID        param.Opt[string] `json:"aws_customer_id,omitzero"`
 	// True if the aws_product_code is a SAAS subscription product, false otherwise.
 	AwsIsSubscriptionProduct param.Opt[bool]   `json:"aws_is_subscription_product,omitzero"`
 	AwsProductCode           param.Opt[string] `json:"aws_product_code,omitzero"`
@@ -867,6 +923,44 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerBillingProviderConfiguration](
 		"tax_provider", "anrok", "avalara", "stripe",
+	)
+}
+
+// The property Provider is required.
+type V1CustomerNewParamsCustomerRevenueSystemConfiguration struct {
+	// The revenue system provider set for this configuration.
+	//
+	// Any of "netsuite".
+	Provider string `json:"provider,omitzero,required"`
+	// ID of the delivery method to use for this customer. If not provided, the
+	// `delivery_method` must be provided.
+	DeliveryMethodID param.Opt[string] `json:"delivery_method_id,omitzero" format:"uuid"`
+	// Configuration for the revenue system provider. The structure of this object is
+	// specific to the revenue system provider. For NetSuite, this should contain
+	// `netsuite_customer_id`.
+	Configuration map[string]any `json:"configuration,omitzero"`
+	// The method to use for delivering invoices to this customer. If not provided, the
+	// `delivery_method_id` must be provided.
+	//
+	// Any of "direct_to_billing_provider".
+	DeliveryMethod string `json:"delivery_method,omitzero"`
+	paramObj
+}
+
+func (r V1CustomerNewParamsCustomerRevenueSystemConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerNewParamsCustomerRevenueSystemConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerNewParamsCustomerRevenueSystemConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerRevenueSystemConfiguration](
+		"provider", "netsuite",
+	)
+	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerRevenueSystemConfiguration](
+		"delivery_method", "direct_to_billing_provider",
 	)
 }
 

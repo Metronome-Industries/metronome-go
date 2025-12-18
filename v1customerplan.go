@@ -280,13 +280,15 @@ type V1CustomerPlanListPriceAdjustmentsResponsePrice struct {
 	// Determines how the value will be applied.
 	//
 	// Any of "fixed", "quantity", "percentage", "override".
-	AdjustmentType string `json:"adjustment_type,required"`
+	AdjustmentType string  `json:"adjustment_type,required"`
+	Quantity       float64 `json:"quantity"`
 	// Used in pricing tiers. Indicates at what metric value the price applies.
 	Tier  float64 `json:"tier"`
 	Value float64 `json:"value"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AdjustmentType respjson.Field
+		Quantity       respjson.Field
 		Tier           respjson.Field
 		Value          respjson.Field
 		ExtraFields    map[string]respjson.Field

@@ -33,6 +33,10 @@ func TestV1CustomerAlertGetWithOptionalParams(t *testing.T) {
 			Value: "value",
 		}},
 		PlansOrContracts: metronome.V1CustomerAlertGetParamsPlansOrContractsPlans,
+		SeatFilter: metronome.V1CustomerAlertGetParamsSeatFilter{
+			SeatGroupKey:   "seat_group_key",
+			SeatGroupValue: "seat_group_value",
+		},
 	})
 	if err != nil {
 		var apierr *metronome.Error

@@ -47,7 +47,7 @@ func (r *V1ContractNamedScheduleService) Get(ctx context.Context, body V1Contrac
 // dependent on your client's configuration.
 func (r *V1ContractNamedScheduleService) Update(ctx context.Context, body V1ContractNamedScheduleUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/contract-pricing/rate-cards/updateNamedSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return

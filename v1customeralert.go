@@ -216,7 +216,7 @@ func (r *V1CustomerAlertService) ListAutoPaging(ctx context.Context, params V1Cu
 //     happens in the background
 func (r *V1CustomerAlertService) Reset(ctx context.Context, body V1CustomerAlertResetParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customer-alerts/reset"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -292,6 +292,9 @@ type CustomerAlertAlert struct {
 	// Only supported for invoice_total_reached threshold notifications. A list of
 	// invoice types to evaluate.
 	InvoiceTypesFilter []string `json:"invoice_types_filter"`
+	// Only present for low_remaining_seat_balance_reached notifications. The seat
+	// group key or seat group key-value pair the alert is scoped to.
+	SeatFilter CustomerAlertAlertSeatFilter `json:"seat_filter"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
@@ -310,6 +313,7 @@ type CustomerAlertAlert struct {
 		GroupKeyFilter         respjson.Field
 		GroupValues            respjson.Field
 		InvoiceTypesFilter     respjson.Field
+		SeatFilter             respjson.Field
 		UniquenessKey          respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
@@ -381,6 +385,28 @@ func (r *CustomerAlertAlertGroupValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Only present for low_remaining_seat_balance_reached notifications. The seat
+// group key or seat group key-value pair the alert is scoped to.
+type CustomerAlertAlertSeatFilter struct {
+	// The seat group key (e.g., "seat_id", "user_id") that the alert is scoped to.
+	SeatGroupKey string `json:"seat_group_key,required"`
+	// The seat group value that the alert is scoped to.
+	SeatGroupValue string `json:"seat_group_value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatGroupKey   respjson.Field
+		SeatGroupValue respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlertSeatFilter) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlertSeatFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The status of the threshold notification. If the notification is archived, null
 // will be returned.
 type CustomerAlertCustomerStatus string
@@ -420,6 +446,9 @@ type V1CustomerAlertGetParams struct {
 	//
 	// Any of "PLANS", "CONTRACTS".
 	PlansOrContracts V1CustomerAlertGetParamsPlansOrContracts `json:"plans_or_contracts,omitzero"`
+	// Only allowed for `low_remaining_seat_balance_reached` notifications. This
+	// filters alerts by the seat group key-value pair.
+	SeatFilter V1CustomerAlertGetParamsSeatFilter `json:"seat_filter,omitzero"`
 	paramObj
 }
 
@@ -457,6 +486,26 @@ const (
 	V1CustomerAlertGetParamsPlansOrContractsPlans     V1CustomerAlertGetParamsPlansOrContracts = "PLANS"
 	V1CustomerAlertGetParamsPlansOrContractsContracts V1CustomerAlertGetParamsPlansOrContracts = "CONTRACTS"
 )
+
+// Only allowed for `low_remaining_seat_balance_reached` notifications. This
+// filters alerts by the seat group key-value pair.
+//
+// The properties SeatGroupKey, SeatGroupValue are required.
+type V1CustomerAlertGetParamsSeatFilter struct {
+	// The seat group key (e.g., "seat_id", "user_id")
+	SeatGroupKey string `json:"seat_group_key,required"`
+	// The specific seat identifier to filter by
+	SeatGroupValue string `json:"seat_group_value,required"`
+	paramObj
+}
+
+func (r V1CustomerAlertGetParamsSeatFilter) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerAlertGetParamsSeatFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertGetParamsSeatFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type V1CustomerAlertListParams struct {
 	// The Metronome ID of the customer

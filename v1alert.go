@@ -166,7 +166,7 @@ type V1AlertNewParams struct {
 	// "low_remaining_contract_credit_balance_reached",
 	// "low_remaining_contract_credit_percentage_reached",
 	// "low_remaining_contract_credit_and_commit_balance_reached",
-	// "invoice_total_reached".
+	// "invoice_total_reached", "low_remaining_seat_balance_reached".
 	AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero,required"`
 	// Name of the threshold notification
 	Name string `json:"name,required"`
@@ -209,6 +209,9 @@ type V1AlertNewParams struct {
 	// Only supported for invoice_total_reached threshold notifications. A list of
 	// invoice types to evaluate.
 	InvoiceTypesFilter []string `json:"invoice_types_filter,omitzero"`
+	// Required for `low_remaining_seat_balance_reached` notifications. The alert is
+	// scoped to this seat group key-value pair.
+	SeatFilter V1AlertNewParamsSeatFilter `json:"seat_filter,omitzero"`
 	paramObj
 }
 
@@ -238,6 +241,7 @@ const (
 	V1AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached       V1AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
 	V1AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached V1AlertNewParamsAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
 	V1AlertNewParamsAlertTypeInvoiceTotalReached                               V1AlertNewParamsAlertType = "invoice_total_reached"
+	V1AlertNewParamsAlertTypeLowRemainingSeatBalanceReached                    V1AlertNewParamsAlertType = "low_remaining_seat_balance_reached"
 )
 
 // The properties Entity, Key, Value are required.
@@ -275,6 +279,26 @@ func (r V1AlertNewParamsGroupValue) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V1AlertNewParamsGroupValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Required for `low_remaining_seat_balance_reached` notifications. The alert is
+// scoped to this seat group key-value pair.
+//
+// The property SeatGroupKey is required.
+type V1AlertNewParamsSeatFilter struct {
+	// The seat group key (e.g., "seat_id", "user_id")
+	SeatGroupKey string `json:"seat_group_key,required"`
+	// Optional seat identifier the alert is scoped to.
+	SeatGroupValue param.Opt[string] `json:"seat_group_value,omitzero"`
+	paramObj
+}
+
+func (r V1AlertNewParamsSeatFilter) MarshalJSON() (data []byte, err error) {
+	type shadow V1AlertNewParamsSeatFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertNewParamsSeatFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

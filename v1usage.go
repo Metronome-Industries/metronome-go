@@ -217,7 +217,7 @@ func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListP
 // COGs.
 func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/ingest"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -454,9 +454,10 @@ type V1UsageSearchResponseMatchedBillableMetric struct {
 	// key must be one of the property filter names and is not applicable when the
 	// aggregation type is 'count'.
 	AggregationKey string `json:"aggregation_key"`
-	// Specifies the type of aggregation performed on matching events.
+	// Specifies the type of aggregation performed on matching events. Includes
+	// "custom_sql" for events search endpoint responses.
 	//
-	// Any of "COUNT", "LATEST", "MAX", "SUM", "UNIQUE".
+	// Any of "COUNT", "LATEST", "MAX", "SUM", "UNIQUE", "custom_sql".
 	AggregationType string `json:"aggregation_type"`
 	// RFC 3339 timestamp indicating when the billable metric was archived. If not
 	// provided, the billable metric is not archived.

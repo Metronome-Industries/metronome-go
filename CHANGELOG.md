@@ -1,5 +1,48 @@
 # Changelog
 
+## 2.2.0 (2025-12-18)
+
+Full Changelog: [v2.1.0...v2.2.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.1.0...v2.2.0)
+
+### Features
+
+* [ORCH-605] uses x-mint groups to enable conditional rendering of gated revenue system config apis ([ff6a8ae](https://github.com/Metronome-Industries/metronome-go/commit/ff6a8ae713463ce2acbb394af776151bed0fb694))
+* [ORCH-752] Update contract creation endpoints to allow setting revenue system configuration ([3582322](https://github.com/Metronome-Industries/metronome-go/commit/35823220e6f1f67c338ef8d76c8ddac258c07178))
+* Add `commit_transactions` to the body of `/upsertAvalaraCredentials` endpoint ([9073fb5](https://github.com/Metronome-Industries/metronome-go/commit/9073fb5dc241bc0f89ac929724457d3f47e0a0fe))
+* Add `seat_filter` field to creation request and response parameters of the alert object ([42311d8](https://github.com/Metronome-Industries/metronome-go/commit/42311d819fdef7ae623d095b23cb3af0f388bb86))
+* add quantity to plan pricing adjustment response ([f253c42](https://github.com/Metronome-Industries/metronome-go/commit/f253c427dad703c5a1f5f1afdac1ee246b851e27))
+* adds external_payment_id to ExternalInvoice ([8c9b2ed](https://github.com/Metronome-Industries/metronome-go/commit/8c9b2ed4672473bed3136b980a6786e231cb2858))
+* **encoder:** support bracket encoding form-data object members ([5ddf8da](https://github.com/Metronome-Industries/metronome-go/commit/5ddf8da62320048f7b5f057ae4451b11261fd517))
+* everything ([14454e0](https://github.com/Metronome-Industries/metronome-go/commit/14454e0d904f9a0c5ed2f847dbda57a7440fda1b))
+* GET-6845 get openapi specs ready for GA ([fb2d116](https://github.com/Metronome-Industries/metronome-go/commit/fb2d11643548c3be5b3147b662276a279ccc4547))
+* include aggregation BM info from searchEvents ([f07324a](https://github.com/Metronome-Industries/metronome-go/commit/f07324abe2d79315f396146fe1d6490bc3edf541))
+* ORCH-833/948/946/947 - updated the API to accept aws_customer_account_id all gated behind a feature flag ([f8e6340](https://github.com/Metronome-Industries/metronome-go/commit/f8e6340a080882d77ae7f531ff828ecd29b69a44))
+* remove beta language, FF, stainless skip ([56b1795](https://github.com/Metronome-Industries/metronome-go/commit/56b1795099ddf0f1ae56b492310275496216ae98))
+* Return values for set customer billing configuration endpoint ([26d5802](https://github.com/Metronome-Industries/metronome-go/commit/26d58021d59fa768a619f5edce41127cf0067351))
+* update create alert api to allow LowRemainingSeatBalanceReached alert ([ad71080](https://github.com/Metronome-Industries/metronome-go/commit/ad71080e4e289f17e6ff42f9e0ae8855936dbce3))
+
+
+### Bug Fixes
+
+* **client:** correctly specify Accept header with */* instead of empty ([ff7698b](https://github.com/Metronome-Industries/metronome-go/commit/ff7698b7d24a85daa80c3b68e8cdd8b331cf8516))
+* **mcp:** correct code tool API endpoint ([ecb92c5](https://github.com/Metronome-Industries/metronome-go/commit/ecb92c5fdaaded0539cc5bc3efcb368ac1303bdf))
+* rename param to avoid collision ([d3a27cd](https://github.com/Metronome-Industries/metronome-go/commit/d3a27cd7013252584a70f8af3c08a9fce5f306ed))
+
+
+### Chores
+
+* add float64 to valid types for RegisterFieldValidator ([af1a7d8](https://github.com/Metronome-Industries/metronome-go/commit/af1a7d8e7d6d4590ff38f40dda255db52b6e3079))
+* bump gjson version ([46e4868](https://github.com/Metronome-Industries/metronome-go/commit/46e4868d10829fa2e2735ad763bb9809140d6b5d))
+* elide duplicate aliases ([4134c39](https://github.com/Metronome-Industries/metronome-go/commit/4134c39e8273d0f1b8509bbd9e634c972345cf0f))
+* fix empty interfaces ([1e2502f](https://github.com/Metronome-Industries/metronome-go/commit/1e2502f0224493ff4c5b10fcd691f5ffcab538ba))
+* **internal:** codegen related update ([40ff790](https://github.com/Metronome-Industries/metronome-go/commit/40ff7903d3f5fc72514c7120561b1cbcc13c3270))
+* **internal:** grammar fix (it's -&gt; its) ([479312d](https://github.com/Metronome-Industries/metronome-go/commit/479312de554bdaea2ba5b64fa578dde17baf4e5c))
+
+
+### Documentation
+
+* document missing fields for schemas related to recurring credits and commits ([2dea15c](https://github.com/Metronome-Industries/metronome-go/commit/2dea15c761de5eee8087af0a2feb5b3b4ed9337e))
+
 ## 2.1.0 (2025-10-31)
 
 Full Changelog: [v2.0.0...v2.1.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.0.0...v2.1.0)

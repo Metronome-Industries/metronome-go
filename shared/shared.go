@@ -1509,6 +1509,8 @@ type ContractV2Commit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []CommitSpecifier `json:"specifiers"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig RecurringCommitSubscriptionConfig `json:"subscription_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -1536,6 +1538,7 @@ type ContractV2Commit struct {
 		RolloverFraction        respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
+		SubscriptionConfig      respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
@@ -2301,6 +2304,11 @@ type ContractV2Credit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64                  `json:"balance"`
 	Contract ContractV2CreditContract `json:"contract"`
+	// Timestamp of when the credit was created.
+	//
+	//   - Recurring credits: latter of credit service period date and parent credit
+	//     start date
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -2321,6 +2329,8 @@ type ContractV2Credit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []CommitSpecifier `json:"specifiers"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig RecurringCommitSubscriptionConfig `json:"subscription_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -2332,6 +2342,7 @@ type ContractV2Credit struct {
 		ApplicableProductTags   respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedAt               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -2341,6 +2352,7 @@ type ContractV2Credit struct {
 		Priority                respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
+		SubscriptionConfig      respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
@@ -5874,8 +5886,8 @@ type Subscription struct {
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
 	// directly on the subscription. `initial_quantity` must be provided with this
 	// option. Compatible with recurring commits/credits that use POOLED allocation.
-	// **SEAT_BASED**: (BETA) Use when you want to pass specific seat identifiers (e.g.
-	// add user_123) to increment and decrement a subscription quantity, rather than
+	// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+	// user_123) to increment and decrement a subscription quantity, rather than
 	// directly providing the quantity. You must use a **SEAT_BASED** subscription to
 	// use a linked recurring credit with an allocation per seat. `seat_config` must be
 	// provided with this option.
@@ -5889,11 +5901,12 @@ type Subscription struct {
 	SubscriptionRate SubscriptionSubscriptionRate   `json:"subscription_rate,required"`
 	ID               string                         `json:"id" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields     map[string]string `json:"custom_fields"`
-	Description      string            `json:"description"`
-	EndingBefore     time.Time         `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string            `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string            `json:"name"`
+	CustomFields     map[string]string      `json:"custom_fields"`
+	Description      string                 `json:"description"`
+	EndingBefore     time.Time              `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                 `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                 `json:"name"`
+	SeatConfig       SubscriptionSeatConfig `json:"seat_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingPeriods         respjson.Field
@@ -5909,6 +5922,7 @@ type Subscription struct {
 		EndingBefore           respjson.Field
 		FiatCreditTypeID       respjson.Field
 		Name                   respjson.Field
+		SeatConfig             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -6025,8 +6039,8 @@ func (r *SubscriptionProration) UnmarshalJSON(data []byte) error {
 // QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
 // directly on the subscription. `initial_quantity` must be provided with this
 // option. Compatible with recurring commits/credits that use POOLED allocation.
-// **SEAT_BASED**: (BETA) Use when you want to pass specific seat identifiers (e.g.
-// add user_123) to increment and decrement a subscription quantity, rather than
+// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+// user_123) to increment and decrement a subscription quantity, rather than
 // directly providing the quantity. You must use a **SEAT_BASED** subscription to
 // use a linked recurring credit with an allocation per seat. `seat_config` must be
 // provided with this option.
@@ -6091,6 +6105,28 @@ type SubscriptionSubscriptionRateProduct struct {
 // Returns the unmodified JSON received from the API
 func (r SubscriptionSubscriptionRateProduct) RawJSON() string { return r.JSON.raw }
 func (r *SubscriptionSubscriptionRateProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SubscriptionSeatConfig struct {
+	// The property name, sent on usage events, that identifies the seat ID associated
+	// with the usage event. For example, the property name might be seat_id or
+	// user_id. The property must be set as a group key on billable metrics and a
+	// presentation/pricing group key on contract products. This allows linked
+	// recurring credits with an allocation per seat to be consumed by only one seat's
+	// usage.
+	SeatGroupKey string `json:"seat_group_key,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatGroupKey respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubscriptionSeatConfig) RawJSON() string { return r.JSON.raw }
+func (r *SubscriptionSeatConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

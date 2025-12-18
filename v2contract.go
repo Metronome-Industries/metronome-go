@@ -1250,6 +1250,7 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,nullable"`
+	Description           string   `json:"description"`
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfiguration                             `json:"hierarchy_configuration"`
 	InvoiceSchedule        V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceSchedule `json:"invoice_schedule"`
@@ -1277,6 +1278,7 @@ type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
 		AccessSchedule         respjson.Field
 		ApplicableProductIDs   respjson.Field
 		ApplicableProductTags  respjson.Field
+		Description            respjson.Field
 		HierarchyConfiguration respjson.Field
 		InvoiceSchedule        respjson.Field
 		Name                   respjson.Field
@@ -1480,6 +1482,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleUpdateSc
 type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 	ID             string                                                         `json:"id,required" format:"uuid"`
 	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCreditAccessSchedule `json:"access_schedule"`
+	Description    string                                                         `json:"description"`
 	// Optional configuration for credit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	Name                   string                              `json:"name"`
@@ -1496,6 +1499,7 @@ type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessSchedule         respjson.Field
+		Description            respjson.Field
 		HierarchyConfiguration respjson.Field
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
@@ -2088,11 +2092,14 @@ type V2ContractGetEditHistoryResponseDataUpdateSubscription struct {
 	ID              string                                                                 `json:"id,required" format:"uuid"`
 	EndingBefore    time.Time                                                              `json:"ending_before" format:"date-time"`
 	QuantityUpdates []V2ContractGetEditHistoryResponseDataUpdateSubscriptionQuantityUpdate `json:"quantity_updates"`
+	// Manage subscription seats for subscriptions in SEAT_BASED mode.
+	SeatUpdates V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdates `json:"seat_updates"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
 		EndingBefore    respjson.Field
 		QuantityUpdates respjson.Field
+		SeatUpdates     respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -2123,6 +2130,130 @@ func (r V2ContractGetEditHistoryResponseDataUpdateSubscriptionQuantityUpdate) Ra
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionQuantityUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Manage subscription seats for subscriptions in SEAT_BASED mode.
+type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdates struct {
+	// Adds seat IDs to the subscription. If there are unassigned seats, the new seat
+	// IDs will fill these unassigned seats and not increase the total subscription
+	// quantity. Otherwise, if there are more new seat IDs than unassigned seats, the
+	// total subscription quantity will increase.
+	AddSeatIDs []V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddSeatID `json:"add_seat_ids"`
+	// Adds unassigned seats to the subscription. This will increase the total
+	// subscription quantity.
+	AddUnassignedSeats []V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddUnassignedSeat `json:"add_unassigned_seats"`
+	// Removes seat IDs from the subscription, if possible. If a seat ID is removed,
+	// the total subscription quantity will decrease. Otherwise, if the seat ID is not
+	// found on the subscription, this is a no-op.
+	RemoveSeatIDs []V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveSeatID `json:"remove_seat_ids"`
+	// Removes unassigned seats from the subscription. This will decrease the total
+	// subscription quantity if there are are unassigned seats.
+	RemoveUnassignedSeats []V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat `json:"remove_unassigned_seats"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddSeatIDs            respjson.Field
+		AddUnassignedSeats    respjson.Field
+		RemoveSeatIDs         respjson.Field
+		RemoveUnassignedSeats respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdates) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdates) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddSeatID struct {
+	SeatIDs []string `json:"seat_ids,required"`
+	// Assigned seats will be added/removed starting at this date.
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatIDs     respjson.Field
+		StartingAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddSeatID) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddSeatID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddUnassignedSeat struct {
+	// The number of unassigned seats on the subscription will increase/decrease by
+	// this delta. Must be greater than 0.
+	Quantity float64 `json:"quantity,required"`
+	// Unassigned seats will be updated starting at this date.
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity    respjson.Field
+		StartingAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddUnassignedSeat) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddUnassignedSeat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveSeatID struct {
+	SeatIDs []string `json:"seat_ids,required"`
+	// Assigned seats will be added/removed starting at this date.
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatIDs     respjson.Field
+		StartingAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveSeatID) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveSeatID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat struct {
+	// The number of unassigned seats on the subscription will increase/decrease by
+	// this delta. Must be greater than 0.
+	Quantity float64 `json:"quantity,required"`
+	// Unassigned seats will be updated starting at this date.
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity    respjson.Field
+		StartingAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3177,9 +3308,8 @@ type V2ContractEditParamsAddRecurringCommitSubscriptionConfig struct {
 	ApplySeatIncreaseConfig V2ContractEditParamsAddRecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero,required"`
 	// ID of the subscription to configure on the recurring commit/credit.
 	SubscriptionID string `json:"subscription_id,required"`
-	// If set to POOLED, allocation added per seat is pooled across the account. (BETA)
-	// If set to INDIVIDUAL, each seat in the subscription will have its own
-	// allocation.
+	// If set to POOLED, allocation added per seat is pooled across the account. If set
+	// to INDIVIDUAL, each seat in the subscription will have its own allocation.
 	//
 	// Any of "POOLED", "INDIVIDUAL".
 	Allocation string `json:"allocation,omitzero"`
@@ -3352,9 +3482,8 @@ type V2ContractEditParamsAddRecurringCreditSubscriptionConfig struct {
 	ApplySeatIncreaseConfig V2ContractEditParamsAddRecurringCreditSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero,required"`
 	// ID of the subscription to configure on the recurring commit/credit.
 	SubscriptionID string `json:"subscription_id,required"`
-	// If set to POOLED, allocation added per seat is pooled across the account. (BETA)
-	// If set to INDIVIDUAL, each seat in the subscription will have its own
-	// allocation.
+	// If set to POOLED, allocation added per seat is pooled across the account. If set
+	// to INDIVIDUAL, each seat in the subscription will have its own allocation.
 	//
 	// Any of "POOLED", "INDIVIDUAL".
 	Allocation string `json:"allocation,omitzero"`
@@ -3598,14 +3727,15 @@ type V2ContractEditParamsAddSubscription struct {
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
 	// directly on the subscription. `initial_quantity` must be provided with this
 	// option. Compatible with recurring commits/credits that use POOLED allocation.
-	// **SEAT_BASED**: (BETA) Use when you want to pass specific seat identifiers (e.g.
-	// add user_123) to increment and decrement a subscription quantity, rather than
+	// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+	// user_123) to increment and decrement a subscription quantity, rather than
 	// directly providing the quantity. You must use a **SEAT_BASED** subscription to
 	// use a linked recurring credit with an allocation per seat. `seat_config` must be
 	// provided with this option.
 	//
 	// Any of "SEAT_BASED", "QUANTITY_ONLY".
-	QuantityManagementMode string `json:"quantity_management_mode,omitzero"`
+	QuantityManagementMode string                                        `json:"quantity_management_mode,omitzero"`
+	SeatConfig             V2ContractEditParamsAddSubscriptionSeatConfig `json:"seat_config,omitzero"`
 	paramObj
 }
 
@@ -3680,6 +3810,30 @@ func init() {
 	)
 }
 
+// The properties InitialSeatIDs, SeatGroupKey are required.
+type V2ContractEditParamsAddSubscriptionSeatConfig struct {
+	// The initial assigned seats on this subscription.
+	InitialSeatIDs []string `json:"initial_seat_ids,omitzero,required"`
+	// The property name, sent on usage events, that identifies the seat ID associated
+	// with the usage event. For example, the property name might be seat_id or
+	// user_id. The property must be set as a group key on billable metrics and a
+	// presentation/pricing group key on contract products. This allows linked
+	// recurring credits with an allocation per seat to be consumed by only one seat's
+	// usage.
+	SeatGroupKey string `json:"seat_group_key,required"`
+	// The initial amount of unassigned seats on this subscription.
+	InitialUnassignedSeats param.Opt[float64] `json:"initial_unassigned_seats,omitzero"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddSubscriptionSeatConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddSubscriptionSeatConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddSubscriptionSeatConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The property ID is required.
 type V2ContractEditParamsArchiveCommit struct {
 	ID string `json:"id,required" format:"uuid"`
@@ -3742,6 +3896,8 @@ type V2ContractEditParamsUpdateCommit struct {
 	NetsuiteSalesOrderID param.Opt[string]  `json:"netsuite_sales_order_id,omitzero"`
 	Priority             param.Opt[float64] `json:"priority,omitzero"`
 	RolloverFraction     param.Opt[float64] `json:"rollover_fraction,omitzero"`
+	Description          param.Opt[string]  `json:"description,omitzero"`
+	Name                 param.Opt[string]  `json:"name,omitzero"`
 	ProductID            param.Opt[string]  `json:"product_id,omitzero" format:"uuid"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
@@ -3909,6 +4065,8 @@ type V2ContractEditParamsUpdateCredit struct {
 	CreditID             string             `json:"credit_id,required" format:"uuid"`
 	NetsuiteSalesOrderID param.Opt[string]  `json:"netsuite_sales_order_id,omitzero"`
 	Priority             param.Opt[float64] `json:"priority,omitzero"`
+	Description          param.Opt[string]  `json:"description,omitzero"`
+	Name                 param.Opt[string]  `json:"name,omitzero"`
 	ProductID            param.Opt[string]  `json:"product_id,omitzero" format:"uuid"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
@@ -4257,10 +4415,14 @@ func (r *V2ContractEditParamsUpdateSpendThresholdConfiguration) UnmarshalJSON(da
 type V2ContractEditParamsUpdateSubscription struct {
 	SubscriptionID string               `json:"subscription_id,required" format:"uuid"`
 	EndingBefore   param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	// Update the subscription's quantity management mode from QUANTITY_ONLY to
+	// SEAT_BASED with the provided seat_group_key.
+	QuantityManagementModeUpdate V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate `json:"quantity_management_mode_update,omitzero"`
 	// Quantity changes are applied on the effective date based on the order which they
 	// are sent. For example, if I scheduled the quantity to be 12 on May 21 and then
 	// scheduled a quantity delta change of -1, the result from that day would be 11.
 	QuantityUpdates []V2ContractEditParamsUpdateSubscriptionQuantityUpdate `json:"quantity_updates,omitzero"`
+	SeatUpdates     V2ContractEditParamsUpdateSubscriptionSeatUpdates      `json:"seat_updates,omitzero"`
 	paramObj
 }
 
@@ -4269,6 +4431,45 @@ func (r V2ContractEditParamsUpdateSubscription) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V2ContractEditParamsUpdateSubscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the subscription's quantity management mode from QUANTITY_ONLY to
+// SEAT_BASED with the provided seat_group_key.
+//
+// The properties QuantityManagementMode, SeatConfig are required.
+type V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate struct {
+	// Any of "SEAT_BASED".
+	QuantityManagementMode string                                                                       `json:"quantity_management_mode,omitzero,required"`
+	SeatConfig             V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig `json:"seat_config,omitzero,required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate](
+		"quantity_management_mode", "SEAT_BASED",
+	)
+}
+
+// The property SeatGroupKey is required.
+type V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig struct {
+	SeatGroupKey string `json:"seat_group_key,required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4293,6 +4494,101 @@ func (r *V2ContractEditParamsUpdateSubscriptionQuantityUpdate) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type V2ContractEditParamsUpdateSubscriptionSeatUpdates struct {
+	// Adds seat IDs to the subscription. If there are unassigned seats, the new seat
+	// IDs will fill these unassigned seats and not increase the total subscription
+	// quantity. Otherwise, if there are more new seat IDs than unassigned seats, the
+	// total subscription quantity will increase.
+	AddSeatIDs []V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID `json:"add_seat_ids,omitzero"`
+	// Adds unassigned seats to the subscription. This will increase the total
+	// subscription quantity.
+	AddUnassignedSeats []V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat `json:"add_unassigned_seats,omitzero"`
+	// Removes seat IDs from the subscription, if possible. If a seat ID is removed,
+	// the total subscription quantity will decrease. Otherwise, if the seat ID is not
+	// found on the subscription, this is a no-op.
+	RemoveSeatIDs []V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID `json:"remove_seat_ids,omitzero"`
+	// Removes unassigned seats from the subscription. This will decrease the total
+	// subscription quantity if there are are unassigned seats.
+	RemoveUnassignedSeats []V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat `json:"remove_unassigned_seats,omitzero"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionSeatUpdates) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionSeatUpdates
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdates) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties SeatIDs, StartingAt are required.
+type V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID struct {
+	SeatIDs []string `json:"seat_ids,omitzero,required"`
+	// Assigned seats will be added/removed starting at this date.
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Quantity, StartingAt are required.
+type V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat struct {
+	// The number of unassigned seats on the subscription will increase/decrease by
+	// this delta. Must be greater than 0.
+	Quantity float64 `json:"quantity,required"`
+	// Unassigned seats will be updated starting at this date.
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties SeatIDs, StartingAt are required.
+type V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID struct {
+	SeatIDs []string `json:"seat_ids,omitzero,required"`
+	// Assigned seats will be added/removed starting at this date.
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Quantity, StartingAt are required.
+type V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat struct {
+	// The number of unassigned seats on the subscription will increase/decrease by
+	// this delta. Must be greater than 0.
+	Quantity float64 `json:"quantity,required"`
+	// Unassigned seats will be updated starting at this date.
+	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V2ContractEditCommitParams struct {
 	// ID of the commit to edit
 	CommitID string `json:"commit_id,required" format:"uuid"`
@@ -4301,9 +4597,13 @@ type V2ContractEditCommitParams struct {
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
 	Priority param.Opt[float64] `json:"priority,omitzero"`
+	// Updated description for the commit
+	Description param.Opt[string] `json:"description,omitzero"`
 	// ID of contract to use for invoicing
 	InvoiceContractID param.Opt[string] `json:"invoice_contract_id,omitzero" format:"uuid"`
-	ProductID         param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Updated name for the commit
+	Name      param.Opt[string] `json:"name,omitzero"`
+	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
@@ -4483,8 +4783,12 @@ type V2ContractEditCreditParams struct {
 	CustomerID string `json:"customer_id,required" format:"uuid"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
-	Priority  param.Opt[float64] `json:"priority,omitzero"`
-	ProductID param.Opt[string]  `json:"product_id,omitzero" format:"uuid"`
+	Priority param.Opt[float64] `json:"priority,omitzero"`
+	// Updated description for the credit
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Updated name for the credit
+	Name      param.Opt[string] `json:"name,omitzero"`
+	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
 	// Which products the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`

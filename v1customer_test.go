@@ -32,6 +32,8 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 		BillingConfig: metronome.V1CustomerNewParamsBillingConfig{
 			BillingProviderCustomerID: "billing_provider_customer_id",
 			BillingProviderType:       "aws_marketplace",
+			AwsCustomerAccountID:      metronome.String("aws_customer_account_id"),
+			AwsCustomerID:             metronome.String("aws_customer_id"),
 			AwsIsSubscriptionProduct:  metronome.Bool(true),
 			AwsProductCode:            metronome.String("aws_product_code"),
 			AwsRegion:                 "af-south-1",
@@ -49,6 +51,14 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+		}},
+		CustomerRevenueSystemConfigurations: []metronome.V1CustomerNewParamsCustomerRevenueSystemConfiguration{{
+			Provider: "netsuite",
+			Configuration: map[string]any{
+				"foo": "bar",
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		}},
 		ExternalID:    metronome.String("x"),
 		IngestAliases: []string{"team@example.com"},
@@ -269,7 +279,7 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.V1.Customers.SetBillingConfigurations(context.TODO(), metronome.V1CustomerSetBillingConfigurationsParams{
+	_, err := client.V1.Customers.SetBillingConfigurations(context.TODO(), metronome.V1CustomerSetBillingConfigurationsParams{
 		Data: []metronome.V1CustomerSetBillingConfigurationsParamsData{{
 			BillingProvider: "stripe",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
@@ -309,6 +319,16 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 				"aws_product_code":            "bar",
 				"aws_region":                  "bar",
 				"aws_is_subscription_product": "bar",
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			TaxProvider:      "anrok",
+		}, {
+			BillingProvider: "gcp_marketplace",
+			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
+			Configuration: map[string]any{
+				"gcp_entitlement_id": "bar",
+				"gcp_service_name":   "bar",
 			},
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),

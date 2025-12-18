@@ -414,6 +414,11 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			},
 			ResellerContractValue: metronome.Float(0),
 		}},
+		RevenueSystemConfiguration: metronome.V1ContractNewParamsRevenueSystemConfiguration{
+			DeliveryMethod:               "direct_to_billing_provider",
+			Provider:                     "netsuite",
+			RevenueSystemConfigurationID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		},
 		SalesforceOpportunityID: metronome.String("salesforce_opportunity_id"),
 		ScheduledCharges: []metronome.V1ContractNewParamsScheduledCharge{{
 			ProductID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -484,8 +489,13 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			InitialQuantity:        metronome.Float(0),
 			Name:                   metronome.String("name"),
 			QuantityManagementMode: "SEAT_BASED",
-			StartingAt:             metronome.Time(time.Now()),
-			TemporaryID:            metronome.String("temporary_id"),
+			SeatConfig: metronome.V1ContractNewParamsSubscriptionSeatConfig{
+				InitialSeatIDs:         []string{"string"},
+				SeatGroupKey:           "seat_group_key",
+				InitialUnassignedSeats: metronome.Float(0),
+			},
+			StartingAt:  metronome.Time(time.Now()),
+			TemporaryID: metronome.String("temporary_id"),
 		}},
 		TotalContractValue: metronome.Float(0),
 		Transition: metronome.V1ContractNewParamsTransition{
@@ -592,7 +602,10 @@ func TestV1ContractAddManualBalanceEntryWithOptionalParams(t *testing.T) {
 		Reason:     "Reason for entry",
 		SegmentID:  "66368e29-3f97-4d15-a6e9-120897f0070a",
 		ContractID: metronome.String("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
-		Timestamp:  metronome.Time(time.Now()),
+		PerGroupAmounts: map[string]float64{
+			"foo": 0,
+		},
+		Timestamp: metronome.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *metronome.Error
