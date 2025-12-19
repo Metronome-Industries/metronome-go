@@ -4209,8 +4209,11 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 }
 
 func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
-	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 // The property RecurringCommitID is required.
