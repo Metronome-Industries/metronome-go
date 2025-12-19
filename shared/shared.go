@@ -5274,8 +5274,11 @@ type PrepaidBalanceThresholdConfigurationCommitParam struct {
 }
 
 func (r PrepaidBalanceThresholdConfigurationCommitParam) MarshalJSON() (data []byte, err error) {
-	type shadow PrepaidBalanceThresholdConfigurationCommitParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*PrepaidBalanceThresholdConfigurationCommitParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type PrepaidBalanceThresholdConfigurationV2 struct {
@@ -5403,8 +5406,11 @@ type PrepaidBalanceThresholdConfigurationV2CommitParam struct {
 }
 
 func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data []byte, err error) {
-	type shadow PrepaidBalanceThresholdConfigurationV2CommitParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*PrepaidBalanceThresholdConfigurationV2CommitParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type PropertyFilter struct {
