@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.3.0 (2025-12-19)
+
+Full Changelog: [v2.2.0...v2.3.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.2.0...v2.3.0)
+
+### Features
+
+* Add support for custom fields on package terms ([701cba0](https://github.com/Metronome-Industries/metronome-go/commit/701cba015fa7783a17e94917270709015b6eab5b))
+
+
+### Bug Fixes
+
+* **client:** properly marshal embedded structs ([6128b68](https://github.com/Metronome-Industries/metronome-go/commit/6128b68fd00fc1e543b25567e75575e4bb79eeb8))
+
 ## 2.2.0 (2025-12-18)
 
 Full Changelog: [v2.1.0...v2.2.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.1.0...v2.2.0)
