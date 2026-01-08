@@ -409,7 +409,8 @@ type Invoice struct {
 	PlanID           string            `json:"plan_id" format:"uuid"`
 	PlanName         string            `json:"plan_name"`
 	// Only present for contract invoices with reseller royalties.
-	ResellerRoyalty InvoiceResellerRoyalty `json:"reseller_royalty"`
+	ResellerRoyalty       InvoiceResellerRoyalty        `json:"reseller_royalty"`
+	RevenueSystemInvoices []InvoiceRevenueSystemInvoice `json:"revenue_system_invoices,nullable"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// Beginning of the usage period this invoice covers (UTC)
@@ -444,6 +445,7 @@ type Invoice struct {
 		PlanID                  respjson.Field
 		PlanName                respjson.Field
 		ResellerRoyalty         respjson.Field
+		RevenueSystemInvoices   respjson.Field
 		SalesforceOpportunityID respjson.Field
 		StartTimestamp          respjson.Field
 		Subtotal                respjson.Field
@@ -1079,6 +1081,31 @@ type InvoiceResellerRoyaltyGcpOptions struct {
 // Returns the unmodified JSON received from the API
 func (r InvoiceResellerRoyaltyGcpOptions) RawJSON() string { return r.JSON.raw }
 func (r *InvoiceResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InvoiceRevenueSystemInvoice struct {
+	RevenueSystemExternalEntityType string `json:"revenue_system_external_entity_type,required"`
+	RevenueSystemProvider           string `json:"revenue_system_provider,required"`
+	SyncStatus                      string `json:"sync_status,required"`
+	// The error message from the revenue system, if available.
+	ErrorMessage                  string `json:"error_message"`
+	RevenueSystemExternalEntityID string `json:"revenue_system_external_entity_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RevenueSystemExternalEntityType respjson.Field
+		RevenueSystemProvider           respjson.Field
+		SyncStatus                      respjson.Field
+		ErrorMessage                    respjson.Field
+		RevenueSystemExternalEntityID   respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvoiceRevenueSystemInvoice) RawJSON() string { return r.JSON.raw }
+func (r *InvoiceRevenueSystemInvoice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
