@@ -5646,10 +5646,6 @@ type Rate struct {
 	Quantity float64 `json:"quantity"`
 	// Only set for TIERED rate_type.
 	Tiers []Tier `json:"tiers"`
-	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
-	// using list prices rather than the standard rates for this product on the
-	// contract.
-	UseListPrices bool `json:"use_list_prices"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RateType           respjson.Field
@@ -5660,7 +5656,6 @@ type Rate struct {
 		PricingGroupValues respjson.Field
 		Quantity           respjson.Field
 		Tiers              respjson.Field
-		UseListPrices      respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
