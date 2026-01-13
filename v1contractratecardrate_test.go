@@ -96,7 +96,6 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 			Price: 0,
 			Size:  metronome.Float(0),
 		}},
-		UseListPrices: metronome.Bool(true),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -151,7 +150,6 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 				Price: 0,
 				Size:  metronome.Float(0),
 			}},
-			UseListPrices: metronome.Bool(true),
 		}, {
 			Entitled:         true,
 			ProductID:        "13117714-3f05-48e5-a6e9-a66093f13b4d",
@@ -182,7 +180,6 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 				Price: 0,
 				Size:  metronome.Float(0),
 			}},
-			UseListPrices: metronome.Bool(true),
 		}},
 	})
 	if err != nil {
