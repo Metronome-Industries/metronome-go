@@ -3,9 +3,9 @@
 package metronome
 
 import (
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apierror"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v2/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apierror"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding
@@ -107,6 +107,15 @@ const CommitRateTypeListRate = shared.CommitRateTypeListRate
 
 // This is an alias to an internal type.
 type CommitRolledOverFrom = shared.CommitRolledOverFrom
+
+// The subscription configuration for this commit, if it was generated from a
+// recurring commit with a subscription attached.
+//
+// This is an alias to an internal type.
+type CommitSubscriptionConfig = shared.CommitSubscriptionConfig
+
+// This is an alias to an internal type.
+type CommitSubscriptionConfigApplySeatIncreaseConfig = shared.CommitSubscriptionConfigApplySeatIncreaseConfig
 
 // This is an alias to an internal type.
 type CommitHierarchyConfiguration = shared.CommitHierarchyConfiguration
@@ -551,6 +560,15 @@ const CreditRateTypeCommitRate = shared.CreditRateTypeCommitRate
 
 // Equals "LIST_RATE"
 const CreditRateTypeListRate = shared.CreditRateTypeListRate
+
+// The subscription configuration for this credit, if it was generated from a
+// recurring credit with a subscription attached.
+//
+// This is an alias to an internal type.
+type CreditSubscriptionConfig = shared.CreditSubscriptionConfig
+
+// This is an alias to an internal type.
+type CreditSubscriptionConfigApplySeatIncreaseConfig = shared.CreditSubscriptionConfigApplySeatIncreaseConfig
 
 // This is an alias to an internal type.
 type CreditTypeData = shared.CreditTypeData

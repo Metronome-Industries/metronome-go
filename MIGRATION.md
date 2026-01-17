@@ -1,6 +1,6 @@
 # Metronome Go Migration Guide
 
-<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v2"><img src="https://pkg.go.dev/badge/github.com/Metronome-Industries/metronome-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v3"><img src="https://pkg.go.dev/badge/github.com/Metronome-Industries/metronome-go.svg" alt="Go Reference"></a>
 
 This SDK includes breaking changes to improve the ergonomics of constructing parameters and accessing responses.
 

@@ -10,14 +10,14 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/v2/option"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/v2/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // V1ContractService contains methods and other services that help with interacting
@@ -578,13 +578,20 @@ type V1ContractListBalancesResponseUnion struct {
 	Priority             float64                                   `json:"priority"`
 	RateType             string                                    `json:"rate_type"`
 	// This field is from variant [shared.Commit].
+	RecurringCommitID string `json:"recurring_commit_id"`
+	// This field is from variant [shared.Commit].
 	RolledOverFrom shared.CommitRolledOverFrom `json:"rolled_over_from"`
 	// This field is from variant [shared.Commit].
 	RolloverFraction        float64                  `json:"rollover_fraction"`
 	SalesforceOpportunityID string                   `json:"salesforce_opportunity_id"`
 	Specifiers              []shared.CommitSpecifier `json:"specifiers"`
-	UniquenessKey           string                   `json:"uniqueness_key"`
-	JSON                    struct {
+	// This field is a union of [shared.CommitSubscriptionConfig],
+	// [shared.CreditSubscriptionConfig]
+	SubscriptionConfig V1ContractListBalancesResponseUnionSubscriptionConfig `json:"subscription_config"`
+	UniquenessKey      string                                                `json:"uniqueness_key"`
+	// This field is from variant [shared.Credit].
+	RecurringCreditID string `json:"recurring_credit_id"`
+	JSON              struct {
 		ID                      respjson.Field
 		CreatedAt               respjson.Field
 		Product                 respjson.Field
@@ -607,11 +614,14 @@ type V1ContractListBalancesResponseUnion struct {
 		NetsuiteSalesOrderID    respjson.Field
 		Priority                respjson.Field
 		RateType                respjson.Field
+		RecurringCommitID       respjson.Field
 		RolledOverFrom          respjson.Field
 		RolloverFraction        respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
+		SubscriptionConfig      respjson.Field
 		UniquenessKey           respjson.Field
+		RecurringCreditID       respjson.Field
 		raw                     string
 	} `json:"-"`
 }
@@ -697,6 +707,51 @@ type V1ContractListBalancesResponseUnionLedger struct {
 }
 
 func (r *V1ContractListBalancesResponseUnionLedger) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// V1ContractListBalancesResponseUnionSubscriptionConfig is an implicit subunion of
+// [V1ContractListBalancesResponseUnion].
+// V1ContractListBalancesResponseUnionSubscriptionConfig provides convenient access
+// to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [V1ContractListBalancesResponseUnion].
+type V1ContractListBalancesResponseUnionSubscriptionConfig struct {
+	Allocation string `json:"allocation"`
+	// This field is a union of
+	// [shared.CommitSubscriptionConfigApplySeatIncreaseConfig],
+	// [shared.CreditSubscriptionConfigApplySeatIncreaseConfig]
+	ApplySeatIncreaseConfig V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config"`
+	SubscriptionID          string                                                                       `json:"subscription_id"`
+	JSON                    struct {
+		Allocation              respjson.Field
+		ApplySeatIncreaseConfig respjson.Field
+		SubscriptionID          respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+func (r *V1ContractListBalancesResponseUnionSubscriptionConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig is
+// an implicit subunion of [V1ContractListBalancesResponseUnion].
+// V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [V1ContractListBalancesResponseUnion].
+type V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig struct {
+	IsProrated bool `json:"is_prorated"`
+	JSON       struct {
+		IsProrated respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (r *V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

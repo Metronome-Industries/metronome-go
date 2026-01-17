@@ -3,7 +3,7 @@ package param
 import (
 	"encoding/json"
 	"fmt"
-	shimjson "github.com/Metronome-Industries/metronome-go/v2/internal/encoding/json"
+	shimjson "github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json"
 	"time"
 )
 

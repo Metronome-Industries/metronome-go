@@ -8,12 +8,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/v2/option"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/v2/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // V2ContractService contains methods and other services that help with interacting
@@ -4209,8 +4209,11 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 }
 
 func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) MarshalJSON() (data []byte, err error) {
-	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 // The property RecurringCommitID is required.

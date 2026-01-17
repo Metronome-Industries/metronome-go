@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
 // aliased to make [param.APIUnion] private when embedding
@@ -166,15 +166,21 @@ type Commit struct {
 	// will apply first.
 	Priority float64 `json:"priority"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType         CommitRateType       `json:"rate_type"`
-	RolledOverFrom   CommitRolledOverFrom `json:"rolled_over_from"`
-	RolloverFraction float64              `json:"rollover_fraction"`
+	RateType CommitRateType `json:"rate_type"`
+	// The ID of the recurring commit that this commit was generated from, if
+	// applicable.
+	RecurringCommitID string               `json:"recurring_commit_id" format:"uuid"`
+	RolledOverFrom    CommitRolledOverFrom `json:"rolled_over_from"`
+	RolloverFraction  float64              `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []CommitSpecifier `json:"specifiers"`
+	// The subscription configuration for this commit, if it was generated from a
+	// recurring commit with a subscription attached.
+	SubscriptionConfig CommitSubscriptionConfig `json:"subscription_config"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
@@ -204,10 +210,12 @@ type Commit struct {
 		NetsuiteSalesOrderID    respjson.Field
 		Priority                respjson.Field
 		RateType                respjson.Field
+		RecurringCommitID       respjson.Field
 		RolledOverFrom          respjson.Field
 		RolloverFraction        respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
+		SubscriptionConfig      respjson.Field
 		UniquenessKey           respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
@@ -760,6 +768,46 @@ type CommitRolledOverFrom struct {
 // Returns the unmodified JSON received from the API
 func (r CommitRolledOverFrom) RawJSON() string { return r.JSON.raw }
 func (r *CommitRolledOverFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The subscription configuration for this commit, if it was generated from a
+// recurring commit with a subscription attached.
+type CommitSubscriptionConfig struct {
+	// Any of "INDIVIDUAL", "POOLED".
+	Allocation              string                                          `json:"allocation"`
+	ApplySeatIncreaseConfig CommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config"`
+	SubscriptionID          string                                          `json:"subscription_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allocation              respjson.Field
+		ApplySeatIncreaseConfig respjson.Field
+		SubscriptionID          respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommitSubscriptionConfig) RawJSON() string { return r.JSON.raw }
+func (r *CommitSubscriptionConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommitSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool `json:"is_prorated,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsProrated  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommitSubscriptionConfigApplySeatIncreaseConfig) RawJSON() string { return r.JSON.raw }
+func (r *CommitSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1500,9 +1548,11 @@ type ContractV2Commit struct {
 	// will apply first.
 	Priority float64 `json:"priority"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType         string                         `json:"rate_type"`
-	RolledOverFrom   ContractV2CommitRolledOverFrom `json:"rolled_over_from"`
-	RolloverFraction float64                        `json:"rollover_fraction"`
+	RateType string `json:"rate_type"`
+	// The ID of the recurring commit that created this commit
+	RecurringCommitID string                         `json:"recurring_commit_id" format:"uuid"`
+	RolledOverFrom    ContractV2CommitRolledOverFrom `json:"rolled_over_from"`
+	RolloverFraction  float64                        `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -1534,6 +1584,7 @@ type ContractV2Commit struct {
 		NetsuiteSalesOrderID    respjson.Field
 		Priority                respjson.Field
 		RateType                respjson.Field
+		RecurringCommitID       respjson.Field
 		RolledOverFrom          respjson.Field
 		RolloverFraction        respjson.Field
 		SalesforceOpportunityID respjson.Field
@@ -2323,6 +2374,8 @@ type ContractV2Credit struct {
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority float64 `json:"priority"`
+	// The ID of the recurring credit that created this credit
+	RecurringCreditID string `json:"recurring_credit_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -2350,6 +2403,7 @@ type ContractV2Credit struct {
 		Name                    respjson.Field
 		NetsuiteSalesOrderID    respjson.Field
 		Priority                respjson.Field
+		RecurringCreditID       respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
 		SubscriptionConfig      respjson.Field
@@ -3898,12 +3952,18 @@ type Credit struct {
 	Priority float64 `json:"priority"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
 	RateType CreditRateType `json:"rate_type"`
+	// The ID of the recurring credit that this credit was generated from, if
+	// applicable.
+	RecurringCreditID string `json:"recurring_credit_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []CommitSpecifier `json:"specifiers"`
+	// The subscription configuration for this credit, if it was generated from a
+	// recurring credit with a subscription attached.
+	SubscriptionConfig CreditSubscriptionConfig `json:"subscription_config"`
 	// Prevents the creation of duplicates. If a request to create a commit or credit
 	// is made with a uniqueness key that was previously used to create a commit or
 	// credit, a new record will not be created and the request will fail with a 409
@@ -3928,8 +3988,10 @@ type Credit struct {
 		NetsuiteSalesOrderID    respjson.Field
 		Priority                respjson.Field
 		RateType                respjson.Field
+		RecurringCreditID       respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
+		SubscriptionConfig      respjson.Field
 		UniquenessKey           respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
@@ -4233,6 +4295,46 @@ const (
 	CreditRateTypeCommitRate CreditRateType = "COMMIT_RATE"
 	CreditRateTypeListRate   CreditRateType = "LIST_RATE"
 )
+
+// The subscription configuration for this credit, if it was generated from a
+// recurring credit with a subscription attached.
+type CreditSubscriptionConfig struct {
+	// Any of "INDIVIDUAL", "POOLED".
+	Allocation              string                                          `json:"allocation"`
+	ApplySeatIncreaseConfig CreditSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config"`
+	SubscriptionID          string                                          `json:"subscription_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allocation              respjson.Field
+		ApplySeatIncreaseConfig respjson.Field
+		SubscriptionID          respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CreditSubscriptionConfig) RawJSON() string { return r.JSON.raw }
+func (r *CreditSubscriptionConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CreditSubscriptionConfigApplySeatIncreaseConfig struct {
+	// Indicates whether a mid-period seat increase should be prorated.
+	IsProrated bool `json:"is_prorated,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsProrated  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CreditSubscriptionConfigApplySeatIncreaseConfig) RawJSON() string { return r.JSON.raw }
+func (r *CreditSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type CreditTypeData struct {
 	ID   string `json:"id,required" format:"uuid"`
@@ -5274,8 +5376,11 @@ type PrepaidBalanceThresholdConfigurationCommitParam struct {
 }
 
 func (r PrepaidBalanceThresholdConfigurationCommitParam) MarshalJSON() (data []byte, err error) {
-	type shadow PrepaidBalanceThresholdConfigurationCommitParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*PrepaidBalanceThresholdConfigurationCommitParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type PrepaidBalanceThresholdConfigurationV2 struct {
@@ -5403,8 +5508,11 @@ type PrepaidBalanceThresholdConfigurationV2CommitParam struct {
 }
 
 func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data []byte, err error) {
-	type shadow PrepaidBalanceThresholdConfigurationV2CommitParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*PrepaidBalanceThresholdConfigurationV2CommitParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type PropertyFilter struct {
@@ -5538,10 +5646,6 @@ type Rate struct {
 	Quantity float64 `json:"quantity"`
 	// Only set for TIERED rate_type.
 	Tiers []Tier `json:"tiers"`
-	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
-	// using list prices rather than the standard rates for this product on the
-	// contract.
-	UseListPrices bool `json:"use_list_prices"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RateType           respjson.Field
@@ -5552,7 +5656,6 @@ type Rate struct {
 		PricingGroupValues respjson.Field
 		Quantity           respjson.Field
 		Tiers              respjson.Field
-		UseListPrices      respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`

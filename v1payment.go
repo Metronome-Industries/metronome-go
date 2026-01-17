@@ -8,13 +8,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/v2/option"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/v2/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // V1PaymentService contains methods and other services that help with interacting
@@ -87,35 +87,37 @@ func (r *V1PaymentService) Cancel(ctx context.Context, body V1PaymentCancelParam
 }
 
 type Payment struct {
-	ID             string                `json:"id,required" format:"uuid"`
-	Amount         float64               `json:"amount"`
-	AmountPaid     float64               `json:"amount_paid"`
-	ContractID     string                `json:"contract_id" format:"uuid"`
-	CreatedAt      time.Time             `json:"created_at" format:"date-time"`
-	CustomerID     string                `json:"customer_id" format:"uuid"`
-	ErrorMessage   string                `json:"error_message"`
-	FiatCreditType shared.CreditTypeData `json:"fiat_credit_type"`
-	InvoiceID      string                `json:"invoice_id" format:"uuid"`
-	PaymentGateway PaymentPaymentGateway `json:"payment_gateway"`
+	ID                    string                        `json:"id,required" format:"uuid"`
+	Amount                float64                       `json:"amount"`
+	AmountPaid            float64                       `json:"amount_paid"`
+	ContractID            string                        `json:"contract_id" format:"uuid"`
+	CreatedAt             time.Time                     `json:"created_at" format:"date-time"`
+	CustomerID            string                        `json:"customer_id" format:"uuid"`
+	ErrorMessage          string                        `json:"error_message"`
+	FiatCreditType        shared.CreditTypeData         `json:"fiat_credit_type"`
+	InvoiceID             string                        `json:"invoice_id" format:"uuid"`
+	PaymentGateway        PaymentPaymentGateway         `json:"payment_gateway"`
+	RevenueSystemPayments []PaymentRevenueSystemPayment `json:"revenue_system_payments"`
 	// Any of "pending", "requires_intervention", "paid", "canceled".
 	Status    PaymentStatus `json:"status"`
 	UpdatedAt time.Time     `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		Amount         respjson.Field
-		AmountPaid     respjson.Field
-		ContractID     respjson.Field
-		CreatedAt      respjson.Field
-		CustomerID     respjson.Field
-		ErrorMessage   respjson.Field
-		FiatCreditType respjson.Field
-		InvoiceID      respjson.Field
-		PaymentGateway respjson.Field
-		Status         respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID                    respjson.Field
+		Amount                respjson.Field
+		AmountPaid            respjson.Field
+		ContractID            respjson.Field
+		CreatedAt             respjson.Field
+		CustomerID            respjson.Field
+		ErrorMessage          respjson.Field
+		FiatCreditType        respjson.Field
+		InvoiceID             respjson.Field
+		PaymentGateway        respjson.Field
+		RevenueSystemPayments respjson.Field
+		Status                respjson.Field
+		UpdatedAt             respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -181,6 +183,29 @@ type PaymentPaymentGatewayStripeError struct {
 // Returns the unmodified JSON received from the API
 func (r PaymentPaymentGatewayStripeError) RawJSON() string { return r.JSON.raw }
 func (r *PaymentPaymentGatewayStripeError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PaymentRevenueSystemPayment struct {
+	RevenueSystemProvider string `json:"revenue_system_provider,required"`
+	SyncStatus            string `json:"sync_status,required"`
+	// The error message from the revenue system, if available.
+	ErrorMessage                   string `json:"error_message"`
+	RevenueSystemExternalPaymentID string `json:"revenue_system_external_payment_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RevenueSystemProvider          respjson.Field
+		SyncStatus                     respjson.Field
+		ErrorMessage                   respjson.Field
+		RevenueSystemExternalPaymentID respjson.Field
+		ExtraFields                    map[string]respjson.Field
+		raw                            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentRevenueSystemPayment) RawJSON() string { return r.JSON.raw }
+func (r *PaymentRevenueSystemPayment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

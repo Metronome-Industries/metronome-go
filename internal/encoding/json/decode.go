@@ -14,7 +14,7 @@ import (
 	"encoding"
 	"encoding/base64"
 	"fmt"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/encoding/json/shims"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json/shims"
 	"reflect"
 	"strconv"
 	"strings"

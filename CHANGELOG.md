@@ -1,5 +1,35 @@
 # Changelog
 
+## 3.0.0 (2026-01-17)
+
+Full Changelog: [v2.2.0...v3.0.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.2.0...v3.0.0)
+
+### Features
+
+* [ORCH-739] expose rev rec data in api ([22167bf](https://github.com/Metronome-Industries/metronome-go/commit/22167bf12eaa17f39a6d87e2227a9daa5deaa73f))
+* [ORCH-739] expose rev rec data in api ([56a9481](https://github.com/Metronome-Industries/metronome-go/commit/56a94814f366594e1d845d9f4a9b638e813e7f55))
+* add recurring commit ID and subscription config to commit/credit response schema ([b0de9c2](https://github.com/Metronome-Industries/metronome-go/commit/b0de9c2df889154157b2493a71f4c4457862457a))
+* Add support for custom fields on package terms ([701cba0](https://github.com/Metronome-Industries/metronome-go/commit/701cba015fa7783a17e94917270709015b6eab5b))
+* remove use list prices config in requests and responses ([06478ba](https://github.com/Metronome-Industries/metronome-go/commit/06478ba7646d390c12c753fb2aa8781e331e5600))
+* Revert [ORCH-739] expose rev rec data in api ([fb10c0d](https://github.com/Metronome-Industries/metronome-go/commit/fb10c0da3ab8bcc8bb49bad95cbe74a9a3ca5e29))
+
+
+### Bug Fixes
+
+* **client:** properly marshal embedded structs ([6128b68](https://github.com/Metronome-Industries/metronome-go/commit/6128b68fd00fc1e543b25567e75575e4bb79eeb8))
+* **docs:** add missing pointer prefix to api.md return types ([88722d3](https://github.com/Metronome-Industries/metronome-go/commit/88722d3bed2f3a3c1d87db040220d48da1ef1262))
+
+
+### Chores
+
+* **internal:** codegen related update ([c716016](https://github.com/Metronome-Industries/metronome-go/commit/c71601666906633f65f0d136a75b102c39faa00c))
+* **internal:** update `actions/checkout` version ([6043110](https://github.com/Metronome-Industries/metronome-go/commit/6043110bb5e77efc0e88eb37e10ca0d89cf527e4))
+
+
+### Documentation
+
+* prominently feature MCP server setup in root SDK readmes ([f6b16ba](https://github.com/Metronome-Industries/metronome-go/commit/f6b16bac76d86899f03dcf22aad488783a40e8a6))
+
 ## 2.2.0 (2025-12-18)
 
 Full Changelog: [v2.1.0...v2.2.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.1.0...v2.2.0)

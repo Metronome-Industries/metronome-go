@@ -9,14 +9,14 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/v2/option"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/v2/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // V1ContractRateCardRateService contains methods and other services that help with
@@ -181,10 +181,6 @@ type V1ContractRateCardRateAddResponseData struct {
 	Quantity float64 `json:"quantity"`
 	// Only set for TIERED rate_type.
 	Tiers []shared.Tier `json:"tiers"`
-	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
-	// using list prices rather than the standard rates for this product on the
-	// contract.
-	UseListPrices bool `json:"use_list_prices"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RateType           respjson.Field
@@ -196,7 +192,6 @@ type V1ContractRateCardRateAddResponseData struct {
 		PricingGroupValues respjson.Field
 		Quantity           respjson.Field
 		Tiers              respjson.Field
-		UseListPrices      respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -316,10 +311,6 @@ type V1ContractRateCardRateAddParams struct {
 	Price param.Opt[float64] `json:"price,omitzero"`
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
-	// using list prices rather than the standard rates for this product on the
-	// contract.
-	UseListPrices param.Opt[bool] `json:"use_list_prices,omitzero"`
 	// Optional. Frequency to bill subscriptions with. Required for subscription type
 	// products with Flat rate.
 	//
@@ -406,10 +397,6 @@ type V1ContractRateCardRateAddManyParamsRate struct {
 	Price param.Opt[float64] `json:"price,omitzero"`
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Only set for PERCENTAGE rate_type. Defaults to false. If true, rate is computed
-	// using list prices rather than the standard rates for this product on the
-	// contract.
-	UseListPrices param.Opt[bool] `json:"use_list_prices,omitzero"`
 	// Optional. Frequency to bill subscriptions with. Required for subscription type
 	// products with Flat rate.
 	//

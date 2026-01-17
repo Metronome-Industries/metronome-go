@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc
