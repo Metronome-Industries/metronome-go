@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 	"reflect"
 )
 
