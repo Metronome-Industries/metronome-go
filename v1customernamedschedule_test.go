@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Metronome-Industries/metronome-go/v2"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/testutil"
-	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v3"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/testutil"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
 )
 
 func TestV1CustomerNamedScheduleGetWithOptionalParams(t *testing.T) {

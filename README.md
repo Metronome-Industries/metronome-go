@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v2"><img src="https://pkg.go.dev/badge/github.com/Metronome-Industries/metronome-go/v2.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v3"><img src="https://pkg.go.dev/badge/github.com/Metronome-Industries/metronome-go/v3.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
@@ -30,7 +30,7 @@ Use the Metronome MCP Server to enable AI assistants to interact with this API, 
 
 ```go
 import (
-	"github.com/Metronome-Industries/metronome-go/v2" // imported as metronome
+	"github.com/Metronome-Industries/metronome-go/v3" // imported as metronome
 )
 ```
 
@@ -41,7 +41,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Metronome-Industries/metronome-go/v2@v2.2.0'
+go get -u 'github.com/Metronome-Industries/metronome-go/v3@v3.0.0'
 ```
 
 <!-- x-release-please-end -->
@@ -60,8 +60,8 @@ package main
 import (
 	"context"
 
-	"github.com/Metronome-Industries/metronome-go/v2"
-	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v3"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
 )
 
 func main() {
@@ -299,7 +299,7 @@ client.V1.Contracts.New(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v2/option).
+See the [full list of request options](https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v3/option).
 
 ### Pagination
 

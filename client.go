@@ -8,8 +8,8 @@ import (
 	"os"
 	"slices"
 
-	"github.com/Metronome-Industries/metronome-go/v2/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/v2/option"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
 )
 
 // Client creates a struct with services and top level methods that help with

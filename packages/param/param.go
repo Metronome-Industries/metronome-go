@@ -2,7 +2,7 @@ package param
 
 import (
 	"encoding/json"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/encoding/json/sentinel"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json/sentinel"
 	"reflect"
 )
 

@@ -3,8 +3,8 @@ package respjson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apijson"
-	rj "github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	rj "github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 	"reflect"
 	"testing"
 )

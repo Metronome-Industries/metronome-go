@@ -1,8 +1,8 @@
 package paramutil
 
 import (
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
 func AddrIfPresent[T comparable](v param.Opt[T]) *T {

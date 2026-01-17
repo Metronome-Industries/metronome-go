@@ -3,9 +3,9 @@
 package metronome
 
 import (
-	"github.com/Metronome-Industries/metronome-go/v2/internal/apierror"
-	"github.com/Metronome-Industries/metronome-go/v2/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v2/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apierror"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding
