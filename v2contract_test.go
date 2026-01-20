@@ -633,6 +633,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ProductID:            metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			RateType:             "LIST_RATE",
 		}},
+		UpdateNetPaymentTermsDays: metronome.Float(0),
 		UpdatePrepaidBalanceThresholdConfiguration: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration{
 			Commit: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit{
 				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{

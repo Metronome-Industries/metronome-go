@@ -2317,6 +2317,9 @@ type V2ContractEditParams struct {
 	// Value to update the contract name to. If not provided, the contract name will
 	// remain unchanged.
 	UpdateContractName param.Opt[string] `json:"update_contract_name,omitzero"`
+	// Number of days after issuance of invoice after which the invoice is due (e.g.
+	// Net 30).
+	UpdateNetPaymentTermsDays param.Opt[float64] `json:"update_net_payment_terms_days,omitzero"`
 	// If true, allows setting the contract end date earlier than the end_timestamp of
 	// existing finalized invoices. Finalized invoices will be unchanged; if you want
 	// to incorporate the new end date, you can void and regenerate finalized usage
