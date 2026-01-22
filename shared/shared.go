@@ -1220,7 +1220,9 @@ type Contract struct {
 	CustomFields map[string]string `json:"custom_fields"`
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration ContractCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
-	PrepaidBalanceThresholdConfiguration PrepaidBalanceThresholdConfiguration         `json:"prepaid_balance_threshold_configuration"`
+	// ID of the package this contract was created from, if applicable.
+	PackageID                            string                               `json:"package_id" format:"uuid"`
+	PrepaidBalanceThresholdConfiguration PrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
 	// Priority of the contract.
 	Priority float64 `json:"priority"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
@@ -1248,6 +1250,7 @@ type Contract struct {
 		ArchivedAt                           respjson.Field
 		CustomFields                         respjson.Field
 		CustomerBillingProviderConfiguration respjson.Field
+		PackageID                            respjson.Field
 		PrepaidBalanceThresholdConfiguration respjson.Field
 		Priority                             respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field

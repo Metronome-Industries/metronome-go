@@ -937,6 +937,13 @@ type V1ContractNewParams struct {
 	NetPaymentTermsDays param.Opt[float64]   `json:"net_payment_terms_days,omitzero"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+	// Selects the package linked to the specified alias as of the contract's start
+	// date. Mutually exclusive with package_id.
+	PackageAlias param.Opt[string] `json:"package_alias,omitzero"`
+	// If provided, provisions a customer on a package instead of creating a
+	// traditional contract. When specified, only customer_id, starting_at, package_id,
+	// and uniqueness_key are allowed.
+	PackageID param.Opt[string] `json:"package_id,omitzero" format:"uuid"`
 	// Priority of the contract.
 	Priority param.Opt[float64] `json:"priority,omitzero"`
 	// Selects the rate card linked to the specified alias as of the contract's start
