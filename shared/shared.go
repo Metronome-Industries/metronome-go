@@ -1066,7 +1066,8 @@ func init() {
 // A distinct rate on the rate card. You can choose to use this rate rather than
 // list rate when consuming a credit or commit.
 type CommitRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType CommitRateRateType `json:"rate_type,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price float64 `json:"price"`
@@ -1100,11 +1101,12 @@ func (r CommitRate) ToParam() CommitRateParam {
 type CommitRateRateType string
 
 const (
-	CommitRateRateTypeFlat         CommitRateRateType = "FLAT"
-	CommitRateRateTypePercentage   CommitRateRateType = "PERCENTAGE"
-	CommitRateRateTypeSubscription CommitRateRateType = "SUBSCRIPTION"
-	CommitRateRateTypeTiered       CommitRateRateType = "TIERED"
-	CommitRateRateTypeCustom       CommitRateRateType = "CUSTOM"
+	CommitRateRateTypeFlat             CommitRateRateType = "FLAT"
+	CommitRateRateTypePercentage       CommitRateRateType = "PERCENTAGE"
+	CommitRateRateTypeSubscription     CommitRateRateType = "SUBSCRIPTION"
+	CommitRateRateTypeTiered           CommitRateRateType = "TIERED"
+	CommitRateRateTypeTieredPercentage CommitRateRateType = "TIERED_PERCENTAGE"
+	CommitRateRateTypeCustom           CommitRateRateType = "CUSTOM"
 )
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
@@ -1112,7 +1114,8 @@ const (
 //
 // The property RateType is required.
 type CommitRateParam struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType CommitRateRateType `json:"rate_type,omitzero,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price param.Opt[float64] `json:"price,omitzero"`
@@ -2217,7 +2220,8 @@ func (r *ContractV2OverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2OverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType   string         `json:"rate_type,required"`
 	CreditType CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -4684,7 +4688,8 @@ type Override struct {
 	Product  OverrideProduct `json:"product"`
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity float64 `json:"quantity"`
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType OverrideRateType `json:"rate_type"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
 	Target OverrideTarget `json:"target"`
@@ -4781,11 +4786,12 @@ func (r *OverrideProduct) UnmarshalJSON(data []byte) error {
 type OverrideRateType string
 
 const (
-	OverrideRateTypeFlat         OverrideRateType = "FLAT"
-	OverrideRateTypePercentage   OverrideRateType = "PERCENTAGE"
-	OverrideRateTypeSubscription OverrideRateType = "SUBSCRIPTION"
-	OverrideRateTypeTiered       OverrideRateType = "TIERED"
-	OverrideRateTypeCustom       OverrideRateType = "CUSTOM"
+	OverrideRateTypeFlat             OverrideRateType = "FLAT"
+	OverrideRateTypePercentage       OverrideRateType = "PERCENTAGE"
+	OverrideRateTypeSubscription     OverrideRateType = "SUBSCRIPTION"
+	OverrideRateTypeTiered           OverrideRateType = "TIERED"
+	OverrideRateTypeTieredPercentage OverrideRateType = "TIERED_PERCENTAGE"
+	OverrideRateTypeCustom           OverrideRateType = "CUSTOM"
 )
 
 type OverrideTarget string
@@ -4822,7 +4828,8 @@ func (r *OverrideTier) UnmarshalJSON(data []byte) error {
 }
 
 type OverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType   OverwriteRateRateType `json:"rate_type,required"`
 	CreditType CreditTypeData        `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -4861,11 +4868,12 @@ func (r *OverwriteRate) UnmarshalJSON(data []byte) error {
 type OverwriteRateRateType string
 
 const (
-	OverwriteRateRateTypeFlat         OverwriteRateRateType = "FLAT"
-	OverwriteRateRateTypePercentage   OverwriteRateRateType = "PERCENTAGE"
-	OverwriteRateRateTypeSubscription OverwriteRateRateType = "SUBSCRIPTION"
-	OverwriteRateRateTypeTiered       OverwriteRateRateType = "TIERED"
-	OverwriteRateRateTypeCustom       OverwriteRateRateType = "CUSTOM"
+	OverwriteRateRateTypeFlat             OverwriteRateRateType = "FLAT"
+	OverwriteRateRateTypePercentage       OverwriteRateRateType = "PERCENTAGE"
+	OverwriteRateRateTypeSubscription     OverwriteRateRateType = "SUBSCRIPTION"
+	OverwriteRateRateTypeTiered           OverwriteRateRateType = "TIERED"
+	OverwriteRateRateTypeTieredPercentage OverwriteRateRateType = "TIERED_PERCENTAGE"
+	OverwriteRateRateTypeCustom           OverwriteRateRateType = "CUSTOM"
 )
 
 type PaymentGateConfig struct {
@@ -5630,7 +5638,8 @@ func (r *ProService) UnmarshalJSON(data []byte) error {
 }
 
 type Rate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED",
+	// "TIERED_PERCENTAGE".
 	RateType   RateRateType   `json:"rate_type,required"`
 	CreditType CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -5673,11 +5682,12 @@ func (r *Rate) UnmarshalJSON(data []byte) error {
 type RateRateType string
 
 const (
-	RateRateTypeFlat         RateRateType = "FLAT"
-	RateRateTypePercentage   RateRateType = "PERCENTAGE"
-	RateRateTypeSubscription RateRateType = "SUBSCRIPTION"
-	RateRateTypeCustom       RateRateType = "CUSTOM"
-	RateRateTypeTiered       RateRateType = "TIERED"
+	RateRateTypeFlat             RateRateType = "FLAT"
+	RateRateTypePercentage       RateRateType = "PERCENTAGE"
+	RateRateTypeSubscription     RateRateType = "SUBSCRIPTION"
+	RateRateTypeCustom           RateRateType = "CUSTOM"
+	RateRateTypeTiered           RateRateType = "TIERED"
+	RateRateTypeTieredPercentage RateRateType = "TIERED_PERCENTAGE"
 )
 
 type RecurringCommitSubscriptionConfig struct {

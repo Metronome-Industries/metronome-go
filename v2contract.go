@@ -640,7 +640,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier) Unmar
 }
 
 type V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType   string                `json:"rate_type,required"`
 	CreditType shared.CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -3079,7 +3080,8 @@ func init() {
 //
 // The property RateType is required.
 type V2ContractEditParamsAddOverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType     string            `json:"rate_type,omitzero,required"`
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
@@ -3108,7 +3110,7 @@ func (r *V2ContractEditParamsAddOverrideOverwriteRate) UnmarshalJSON(data []byte
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddOverrideOverwriteRate](
-		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM",
+		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
 	)
 }
 
