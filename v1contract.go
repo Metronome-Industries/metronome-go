@@ -1772,7 +1772,8 @@ func init() {
 //
 // The property RateType is required.
 type V1ContractNewParamsOverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType     string            `json:"rate_type,omitzero,required"`
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
@@ -1801,7 +1802,7 @@ func (r *V1ContractNewParamsOverrideOverwriteRate) UnmarshalJSON(data []byte) er
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsOverrideOverwriteRate](
-		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM",
+		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
 	)
 }
 
@@ -3401,7 +3402,8 @@ func init() {
 //
 // The property RateType is required.
 type V1ContractAmendParamsOverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType     string            `json:"rate_type,omitzero,required"`
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
@@ -3430,7 +3432,7 @@ func (r *V1ContractAmendParamsOverrideOverwriteRate) UnmarshalJSON(data []byte) 
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractAmendParamsOverrideOverwriteRate](
-		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM",
+		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
 	)
 }
 
