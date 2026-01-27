@@ -454,6 +454,16 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ResellerContractValue: metronome.Float(0),
 			StartingAt:            metronome.Time(time.Now()),
 		}},
+		AddRevenueSystemConfigurationUpdate: metronome.V2ContractEditParamsAddRevenueSystemConfigurationUpdate{
+			RevenueSystemConfiguration: metronome.V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration{
+				DeliveryMethod:               "direct_to_billing_provider",
+				Provider:                     "netsuite",
+				RevenueSystemConfigurationID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			},
+			Schedule: metronome.V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule{
+				EffectiveAt: "START_OF_CURRENT_PERIOD",
+			},
+		},
 		AddScheduledCharges: []metronome.V2ContractEditParamsAddScheduledCharge{{
 			ProductID: "2e30f074-d04c-412e-a134-851ebfa5ceb2",
 			Schedule: metronome.V2ContractEditParamsAddScheduledChargeSchedule{
