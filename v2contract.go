@@ -640,7 +640,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier) Unmar
 }
 
 type V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType   string                `json:"rate_type,required"`
 	CreditType shared.CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -2317,6 +2318,9 @@ type V2ContractEditParams struct {
 	// Value to update the contract name to. If not provided, the contract name will
 	// remain unchanged.
 	UpdateContractName param.Opt[string] `json:"update_contract_name,omitzero"`
+	// Number of days after issuance of invoice after which the invoice is due (e.g.
+	// Net 30).
+	UpdateNetPaymentTermsDays param.Opt[float64] `json:"update_net_payment_terms_days,omitzero"`
 	// If true, allows setting the contract end date earlier than the end_timestamp of
 	// existing finalized invoices. Finalized invoices will be unchanged; if you want
 	// to incorporate the new end date, you can void and regenerate finalized usage
@@ -2334,12 +2338,16 @@ type V2ContractEditParams struct {
 	AddOverrides                            []V2ContractEditParamsAddOverride                         `json:"add_overrides,omitzero"`
 	AddPrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfigurationV2Param        `json:"add_prepaid_balance_threshold_configuration,omitzero"`
 	// This field's availability is dependent on your client's configuration.
-	AddProfessionalServices        []V2ContractEditParamsAddProfessionalService `json:"add_professional_services,omitzero"`
-	AddRecurringCommits            []V2ContractEditParamsAddRecurringCommit     `json:"add_recurring_commits,omitzero"`
-	AddRecurringCredits            []V2ContractEditParamsAddRecurringCredit     `json:"add_recurring_credits,omitzero"`
-	AddResellerRoyalties           []V2ContractEditParamsAddResellerRoyalty     `json:"add_reseller_royalties,omitzero"`
-	AddScheduledCharges            []V2ContractEditParamsAddScheduledCharge     `json:"add_scheduled_charges,omitzero"`
-	AddSpendThresholdConfiguration shared.SpendThresholdConfigurationV2Param    `json:"add_spend_threshold_configuration,omitzero"`
+	AddProfessionalServices []V2ContractEditParamsAddProfessionalService `json:"add_professional_services,omitzero"`
+	AddRecurringCommits     []V2ContractEditParamsAddRecurringCommit     `json:"add_recurring_commits,omitzero"`
+	AddRecurringCredits     []V2ContractEditParamsAddRecurringCredit     `json:"add_recurring_credits,omitzero"`
+	AddResellerRoyalties    []V2ContractEditParamsAddResellerRoyalty     `json:"add_reseller_royalties,omitzero"`
+	// Update the revenue system configuration on the contract. Currently only supports
+	// adding a revenue system configuration to a contract that does not already have
+	// one.
+	AddRevenueSystemConfigurationUpdate V2ContractEditParamsAddRevenueSystemConfigurationUpdate `json:"add_revenue_system_configuration_update,omitzero"`
+	AddScheduledCharges                 []V2ContractEditParamsAddScheduledCharge                `json:"add_scheduled_charges,omitzero"`
+	AddSpendThresholdConfiguration      shared.SpendThresholdConfigurationV2Param               `json:"add_spend_threshold_configuration,omitzero"`
 	// Optional list of
 	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
 	// to add to the contract.
@@ -3076,7 +3084,8 @@ func init() {
 //
 // The property RateType is required.
 type V2ContractEditParamsAddOverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType     string            `json:"rate_type,omitzero,required"`
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
@@ -3105,7 +3114,7 @@ func (r *V2ContractEditParamsAddOverrideOverwriteRate) UnmarshalJSON(data []byte
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddOverrideOverwriteRate](
-		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM",
+		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
 	)
 }
 
@@ -3579,6 +3588,76 @@ func (r V2ContractEditParamsAddResellerRoyaltyGcpOptions) MarshalJSON() (data []
 }
 func (r *V2ContractEditParamsAddResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the revenue system configuration on the contract. Currently only supports
+// adding a revenue system configuration to a contract that does not already have
+// one.
+//
+// The properties RevenueSystemConfiguration, Schedule are required.
+type V2ContractEditParamsAddRevenueSystemConfigurationUpdate struct {
+	RevenueSystemConfiguration V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration `json:"revenue_system_configuration,omitzero,required"`
+	Schedule                   V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule                   `json:"schedule,omitzero,required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddRevenueSystemConfigurationUpdate) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddRevenueSystemConfigurationUpdate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddRevenueSystemConfigurationUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration struct {
+	RevenueSystemConfigurationID param.Opt[string] `json:"revenue_system_configuration_id,omitzero" format:"uuid"`
+	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+	DeliveryMethod string `json:"delivery_method,omitzero"`
+	// The revenue system provider type.
+	//
+	// Any of "netsuite".
+	Provider string `json:"provider,omitzero"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration](
+		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
+	)
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration](
+		"provider", "netsuite",
+	)
+}
+
+// The property EffectiveAt is required.
+type V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule struct {
+	// When the revenue system configuration update will take effect.
+	//
+	// Any of "START_OF_CURRENT_PERIOD".
+	EffectiveAt string `json:"effective_at,omitzero,required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule](
+		"effective_at", "START_OF_CURRENT_PERIOD",
+	)
 }
 
 // The properties ProductID, Schedule are required.

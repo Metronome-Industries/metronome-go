@@ -159,7 +159,8 @@ func (r *V1ContractRateCardRateAddResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractRateCardRateAddResponseData struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED",
+	// "TIERED_PERCENTAGE".
 	RateType string `json:"rate_type,required"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
@@ -292,7 +293,8 @@ type V1ContractRateCardRateAddParams struct {
 	ProductID string `json:"product_id,required" format:"uuid"`
 	// ID of the rate card to update
 	RateCardID string `json:"rate_card_id,required" format:"uuid"`
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType V1ContractRateCardRateAddParamsRateType `json:"rate_type,omitzero,required"`
 	// inclusive effective date
 	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
@@ -341,11 +343,12 @@ func (r *V1ContractRateCardRateAddParams) UnmarshalJSON(data []byte) error {
 type V1ContractRateCardRateAddParamsRateType string
 
 const (
-	V1ContractRateCardRateAddParamsRateTypeFlat         V1ContractRateCardRateAddParamsRateType = "FLAT"
-	V1ContractRateCardRateAddParamsRateTypePercentage   V1ContractRateCardRateAddParamsRateType = "PERCENTAGE"
-	V1ContractRateCardRateAddParamsRateTypeSubscription V1ContractRateCardRateAddParamsRateType = "SUBSCRIPTION"
-	V1ContractRateCardRateAddParamsRateTypeTiered       V1ContractRateCardRateAddParamsRateType = "TIERED"
-	V1ContractRateCardRateAddParamsRateTypeCustom       V1ContractRateCardRateAddParamsRateType = "CUSTOM"
+	V1ContractRateCardRateAddParamsRateTypeFlat             V1ContractRateCardRateAddParamsRateType = "FLAT"
+	V1ContractRateCardRateAddParamsRateTypePercentage       V1ContractRateCardRateAddParamsRateType = "PERCENTAGE"
+	V1ContractRateCardRateAddParamsRateTypeSubscription     V1ContractRateCardRateAddParamsRateType = "SUBSCRIPTION"
+	V1ContractRateCardRateAddParamsRateTypeTiered           V1ContractRateCardRateAddParamsRateType = "TIERED"
+	V1ContractRateCardRateAddParamsRateTypeTieredPercentage V1ContractRateCardRateAddParamsRateType = "TIERED_PERCENTAGE"
+	V1ContractRateCardRateAddParamsRateTypeCustom           V1ContractRateCardRateAddParamsRateType = "CUSTOM"
 )
 
 // Optional. Frequency to bill subscriptions with. Required for subscription type
@@ -378,7 +381,8 @@ type V1ContractRateCardRateAddManyParamsRate struct {
 	Entitled bool `json:"entitled,required"`
 	// ID of the product to add a rate for
 	ProductID string `json:"product_id,required" format:"uuid"`
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType string `json:"rate_type,omitzero,required"`
 	// inclusive effective date
 	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
@@ -426,7 +430,7 @@ func (r *V1ContractRateCardRateAddManyParamsRate) UnmarshalJSON(data []byte) err
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractRateCardRateAddManyParamsRate](
-		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM",
+		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
 	)
 	apijson.RegisterFieldValidator[V1ContractRateCardRateAddManyParamsRate](
 		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",

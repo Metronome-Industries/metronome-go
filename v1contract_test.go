@@ -239,6 +239,8 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			}},
 			Type: "OVERWRITE",
 		}},
+		PackageAlias: metronome.String("package_alias"),
+		PackageID:    metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		PrepaidBalanceThresholdConfiguration: shared.PrepaidBalanceThresholdConfigurationParam{
 			Commit: shared.PrepaidBalanceThresholdConfigurationCommitParam{
 				BaseThresholdCommitParam: shared.BaseThresholdCommitParam{
