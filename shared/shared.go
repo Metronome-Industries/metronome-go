@@ -1158,8 +1158,12 @@ func (r *CommitSpecifier) UnmarshalJSON(data []byte) error {
 }
 
 type CommitSpecifierInput struct {
+	// If provided, the specifier will apply to product usage with these set of
+	// presentation group values.
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will apply to product usage with these set of pricing
+	// group values.
+	PricingGroupValues map[string]string `json:"pricing_group_values"`
 	// If provided, the specifier will only apply to the product with the specified ID.
 	ProductID string `json:"product_id" format:"uuid"`
 	// If provided, the specifier will only apply to products with all the specified
@@ -1193,9 +1197,13 @@ func (r CommitSpecifierInput) ToParam() CommitSpecifierInputParam {
 
 type CommitSpecifierInputParam struct {
 	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID               param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// If provided, the specifier will apply to product usage with these set of
+	// presentation group values.
 	PresentationGroupValues map[string]string `json:"presentation_group_values,omitzero"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values,omitzero"`
+	// If provided, the specifier will apply to product usage with these set of pricing
+	// group values.
+	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
 	// If provided, the specifier will only apply to products with all the specified
 	// tags.
 	ProductTags []string `json:"product_tags,omitzero"`
