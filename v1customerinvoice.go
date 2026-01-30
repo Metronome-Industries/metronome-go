@@ -379,8 +379,8 @@ type Invoice struct {
 	AmendmentID string                `json:"amendment_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
 	BillableStatus any `json:"billable_status"`
-	// Account hierarchy M3 - Required on invoices with type USAGE_CONSOLIDATED. List
-	// of constituent invoices that were consolidated to create this invoice.
+	// Required on invoices with type USAGE_CONSOLIDATED. List of constituent invoices
+	// that were consolidated to create this invoice.
 	ConstituentInvoices []InvoiceConstituentInvoice `json:"constituent_invoices"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	ContractCustomFields map[string]string       `json:"contract_custom_fields"`
@@ -401,8 +401,8 @@ type Invoice struct {
 	NetPaymentTermsDays float64   `json:"net_payment_terms_days"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
-	// Account hierarchy M3 - Required for account hierarchy usage invoices. An object
-	// containing the contract and customer UUIDs that pay for this invoice.
+	// Required for account hierarchy usage invoices. An object containing the contract
+	// and customer UUIDs that pay for this invoice.
 	Payer InvoicePayer `json:"payer"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	PlanCustomFields map[string]string `json:"plan_custom_fields"`
@@ -527,9 +527,9 @@ type InvoiceLineItem struct {
 	// The start date for the billing period on the invoice.
 	NetsuiteInvoiceBillingStart time.Time `json:"netsuite_invoice_billing_start" format:"date-time"`
 	NetsuiteItemID              string    `json:"netsuite_item_id"`
-	// Account hierarchy M3 - Present on line items from invoices with type
-	// USAGE_CONSOLIDATED. Indicates the original customer, contract, invoice and line
-	// item from which this line item was copied.
+	// Present on line items from invoices with type USAGE_CONSOLIDATED. Indicates the
+	// original customer, contract, invoice and line item from which this line item was
+	// copied.
 	Origin InvoiceLineItemOrigin `json:"origin"`
 	// Only present for line items paying for a postpaid commit true-up.
 	PostpaidCommit InvoiceLineItemPostpaidCommit `json:"postpaid_commit"`
@@ -648,9 +648,9 @@ func (r *InvoiceLineItemAppliedCommitOrCredit) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Account hierarchy M3 - Present on line items from invoices with type
-// USAGE_CONSOLIDATED. Indicates the original customer, contract, invoice and line
-// item from which this line item was copied.
+// Present on line items from invoices with type USAGE_CONSOLIDATED. Indicates the
+// original customer, contract, invoice and line item from which this line item was
+// copied.
 type InvoiceLineItemOrigin struct {
 	ContractID string `json:"contract_id,required" format:"uuid"`
 	CustomerID string `json:"customer_id,required" format:"uuid"`
@@ -1000,8 +1000,8 @@ func (r *InvoiceInvoiceAdjustment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Account hierarchy M3 - Required for account hierarchy usage invoices. An object
-// containing the contract and customer UUIDs that pay for this invoice.
+// Required for account hierarchy usage invoices. An object containing the contract
+// and customer UUIDs that pay for this invoice.
 type InvoicePayer struct {
 	ContractID string `json:"contract_id,required" format:"uuid"`
 	CustomerID string `json:"customer_id,required" format:"uuid"`
