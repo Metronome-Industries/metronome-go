@@ -17,6 +17,26 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
+type BalanceFilterParam struct {
+	// The balance type to filter by.
+	//
+	// Any of "PREPAID_COMMIT", "POSTPAID_COMMIT", "CREDIT".
+	BalanceTypes []string `json:"balance_types,omitzero"`
+	// Custom fields to compute balance across. Must match all custom fields
+	CustomFields map[string]string `json:"custom_fields,omitzero"`
+	// Specific IDs to compute balance across.
+	IDs []string `json:"ids,omitzero" format:"uuid"`
+	paramObj
+}
+
+func (r BalanceFilterParam) MarshalJSON() (data []byte, err error) {
+	type shadow BalanceFilterParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BalanceFilterParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BaseThresholdCommit struct {
 	// The commit product that will be used to generate the line item for commit
 	// payment.

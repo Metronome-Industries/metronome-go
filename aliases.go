@@ -17,6 +17,9 @@ type paramObj = param.APIObject
 type Error = apierror.Error
 
 // This is an alias to an internal type.
+type BalanceFilterParam = shared.BalanceFilterParam
+
+// This is an alias to an internal type.
 type BaseThresholdCommit = shared.BaseThresholdCommit
 
 // This is an alias to an internal type.

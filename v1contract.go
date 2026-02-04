@@ -275,6 +275,59 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 	return
 }
 
+// Retrieve the combined current balance across any grouping of credits and commits
+// for a customer in a single API call.
+//
+// - Display real-time available balance to customers in billing dashboards
+// - Build finance dashboards showing credit utilization across customer segments
+// - Validate expected vs. actual balance during billing reconciliation
+//
+// ### Key response fields:
+//
+//   - `balance`: The combined net balance available to use at this moment across all
+//     matching commits and credits
+//   - `credit_type_id`: The credit type (fiat or custom pricing unit) the balance is
+//     denominated in
+//
+// ### Filtering options:
+//
+// Balance filters allow you to scope the calculation to specific subsets of
+// commits and credits. When using multiple filter objects, they are OR'd together
+// — if a commit or credit matches any filter, it's included in the net balance.
+// Within a single filter object, all specified conditions are AND'd together.
+//
+//   - **Balance types**: Include any combination of `PREPAID_COMMIT`,
+//     `POSTPAID_COMMIT`, and `CREDIT` (e.g., `["PREPAID_COMMIT", "CREDIT"]` to
+//     exclude postpaid commits). If not specified, all balance types are included.
+//   - **Specific IDs**: Target exact commit or credit IDs for precise balance
+//     queries
+//   - **Custom fields**: Filter by custom field key-value pairs; when multiple pairs
+//     are provided, commits must match all of them
+//
+// **Example**: To get the balance of all free-trial credits OR all
+// signup-promotion commits, you'd pass two filter objects — one filtering for
+// CREDIT with custom field campaign: free-trial, and another filtering for
+// PREPAID_COMMIT with custom field campaign: signup-promotion.
+//
+// ### Usage guidelines:
+//
+//   - **Draft invoice handling**: Use `invoice_inclusion_mode` to control whether
+//     pending draft invoice deductions are included (`FINALIZED_AND_DRAFT`, the
+//     default) or excluded (`FINALIZED`) from the balance calculation
+//   - **Account hierarchies**: When querying a child customer, shared commits from
+//     parent contracts are not included — query the parent customer directly to see
+//     shared commit balances
+//   - **Negative balances**: Manual ledger entries can cause negative segment
+//     balances; these are treated as zero when calculating the net balance
+//   - **Credit types**: If `credit_type_id` is not specified, the balance defaults
+//     to USD (cents)
+func (r *V1ContractService) GetNetBalance(ctx context.Context, body V1ContractGetNetBalanceParams, opts ...option.RequestOption) (res *V1ContractGetNetBalanceResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contracts/customerBalances/getNetBalance"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Retrieve a comprehensive view of all available balances (commits and credits)
 // for a customer. This endpoint provides real-time visibility into prepaid funds,
 // postpaid commitments, promotional credits, and other balance types that can
@@ -536,6 +589,44 @@ type V1ContractNewHistoricalInvoicesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r V1ContractNewHistoricalInvoicesResponse) RawJSON() string { return r.JSON.raw }
 func (r *V1ContractNewHistoricalInvoicesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractGetNetBalanceResponse struct {
+	Data V1ContractGetNetBalanceResponseData `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractGetNetBalanceResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractGetNetBalanceResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractGetNetBalanceResponseData struct {
+	// The combined net balance that the customer has access to use at this moment
+	// across all pertinent commits and credits.
+	Balance float64 `json:"balance,required"`
+	// The ID of the credit type (can be fiat or a custom pricing unit) that the
+	// balance is for.
+	CreditTypeID string `json:"credit_type_id,required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Balance      respjson.Field
+		CreditTypeID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractGetNetBalanceResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractGetNetBalanceResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3765,6 +3856,42 @@ func (r V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQu
 func (r *V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type V1ContractGetNetBalanceParams struct {
+	// The ID of the customer.
+	CustomerID string `json:"customer_id,required" format:"uuid"`
+	// The ID of the credit type (can be fiat or a custom pricing unit) to get the
+	// balance for. Defaults to USD (cents) if not specified.
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Balance filters are OR'd together, so if a given commit or credit matches any of
+	// the filters, it will be included in the net balance.
+	Filters []shared.BalanceFilterParam `json:"filters,omitzero"`
+	// Controls which invoices are considered when calculating the remaining balance.
+	// `FINALIZED` considers only deductions from finalized invoices.
+	// `FINALIZED_AND_DRAFT` also includes deductions from pending draft invoices.
+	//
+	// Any of "FINALIZED", "FINALIZED_AND_DRAFT".
+	InvoiceInclusionMode V1ContractGetNetBalanceParamsInvoiceInclusionMode `json:"invoice_inclusion_mode,omitzero"`
+	paramObj
+}
+
+func (r V1ContractGetNetBalanceParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractGetNetBalanceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractGetNetBalanceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls which invoices are considered when calculating the remaining balance.
+// `FINALIZED` considers only deductions from finalized invoices.
+// `FINALIZED_AND_DRAFT` also includes deductions from pending draft invoices.
+type V1ContractGetNetBalanceParamsInvoiceInclusionMode string
+
+const (
+	V1ContractGetNetBalanceParamsInvoiceInclusionModeFinalized         V1ContractGetNetBalanceParamsInvoiceInclusionMode = "FINALIZED"
+	V1ContractGetNetBalanceParamsInvoiceInclusionModeFinalizedAndDraft V1ContractGetNetBalanceParamsInvoiceInclusionMode = "FINALIZED_AND_DRAFT"
+)
 
 type V1ContractListBalancesParams struct {
 	CustomerID string            `json:"customer_id,required" format:"uuid"`

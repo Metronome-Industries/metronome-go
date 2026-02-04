@@ -972,6 +972,45 @@ func TestV1ContractNewHistoricalInvoices(t *testing.T) {
 	}
 }
 
+func TestV1ContractGetNetBalanceWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.V1.Contracts.GetNetBalance(context.TODO(), metronome.V1ContractGetNetBalanceParams{
+		CustomerID:   "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+		Filters: []shared.BalanceFilterParam{{
+			BalanceTypes: []string{"CREDIT"},
+			CustomFields: map[string]string{
+				"campaign": "free-trial",
+			},
+			IDs: []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+		}, {
+			BalanceTypes: []string{"PREPAID_COMMIT", "POSTPAID_COMMIT"},
+			CustomFields: map[string]string{
+				"campaign": "signup-promotion",
+			},
+			IDs: []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+		}},
+		InvoiceInclusionMode: metronome.V1ContractGetNetBalanceParamsInvoiceInclusionModeFinalized,
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestV1ContractListBalancesWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
