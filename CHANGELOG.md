@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.1.0 (2026-02-04)
+
+Full Changelog: [v3.0.0...v3.1.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.0.0...v3.1.0)
+
+### Features
+
+* Add `exclude` field to commit and override specifiers shape in the API ([564e89c](https://github.com/Metronome-Industries/metronome-go/commit/564e89c40a390b402f3a63cf39a65d5f610a0685))
+* **api:** Add getNetBalance endpoint ([fe64a3f](https://github.com/Metronome-Industries/metronome-go/commit/fe64a3ff3e21b875ab2ab9140e6499475c714bf6))
+* bump schema version and update code to support TieredPercentage rate ([2efff39](https://github.com/Metronome-Industries/metronome-go/commit/2efff3942c7aa6b2c222a604bb13676c54b33353))
+* **client:** add a convenient param.SetJSON helper ([787623d](https://github.com/Metronome-Industries/metronome-go/commit/787623d3b6ad217a83cc4d350d9cd21321ce1156))
+* Expose add revenue config in edit contract api ([0b19f08](https://github.com/Metronome-Industries/metronome-go/commit/0b19f08b3988c00437892ea5299182509065313e))
+* release account hierarchy ([2c58bc0](https://github.com/Metronome-Industries/metronome-go/commit/2c58bc04d11f5b8b16c666047b0f288f9cd43b2e))
+* update api to allow editing net payment terms ([1345835](https://github.com/Metronome-Industries/metronome-go/commit/1345835f4b001e7101bd69a25a8ac35986852d6e))
+
+
+### Bug Fixes
+
+* **docs:** fix mcp installation instructions for remote servers ([17e0121](https://github.com/Metronome-Industries/metronome-go/commit/17e01210d8c6b0dd2cdc2226f8921a39c79b0cbf))
+
+
+### Documentation
+
+* Update package docs for GA ([154f298](https://github.com/Metronome-Industries/metronome-go/commit/154f298ee2a3d9faa616f6de367a50057fe5d4a4))
+
 ## 3.0.0 (2026-01-17)
 
 Full Changelog: [v2.2.0...v3.0.0](https://github.com/Metronome-Industries/metronome-go/compare/v2.2.0...v3.0.0)
