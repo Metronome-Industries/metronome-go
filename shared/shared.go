@@ -17,6 +17,26 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
+type BalanceFilterParam struct {
+	// The balance type to filter by.
+	//
+	// Any of "PREPAID_COMMIT", "POSTPAID_COMMIT", "CREDIT".
+	BalanceTypes []string `json:"balance_types,omitzero"`
+	// Custom fields to compute balance across. Must match all custom fields
+	CustomFields map[string]string `json:"custom_fields,omitzero"`
+	// Specific IDs to compute balance across.
+	IDs []string `json:"ids,omitzero" format:"uuid"`
+	paramObj
+}
+
+func (r BalanceFilterParam) MarshalJSON() (data []byte, err error) {
+	type shadow BalanceFilterParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BalanceFilterParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BaseThresholdCommit struct {
 	// The commit product that will be used to generate the line item for commit
 	// payment.
@@ -1066,7 +1086,8 @@ func init() {
 // A distinct rate on the rate card. You can choose to use this rate rather than
 // list rate when consuming a credit or commit.
 type CommitRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType CommitRateRateType `json:"rate_type,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price float64 `json:"price"`
@@ -1100,11 +1121,12 @@ func (r CommitRate) ToParam() CommitRateParam {
 type CommitRateRateType string
 
 const (
-	CommitRateRateTypeFlat         CommitRateRateType = "FLAT"
-	CommitRateRateTypePercentage   CommitRateRateType = "PERCENTAGE"
-	CommitRateRateTypeSubscription CommitRateRateType = "SUBSCRIPTION"
-	CommitRateRateTypeTiered       CommitRateRateType = "TIERED"
-	CommitRateRateTypeCustom       CommitRateRateType = "CUSTOM"
+	CommitRateRateTypeFlat             CommitRateRateType = "FLAT"
+	CommitRateRateTypePercentage       CommitRateRateType = "PERCENTAGE"
+	CommitRateRateTypeSubscription     CommitRateRateType = "SUBSCRIPTION"
+	CommitRateRateTypeTiered           CommitRateRateType = "TIERED"
+	CommitRateRateTypeTieredPercentage CommitRateRateType = "TIERED_PERCENTAGE"
+	CommitRateRateTypeCustom           CommitRateRateType = "CUSTOM"
 )
 
 // A distinct rate on the rate card. You can choose to use this rate rather than
@@ -1112,7 +1134,8 @@ const (
 //
 // The property RateType is required.
 type CommitRateParam struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType CommitRateRateType `json:"rate_type,omitzero,required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price param.Opt[float64] `json:"price,omitzero"`
@@ -1155,8 +1178,12 @@ func (r *CommitSpecifier) UnmarshalJSON(data []byte) error {
 }
 
 type CommitSpecifierInput struct {
+	// If provided, the specifier will apply to product usage with these set of
+	// presentation group values.
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	// If provided, the specifier will apply to product usage with these set of pricing
+	// group values.
+	PricingGroupValues map[string]string `json:"pricing_group_values"`
 	// If provided, the specifier will only apply to the product with the specified ID.
 	ProductID string `json:"product_id" format:"uuid"`
 	// If provided, the specifier will only apply to products with all the specified
@@ -1190,9 +1217,13 @@ func (r CommitSpecifierInput) ToParam() CommitSpecifierInputParam {
 
 type CommitSpecifierInputParam struct {
 	// If provided, the specifier will only apply to the product with the specified ID.
-	ProductID               param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// If provided, the specifier will apply to product usage with these set of
+	// presentation group values.
 	PresentationGroupValues map[string]string `json:"presentation_group_values,omitzero"`
-	PricingGroupValues      map[string]string `json:"pricing_group_values,omitzero"`
+	// If provided, the specifier will apply to product usage with these set of pricing
+	// group values.
+	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
 	// If provided, the specifier will only apply to products with all the specified
 	// tags.
 	ProductTags []string `json:"product_tags,omitzero"`
@@ -1220,7 +1251,9 @@ type Contract struct {
 	CustomFields map[string]string `json:"custom_fields"`
 	// The billing provider configuration associated with a contract.
 	CustomerBillingProviderConfiguration ContractCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
-	PrepaidBalanceThresholdConfiguration PrepaidBalanceThresholdConfiguration         `json:"prepaid_balance_threshold_configuration"`
+	// ID of the package this contract was created from, if applicable.
+	PackageID                            string                               `json:"package_id" format:"uuid"`
+	PrepaidBalanceThresholdConfiguration PrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
 	// Priority of the contract.
 	Priority float64 `json:"priority"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
@@ -1248,6 +1281,7 @@ type Contract struct {
 		ArchivedAt                           respjson.Field
 		CustomFields                         respjson.Field
 		CustomerBillingProviderConfiguration respjson.Field
+		PackageID                            respjson.Field
 		PrepaidBalanceThresholdConfiguration respjson.Field
 		Priority                             respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field
@@ -2214,7 +2248,8 @@ func (r *ContractV2OverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2OverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType   string         `json:"rate_type,required"`
 	CreditType CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -2843,8 +2878,8 @@ func (r *ContractV2HierarchyConfigurationParentHierarchyConfigurationChild) Unma
 }
 
 type ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior struct {
-	// Account hierarchy M3 - Indicates the desired behavior of consolidated invoices
-	// generated by the parent in a customer hierarchy
+	// Indicates the desired behavior of consolidated invoices generated by the parent
+	// in a customer hierarchy
 	//
 	// **CONCATENATE**: Statements on the invoices of child customers will be appended
 	// to the consolidated invoice
@@ -2872,14 +2907,14 @@ func (r *ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehav
 type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2 struct {
 	// The single parent contract/customer for this child.
 	Parent ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent `json:"parent,required"`
-	// Account hierarchy M3 - Indicates which customer should pay for the child's
-	// invoice charges **SELF**: The child pays for its own invoice charges **PARENT**:
-	// The parent pays for the child's invoice charges
+	// Indicates which customer should pay for the child's invoice charges **SELF**:
+	// The child pays for its own invoice charges **PARENT**: The parent pays for the
+	// child's invoice charges
 	//
 	// Any of "SELF", "PARENT".
 	Payer string `json:"payer"`
-	// Account hierarchy M3 - Indicates the behavior of the child's invoice statements
-	// on the parent's invoices.
+	// Indicates the behavior of the child's invoice statements on the parent's
+	// invoices.
 	//
 	// **CONSOLIDATE**: Child's invoice statements will be added to parent's
 	// consolidated invoices
@@ -4536,8 +4571,8 @@ func (r *HierarchyConfigurationParentHierarchyConfigurationChild) UnmarshalJSON(
 }
 
 type HierarchyConfigurationParentHierarchyConfigurationParentBehavior struct {
-	// Account hierarchy M3 - Indicates the desired behavior of consolidated invoices
-	// generated by the parent in a customer hierarchy
+	// Indicates the desired behavior of consolidated invoices generated by the parent
+	// in a customer hierarchy
 	//
 	// **CONCATENATE**: Statements on the invoices of child customers will be appended
 	// to the consolidated invoice
@@ -4565,8 +4600,7 @@ func (r *HierarchyConfigurationParentHierarchyConfigurationParentBehavior) Unmar
 type HierarchyConfigurationChildHierarchyConfiguration struct {
 	// The single parent contract/customer for this child.
 	Parent HierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
-	// Account hierarchy M3 - Indicates which customer should pay for the child's
-	// invoice charges
+	// Indicates which customer should pay for the child's invoice charges
 	//
 	// **SELF**: The child pays for its own invoice charges
 	//
@@ -4574,8 +4608,8 @@ type HierarchyConfigurationChildHierarchyConfiguration struct {
 	//
 	// Any of "SELF", "PARENT".
 	Payer string `json:"payer"`
-	// Account hierarchy M3 - Indicates the behavior of the child's invoice statements
-	// on the parent's invoices.
+	// Indicates the behavior of the child's invoice statements on the parent's
+	// invoices.
 	//
 	// **CONSOLIDATE**: Child's invoice statements will be added to parent's
 	// consolidated invoices
@@ -4681,7 +4715,8 @@ type Override struct {
 	Product  OverrideProduct `json:"product"`
 	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
 	Quantity float64 `json:"quantity"`
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType OverrideRateType `json:"rate_type"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
 	Target OverrideTarget `json:"target"`
@@ -4778,11 +4813,12 @@ func (r *OverrideProduct) UnmarshalJSON(data []byte) error {
 type OverrideRateType string
 
 const (
-	OverrideRateTypeFlat         OverrideRateType = "FLAT"
-	OverrideRateTypePercentage   OverrideRateType = "PERCENTAGE"
-	OverrideRateTypeSubscription OverrideRateType = "SUBSCRIPTION"
-	OverrideRateTypeTiered       OverrideRateType = "TIERED"
-	OverrideRateTypeCustom       OverrideRateType = "CUSTOM"
+	OverrideRateTypeFlat             OverrideRateType = "FLAT"
+	OverrideRateTypePercentage       OverrideRateType = "PERCENTAGE"
+	OverrideRateTypeSubscription     OverrideRateType = "SUBSCRIPTION"
+	OverrideRateTypeTiered           OverrideRateType = "TIERED"
+	OverrideRateTypeTieredPercentage OverrideRateType = "TIERED_PERCENTAGE"
+	OverrideRateTypeCustom           OverrideRateType = "CUSTOM"
 )
 
 type OverrideTarget string
@@ -4819,7 +4855,8 @@ func (r *OverrideTier) UnmarshalJSON(data []byte) error {
 }
 
 type OverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "CUSTOM".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
 	RateType   OverwriteRateRateType `json:"rate_type,required"`
 	CreditType CreditTypeData        `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -4858,11 +4895,12 @@ func (r *OverwriteRate) UnmarshalJSON(data []byte) error {
 type OverwriteRateRateType string
 
 const (
-	OverwriteRateRateTypeFlat         OverwriteRateRateType = "FLAT"
-	OverwriteRateRateTypePercentage   OverwriteRateRateType = "PERCENTAGE"
-	OverwriteRateRateTypeSubscription OverwriteRateRateType = "SUBSCRIPTION"
-	OverwriteRateRateTypeTiered       OverwriteRateRateType = "TIERED"
-	OverwriteRateRateTypeCustom       OverwriteRateRateType = "CUSTOM"
+	OverwriteRateRateTypeFlat             OverwriteRateRateType = "FLAT"
+	OverwriteRateRateTypePercentage       OverwriteRateRateType = "PERCENTAGE"
+	OverwriteRateRateTypeSubscription     OverwriteRateRateType = "SUBSCRIPTION"
+	OverwriteRateRateTypeTiered           OverwriteRateRateType = "TIERED"
+	OverwriteRateRateTypeTieredPercentage OverwriteRateRateType = "TIERED_PERCENTAGE"
+	OverwriteRateRateTypeCustom           OverwriteRateRateType = "CUSTOM"
 )
 
 type PaymentGateConfig struct {
@@ -5627,7 +5665,8 @@ func (r *ProService) UnmarshalJSON(data []byte) error {
 }
 
 type Rate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED".
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED",
+	// "TIERED_PERCENTAGE".
 	RateType   RateRateType   `json:"rate_type,required"`
 	CreditType CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
@@ -5670,11 +5709,12 @@ func (r *Rate) UnmarshalJSON(data []byte) error {
 type RateRateType string
 
 const (
-	RateRateTypeFlat         RateRateType = "FLAT"
-	RateRateTypePercentage   RateRateType = "PERCENTAGE"
-	RateRateTypeSubscription RateRateType = "SUBSCRIPTION"
-	RateRateTypeCustom       RateRateType = "CUSTOM"
-	RateRateTypeTiered       RateRateType = "TIERED"
+	RateRateTypeFlat             RateRateType = "FLAT"
+	RateRateTypePercentage       RateRateType = "PERCENTAGE"
+	RateRateTypeSubscription     RateRateType = "SUBSCRIPTION"
+	RateRateTypeCustom           RateRateType = "CUSTOM"
+	RateRateTypeTiered           RateRateType = "TIERED"
+	RateRateTypeTieredPercentage RateRateType = "TIERED_PERCENTAGE"
 )
 
 type RecurringCommitSubscriptionConfig struct {

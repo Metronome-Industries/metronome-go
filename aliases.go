@@ -17,6 +17,9 @@ type paramObj = param.APIObject
 type Error = apierror.Error
 
 // This is an alias to an internal type.
+type BalanceFilterParam = shared.BalanceFilterParam
+
+// This is an alias to an internal type.
 type BaseThresholdCommit = shared.BaseThresholdCommit
 
 // This is an alias to an internal type.
@@ -167,6 +170,9 @@ const CommitRateRateTypeSubscription = shared.CommitRateRateTypeSubscription
 
 // Equals "TIERED"
 const CommitRateRateTypeTiered = shared.CommitRateRateTypeTiered
+
+// Equals "TIERED_PERCENTAGE"
+const CommitRateRateTypeTieredPercentage = shared.CommitRateRateTypeTieredPercentage
 
 // Equals "CUSTOM"
 const CommitRateRateTypeCustom = shared.CommitRateRateTypeCustom
@@ -642,6 +648,9 @@ const OverrideRateTypeSubscription = shared.OverrideRateTypeSubscription
 // Equals "TIERED"
 const OverrideRateTypeTiered = shared.OverrideRateTypeTiered
 
+// Equals "TIERED_PERCENTAGE"
+const OverrideRateTypeTieredPercentage = shared.OverrideRateTypeTieredPercentage
+
 // Equals "CUSTOM"
 const OverrideRateTypeCustom = shared.OverrideRateTypeCustom
 
@@ -686,6 +695,9 @@ const OverwriteRateRateTypeSubscription = shared.OverwriteRateRateTypeSubscripti
 
 // Equals "TIERED"
 const OverwriteRateRateTypeTiered = shared.OverwriteRateRateTypeTiered
+
+// Equals "TIERED_PERCENTAGE"
+const OverwriteRateRateTypeTieredPercentage = shared.OverwriteRateRateTypeTieredPercentage
 
 // Equals "CUSTOM"
 const OverwriteRateRateTypeCustom = shared.OverwriteRateRateTypeCustom
@@ -873,6 +885,9 @@ const RateRateTypeCustom = shared.RateRateTypeCustom
 
 // Equals "TIERED"
 const RateRateTypeTiered = shared.RateRateTypeTiered
+
+// Equals "TIERED_PERCENTAGE"
+const RateRateTypeTieredPercentage = shared.RateRateTypeTieredPercentage
 
 // This is an alias to an internal type.
 type RecurringCommitSubscriptionConfig = shared.RecurringCommitSubscriptionConfig
