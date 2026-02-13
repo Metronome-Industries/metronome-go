@@ -1,5 +1,23 @@
 # Changelog
 
+## 3.2.0 (2026-02-13)
+
+Full Changelog: [v3.1.0...v3.2.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.1.0...v3.2.0)
+
+### Features
+
+* **api:** add subscription_id field to invoice line items ([d1f69ff](https://github.com/Metronome-Industries/metronome-go/commit/d1f69ff52ae701593ff67131eacf93a4d650dd8a))
+
+
+### Bug Fixes
+
+* **encoder:** correctly serialize NullStruct ([ab630bc](https://github.com/Metronome-Industries/metronome-go/commit/ab630bccd55f4ff640dc3b64bc8f50fb6851f79e))
+
+
+### Chores
+
+* **tests:** add netsuite test case to customer billing configurations ([50cfb72](https://github.com/Metronome-Industries/metronome-go/commit/50cfb72f24257437b7b00f148e1fef13c61bf576))
+
 ## 3.1.0 (2026-02-04)
 
 Full Changelog: [v3.0.0...v3.1.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.0.0...v3.1.0)
