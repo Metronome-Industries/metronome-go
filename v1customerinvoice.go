@@ -567,6 +567,9 @@ type InvoiceLineItem struct {
 	SubLineItems []InvoiceLineItemSubLineItem `json:"sub_line_items"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	SubscriptionCustomFields map[string]string `json:"subscription_custom_fields"`
+	// ID of the subscription that this line item is associated with. Only present on
+	// line items with product of `SUBSCRIPTION` type.
+	SubscriptionID string `json:"subscription_id" format:"uuid"`
 	// Populated if the line item has a tiered price.
 	Tier InvoiceLineItemTier `json:"tier"`
 	// The unit price associated with the line item.
@@ -613,6 +616,7 @@ type InvoiceLineItem struct {
 		StartingAt                      respjson.Field
 		SubLineItems                    respjson.Field
 		SubscriptionCustomFields        respjson.Field
+		SubscriptionID                  respjson.Field
 		Tier                            respjson.Field
 		UnitPrice                       respjson.Field
 		ExtraFields                     map[string]respjson.Field
