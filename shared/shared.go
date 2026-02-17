@@ -1254,8 +1254,6 @@ type Contract struct {
 	// ID of the package this contract was created from, if applicable.
 	PackageID                            string                               `json:"package_id" format:"uuid"`
 	PrepaidBalanceThresholdConfiguration PrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
-	// Priority of the contract.
-	Priority float64 `json:"priority"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
 	// usage invoice. The charge's `timestamp` must match the usage invoice's
 	// `ending_before` date for consolidation to occur. This field cannot be modified
@@ -1283,7 +1281,6 @@ type Contract struct {
 		CustomerBillingProviderConfiguration respjson.Field
 		PackageID                            respjson.Field
 		PrepaidBalanceThresholdConfiguration respjson.Field
-		Priority                             respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field
 		SpendThresholdConfiguration          respjson.Field
 		Subscriptions                        respjson.Field
