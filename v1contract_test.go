@@ -280,7 +280,6 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			ThresholdAmount:    0,
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		},
-		Priority: metronome.Float(0),
 		ProfessionalServices: []metronome.V1ContractNewParamsProfessionalService{{
 			MaxAmount: 0,
 			ProductID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",

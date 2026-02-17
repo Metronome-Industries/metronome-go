@@ -1035,8 +1035,6 @@ type V1ContractNewParams struct {
 	// traditional contract. When specified, only customer_id, starting_at, package_id,
 	// and uniqueness_key are allowed.
 	PackageID param.Opt[string] `json:"package_id,omitzero" format:"uuid"`
-	// Priority of the contract.
-	Priority param.Opt[float64] `json:"priority,omitzero"`
 	// Selects the rate card linked to the specified alias as of the contract's start
 	// date.
 	RateCardAlias param.Opt[string] `json:"rate_card_alias,omitzero"`
