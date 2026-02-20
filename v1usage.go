@@ -240,8 +240,12 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 // An array of `PagedUsageAggregate` objects containing:
 //
 // - `starting_on` and `ending_before`: Time window boundaries
-// - `group_key`: The dimension being grouped by (e.g., "region")
-// - `group_value`: The specific value for this group (e.g., "US-East")
+// - `group`: Object mapping group keys to their values
+//   - For simple groups, this will be a map with a single key-value pair (e.g.,
+//     `{"region": "US-East"}`)
+//   - For compound groups, this will be a map with multiple key-value pairs (e.g.,
+//     `{"region": "US-East", "team": "engineering"}`)
+//
 // - `value`: Aggregated usage for this group and time window
 // - `next_page`: Pagination cursor for large datasets
 //
@@ -251,12 +255,13 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 //     `window_size`
 //   - Time windows: Set `window_size` to hour, day, or none for different
 //     granularities
-//   - Group filtering: Use `group_by` to specify:
-//   - key: The dimension to group by (must be set on the billable metric as a
-//     group key)
-//   - values: Optional array to filter to specific values only
+//   - Group filtering: Use `group_key` and `group_filters` to specify groups and
+//     group filters
+//   - Limits: When using compound group keys (2+ keys in `group_key`), the default
+//     and max limit is 100
 //   - Pagination: Use limit and `next_page` for large result sets
-//   - Null handling: `group_value` may be null for unmatched data
+//   - Null handling: Group values may be null for events missing the group key
+//     property
 func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListWithGroupsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1UsageListWithGroupsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -291,8 +296,12 @@ func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListW
 // An array of `PagedUsageAggregate` objects containing:
 //
 // - `starting_on` and `ending_before`: Time window boundaries
-// - `group_key`: The dimension being grouped by (e.g., "region")
-// - `group_value`: The specific value for this group (e.g., "US-East")
+// - `group`: Object mapping group keys to their values
+//   - For simple groups, this will be a map with a single key-value pair (e.g.,
+//     `{"region": "US-East"}`)
+//   - For compound groups, this will be a map with multiple key-value pairs (e.g.,
+//     `{"region": "US-East", "team": "engineering"}`)
+//
 // - `value`: Aggregated usage for this group and time window
 // - `next_page`: Pagination cursor for large datasets
 //
@@ -302,12 +311,13 @@ func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListW
 //     `window_size`
 //   - Time windows: Set `window_size` to hour, day, or none for different
 //     granularities
-//   - Group filtering: Use `group_by` to specify:
-//   - key: The dimension to group by (must be set on the billable metric as a
-//     group key)
-//   - values: Optional array to filter to specific values only
+//   - Group filtering: Use `group_key` and `group_filters` to specify groups and
+//     group filters
+//   - Limits: When using compound group keys (2+ keys in `group_key`), the default
+//     and max limit is 100
 //   - Pagination: Use limit and `next_page` for large result sets
-//   - Null handling: `group_value` may be null for unmatched data
+//   - Null handling: Group values may be null for events missing the group key
+//     property
 func (r *V1UsageService) ListWithGroupsAutoPaging(ctx context.Context, params V1UsageListWithGroupsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1UsageListWithGroupsResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListWithGroups(ctx, params, opts...))
 }
@@ -385,10 +395,21 @@ func (r *V1UsageListResponse) UnmarshalJSON(data []byte) error {
 
 type V1UsageListWithGroupsResponse struct {
 	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	GroupKey     string    `json:"group_key,required"`
-	GroupValue   string    `json:"group_value,required"`
-	StartingOn   time.Time `json:"starting_on,required" format:"date-time"`
-	Value        float64   `json:"value,required"`
+	// Use `group` instead. The group key for single-key grouping.
+	//
+	// Deprecated: deprecated
+	GroupKey string `json:"group_key,required"`
+	// Use `group` instead. The group value for single-key grouping.
+	//
+	// Deprecated: deprecated
+	GroupValue string    `json:"group_value,required"`
+	StartingOn time.Time `json:"starting_on,required" format:"date-time"`
+	Value      float64   `json:"value,required"`
+	// Map of group key to their value for this usage aggregate. For simple group keys,
+	// this should be a single key e.g. `{"region": "US-East"}` For compound group
+	// keys, this should contain the values of each group key that forms the compound
+	// e.g. `{"region": "US-East", "team": "engineering"}`
+	Group map[string]string `json:"group"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndingBefore respjson.Field
@@ -396,6 +417,7 @@ type V1UsageListWithGroupsResponse struct {
 		GroupValue   respjson.Field
 		StartingOn   respjson.Field
 		Value        respjson.Field
+		Group        respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -652,10 +674,28 @@ type V1UsageListWithGroupsParams struct {
 	// If true, will return the usage for the current billing period. Will return an
 	// error if the customer is currently uncontracted or starting_on and ending_before
 	// are specified when this is true.
-	CurrentPeriod param.Opt[bool]                    `json:"current_period,omitzero"`
-	EndingBefore  param.Opt[time.Time]               `json:"ending_before,omitzero" format:"date-time"`
-	StartingOn    param.Opt[time.Time]               `json:"starting_on,omitzero" format:"date-time"`
-	GroupBy       V1UsageListWithGroupsParamsGroupBy `json:"group_by,omitzero"`
+	CurrentPeriod param.Opt[bool]      `json:"current_period,omitzero"`
+	EndingBefore  param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	StartingOn    param.Opt[time.Time] `json:"starting_on,omitzero" format:"date-time"`
+	// Use group_key and group_filters instead. Use a single group key to group by.
+	// Compound group keys are not supported.
+	GroupBy V1UsageListWithGroupsParamsGroupBy `json:"group_by,omitzero"`
+	// Object mapping group keys to arrays of values to filter on. Only usage matching
+	// these filter values will be returned. Keys must be present in group_key. Omit a
+	// key or use an empty array to include all values for that dimension.
+	GroupFilters map[string][]string `json:"group_filters,omitzero"`
+	// Group key to group usage by. Supports both simple (single key) and compound
+	// (multiple keys) group keys.
+	//
+	// For simple group keys, provide a single key e.g. `["region"]`. For compound
+	// group keys, provide multiple keys e.g. `["region", "team"]`.
+	//
+	// For streaming metrics, the keys must be defined as a simple or compound group
+	// key on the billable metric. For compound group keys, all keys must match an
+	// exact compound group key definition — partial matches are not allowed.
+	//
+	// Cannot be used together with `group_by`.
+	GroupKey []string `json:"group_key,omitzero"`
 	paramObj
 }
 
@@ -687,6 +727,11 @@ const (
 	V1UsageListWithGroupsParamsWindowSizeNone V1UsageListWithGroupsParamsWindowSize = "NONE"
 )
 
+// Use group_key and group_filters instead. Use a single group key to group by.
+// Compound group keys are not supported.
+//
+// Deprecated: deprecated
+//
 // The property Key is required.
 type V1UsageListWithGroupsParamsGroupBy struct {
 	// The name of the group_by key to use
