@@ -4916,7 +4916,7 @@ type PaymentGateConfig struct {
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
 	//
-	// Any of "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED".
+	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
 	TaxType PaymentGateConfigTaxType `json:"tax_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5012,7 +5012,6 @@ const (
 	PaymentGateConfigTaxTypeNone          PaymentGateConfigTaxType = "NONE"
 	PaymentGateConfigTaxTypeStripe        PaymentGateConfigTaxType = "STRIPE"
 	PaymentGateConfigTaxTypeAnrok         PaymentGateConfigTaxType = "ANROK"
-	PaymentGateConfigTaxTypeAvalara       PaymentGateConfigTaxType = "AVALARA"
 	PaymentGateConfigTaxTypePrecalculated PaymentGateConfigTaxType = "PRECALCULATED"
 )
 
@@ -5033,7 +5032,7 @@ type PaymentGateConfigParam struct {
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
 	//
-	// Any of "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED".
+	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
 	TaxType PaymentGateConfigTaxType `json:"tax_type,omitzero"`
 	paramObj
 }
@@ -5111,7 +5110,7 @@ type PaymentGateConfigV2 struct {
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
 	//
-	// Any of "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED".
+	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
 	TaxType PaymentGateConfigV2TaxType `json:"tax_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5207,7 +5206,6 @@ const (
 	PaymentGateConfigV2TaxTypeNone          PaymentGateConfigV2TaxType = "NONE"
 	PaymentGateConfigV2TaxTypeStripe        PaymentGateConfigV2TaxType = "STRIPE"
 	PaymentGateConfigV2TaxTypeAnrok         PaymentGateConfigV2TaxType = "ANROK"
-	PaymentGateConfigV2TaxTypeAvalara       PaymentGateConfigV2TaxType = "AVALARA"
 	PaymentGateConfigV2TaxTypePrecalculated PaymentGateConfigV2TaxType = "PRECALCULATED"
 )
 
@@ -5228,7 +5226,7 @@ type PaymentGateConfigV2Param struct {
 	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
 	// will default to NONE.
 	//
-	// Any of "NONE", "STRIPE", "ANROK", "AVALARA", "PRECALCULATED".
+	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
 	TaxType PaymentGateConfigV2TaxType `json:"tax_type,omitzero"`
 	paramObj
 }

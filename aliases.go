@@ -748,9 +748,6 @@ const PaymentGateConfigTaxTypeStripe = shared.PaymentGateConfigTaxTypeStripe
 // Equals "ANROK"
 const PaymentGateConfigTaxTypeAnrok = shared.PaymentGateConfigTaxTypeAnrok
 
-// Equals "AVALARA"
-const PaymentGateConfigTaxTypeAvalara = shared.PaymentGateConfigTaxTypeAvalara
-
 // Equals "PRECALCULATED"
 const PaymentGateConfigTaxTypePrecalculated = shared.PaymentGateConfigTaxTypePrecalculated
 
@@ -812,9 +809,6 @@ const PaymentGateConfigV2TaxTypeStripe = shared.PaymentGateConfigV2TaxTypeStripe
 
 // Equals "ANROK"
 const PaymentGateConfigV2TaxTypeAnrok = shared.PaymentGateConfigV2TaxTypeAnrok
-
-// Equals "AVALARA"
-const PaymentGateConfigV2TaxTypeAvalara = shared.PaymentGateConfigV2TaxTypeAvalara
 
 // Equals "PRECALCULATED"
 const PaymentGateConfigV2TaxTypePrecalculated = shared.PaymentGateConfigV2TaxTypePrecalculated
