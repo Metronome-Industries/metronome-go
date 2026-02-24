@@ -177,11 +177,21 @@ const CommitRateRateTypeTieredPercentage = shared.CommitRateRateTypeTieredPercen
 // Equals "CUSTOM"
 const CommitRateRateTypeCustom = shared.CommitRateRateTypeCustom
 
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type CommitRateMinimumConfig = shared.CommitRateMinimumConfig
+
 // A distinct rate on the rate card. You can choose to use this rate rather than
 // list rate when consuming a credit or commit.
 //
 // This is an alias to an internal type.
 type CommitRateParam = shared.CommitRateParam
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type CommitRateMinimumConfigParam = shared.CommitRateMinimumConfigParam
 
 // This is an alias to an internal type.
 type CommitSpecifier = shared.CommitSpecifier
@@ -882,6 +892,11 @@ const RateRateTypeTiered = shared.RateRateTypeTiered
 
 // Equals "TIERED_PERCENTAGE"
 const RateRateTypeTieredPercentage = shared.RateRateTypeTieredPercentage
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type RateMinimumConfig = shared.RateMinimumConfig
 
 // This is an alias to an internal type.
 type RecurringCommitSubscriptionConfig = shared.RecurringCommitSubscriptionConfig

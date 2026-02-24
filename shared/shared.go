@@ -1089,17 +1089,22 @@ type CommitRate struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
 	RateType CommitRateRateType `json:"rate_type" api:"required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
+	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+	MinimumConfig CommitRateMinimumConfig `json:"minimum_config"`
+	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
+	// rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0
+	// and <=1.
 	Price float64 `json:"price"`
 	// Only set for TIERED rate_type.
 	Tiers []Tier `json:"tiers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RateType    respjson.Field
-		Price       respjson.Field
-		Tiers       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		RateType      respjson.Field
+		MinimumConfig respjson.Field
+		Price         respjson.Field
+		Tiers         respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -1129,6 +1134,23 @@ const (
 	CommitRateRateTypeCustom           CommitRateRateType = "CUSTOM"
 )
 
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+type CommitRateMinimumConfig struct {
+	Minimum float64 `json:"minimum" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Minimum     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommitRateMinimumConfig) RawJSON() string { return r.JSON.raw }
+func (r *CommitRateMinimumConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A distinct rate on the rate card. You can choose to use this rate rather than
 // list rate when consuming a credit or commit.
 //
@@ -1137,8 +1159,12 @@ type CommitRateParam struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
 	RateType CommitRateRateType `json:"rate_type,omitzero" api:"required"`
-	// Commit rate price. For FLAT rate_type, this must be >=0.
+	// Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE
+	// rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0
+	// and <=1.
 	Price param.Opt[float64] `json:"price,omitzero"`
+	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+	MinimumConfig CommitRateMinimumConfigParam `json:"minimum_config,omitzero"`
 	// Only set for TIERED rate_type.
 	Tiers []TierParam `json:"tiers,omitzero"`
 	paramObj
@@ -1149,6 +1175,22 @@ func (r CommitRateParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CommitRateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// The property Minimum is required.
+type CommitRateMinimumConfigParam struct {
+	Minimum float64 `json:"minimum" api:"required"`
+	paramObj
+}
+
+func (r CommitRateMinimumConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow CommitRateMinimumConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CommitRateMinimumConfigParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5670,6 +5712,8 @@ type Rate struct {
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
 	// set to true.
 	IsProrated bool `json:"is_prorated"`
+	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+	MinimumConfig RateMinimumConfig `json:"minimum_config"`
 	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
 	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
 	Price float64 `json:"price"`
@@ -5686,6 +5730,7 @@ type Rate struct {
 		CreditType         respjson.Field
 		CustomRate         respjson.Field
 		IsProrated         respjson.Field
+		MinimumConfig      respjson.Field
 		Price              respjson.Field
 		PricingGroupValues respjson.Field
 		Quantity           respjson.Field
@@ -5711,6 +5756,23 @@ const (
 	RateRateTypeTiered           RateRateType = "TIERED"
 	RateRateTypeTieredPercentage RateRateType = "TIERED_PERCENTAGE"
 )
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+type RateMinimumConfig struct {
+	Minimum float64 `json:"minimum" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Minimum     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RateMinimumConfig) RawJSON() string { return r.JSON.raw }
+func (r *RateMinimumConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type RecurringCommitSubscriptionConfig struct {
 	// Any of "INDIVIDUAL", "POOLED".
