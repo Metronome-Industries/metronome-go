@@ -64,14 +64,14 @@ type V1SettingUpsertAvalaraCredentialsParams struct {
 	// The Avalara environment to use (SANDBOX or PRODUCTION).
 	//
 	// Any of "PRODUCTION", "SANDBOX".
-	AvalaraEnvironment V1SettingUpsertAvalaraCredentialsParamsAvalaraEnvironment `json:"avalara_environment,omitzero,required"`
+	AvalaraEnvironment V1SettingUpsertAvalaraCredentialsParamsAvalaraEnvironment `json:"avalara_environment,omitzero" api:"required"`
 	// The password for the Avalara account.
-	AvalaraPassword string `json:"avalara_password,required"`
+	AvalaraPassword string `json:"avalara_password" api:"required"`
 	// The username for the Avalara account.
-	AvalaraUsername string `json:"avalara_username,required"`
+	AvalaraUsername string `json:"avalara_username" api:"required"`
 	// The delivery method IDs of the billing provider configurations to update, can be
 	// found in the response of the `/listConfiguredBillingProviders` endpoint.
-	DeliveryMethodIDs []string `json:"delivery_method_ids,omitzero,required"`
+	DeliveryMethodIDs []string `json:"delivery_method_ids,omitzero" api:"required"`
 	// Commit transactions if you want Metronome tax calculations used for reporting
 	// and tax filings.
 	CommitTransactions param.Opt[bool] `json:"commit_transactions,omitzero"`

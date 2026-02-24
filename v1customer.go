@@ -366,14 +366,14 @@ func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerU
 
 type Customer struct {
 	// the Metronome ID of the customer
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
 	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
+	ExternalID string `json:"external_id" api:"required"`
 	// aliases for this customer that can be used instead of the Metronome customer ID
 	// in usage events
-	IngestAliases []string `json:"ingest_aliases,required"`
-	Name          string   `json:"name,required"`
+	IngestAliases []string `json:"ingest_aliases" api:"required"`
+	Name          string   `json:"name" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -396,24 +396,24 @@ func (r *Customer) UnmarshalJSON(data []byte) error {
 
 type CustomerDetail struct {
 	// the Metronome ID of the customer
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// RFC 3339 timestamp indicating when the customer was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields   map[string]string            `json:"custom_fields,required"`
-	CustomerConfig CustomerDetailCustomerConfig `json:"customer_config,required"`
+	CustomFields   map[string]string            `json:"custom_fields" api:"required"`
+	CustomerConfig CustomerDetailCustomerConfig `json:"customer_config" api:"required"`
 	// (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest
 	// alias) that can be used in usage events
-	ExternalID string `json:"external_id,required"`
+	ExternalID string `json:"external_id" api:"required"`
 	// aliases for this customer that can be used instead of the Metronome customer ID
 	// in usage events
-	IngestAliases []string `json:"ingest_aliases,required"`
-	Name          string   `json:"name,required"`
+	IngestAliases []string `json:"ingest_aliases" api:"required"`
+	Name          string   `json:"name" api:"required"`
 	// RFC 3339 timestamp indicating when the customer was last updated.
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// RFC 3339 timestamp indicating when the customer was archived. Null if the
 	// customer is active.
-	ArchivedAt time.Time `json:"archived_at,nullable" format:"date-time"`
+	ArchivedAt time.Time `json:"archived_at" api:"nullable" format:"date-time"`
 	// This field's availability is dependent on your client's configuration.
 	CurrentBillableStatus CustomerDetailCurrentBillableStatus `json:"current_billable_status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -441,7 +441,7 @@ func (r *CustomerDetail) UnmarshalJSON(data []byte) error {
 
 type CustomerDetailCustomerConfig struct {
 	// The Salesforce account ID for the customer
-	SalesforceAccountID string `json:"salesforce_account_id,required"`
+	SalesforceAccountID string `json:"salesforce_account_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SalesforceAccountID respjson.Field
@@ -459,8 +459,8 @@ func (r *CustomerDetailCustomerConfig) UnmarshalJSON(data []byte) error {
 // This field's availability is dependent on your client's configuration.
 type CustomerDetailCurrentBillableStatus struct {
 	// Any of "billable", "unbillable".
-	Value       string    `json:"value,required"`
-	EffectiveAt time.Time `json:"effective_at,nullable" format:"date-time"`
+	Value       string    `json:"value" api:"required"`
+	EffectiveAt time.Time `json:"effective_at" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Value       respjson.Field
@@ -477,7 +477,7 @@ func (r *CustomerDetailCurrentBillableStatus) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerNewResponse struct {
-	Data Customer `json:"data,required"`
+	Data Customer `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -493,7 +493,7 @@ func (r *V1CustomerNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerGetResponse struct {
-	Data CustomerDetail `json:"data,required"`
+	Data CustomerDetail `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -509,7 +509,7 @@ func (r *V1CustomerGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerArchiveResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -525,8 +525,8 @@ func (r *V1CustomerArchiveResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerListBillableMetricsResponse struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// (DEPRECATED) use aggregation_type instead
 	Aggregate string `json:"aggregate"`
 	// (DEPRECATED) use aggregation_key instead
@@ -598,9 +598,9 @@ const (
 )
 
 type V1CustomerListCostsResponse struct {
-	CreditTypes    map[string]V1CustomerListCostsResponseCreditType `json:"credit_types,required"`
-	EndTimestamp   time.Time                                        `json:"end_timestamp,required" format:"date-time"`
-	StartTimestamp time.Time                                        `json:"start_timestamp,required" format:"date-time"`
+	CreditTypes    map[string]V1CustomerListCostsResponseCreditType `json:"credit_types" api:"required"`
+	EndTimestamp   time.Time                                        `json:"end_timestamp" api:"required" format:"date-time"`
+	StartTimestamp time.Time                                        `json:"start_timestamp" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypes    respjson.Field
@@ -638,10 +638,10 @@ func (r *V1CustomerListCostsResponseCreditType) UnmarshalJSON(data []byte) error
 }
 
 type V1CustomerListCostsResponseCreditTypeLineItemBreakdown struct {
-	Cost       float64 `json:"cost,required"`
-	Name       string  `json:"name,required"`
+	Cost       float64 `json:"cost" api:"required"`
+	Name       string  `json:"name" api:"required"`
 	GroupKey   string  `json:"group_key"`
-	GroupValue string  `json:"group_value,nullable"`
+	GroupValue string  `json:"group_value" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cost        respjson.Field
@@ -660,7 +660,7 @@ func (r *V1CustomerListCostsResponseCreditTypeLineItemBreakdown) UnmarshalJSON(d
 }
 
 type V1CustomerPreviewEventsResponse struct {
-	Data []Invoice `json:"data,required"`
+	Data []Invoice `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -676,7 +676,7 @@ func (r *V1CustomerPreviewEventsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerGetBillingConfigurationsResponse struct {
-	Data []V1CustomerGetBillingConfigurationsResponseData `json:"data,required"`
+	Data []V1CustomerGetBillingConfigurationsResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -694,26 +694,26 @@ func (r *V1CustomerGetBillingConfigurationsResponse) UnmarshalJSON(data []byte) 
 type V1CustomerGetBillingConfigurationsResponseData struct {
 	// ID of this configuration; can be provided as the
 	// billing_provider_configuration_id when creating a contract.
-	ID         string    `json:"id,required" format:"uuid"`
-	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
+	ID         string    `json:"id" api:"required" format:"uuid"`
+	ArchivedAt time.Time `json:"archived_at" api:"required" format:"date-time"`
 	// The billing provider set for this configuration.
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string `json:"billing_provider,required"`
+	BillingProvider string `json:"billing_provider" api:"required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
-	Configuration map[string]any `json:"configuration,required"`
-	CustomerID    string         `json:"customer_id,required" format:"uuid"`
+	Configuration map[string]any `json:"configuration" api:"required"`
+	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
 	// The method to use for delivering invoices to this customer.
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
-	DeliveryMethod string `json:"delivery_method,required"`
+	DeliveryMethod string `json:"delivery_method" api:"required"`
 	// Configuration for the delivery method. The structure of this object is specific
 	// to the delivery method.
-	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration,required"`
+	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
 	// ID of the delivery method to use for this customer.
-	DeliveryMethodID string `json:"delivery_method_id,required" format:"uuid"`
+	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                          respjson.Field
@@ -736,7 +736,7 @@ func (r *V1CustomerGetBillingConfigurationsResponseData) UnmarshalJSON(data []by
 }
 
 type V1CustomerSetBillingConfigurationsResponse struct {
-	Data []V1CustomerSetBillingConfigurationsResponseData `json:"data,required"`
+	Data []V1CustomerSetBillingConfigurationsResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -790,7 +790,7 @@ func (r *V1CustomerSetBillingConfigurationsResponseData) UnmarshalJSON(data []by
 }
 
 type V1CustomerSetNameResponse struct {
-	Data Customer `json:"data,required"`
+	Data Customer `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -807,7 +807,7 @@ func (r *V1CustomerSetNameResponse) UnmarshalJSON(data []byte) error {
 
 type V1CustomerNewParams struct {
 	// This will be truncated to 160 characters if the provided name is longer.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// (deprecated, use ingest_aliases instead) an alias that can be used to refer to
 	// this customer in usage events
 	ExternalID    param.Opt[string]                `json:"external_id,omitzero"`
@@ -831,10 +831,10 @@ func (r *V1CustomerNewParams) UnmarshalJSON(data []byte) error {
 
 // The properties BillingProviderCustomerID, BillingProviderType are required.
 type V1CustomerNewParamsBillingConfig struct {
-	BillingProviderCustomerID string `json:"billing_provider_customer_id,required"`
+	BillingProviderCustomerID string `json:"billing_provider_customer_id" api:"required"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType  string            `json:"billing_provider_type,omitzero,required"`
+	BillingProviderType  string            `json:"billing_provider_type,omitzero" api:"required"`
 	AwsCustomerAccountID param.Opt[string] `json:"aws_customer_account_id,omitzero"`
 	AwsCustomerID        param.Opt[string] `json:"aws_customer_id,omitzero"`
 	// True if the aws_product_code is a SAAS subscription product, false otherwise.
@@ -882,7 +882,7 @@ type V1CustomerNewParamsCustomerBillingProviderConfiguration struct {
 	//
 	// Any of "aws_marketplace", "azure_marketplace", "gcp_marketplace", "stripe",
 	// "netsuite".
-	BillingProvider string `json:"billing_provider,omitzero,required"`
+	BillingProvider string `json:"billing_provider,omitzero" api:"required"`
 	// ID of the delivery method to use for this customer. If not provided, the
 	// `delivery_method` must be provided.
 	DeliveryMethodID param.Opt[string] `json:"delivery_method_id,omitzero" format:"uuid"`
@@ -931,7 +931,7 @@ type V1CustomerNewParamsCustomerRevenueSystemConfiguration struct {
 	// The revenue system provider set for this configuration.
 	//
 	// Any of "netsuite".
-	Provider string `json:"provider,omitzero,required"`
+	Provider string `json:"provider,omitzero" api:"required"`
 	// ID of the delivery method to use for this customer. If not provided, the
 	// `delivery_method` must be provided.
 	DeliveryMethodID param.Opt[string] `json:"delivery_method_id,omitzero" format:"uuid"`
@@ -965,7 +965,7 @@ func init() {
 }
 
 type V1CustomerGetParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
@@ -1008,7 +1008,7 @@ func (r *V1CustomerArchiveParams) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerListBillableMetricsParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// If true, the list of returned metrics will include archived metrics
 	IncludeArchived param.Opt[bool] `query:"include_archived,omitzero" json:"-"`
 	// Max number of results that should be returned
@@ -1031,11 +1031,11 @@ func (r V1CustomerListBillableMetricsParams) URLQuery() (v url.Values, err error
 }
 
 type V1CustomerListCostsParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `query:"ending_before,required" format:"date-time" json:"-"`
+	EndingBefore time.Time `query:"ending_before" api:"required" format:"date-time" json:"-"`
 	// RFC 3339 timestamp (inclusive)
-	StartingOn time.Time `query:"starting_on,required" format:"date-time" json:"-"`
+	StartingOn time.Time `query:"starting_on" api:"required" format:"date-time" json:"-"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
@@ -1053,10 +1053,10 @@ func (r V1CustomerListCostsParams) URLQuery() (v url.Values, err error) {
 }
 
 type V1CustomerPreviewEventsParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// Array of usage events to include in the preview calculation. Must contain at
 	// least one event in `merge` mode.
-	Events []V1CustomerPreviewEventsParamsEvent `json:"events,omitzero,required"`
+	Events []V1CustomerPreviewEventsParamsEvent `json:"events,omitzero" api:"required"`
 	// When `true`, line items with zero quantity are excluded from the response.
 	SkipZeroQtyLineItems param.Opt[bool] `json:"skip_zero_qty_line_items,omitzero"`
 	// Controls how the provided events are combined with existing usage data. Use
@@ -1079,7 +1079,7 @@ func (r *V1CustomerPreviewEventsParams) UnmarshalJSON(data []byte) error {
 
 // The property EventType is required.
 type V1CustomerPreviewEventsParamsEvent struct {
-	EventType string `json:"event_type,required"`
+	EventType string `json:"event_type" api:"required"`
 	// RFC 3339 formatted. If not provided, the current time will be used.
 	Timestamp param.Opt[string] `json:"timestamp,omitzero"`
 	// Optional unique identifier for event deduplication. When provided, preview
@@ -1110,7 +1110,7 @@ const (
 )
 
 type V1CustomerGetBillingConfigurationsParams struct {
-	CustomerID      string          `json:"customer_id,required" format:"uuid"`
+	CustomerID      string          `json:"customer_id" api:"required" format:"uuid"`
 	IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
 	paramObj
 }
@@ -1124,7 +1124,7 @@ func (r *V1CustomerGetBillingConfigurationsParams) UnmarshalJSON(data []byte) er
 }
 
 type V1CustomerSetBillingConfigurationsParams struct {
-	Data []V1CustomerSetBillingConfigurationsParamsData `json:"data,omitzero,required"`
+	Data []V1CustomerSetBillingConfigurationsParamsData `json:"data,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1142,8 +1142,8 @@ type V1CustomerSetBillingConfigurationsParamsData struct {
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string `json:"billing_provider,omitzero,required"`
-	CustomerID      string `json:"customer_id,required" format:"uuid"`
+	BillingProvider string `json:"billing_provider,omitzero" api:"required"`
+	CustomerID      string `json:"customer_id" api:"required" format:"uuid"`
 	// ID of the delivery method to use for this customer. If not provided, the
 	// `delivery_method` must be provided.
 	DeliveryMethodID param.Opt[string] `json:"delivery_method_id,omitzero" format:"uuid"`
@@ -1191,8 +1191,8 @@ func init() {
 }
 
 type V1CustomerSetIngestAliasesParams struct {
-	CustomerID    string   `path:"customer_id,required" format:"uuid" json:"-"`
-	IngestAliases []string `json:"ingest_aliases,omitzero,required"`
+	CustomerID    string   `path:"customer_id" api:"required" format:"uuid" json:"-"`
+	IngestAliases []string `json:"ingest_aliases,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1205,10 +1205,10 @@ func (r *V1CustomerSetIngestAliasesParams) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerSetNameParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// The new name for the customer. This will be truncated to 160 characters if the
 	// provided name is longer.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -1221,7 +1221,7 @@ func (r *V1CustomerSetNameParams) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerUpdateConfigParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// Leave in draft or set to auto-advance on invoices sent to Stripe. Falls back to
 	// the client-level config if unset, which defaults to true if unset.
 	LeaveStripeInvoicesInDraft param.Opt[bool] `json:"leave_stripe_invoices_in_draft,omitzero"`

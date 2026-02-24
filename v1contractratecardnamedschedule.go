@@ -54,7 +54,7 @@ func (r *V1ContractRateCardNamedScheduleService) Update(ctx context.Context, bod
 }
 
 type V1ContractRateCardNamedScheduleGetResponse struct {
-	Data []V1ContractRateCardNamedScheduleGetResponseData `json:"data,required"`
+	Data []V1ContractRateCardNamedScheduleGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -70,8 +70,8 @@ func (r *V1ContractRateCardNamedScheduleGetResponse) UnmarshalJSON(data []byte) 
 }
 
 type V1ContractRateCardNamedScheduleGetResponseData struct {
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
-	Value        any       `json:"value,required"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	Value        any       `json:"value" api:"required"`
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -91,11 +91,11 @@ func (r *V1ContractRateCardNamedScheduleGetResponseData) UnmarshalJSON(data []by
 
 type V1ContractRateCardNamedScheduleGetParams struct {
 	// ID of the contract whose named schedule is to be retrieved
-	ContractID string `json:"contract_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
 	// ID of the customer whose named schedule is to be retrieved
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// The identifier for the schedule to be retrieved
-	ScheduleName string `json:"schedule_name,required"`
+	ScheduleName string `json:"schedule_name" api:"required"`
 	// If provided, at most one schedule segment will be returned (the one that covers
 	// this date). If not provided, all segments will be returned.
 	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
@@ -112,15 +112,15 @@ func (r *V1ContractRateCardNamedScheduleGetParams) UnmarshalJSON(data []byte) er
 
 type V1ContractRateCardNamedScheduleUpdateParams struct {
 	// ID of the contract whose named schedule is to be updated
-	ContractID string `json:"contract_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
 	// ID of the customer whose named schedule is to be updated
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// The identifier for the schedule to be updated
-	ScheduleName string    `json:"schedule_name,required"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	ScheduleName string    `json:"schedule_name" api:"required"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// The value to set for the named schedule. The structure of this object is
 	// specific to the named schedule.
-	Value        any                  `json:"value,omitzero,required"`
+	Value        any                  `json:"value,omitzero" api:"required"`
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	paramObj
 }

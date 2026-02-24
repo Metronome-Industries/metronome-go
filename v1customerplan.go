@@ -140,14 +140,14 @@ func (r *V1CustomerPlanService) ListPriceAdjustmentsAutoPaging(ctx context.Conte
 
 type V1CustomerPlanListResponse struct {
 	// the ID of the customer plan
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields    map[string]string `json:"custom_fields,required"`
-	PlanDescription string            `json:"plan_description,required"`
+	CustomFields    map[string]string `json:"custom_fields" api:"required"`
+	PlanDescription string            `json:"plan_description" api:"required"`
 	// the ID of the plan
-	PlanID              string                              `json:"plan_id,required" format:"uuid"`
-	PlanName            string                              `json:"plan_name,required"`
-	StartingOn          time.Time                           `json:"starting_on,required" format:"date-time"`
+	PlanID              string                              `json:"plan_id" api:"required" format:"uuid"`
+	PlanName            string                              `json:"plan_name" api:"required"`
+	StartingOn          time.Time                           `json:"starting_on" api:"required" format:"date-time"`
 	EndingBefore        time.Time                           `json:"ending_before" format:"date-time"`
 	NetPaymentTermsDays float64                             `json:"net_payment_terms_days"`
 	TrialInfo           V1CustomerPlanListResponseTrialInfo `json:"trial_info"`
@@ -174,8 +174,8 @@ func (r *V1CustomerPlanListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerPlanListResponseTrialInfo struct {
-	EndingBefore time.Time                                        `json:"ending_before,required" format:"date-time"`
-	SpendingCaps []V1CustomerPlanListResponseTrialInfoSpendingCap `json:"spending_caps,required"`
+	EndingBefore time.Time                                        `json:"ending_before" api:"required" format:"date-time"`
+	SpendingCaps []V1CustomerPlanListResponseTrialInfoSpendingCap `json:"spending_caps" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndingBefore respjson.Field
@@ -192,9 +192,9 @@ func (r *V1CustomerPlanListResponseTrialInfo) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerPlanListResponseTrialInfoSpendingCap struct {
-	Amount          float64               `json:"amount,required"`
-	AmountRemaining float64               `json:"amount_remaining,required"`
-	CreditType      shared.CreditTypeData `json:"credit_type,required"`
+	Amount          float64               `json:"amount" api:"required"`
+	AmountRemaining float64               `json:"amount_remaining" api:"required"`
+	CreditType      shared.CreditTypeData `json:"credit_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount          respjson.Field
@@ -212,7 +212,7 @@ func (r *V1CustomerPlanListResponseTrialInfoSpendingCap) UnmarshalJSON(data []by
 }
 
 type V1CustomerPlanAddResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -242,11 +242,11 @@ func (r *V1CustomerPlanEndResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerPlanListPriceAdjustmentsResponse struct {
-	ChargeID string `json:"charge_id,required" format:"uuid"`
+	ChargeID string `json:"charge_id" api:"required" format:"uuid"`
 	// Any of "usage", "fixed", "composite", "minimum", "seat".
-	ChargeType  V1CustomerPlanListPriceAdjustmentsResponseChargeType `json:"charge_type,required"`
-	Prices      []V1CustomerPlanListPriceAdjustmentsResponsePrice    `json:"prices,required"`
-	StartPeriod float64                                              `json:"start_period,required"`
+	ChargeType  V1CustomerPlanListPriceAdjustmentsResponseChargeType `json:"charge_type" api:"required"`
+	Prices      []V1CustomerPlanListPriceAdjustmentsResponsePrice    `json:"prices" api:"required"`
+	StartPeriod float64                                              `json:"start_period" api:"required"`
 	Quantity    float64                                              `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -280,7 +280,7 @@ type V1CustomerPlanListPriceAdjustmentsResponsePrice struct {
 	// Determines how the value will be applied.
 	//
 	// Any of "fixed", "quantity", "percentage", "override".
-	AdjustmentType string  `json:"adjustment_type,required"`
+	AdjustmentType string  `json:"adjustment_type" api:"required"`
 	Quantity       float64 `json:"quantity"`
 	// Used in pricing tiers. Indicates at what metric value the price applies.
 	Tier  float64 `json:"tier"`
@@ -303,7 +303,7 @@ func (r *V1CustomerPlanListPriceAdjustmentsResponsePrice) UnmarshalJSON(data []b
 }
 
 type V1CustomerPlanListParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
@@ -321,11 +321,11 @@ func (r V1CustomerPlanListParams) URLQuery() (v url.Values, err error) {
 }
 
 type V1CustomerPlanAddParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
-	PlanID     string `json:"plan_id,required" format:"uuid"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
+	PlanID     string `json:"plan_id" api:"required" format:"uuid"`
 	// RFC 3339 timestamp for when the plan becomes active for this customer. Must be
 	// at 0:00 UTC (midnight).
-	StartingOn time.Time `json:"starting_on,required" format:"date-time"`
+	StartingOn time.Time `json:"starting_on" api:"required" format:"date-time"`
 	// RFC 3339 timestamp for when the plan ends (exclusive) for this customer. Must be
 	// at 0:00 UTC (midnight).
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
@@ -358,10 +358,10 @@ func (r *V1CustomerPlanAddParams) UnmarshalJSON(data []byte) error {
 // The properties CustomCreditTypeID, FiatCurrencyCreditTypeID,
 // ToFiatConversionFactor are required.
 type V1CustomerPlanAddParamsOverageRateAdjustment struct {
-	CustomCreditTypeID       string `json:"custom_credit_type_id,required" format:"uuid"`
-	FiatCurrencyCreditTypeID string `json:"fiat_currency_credit_type_id,required" format:"uuid"`
+	CustomCreditTypeID       string `json:"custom_credit_type_id" api:"required" format:"uuid"`
+	FiatCurrencyCreditTypeID string `json:"fiat_currency_credit_type_id" api:"required" format:"uuid"`
 	// The overage cost in fiat currency for each credit of the custom credit type.
-	ToFiatConversionFactor float64 `json:"to_fiat_conversion_factor,required"`
+	ToFiatConversionFactor float64 `json:"to_fiat_conversion_factor" api:"required"`
 	paramObj
 }
 
@@ -376,11 +376,11 @@ func (r *V1CustomerPlanAddParamsOverageRateAdjustment) UnmarshalJSON(data []byte
 // The properties AdjustmentType, ChargeID, StartPeriod are required.
 type V1CustomerPlanAddParamsPriceAdjustment struct {
 	// Any of "percentage", "fixed", "override", "quantity".
-	AdjustmentType string `json:"adjustment_type,omitzero,required"`
-	ChargeID       string `json:"charge_id,required" format:"uuid"`
+	AdjustmentType string `json:"adjustment_type,omitzero" api:"required"`
+	ChargeID       string `json:"charge_id" api:"required" format:"uuid"`
 	// Used in price ramps. Indicates how many billing periods pass before the charge
 	// applies.
-	StartPeriod float64 `json:"start_period,required"`
+	StartPeriod float64 `json:"start_period" api:"required"`
 	// the overridden quantity for a fixed charge
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
 	// Used in pricing tiers. Indicates at what metric value the price applies.
@@ -413,7 +413,7 @@ func init() {
 // The property LengthInDays is required.
 type V1CustomerPlanAddParamsTrialSpec struct {
 	// Length of the trial period in days.
-	LengthInDays float64                                     `json:"length_in_days,required"`
+	LengthInDays float64                                     `json:"length_in_days" api:"required"`
 	SpendingCap  V1CustomerPlanAddParamsTrialSpecSpendingCap `json:"spending_cap,omitzero"`
 	paramObj
 }
@@ -430,9 +430,9 @@ func (r *V1CustomerPlanAddParamsTrialSpec) UnmarshalJSON(data []byte) error {
 type V1CustomerPlanAddParamsTrialSpecSpendingCap struct {
 	// The credit amount in the given denomination based on the credit type, e.g. US
 	// cents.
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// The credit type ID for the spending cap.
-	CreditTypeID string `json:"credit_type_id,required"`
+	CreditTypeID string `json:"credit_type_id" api:"required"`
 	paramObj
 }
 
@@ -445,8 +445,8 @@ func (r *V1CustomerPlanAddParamsTrialSpecSpendingCap) UnmarshalJSON(data []byte)
 }
 
 type V1CustomerPlanEndParams struct {
-	CustomerID     string `path:"customer_id,required" format:"uuid" json:"-"`
-	CustomerPlanID string `path:"customer_plan_id,required" format:"uuid" json:"-"`
+	CustomerID     string `path:"customer_id" api:"required" format:"uuid" json:"-"`
+	CustomerPlanID string `path:"customer_plan_id" api:"required" format:"uuid" json:"-"`
 	// RFC 3339 timestamp for when the plan ends (exclusive) for this customer. Must be
 	// at 0:00 UTC (midnight). If not provided, the plan end date will be cleared.
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
@@ -469,8 +469,8 @@ func (r *V1CustomerPlanEndParams) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerPlanListPriceAdjustmentsParams struct {
-	CustomerID     string `path:"customer_id,required" format:"uuid" json:"-"`
-	CustomerPlanID string `path:"customer_plan_id,required" format:"uuid" json:"-"`
+	CustomerID     string `path:"customer_id" api:"required" format:"uuid" json:"-"`
+	CustomerPlanID string `path:"customer_plan_id" api:"required" format:"uuid" json:"-"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.

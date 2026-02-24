@@ -121,19 +121,19 @@ func (r *V1CreditGrantService) Void(ctx context.Context, body V1CreditGrantVoidP
 
 type CreditLedgerEntry struct {
 	// an amount representing the change to the customer's credit balance
-	Amount    float64 `json:"amount,required"`
-	CreatedBy string  `json:"created_by,required"`
+	Amount    float64 `json:"amount" api:"required"`
+	CreatedBy string  `json:"created_by" api:"required"`
 	// the credit grant this entry is related to
-	CreditGrantID string    `json:"credit_grant_id,required" format:"uuid"`
-	EffectiveAt   time.Time `json:"effective_at,required" format:"date-time"`
-	Reason        string    `json:"reason,required"`
+	CreditGrantID string    `json:"credit_grant_id" api:"required" format:"uuid"`
+	EffectiveAt   time.Time `json:"effective_at" api:"required" format:"date-time"`
+	Reason        string    `json:"reason" api:"required"`
 	// the running balance for this credit type at the time of the ledger entry,
 	// including all preceding charges
-	RunningBalance float64 `json:"running_balance,required"`
+	RunningBalance float64 `json:"running_balance" api:"required"`
 	// if this entry is a deduction, the Metronome ID of the invoice where the credit
 	// deduction was consumed; if this entry is a grant, the Metronome ID of the
 	// invoice where the grant's paid_amount was charged
-	InvoiceID string `json:"invoice_id,nullable" format:"uuid"`
+	InvoiceID string `json:"invoice_id" api:"nullable" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount         respjson.Field
@@ -159,9 +159,9 @@ type RolloverAmountMaxAmountParam struct {
 	// Rollover up to a fixed amount of the original credit grant amount.
 	//
 	// Any of "MAX_AMOUNT".
-	Type RolloverAmountMaxAmountType `json:"type,omitzero,required"`
+	Type RolloverAmountMaxAmountType `json:"type,omitzero" api:"required"`
 	// The maximum amount to rollover.
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	paramObj
 }
 
@@ -185,9 +185,9 @@ type RolloverAmountMaxPercentageParam struct {
 	// Rollover up to a percentage of the original credit grant amount.
 	//
 	// Any of "MAX_PERCENTAGE".
-	Type RolloverAmountMaxPercentageType `json:"type,omitzero,required"`
+	Type RolloverAmountMaxPercentageType `json:"type,omitzero" api:"required"`
 	// The maximum percentage (0-1) of the original credit grant to rollover.
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	paramObj
 }
 
@@ -207,7 +207,7 @@ const (
 )
 
 type V1CreditGrantNewResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -224,37 +224,37 @@ func (r *V1CreditGrantNewResponse) UnmarshalJSON(data []byte) error {
 
 type V1CreditGrantListResponse struct {
 	// the Metronome ID of the credit grant
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The effective balance of the grant as of the end of the customer's current
 	// billing period. Expiration deductions will be included only if the grant expires
 	// before the end of the current billing period.
-	Balance V1CreditGrantListResponseBalance `json:"balance,required"`
+	Balance V1CreditGrantListResponseBalance `json:"balance" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,required"`
+	CustomFields map[string]string `json:"custom_fields" api:"required"`
 	// the Metronome ID of the customer
-	CustomerID  string              `json:"customer_id,required" format:"uuid"`
-	Deductions  []CreditLedgerEntry `json:"deductions,required"`
-	EffectiveAt time.Time           `json:"effective_at,required" format:"date-time"`
-	ExpiresAt   time.Time           `json:"expires_at,required" format:"date-time"`
+	CustomerID  string              `json:"customer_id" api:"required" format:"uuid"`
+	Deductions  []CreditLedgerEntry `json:"deductions" api:"required"`
+	EffectiveAt time.Time           `json:"effective_at" api:"required" format:"date-time"`
+	ExpiresAt   time.Time           `json:"expires_at" api:"required" format:"date-time"`
 	// the amount of credits initially granted
-	GrantAmount V1CreditGrantListResponseGrantAmount `json:"grant_amount,required"`
-	Name        string                               `json:"name,required"`
+	GrantAmount V1CreditGrantListResponseGrantAmount `json:"grant_amount" api:"required"`
+	Name        string                               `json:"name" api:"required"`
 	// the amount paid for this credit grant
-	PaidAmount        V1CreditGrantListResponsePaidAmount `json:"paid_amount,required"`
-	PendingDeductions []CreditLedgerEntry                 `json:"pending_deductions,required"`
-	Priority          float64                             `json:"priority,required"`
-	CreditGrantType   string                              `json:"credit_grant_type,nullable"`
+	PaidAmount        V1CreditGrantListResponsePaidAmount `json:"paid_amount" api:"required"`
+	PendingDeductions []CreditLedgerEntry                 `json:"pending_deductions" api:"required"`
+	Priority          float64                             `json:"priority" api:"required"`
+	CreditGrantType   string                              `json:"credit_grant_type" api:"nullable"`
 	// the Metronome ID of the invoice with the purchase charge for this credit grant,
 	// if applicable
-	InvoiceID string `json:"invoice_id,nullable" format:"uuid"`
+	InvoiceID string `json:"invoice_id" api:"nullable" format:"uuid"`
 	// The products which these credits will be applied to. (If unspecified, the
 	// credits will be applied to charges for all products.)
 	Products []V1CreditGrantListResponseProduct `json:"products"`
-	Reason   string                             `json:"reason,nullable"`
+	Reason   string                             `json:"reason" api:"nullable"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
-	UniquenessKey string `json:"uniqueness_key,nullable"`
+	UniquenessKey string `json:"uniqueness_key" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field
@@ -290,14 +290,14 @@ func (r *V1CreditGrantListResponse) UnmarshalJSON(data []byte) error {
 // before the end of the current billing period.
 type V1CreditGrantListResponseBalance struct {
 	// The end_date of the customer's current billing period.
-	EffectiveAt time.Time `json:"effective_at,required" format:"date-time"`
+	EffectiveAt time.Time `json:"effective_at" api:"required" format:"date-time"`
 	// The grant's current balance including all posted deductions. If the grant has
 	// expired, this amount will be 0.
-	ExcludingPending float64 `json:"excluding_pending,required"`
+	ExcludingPending float64 `json:"excluding_pending" api:"required"`
 	// The grant's current balance including all posted and pending deductions. If the
 	// grant expires before the end of the customer's current billing period, this
 	// amount will be 0.
-	IncludingPending float64 `json:"including_pending,required"`
+	IncludingPending float64 `json:"including_pending" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EffectiveAt      respjson.Field
@@ -316,9 +316,9 @@ func (r *V1CreditGrantListResponseBalance) UnmarshalJSON(data []byte) error {
 
 // the amount of credits initially granted
 type V1CreditGrantListResponseGrantAmount struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// the credit type for the amount granted
-	CreditType shared.CreditTypeData `json:"credit_type,required"`
+	CreditType shared.CreditTypeData `json:"credit_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -336,9 +336,9 @@ func (r *V1CreditGrantListResponseGrantAmount) UnmarshalJSON(data []byte) error 
 
 // the amount paid for this credit grant
 type V1CreditGrantListResponsePaidAmount struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// the credit type for the amount paid
-	CreditType shared.CreditTypeData `json:"credit_type,required"`
+	CreditType shared.CreditTypeData `json:"credit_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -355,8 +355,8 @@ func (r *V1CreditGrantListResponsePaidAmount) UnmarshalJSON(data []byte) error {
 }
 
 type V1CreditGrantListResponseProduct struct {
-	ID   string `json:"id,required"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -373,7 +373,7 @@ func (r *V1CreditGrantListResponseProduct) UnmarshalJSON(data []byte) error {
 }
 
 type V1CreditGrantEditResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -389,8 +389,8 @@ func (r *V1CreditGrantEditResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CreditGrantListEntriesResponse struct {
-	CustomerID string                                   `json:"customer_id,required" format:"uuid"`
-	Ledgers    []V1CreditGrantListEntriesResponseLedger `json:"ledgers,required"`
+	CustomerID string                                   `json:"customer_id" api:"required" format:"uuid"`
+	Ledgers    []V1CreditGrantListEntriesResponseLedger `json:"ledgers" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CustomerID  respjson.Field
@@ -407,12 +407,12 @@ func (r *V1CreditGrantListEntriesResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CreditGrantListEntriesResponseLedger struct {
-	CreditType shared.CreditTypeData `json:"credit_type,required"`
+	CreditType shared.CreditTypeData `json:"credit_type" api:"required"`
 	// the effective balances at the end of the specified time window
-	EndingBalance   V1CreditGrantListEntriesResponseLedgerEndingBalance   `json:"ending_balance,required"`
-	Entries         []CreditLedgerEntry                                   `json:"entries,required"`
-	PendingEntries  []CreditLedgerEntry                                   `json:"pending_entries,required"`
-	StartingBalance V1CreditGrantListEntriesResponseLedgerStartingBalance `json:"starting_balance,required"`
+	EndingBalance   V1CreditGrantListEntriesResponseLedgerEndingBalance   `json:"ending_balance" api:"required"`
+	Entries         []CreditLedgerEntry                                   `json:"entries" api:"required"`
+	PendingEntries  []CreditLedgerEntry                                   `json:"pending_entries" api:"required"`
+	StartingBalance V1CreditGrantListEntriesResponseLedgerStartingBalance `json:"starting_balance" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditType      respjson.Field
@@ -435,14 +435,14 @@ func (r *V1CreditGrantListEntriesResponseLedger) UnmarshalJSON(data []byte) erro
 type V1CreditGrantListEntriesResponseLedgerEndingBalance struct {
 	// the ending_before request parameter (if supplied) or the current billing
 	// period's end date
-	EffectiveAt time.Time `json:"effective_at,required" format:"date-time"`
+	EffectiveAt time.Time `json:"effective_at" api:"required" format:"date-time"`
 	// the ending balance, including the balance of all grants that have not expired
 	// before the effective_at date and deductions that happened before the
 	// effective_at date
-	ExcludingPending float64 `json:"excluding_pending,required"`
+	ExcludingPending float64 `json:"excluding_pending" api:"required"`
 	// the excluding_pending balance plus any pending invoice deductions and
 	// expirations that will happen by the effective_at date
-	IncludingPending float64 `json:"including_pending,required"`
+	IncludingPending float64 `json:"including_pending" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EffectiveAt      respjson.Field
@@ -462,13 +462,13 @@ func (r *V1CreditGrantListEntriesResponseLedgerEndingBalance) UnmarshalJSON(data
 type V1CreditGrantListEntriesResponseLedgerStartingBalance struct {
 	// the starting_on request parameter (if supplied) or the first credit grant's
 	// effective_at date
-	EffectiveAt time.Time `json:"effective_at,required" format:"date-time"`
+	EffectiveAt time.Time `json:"effective_at" api:"required" format:"date-time"`
 	// the starting balance, including all posted grants, deductions, and expirations
 	// that happened at or before the effective_at timestamp
-	ExcludingPending float64 `json:"excluding_pending,required"`
+	ExcludingPending float64 `json:"excluding_pending" api:"required"`
 	// the excluding_pending balance plus any pending activity that has not been posted
 	// at the time of the query
-	IncludingPending float64 `json:"including_pending,required"`
+	IncludingPending float64 `json:"including_pending" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EffectiveAt      respjson.Field
@@ -486,7 +486,7 @@ func (r *V1CreditGrantListEntriesResponseLedgerStartingBalance) UnmarshalJSON(da
 }
 
 type V1CreditGrantVoidResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -503,16 +503,16 @@ func (r *V1CreditGrantVoidResponse) UnmarshalJSON(data []byte) error {
 
 type V1CreditGrantNewParams struct {
 	// the Metronome ID of the customer
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// The credit grant will only apply to usage or charges dated before this timestamp
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// the amount of credits granted
-	GrantAmount V1CreditGrantNewParamsGrantAmount `json:"grant_amount,omitzero,required"`
+	GrantAmount V1CreditGrantNewParamsGrantAmount `json:"grant_amount,omitzero" api:"required"`
 	// the name of the credit grant as it will appear on invoices
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// the amount paid for this credit grant
-	PaidAmount      V1CreditGrantNewParamsPaidAmount `json:"paid_amount,omitzero,required"`
-	Priority        float64                          `json:"priority,required"`
+	PaidAmount      V1CreditGrantNewParamsPaidAmount `json:"paid_amount,omitzero" api:"required"`
+	Priority        float64                          `json:"priority" api:"required"`
 	CreditGrantType param.Opt[string]                `json:"credit_grant_type,omitzero"`
 	// The credit grant will only apply to usage or charges dated on or after this
 	// timestamp
@@ -550,9 +550,9 @@ func (r *V1CreditGrantNewParams) UnmarshalJSON(data []byte) error {
 //
 // The properties Amount, CreditTypeID are required.
 type V1CreditGrantNewParamsGrantAmount struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// the ID of the pricing unit to be used. Defaults to USD (cents) if not passed.
-	CreditTypeID string `json:"credit_type_id,required" format:"uuid"`
+	CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -568,9 +568,9 @@ func (r *V1CreditGrantNewParamsGrantAmount) UnmarshalJSON(data []byte) error {
 //
 // The properties Amount, CreditTypeID are required.
 type V1CreditGrantNewParamsPaidAmount struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// the ID of the pricing unit to be used. Defaults to USD (cents) if not passed.
-	CreditTypeID string `json:"credit_type_id,required" format:"uuid"`
+	CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -589,12 +589,12 @@ func (r *V1CreditGrantNewParamsPaidAmount) UnmarshalJSON(data []byte) error {
 // The properties ExpiresAt, Priority, RolloverAmount are required.
 type V1CreditGrantNewParamsRolloverSettings struct {
 	// The date to expire the rollover credits.
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// The priority to give the rollover credit grant that gets created when a rollover
 	// happens.
-	Priority float64 `json:"priority,required"`
+	Priority float64 `json:"priority" api:"required"`
 	// Specify how much to rollover to the rollover credit grant
-	RolloverAmount V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion `json:"rollover_amount,omitzero,required"`
+	RolloverAmount V1CreditGrantNewParamsRolloverSettingsRolloverAmountUnion `json:"rollover_amount,omitzero" api:"required"`
 	paramObj
 }
 
@@ -691,7 +691,7 @@ func (r V1CreditGrantListParams) URLQuery() (v url.Values, err error) {
 
 type V1CreditGrantEditParams struct {
 	// the ID of the credit grant
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// the updated credit grant type
 	CreditGrantType param.Opt[string] `json:"credit_grant_type,omitzero"`
 	// the updated expiration date for the credit grant
@@ -759,7 +759,7 @@ const (
 )
 
 type V1CreditGrantVoidParams struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// If true, resets the uniqueness key on this grant so it can be re-used
 	ReleaseUniquenessKey param.Opt[bool] `json:"release_uniqueness_key,omitzero"`
 	// If true, void the purchase invoice associated with the grant

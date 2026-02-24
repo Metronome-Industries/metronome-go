@@ -79,7 +79,7 @@ func (r *V1CustomerBillingConfigService) Delete(ctx context.Context, body V1Cust
 }
 
 type V1CustomerBillingConfigGetResponse struct {
-	Data V1CustomerBillingConfigGetResponseData `json:"data,required"`
+	Data V1CustomerBillingConfigGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -155,13 +155,13 @@ func (r *V1CustomerBillingConfigGetResponseData) UnmarshalJSON(data []byte) erro
 }
 
 type V1CustomerBillingConfigNewParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType V1CustomerBillingConfigNewParamsBillingProviderType `path:"billing_provider_type,omitzero,required" json:"-"`
+	BillingProviderType V1CustomerBillingConfigNewParamsBillingProviderType `path:"billing_provider_type,omitzero" api:"required" json:"-"`
 	// The customer ID in the billing provider's system. For Azure, this is the
 	// subscription ID.
-	BillingProviderCustomerID string            `json:"billing_provider_customer_id,required"`
+	BillingProviderCustomerID string            `json:"billing_provider_customer_id" api:"required"`
 	AwsCustomerAccountID      param.Opt[string] `json:"aws_customer_account_id,omitzero"`
 	AwsCustomerID             param.Opt[string] `json:"aws_customer_id,omitzero"`
 	AwsProductCode            param.Opt[string] `json:"aws_product_code,omitzero"`
@@ -245,10 +245,10 @@ const (
 )
 
 type V1CustomerBillingConfigGetParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType V1CustomerBillingConfigGetParamsBillingProviderType `path:"billing_provider_type,omitzero,required" json:"-"`
+	BillingProviderType V1CustomerBillingConfigGetParamsBillingProviderType `path:"billing_provider_type,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
@@ -267,10 +267,10 @@ const (
 )
 
 type V1CustomerBillingConfigDeleteParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType V1CustomerBillingConfigDeleteParamsBillingProviderType `path:"billing_provider_type,omitzero,required" json:"-"`
+	BillingProviderType V1CustomerBillingConfigDeleteParamsBillingProviderType `path:"billing_provider_type,omitzero" api:"required" json:"-"`
 	paramObj
 }
 

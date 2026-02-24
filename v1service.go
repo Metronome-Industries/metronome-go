@@ -46,7 +46,7 @@ func (r *V1ServiceService) List(ctx context.Context, opts ...option.RequestOptio
 }
 
 type V1ServiceListResponse struct {
-	Services []V1ServiceListResponseService `json:"services,required"`
+	Services []V1ServiceListResponseService `json:"services" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Services    respjson.Field
@@ -62,10 +62,10 @@ func (r *V1ServiceListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ServiceListResponseService struct {
-	IPs  []string `json:"ips,required"`
-	Name string   `json:"name,required"`
+	IPs  []string `json:"ips" api:"required"`
+	Name string   `json:"name" api:"required"`
 	// Any of "makes_connections_from", "accepts_connections_at".
-	Usage string `json:"usage,required"`
+	Usage string `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPs         respjson.Field

@@ -148,7 +148,7 @@ func (r *V1BillableMetricService) Archive(ctx context.Context, body V1BillableMe
 }
 
 type V1BillableMetricNewResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -164,7 +164,7 @@ func (r *V1BillableMetricNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1BillableMetricGetResponse struct {
-	Data V1BillableMetricGetResponseData `json:"data,required"`
+	Data V1BillableMetricGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -181,9 +181,9 @@ func (r *V1BillableMetricGetResponse) UnmarshalJSON(data []byte) error {
 
 type V1BillableMetricGetResponseData struct {
 	// ID of the billable metric
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The display name of the billable metric.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A key that specifies which property of the event is used to aggregate data. This
 	// key must be one of the property filter names and is not applicable when the
 	// aggregation type is 'count'.
@@ -233,9 +233,9 @@ func (r *V1BillableMetricGetResponseData) UnmarshalJSON(data []byte) error {
 
 type V1BillableMetricListResponse struct {
 	// ID of the billable metric
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The display name of the billable metric.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A key that specifies which property of the event is used to aggregate data. This
 	// key must be one of the property filter names and is not applicable when the
 	// aggregation type is 'count'.
@@ -295,7 +295,7 @@ const (
 )
 
 type V1BillableMetricArchiveResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -312,7 +312,7 @@ func (r *V1BillableMetricArchiveResponse) UnmarshalJSON(data []byte) error {
 
 type V1BillableMetricNewParams struct {
 	// The display name of the billable metric.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Specifies the type of aggregation performed on matching events. Required if
 	// `sql` is not provided.
 	AggregationKey param.Opt[string] `json:"aggregation_key,omitzero"`
@@ -359,7 +359,7 @@ const (
 )
 
 type V1BillableMetricGetParams struct {
-	BillableMetricID string `path:"billable_metric_id,required" format:"uuid" json:"-"`
+	BillableMetricID string `path:"billable_metric_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
