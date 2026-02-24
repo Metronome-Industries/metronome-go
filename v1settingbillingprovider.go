@@ -55,7 +55,7 @@ func (r *V1SettingBillingProviderService) List(ctx context.Context, body V1Setti
 }
 
 type V1SettingBillingProviderNewResponse struct {
-	Data V1SettingBillingProviderNewResponseData `json:"data,required"`
+	Data V1SettingBillingProviderNewResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -71,7 +71,7 @@ func (r *V1SettingBillingProviderNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1SettingBillingProviderNewResponseData struct {
-	DeliveryMethodID string `json:"delivery_method_id,required" format:"uuid"`
+	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DeliveryMethodID respjson.Field
@@ -87,8 +87,8 @@ func (r *V1SettingBillingProviderNewResponseData) UnmarshalJSON(data []byte) err
 }
 
 type V1SettingBillingProviderListResponse struct {
-	Data     []V1SettingBillingProviderListResponseData `json:"data,required"`
-	NextPage string                                     `json:"next_page,nullable" format:"uuid"`
+	Data     []V1SettingBillingProviderListResponseData `json:"data" api:"required"`
+	NextPage string                                     `json:"next_page" api:"nullable" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -109,16 +109,16 @@ type V1SettingBillingProviderListResponseData struct {
 	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string `json:"billing_provider,required"`
+	BillingProvider string `json:"billing_provider" api:"required"`
 	// The method to use for delivering invoices to this customer.
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
-	DeliveryMethod string `json:"delivery_method,required"`
+	DeliveryMethod string `json:"delivery_method" api:"required"`
 	// Configuration for the delivery method. The structure of this object is specific
 	// to the delivery method. Some configuration may be omitted for security reasons.
-	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration,required"`
+	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
 	// ID of the delivery method to use for this customer.
-	DeliveryMethodID string `json:"delivery_method_id,required" format:"uuid"`
+	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingProvider             respjson.Field
@@ -140,15 +140,15 @@ type V1SettingBillingProviderNewParams struct {
 	// The billing provider set for this configuration.
 	//
 	// Any of "aws_marketplace", "azure_marketplace", "gcp_marketplace".
-	BillingProvider V1SettingBillingProviderNewParamsBillingProvider `json:"billing_provider,omitzero,required"`
+	BillingProvider V1SettingBillingProviderNewParamsBillingProvider `json:"billing_provider,omitzero" api:"required"`
 	// Account-level configuration for the billing provider. The structure of this
 	// object is specific to the billing provider and delivery provider combination.
 	// See examples below.
-	Configuration map[string]any `json:"configuration,omitzero,required"`
+	Configuration map[string]any `json:"configuration,omitzero" api:"required"`
 	// The method to use for delivering invoices for this configuration.
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "aws_sns".
-	DeliveryMethod V1SettingBillingProviderNewParamsDeliveryMethod `json:"delivery_method,omitzero,required"`
+	DeliveryMethod V1SettingBillingProviderNewParamsDeliveryMethod `json:"delivery_method,omitzero" api:"required"`
 	paramObj
 }
 

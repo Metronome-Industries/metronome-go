@@ -117,9 +117,9 @@ func (r *V1ContractProductService) Archive(ctx context.Context, body V1ContractP
 }
 
 type ProductListItemState struct {
-	CreatedAt           time.Time `json:"created_at,required" format:"date-time"`
-	CreatedBy           string    `json:"created_by,required"`
-	Name                string    `json:"name,required"`
+	CreatedAt           time.Time `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy           string    `json:"created_by" api:"required"`
+	Name                string    `json:"name" api:"required"`
 	BillableMetricID    string    `json:"billable_metric_id"`
 	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
 	CompositeTags       []string  `json:"composite_tags"`
@@ -146,12 +146,12 @@ type ProductListItemState struct {
 	// unit and priced in another. For example, data could be sent in MB and priced in
 	// GB. In this case, the conversion factor would be 1024 and the operation would be
 	// "divide".
-	QuantityConversion QuantityConversion `json:"quantity_conversion,nullable"`
+	QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// rounded using the provided rounding method and decimal places. For example, if
 	// the method is "round up" and the decimal places is 0, then the quantity will be
 	// rounded up to the nearest integer.
-	QuantityRounding QuantityRounding `json:"quantity_rounding,nullable"`
+	QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
 	StartingAt       time.Time        `json:"starting_at" format:"date-time"`
 	Tags             []string         `json:"tags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -192,11 +192,11 @@ func (r *ProductListItemState) UnmarshalJSON(data []byte) error {
 // "divide".
 type QuantityConversion struct {
 	// The factor to multiply or divide the quantity by.
-	ConversionFactor float64 `json:"conversion_factor,required"`
+	ConversionFactor float64 `json:"conversion_factor" api:"required"`
 	// The operation to perform on the quantity
 	//
 	// Any of "MULTIPLY", "DIVIDE".
-	Operation QuantityConversionOperation `json:"operation,required"`
+	Operation QuantityConversionOperation `json:"operation" api:"required"`
 	// Optional name for this conversion.
 	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -243,11 +243,11 @@ const (
 // The properties ConversionFactor, Operation are required.
 type QuantityConversionParam struct {
 	// The factor to multiply or divide the quantity by.
-	ConversionFactor float64 `json:"conversion_factor,required"`
+	ConversionFactor float64 `json:"conversion_factor" api:"required"`
 	// The operation to perform on the quantity
 	//
 	// Any of "MULTIPLY", "DIVIDE".
-	Operation QuantityConversionOperation `json:"operation,omitzero,required"`
+	Operation QuantityConversionOperation `json:"operation,omitzero" api:"required"`
 	// Optional name for this conversion.
 	Name param.Opt[string] `json:"name,omitzero"`
 	paramObj
@@ -266,9 +266,9 @@ func (r *QuantityConversionParam) UnmarshalJSON(data []byte) error {
 // the method is "round up" and the decimal places is 0, then the quantity will be
 // rounded up to the nearest integer.
 type QuantityRounding struct {
-	DecimalPlaces float64 `json:"decimal_places,required"`
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
 	// Any of "ROUND_UP", "ROUND_DOWN", "ROUND_HALF_UP".
-	RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method,required"`
+	RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DecimalPlaces  respjson.Field
@@ -308,9 +308,9 @@ const (
 //
 // The properties DecimalPlaces, RoundingMethod are required.
 type QuantityRoundingParam struct {
-	DecimalPlaces float64 `json:"decimal_places,required"`
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
 	// Any of "ROUND_UP", "ROUND_DOWN", "ROUND_HALF_UP".
-	RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method,omitzero,required"`
+	RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method,omitzero" api:"required"`
 	paramObj
 }
 
@@ -323,7 +323,7 @@ func (r *QuantityRoundingParam) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractProductNewResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -339,7 +339,7 @@ func (r *V1ContractProductNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractProductGetResponse struct {
-	Data V1ContractProductGetResponseData `json:"data,required"`
+	Data V1ContractProductGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -355,13 +355,13 @@ func (r *V1ContractProductGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractProductGetResponseData struct {
-	ID      string               `json:"id,required" format:"uuid"`
-	Current ProductListItemState `json:"current,required"`
-	Initial ProductListItemState `json:"initial,required"`
+	ID      string               `json:"id" api:"required" format:"uuid"`
+	Current ProductListItemState `json:"current" api:"required"`
+	Initial ProductListItemState `json:"initial" api:"required"`
 	// Any of "USAGE", "SUBSCRIPTION", "COMPOSITE", "FIXED", "PRO_SERVICE".
-	Type       string                                   `json:"type,required"`
-	Updates    []V1ContractProductGetResponseDataUpdate `json:"updates,required"`
-	ArchivedAt time.Time                                `json:"archived_at,nullable" format:"date-time"`
+	Type       string                                   `json:"type" api:"required"`
+	Updates    []V1ContractProductGetResponseDataUpdate `json:"updates" api:"required"`
+	ArchivedAt time.Time                                `json:"archived_at" api:"nullable" format:"date-time"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -385,8 +385,8 @@ func (r *V1ContractProductGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractProductGetResponseDataUpdate struct {
-	CreatedAt           time.Time `json:"created_at,required" format:"date-time"`
-	CreatedBy           string    `json:"created_by,required"`
+	CreatedAt           time.Time `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy           string    `json:"created_by" api:"required"`
 	BillableMetricID    string    `json:"billable_metric_id" format:"uuid"`
 	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
 	CompositeTags       []string  `json:"composite_tags"`
@@ -413,12 +413,12 @@ type V1ContractProductGetResponseDataUpdate struct {
 	// unit and priced in another. For example, data could be sent in MB and priced in
 	// GB. In this case, the conversion factor would be 1024 and the operation would be
 	// "divide".
-	QuantityConversion QuantityConversion `json:"quantity_conversion,nullable"`
+	QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// rounded using the provided rounding method and decimal places. For example, if
 	// the method is "round up" and the decimal places is 0, then the quantity will be
 	// rounded up to the nearest integer.
-	QuantityRounding QuantityRounding `json:"quantity_rounding,nullable"`
+	QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
 	StartingAt       time.Time        `json:"starting_at" format:"date-time"`
 	Tags             []string         `json:"tags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -451,7 +451,7 @@ func (r *V1ContractProductGetResponseDataUpdate) UnmarshalJSON(data []byte) erro
 }
 
 type V1ContractProductUpdateResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -467,13 +467,13 @@ func (r *V1ContractProductUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractProductListResponse struct {
-	ID      string               `json:"id,required" format:"uuid"`
-	Current ProductListItemState `json:"current,required"`
-	Initial ProductListItemState `json:"initial,required"`
+	ID      string               `json:"id" api:"required" format:"uuid"`
+	Current ProductListItemState `json:"current" api:"required"`
+	Initial ProductListItemState `json:"initial" api:"required"`
 	// Any of "USAGE", "SUBSCRIPTION", "COMPOSITE", "FIXED", "PRO_SERVICE".
-	Type       V1ContractProductListResponseType     `json:"type,required"`
-	Updates    []V1ContractProductListResponseUpdate `json:"updates,required"`
-	ArchivedAt time.Time                             `json:"archived_at,nullable" format:"date-time"`
+	Type       V1ContractProductListResponseType     `json:"type" api:"required"`
+	Updates    []V1ContractProductListResponseUpdate `json:"updates" api:"required"`
+	ArchivedAt time.Time                             `json:"archived_at" api:"nullable" format:"date-time"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -507,8 +507,8 @@ const (
 )
 
 type V1ContractProductListResponseUpdate struct {
-	CreatedAt           time.Time `json:"created_at,required" format:"date-time"`
-	CreatedBy           string    `json:"created_by,required"`
+	CreatedAt           time.Time `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy           string    `json:"created_by" api:"required"`
 	BillableMetricID    string    `json:"billable_metric_id" format:"uuid"`
 	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
 	CompositeTags       []string  `json:"composite_tags"`
@@ -535,12 +535,12 @@ type V1ContractProductListResponseUpdate struct {
 	// unit and priced in another. For example, data could be sent in MB and priced in
 	// GB. In this case, the conversion factor would be 1024 and the operation would be
 	// "divide".
-	QuantityConversion QuantityConversion `json:"quantity_conversion,nullable"`
+	QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
 	// Optional. Only valid for USAGE products. If provided, the quantity will be
 	// rounded using the provided rounding method and decimal places. For example, if
 	// the method is "round up" and the decimal places is 0, then the quantity will be
 	// rounded up to the nearest integer.
-	QuantityRounding QuantityRounding `json:"quantity_rounding,nullable"`
+	QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
 	StartingAt       time.Time        `json:"starting_at" format:"date-time"`
 	Tags             []string         `json:"tags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -573,7 +573,7 @@ func (r *V1ContractProductListResponseUpdate) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractProductArchiveResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -590,10 +590,10 @@ func (r *V1ContractProductArchiveResponse) UnmarshalJSON(data []byte) error {
 
 type V1ContractProductNewParams struct {
 	// displayed on invoices
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Any of "FIXED", "USAGE", "COMPOSITE", "SUBSCRIPTION", "PROFESSIONAL_SERVICE",
 	// "PRO_SERVICE".
-	Type V1ContractProductNewParamsType `json:"type,omitzero,required"`
+	Type V1ContractProductNewParamsType `json:"type,omitzero" api:"required"`
 	// Required for USAGE products
 	BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
 	// Beta feature only available for composite products. If true, products with $0
@@ -671,10 +671,10 @@ func (r *V1ContractProductGetParams) UnmarshalJSON(data []byte) error {
 
 type V1ContractProductUpdateParams struct {
 	// ID of the product to update
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	// Timestamp representing when the update should go into effect. It must be on an
 	// hour boundary (e.g. 1:00, not 1:30).
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Available for USAGE products only. If not provided, defaults to product's
 	// current billable metric.
 	BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
@@ -774,7 +774,7 @@ const (
 
 type V1ContractProductArchiveParams struct {
 	// ID of the product to be archived
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	paramObj
 }
 

@@ -221,7 +221,7 @@ func (r *V1CustomerCreditService) UpdateEndDate(ctx context.Context, body V1Cust
 }
 
 type V1CustomerCreditNewResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -237,7 +237,7 @@ func (r *V1CustomerCreditNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerCreditUpdateEndDateResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -254,12 +254,12 @@ func (r *V1CustomerCreditUpdateEndDateResponse) UnmarshalJSON(data []byte) error
 
 type V1CustomerCreditNewParams struct {
 	// Schedule for distributing the credit to the customer.
-	AccessSchedule V1CustomerCreditNewParamsAccessSchedule `json:"access_schedule,omitzero,required"`
-	CustomerID     string                                  `json:"customer_id,required" format:"uuid"`
+	AccessSchedule V1CustomerCreditNewParamsAccessSchedule `json:"access_schedule,omitzero" api:"required"`
+	CustomerID     string                                  `json:"customer_id" api:"required" format:"uuid"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
-	Priority  float64 `json:"priority,required"`
-	ProductID string  `json:"product_id,required" format:"uuid"`
+	Priority  float64 `json:"priority" api:"required"`
+	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// displayed on invoices
@@ -306,7 +306,7 @@ func (r *V1CustomerCreditNewParams) UnmarshalJSON(data []byte) error {
 //
 // The property ScheduleItems is required.
 type V1CustomerCreditNewParamsAccessSchedule struct {
-	ScheduleItems []V1CustomerCreditNewParamsAccessScheduleScheduleItem `json:"schedule_items,omitzero,required"`
+	ScheduleItems []V1CustomerCreditNewParamsAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	paramObj
@@ -322,11 +322,11 @@ func (r *V1CustomerCreditNewParamsAccessSchedule) UnmarshalJSON(data []byte) err
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V1CustomerCreditNewParamsAccessScheduleScheduleItem struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -346,7 +346,7 @@ const (
 )
 
 type V1CustomerCreditListParams struct {
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// Return only credits that have access schedules that "cover" the provided date
 	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
 	CreditID     param.Opt[string]    `json:"credit_id,omitzero" format:"uuid"`
@@ -382,11 +382,11 @@ func (r *V1CustomerCreditListParams) UnmarshalJSON(data []byte) error {
 type V1CustomerCreditUpdateEndDateParams struct {
 	// RFC 3339 timestamp indicating when access to the credit will end and it will no
 	// longer be possible to draw it down (exclusive).
-	AccessEndingBefore time.Time `json:"access_ending_before,required" format:"date-time"`
+	AccessEndingBefore time.Time `json:"access_ending_before" api:"required" format:"date-time"`
 	// ID of the commit to update
-	CreditID string `json:"credit_id,required" format:"uuid"`
+	CreditID string `json:"credit_id" api:"required" format:"uuid"`
 	// ID of the customer whose credit is to be updated
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	paramObj
 }
 

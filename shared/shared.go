@@ -40,7 +40,7 @@ func (r *BalanceFilterParam) UnmarshalJSON(data []byte) error {
 type BaseThresholdCommit struct {
 	// The commit product that will be used to generate the line item for commit
 	// payment.
-	ProductID   string `json:"product_id,required"`
+	ProductID   string `json:"product_id" api:"required"`
 	Description string `json:"description"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
@@ -74,7 +74,7 @@ func (r BaseThresholdCommit) ToParam() BaseThresholdCommitParam {
 type BaseThresholdCommitParam struct {
 	// The commit product that will be used to generate the line item for commit
 	// payment.
-	ProductID   string            `json:"product_id,required"`
+	ProductID   string            `json:"product_id" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
@@ -91,8 +91,8 @@ func (r *BaseThresholdCommitParam) UnmarshalJSON(data []byte) error {
 }
 
 type BaseUsageFilter struct {
-	GroupKey    string    `json:"group_key,required"`
-	GroupValues []string  `json:"group_values,required"`
+	GroupKey    string    `json:"group_key" api:"required"`
+	GroupValues []string  `json:"group_values" api:"required"`
 	StartingAt  time.Time `json:"starting_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -121,8 +121,8 @@ func (r BaseUsageFilter) ToParam() BaseUsageFilterParam {
 
 // The properties GroupKey, GroupValues are required.
 type BaseUsageFilterParam struct {
-	GroupKey    string               `json:"group_key,required"`
-	GroupValues []string             `json:"group_values,omitzero,required"`
+	GroupKey    string               `json:"group_key" api:"required"`
+	GroupValues []string             `json:"group_values,omitzero" api:"required"`
 	StartingAt  param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
 	paramObj
 }
@@ -136,16 +136,16 @@ func (r *BaseUsageFilterParam) UnmarshalJSON(data []byte) error {
 }
 
 type Commit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Timestamp of when the commit was created.
 	//
 	//   - Recurring commits: latter of commit service period date and parent commit
 	//     start date
 	//   - Rollover commits: when the new contract started
-	CreatedAt time.Time     `json:"created_at,required" format:"date-time"`
-	Product   CommitProduct `json:"product,required"`
+	CreatedAt time.Time     `json:"created_at" api:"required" format:"date-time"`
+	Product   CommitProduct `json:"product" api:"required"`
 	// Any of "PREPAID", "POSTPAID".
-	Type CommitType `json:"type,required"`
+	Type CommitType `json:"type" api:"required"`
 	// The schedule that the customer will gain access to the credits purposed with
 	// this commit.
 	AccessSchedule ScheduleDuration `json:"access_schedule"`
@@ -249,8 +249,8 @@ func (r *Commit) UnmarshalJSON(data []byte) error {
 }
 
 type CommitProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -274,7 +274,7 @@ const (
 )
 
 type CommitContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -291,7 +291,7 @@ func (r *CommitContract) UnmarshalJSON(data []byte) error {
 
 // The contract that this commit will be billed on.
 type CommitInvoiceContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -423,11 +423,11 @@ func (r *CommitLedgerUnion) UnmarshalJSON(data []byte) error {
 }
 
 type CommitLedgerPrepaidCommitSegmentStartLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_SEGMENT_START".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -446,12 +446,12 @@ func (r *CommitLedgerPrepaidCommitSegmentStartLedgerEntry) UnmarshalJSON(data []
 }
 
 type CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -475,12 +475,12 @@ func (r *CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry) Unmarsha
 }
 
 type CommitLedgerPrepaidCommitRolloverLedgerEntry struct {
-	Amount        float64   `json:"amount,required"`
-	NewContractID string    `json:"new_contract_id,required" format:"uuid"`
-	SegmentID     string    `json:"segment_id,required" format:"uuid"`
-	Timestamp     time.Time `json:"timestamp,required" format:"date-time"`
+	Amount        float64   `json:"amount" api:"required"`
+	NewContractID string    `json:"new_contract_id" api:"required" format:"uuid"`
+	SegmentID     string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp     time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_ROLLOVER".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount        respjson.Field
@@ -500,11 +500,11 @@ func (r *CommitLedgerPrepaidCommitRolloverLedgerEntry) UnmarshalJSON(data []byte
 }
 
 type CommitLedgerPrepaidCommitExpirationLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_EXPIRATION".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -523,12 +523,12 @@ func (r *CommitLedgerPrepaidCommitExpirationLedgerEntry) UnmarshalJSON(data []by
 }
 
 type CommitLedgerPrepaidCommitCanceledLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_CANCELED".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -550,12 +550,12 @@ func (r *CommitLedgerPrepaidCommitCanceledLedgerEntry) UnmarshalJSON(data []byte
 }
 
 type CommitLedgerPrepaidCommitCreditedLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_CREDITED".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -577,11 +577,11 @@ func (r *CommitLedgerPrepaidCommitCreditedLedgerEntry) UnmarshalJSON(data []byte
 }
 
 type CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -600,10 +600,10 @@ func (r *CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(
 }
 
 type CommitLedgerPostpaidCommitInitialBalanceLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_INITIAL_BALANCE".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -621,12 +621,12 @@ func (r *CommitLedgerPostpaidCommitInitialBalanceLedgerEntry) UnmarshalJSON(data
 }
 
 type CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -650,12 +650,12 @@ func (r *CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry) Unmarsh
 }
 
 type CommitLedgerPostpaidCommitRolloverLedgerEntry struct {
-	Amount        float64   `json:"amount,required"`
-	NewContractID string    `json:"new_contract_id,required" format:"uuid"`
-	SegmentID     string    `json:"segment_id,required" format:"uuid"`
-	Timestamp     time.Time `json:"timestamp,required" format:"date-time"`
+	Amount        float64   `json:"amount" api:"required"`
+	NewContractID string    `json:"new_contract_id" api:"required" format:"uuid"`
+	SegmentID     string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp     time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_ROLLOVER".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount        respjson.Field
@@ -675,11 +675,11 @@ func (r *CommitLedgerPostpaidCommitRolloverLedgerEntry) UnmarshalJSON(data []byt
 }
 
 type CommitLedgerPostpaidCommitTrueupLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_TRUEUP".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -700,11 +700,11 @@ func (r *CommitLedgerPostpaidCommitTrueupLedgerEntry) UnmarshalJSON(data []byte)
 }
 
 type CommitLedgerPrepaidCommitManualLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Reason    string    `json:"reason,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Reason    string    `json:"reason" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_MANUAL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -723,11 +723,11 @@ func (r *CommitLedgerPrepaidCommitManualLedgerEntry) UnmarshalJSON(data []byte) 
 }
 
 type CommitLedgerPostpaidCommitManualLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Reason    string    `json:"reason,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Reason    string    `json:"reason" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_MANUAL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -746,10 +746,10 @@ func (r *CommitLedgerPostpaidCommitManualLedgerEntry) UnmarshalJSON(data []byte)
 }
 
 type CommitLedgerPostpaidCommitExpirationLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_EXPIRATION".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -774,8 +774,8 @@ const (
 )
 
 type CommitRolledOverFrom struct {
-	CommitID   string `json:"commit_id,required" format:"uuid"`
-	ContractID string `json:"contract_id,required" format:"uuid"`
+	CommitID   string `json:"commit_id" api:"required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CommitID    respjson.Field
@@ -816,7 +816,7 @@ func (r *CommitSubscriptionConfig) UnmarshalJSON(data []byte) error {
 
 type CommitSubscriptionConfigApplySeatIncreaseConfig struct {
 	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool `json:"is_prorated,required"`
+	IsProrated bool `json:"is_prorated" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsProrated  respjson.Field
@@ -832,7 +832,7 @@ func (r *CommitSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []b
 }
 
 type CommitHierarchyConfiguration struct {
-	ChildAccess CommitHierarchyConfigurationChildAccessUnion `json:"child_access,required"`
+	ChildAccess CommitHierarchyConfigurationChildAccessUnion `json:"child_access" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChildAccess respjson.Field
@@ -900,7 +900,7 @@ func (r *CommitHierarchyConfigurationChildAccessUnion) UnmarshalJSON(data []byte
 
 type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll struct {
 	// Any of "ALL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -919,7 +919,7 @@ func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll) U
 
 type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone struct {
 	// Any of "NONE".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -937,9 +937,9 @@ func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNone) 
 }
 
 type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDs struct {
-	ContractIDs []string `json:"contract_ids,required" format:"uuid"`
+	ContractIDs []string `json:"contract_ids" api:"required" format:"uuid"`
 	// Any of "CONTRACT_IDS".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContractIDs respjson.Field
@@ -959,7 +959,7 @@ func (r *CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContra
 
 // The property ChildAccess is required.
 type CommitHierarchyConfigurationParam struct {
-	ChildAccess CommitHierarchyConfigurationChildAccessUnionParam `json:"child_access,omitzero,required"`
+	ChildAccess CommitHierarchyConfigurationChildAccessUnionParam `json:"child_access,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1022,7 +1022,7 @@ func (u CommitHierarchyConfigurationChildAccessUnionParam) GetType() *string {
 // The property Type is required.
 type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam struct {
 	// Any of "ALL".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1043,7 +1043,7 @@ func init() {
 // The property Type is required.
 type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessNoneParam struct {
 	// Any of "NONE".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1063,9 +1063,9 @@ func init() {
 
 // The properties ContractIDs, Type are required.
 type CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessContractIDsParam struct {
-	ContractIDs []string `json:"contract_ids,omitzero,required" format:"uuid"`
+	ContractIDs []string `json:"contract_ids,omitzero" api:"required" format:"uuid"`
 	// Any of "CONTRACT_IDS".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1088,7 +1088,7 @@ func init() {
 type CommitRate struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
-	RateType CommitRateRateType `json:"rate_type,required"`
+	RateType CommitRateRateType `json:"rate_type" api:"required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price float64 `json:"price"`
 	// Only set for TIERED rate_type.
@@ -1136,7 +1136,7 @@ const (
 type CommitRateParam struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
-	RateType CommitRateRateType `json:"rate_type,omitzero,required"`
+	RateType CommitRateRateType `json:"rate_type,omitzero" api:"required"`
 	// Commit rate price. For FLAT rate_type, this must be >=0.
 	Price param.Opt[float64] `json:"price,omitzero"`
 	// Only set for TIERED rate_type.
@@ -1239,11 +1239,11 @@ func (r *CommitSpecifierInputParam) UnmarshalJSON(data []byte) error {
 }
 
 type Contract struct {
-	ID         string                    `json:"id,required" format:"uuid"`
-	Amendments []ContractAmendment       `json:"amendments,required"`
-	Current    ContractWithoutAmendments `json:"current,required"`
-	CustomerID string                    `json:"customer_id,required" format:"uuid"`
-	Initial    ContractWithoutAmendments `json:"initial,required"`
+	ID         string                    `json:"id" api:"required" format:"uuid"`
+	Amendments []ContractAmendment       `json:"amendments" api:"required"`
+	Current    ContractWithoutAmendments `json:"current" api:"required"`
+	CustomerID string                    `json:"customer_id" api:"required" format:"uuid"`
+	Initial    ContractWithoutAmendments `json:"initial" api:"required"`
 	// RFC 3339 timestamp indicating when the contract was archived. If not returned,
 	// the contract is not archived.
 	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
@@ -1297,13 +1297,13 @@ func (r *Contract) UnmarshalJSON(data []byte) error {
 }
 
 type ContractAmendment struct {
-	ID               string            `json:"id,required" format:"uuid"`
-	Commits          []Commit          `json:"commits,required"`
-	CreatedAt        time.Time         `json:"created_at,required" format:"date-time"`
-	CreatedBy        string            `json:"created_by,required"`
-	Overrides        []Override        `json:"overrides,required"`
-	ScheduledCharges []ScheduledCharge `json:"scheduled_charges,required"`
-	StartingAt       time.Time         `json:"starting_at,required" format:"date-time"`
+	ID               string            `json:"id" api:"required" format:"uuid"`
+	Commits          []Commit          `json:"commits" api:"required"`
+	CreatedAt        time.Time         `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy        string            `json:"created_by" api:"required"`
+	Overrides        []Override        `json:"overrides" api:"required"`
+	ScheduledCharges []ScheduledCharge `json:"scheduled_charges" api:"required"`
+	StartingAt       time.Time         `json:"starting_at" api:"required" format:"date-time"`
 	Credits          []Credit          `json:"credits"`
 	// This field's availability is dependent on your client's configuration.
 	Discounts []Discount `json:"discounts"`
@@ -1343,11 +1343,11 @@ func (r *ContractAmendment) UnmarshalJSON(data []byte) error {
 
 type ContractAmendmentResellerRoyalty struct {
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType          string    `json:"reseller_type,required"`
+	ResellerType          string    `json:"reseller_type" api:"required"`
 	AwsAccountNumber      string    `json:"aws_account_number"`
 	AwsOfferID            string    `json:"aws_offer_id"`
 	AwsPayerReferenceID   string    `json:"aws_payer_reference_id"`
-	EndingBefore          time.Time `json:"ending_before,nullable" format:"date-time"`
+	EndingBefore          time.Time `json:"ending_before" api:"nullable" format:"date-time"`
 	Fraction              float64   `json:"fraction"`
 	GcpAccountID          string    `json:"gcp_account_id"`
 	GcpOfferID            string    `json:"gcp_offer_id"`
@@ -1380,12 +1380,12 @@ func (r *ContractAmendmentResellerRoyalty) UnmarshalJSON(data []byte) error {
 
 // The billing provider configuration associated with a contract.
 type ContractCustomerBillingProviderConfiguration struct {
-	ArchivedAt time.Time `json:"archived_at,required" format:"date-time"`
+	ArchivedAt time.Time `json:"archived_at" api:"required" format:"date-time"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string `json:"billing_provider,required"`
+	BillingProvider string `json:"billing_provider" api:"required"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
-	DeliveryMethod string `json:"delivery_method,required"`
+	DeliveryMethod string `json:"delivery_method" api:"required"`
 	ID             string `json:"id" format:"uuid"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
@@ -1420,17 +1420,17 @@ const (
 )
 
 type ContractV2 struct {
-	ID                     string                           `json:"id,required" format:"uuid"`
-	Commits                []ContractV2Commit               `json:"commits,required"`
-	CreatedAt              time.Time                        `json:"created_at,required" format:"date-time"`
-	CreatedBy              string                           `json:"created_by,required"`
-	CustomerID             string                           `json:"customer_id,required" format:"uuid"`
-	Overrides              []ContractV2Override             `json:"overrides,required"`
-	ScheduledCharges       []ScheduledCharge                `json:"scheduled_charges,required"`
-	StartingAt             time.Time                        `json:"starting_at,required" format:"date-time"`
-	Transitions            []ContractV2Transition           `json:"transitions,required"`
-	UsageFilter            []ContractV2UsageFilter          `json:"usage_filter,required"`
-	UsageStatementSchedule ContractV2UsageStatementSchedule `json:"usage_statement_schedule,required"`
+	ID                     string                           `json:"id" api:"required" format:"uuid"`
+	Commits                []ContractV2Commit               `json:"commits" api:"required"`
+	CreatedAt              time.Time                        `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy              string                           `json:"created_by" api:"required"`
+	CustomerID             string                           `json:"customer_id" api:"required" format:"uuid"`
+	Overrides              []ContractV2Override             `json:"overrides" api:"required"`
+	ScheduledCharges       []ScheduledCharge                `json:"scheduled_charges" api:"required"`
+	StartingAt             time.Time                        `json:"starting_at" api:"required" format:"date-time"`
+	Transitions            []ContractV2Transition           `json:"transitions" api:"required"`
+	UsageFilter            []ContractV2UsageFilter          `json:"usage_filter" api:"required"`
+	UsageStatementSchedule ContractV2UsageStatementSchedule `json:"usage_statement_schedule" api:"required"`
 	ArchivedAt             time.Time                        `json:"archived_at" format:"date-time"`
 	Credits                []ContractV2Credit               `json:"credits"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
@@ -1533,16 +1533,16 @@ func (r *ContractV2) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2Commit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Timestamp of when the commit was created.
 	//
 	//   - Recurring commits: latter of commit service period date and parent commit
 	//     start date
 	//   - Rollover commits: when the new contract started
-	CreatedAt time.Time               `json:"created_at,required" format:"date-time"`
-	Product   ContractV2CommitProduct `json:"product,required"`
+	CreatedAt time.Time               `json:"created_at" api:"required" format:"date-time"`
+	Product   ContractV2CommitProduct `json:"product" api:"required"`
 	// Any of "PREPAID", "POSTPAID".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The schedule that the customer will gain access to the credits purposed with
 	// this commit.
 	AccessSchedule        ScheduleDuration `json:"access_schedule"`
@@ -1633,8 +1633,8 @@ func (r *ContractV2Commit) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2CommitProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1651,7 +1651,7 @@ func (r *ContractV2CommitProduct) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2CommitContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1668,7 +1668,7 @@ func (r *ContractV2CommitContract) UnmarshalJSON(data []byte) error {
 
 // The contract that this commit will be billed on.
 type ContractV2CommitInvoiceContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1800,11 +1800,11 @@ func (r *ContractV2CommitLedgerUnion) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2CommitLedgerPrepaidCommitSegmentStartLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_SEGMENT_START".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -1825,12 +1825,12 @@ func (r *ContractV2CommitLedgerPrepaidCommitSegmentStartLedgerEntry) UnmarshalJS
 }
 
 type ContractV2CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1854,12 +1854,12 @@ func (r *ContractV2CommitLedgerPrepaidCommitAutomatedInvoiceDeductionLedgerEntry
 }
 
 type ContractV2CommitLedgerPrepaidCommitRolloverLedgerEntry struct {
-	Amount        float64   `json:"amount,required"`
-	NewContractID string    `json:"new_contract_id,required" format:"uuid"`
-	SegmentID     string    `json:"segment_id,required" format:"uuid"`
-	Timestamp     time.Time `json:"timestamp,required" format:"date-time"`
+	Amount        float64   `json:"amount" api:"required"`
+	NewContractID string    `json:"new_contract_id" api:"required" format:"uuid"`
+	SegmentID     string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp     time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_ROLLOVER".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount        respjson.Field
@@ -1879,11 +1879,11 @@ func (r *ContractV2CommitLedgerPrepaidCommitRolloverLedgerEntry) UnmarshalJSON(d
 }
 
 type ContractV2CommitLedgerPrepaidCommitExpirationLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_EXPIRATION".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -1902,12 +1902,12 @@ func (r *ContractV2CommitLedgerPrepaidCommitExpirationLedgerEntry) UnmarshalJSON
 }
 
 type ContractV2CommitLedgerPrepaidCommitCanceledLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_CANCELED".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1929,12 +1929,12 @@ func (r *ContractV2CommitLedgerPrepaidCommitCanceledLedgerEntry) UnmarshalJSON(d
 }
 
 type ContractV2CommitLedgerPrepaidCommitCreditedLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_CREDITED".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1956,11 +1956,11 @@ func (r *ContractV2CommitLedgerPrepaidCommitCreditedLedgerEntry) UnmarshalJSON(d
 }
 
 type ContractV2CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -1981,10 +1981,10 @@ func (r *ContractV2CommitLedgerPrepaidCommitSeatBasedAdjustmentLedgerEntry) Unma
 }
 
 type ContractV2CommitLedgerPostpaidCommitInitialBalanceLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_INITIAL_BALANCE".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -2004,12 +2004,12 @@ func (r *ContractV2CommitLedgerPostpaidCommitInitialBalanceLedgerEntry) Unmarsha
 }
 
 type ContractV2CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2033,12 +2033,12 @@ func (r *ContractV2CommitLedgerPostpaidCommitAutomatedInvoiceDeductionLedgerEntr
 }
 
 type ContractV2CommitLedgerPostpaidCommitRolloverLedgerEntry struct {
-	Amount        float64   `json:"amount,required"`
-	NewContractID string    `json:"new_contract_id,required" format:"uuid"`
-	SegmentID     string    `json:"segment_id,required" format:"uuid"`
-	Timestamp     time.Time `json:"timestamp,required" format:"date-time"`
+	Amount        float64   `json:"amount" api:"required"`
+	NewContractID string    `json:"new_contract_id" api:"required" format:"uuid"`
+	SegmentID     string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp     time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_ROLLOVER".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount        respjson.Field
@@ -2058,11 +2058,11 @@ func (r *ContractV2CommitLedgerPostpaidCommitRolloverLedgerEntry) UnmarshalJSON(
 }
 
 type ContractV2CommitLedgerPostpaidCommitTrueupLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_TRUEUP".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2083,11 +2083,11 @@ func (r *ContractV2CommitLedgerPostpaidCommitTrueupLedgerEntry) UnmarshalJSON(da
 }
 
 type ContractV2CommitLedgerPrepaidCommitManualLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Reason    string    `json:"reason,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Reason    string    `json:"reason" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "PREPAID_COMMIT_MANUAL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -2106,11 +2106,11 @@ func (r *ContractV2CommitLedgerPrepaidCommitManualLedgerEntry) UnmarshalJSON(dat
 }
 
 type ContractV2CommitLedgerPostpaidCommitManualLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Reason    string    `json:"reason,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Reason    string    `json:"reason" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_MANUAL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -2129,10 +2129,10 @@ func (r *ContractV2CommitLedgerPostpaidCommitManualLedgerEntry) UnmarshalJSON(da
 }
 
 type ContractV2CommitLedgerPostpaidCommitExpirationLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "POSTPAID_COMMIT_EXPIRATION".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -2152,8 +2152,8 @@ func (r *ContractV2CommitLedgerPostpaidCommitExpirationLedgerEntry) UnmarshalJSO
 }
 
 type ContractV2CommitRolledOverFrom struct {
-	CommitID   string `json:"commit_id,required" format:"uuid"`
-	ContractID string `json:"contract_id,required" format:"uuid"`
+	CommitID   string `json:"commit_id" api:"required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CommitID    respjson.Field
@@ -2170,8 +2170,8 @@ func (r *ContractV2CommitRolledOverFrom) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2Override struct {
-	ID                    string                                `json:"id,required" format:"uuid"`
-	StartingAt            time.Time                             `json:"starting_at,required" format:"date-time"`
+	ID                    string                                `json:"id" api:"required" format:"uuid"`
+	StartingAt            time.Time                             `json:"starting_at" api:"required" format:"date-time"`
 	ApplicableProductTags []string                              `json:"applicable_product_tags"`
 	EndingBefore          time.Time                             `json:"ending_before" format:"date-time"`
 	Entitled              bool                                  `json:"entitled"`
@@ -2247,7 +2247,7 @@ func (r *ContractV2OverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
 type ContractV2OverrideOverwriteRate struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
-	RateType   string         `json:"rate_type,required"`
+	RateType   string         `json:"rate_type" api:"required"`
 	CreditType CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
@@ -2283,8 +2283,8 @@ func (r *ContractV2OverrideOverwriteRate) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2OverrideProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -2301,10 +2301,10 @@ func (r *ContractV2OverrideProduct) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2Transition struct {
-	FromContractID string `json:"from_contract_id,required" format:"uuid"`
-	ToContractID   string `json:"to_contract_id,required" format:"uuid"`
+	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
+	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
 	// Any of "SUPERSEDE", "RENEWAL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FromContractID respjson.Field
@@ -2322,11 +2322,11 @@ func (r *ContractV2Transition) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2UsageFilter struct {
-	GroupKey    string   `json:"group_key,required"`
-	GroupValues []string `json:"group_values,required"`
+	GroupKey    string   `json:"group_key" api:"required"`
+	GroupValues []string `json:"group_values" api:"required"`
 	// This will match contract starting_at value if usage filter is active from the
 	// beginning of the contract.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// This will match contract ending_before value if usage filter is active until the
 	// end of the contract. It will be undefined if the contract is open-ended.
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
@@ -2349,9 +2349,9 @@ func (r *ContractV2UsageFilter) UnmarshalJSON(data []byte) error {
 
 type ContractV2UsageStatementSchedule struct {
 	// Contract usage statements follow a selected cadence based on this date.
-	BillingAnchorDate time.Time `json:"billing_anchor_date,required" format:"date-time"`
+	BillingAnchorDate time.Time `json:"billing_anchor_date" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	Frequency string `json:"frequency,required"`
+	Frequency string `json:"frequency" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingAnchorDate respjson.Field
@@ -2368,10 +2368,10 @@ func (r *ContractV2UsageStatementSchedule) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2Credit struct {
-	ID      string                  `json:"id,required" format:"uuid"`
-	Product ContractV2CreditProduct `json:"product,required"`
+	ID      string                  `json:"id" api:"required" format:"uuid"`
+	Product ContractV2CreditProduct `json:"product" api:"required"`
 	// Any of "CREDIT".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The schedule that the customer will gain access to the credits.
 	AccessSchedule        ScheduleDuration `json:"access_schedule"`
 	ApplicableContractIDs []string         `json:"applicable_contract_ids" format:"uuid"`
@@ -2451,8 +2451,8 @@ func (r *ContractV2Credit) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2CreditProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -2469,7 +2469,7 @@ func (r *ContractV2CreditProduct) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2CreditContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -2558,11 +2558,11 @@ func (r *ContractV2CreditLedgerUnion) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2CreditLedgerCreditSegmentStartLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_SEGMENT_START".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -2581,12 +2581,12 @@ func (r *ContractV2CreditLedgerCreditSegmentStartLedgerEntry) UnmarshalJSON(data
 }
 
 type ContractV2CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_AUTOMATED_INVOICE_DEDUCTION".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2610,11 +2610,11 @@ func (r *ContractV2CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry) Unmar
 }
 
 type ContractV2CreditLedgerCreditExpirationLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_EXPIRATION".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -2633,12 +2633,12 @@ func (r *ContractV2CreditLedgerCreditExpirationLedgerEntry) UnmarshalJSON(data [
 }
 
 type ContractV2CreditLedgerCreditCanceledLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_CANCELED".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2660,12 +2660,12 @@ func (r *ContractV2CreditLedgerCreditCanceledLedgerEntry) UnmarshalJSON(data []b
 }
 
 type ContractV2CreditLedgerCreditCreditedLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_CREDITED".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2687,11 +2687,11 @@ func (r *ContractV2CreditLedgerCreditCreditedLedgerEntry) UnmarshalJSON(data []b
 }
 
 type ContractV2CreditLedgerCreditManualLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Reason    string    `json:"reason,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Reason    string    `json:"reason" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_MANUAL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -2710,11 +2710,11 @@ func (r *ContractV2CreditLedgerCreditManualLedgerEntry) UnmarshalJSON(data []byt
 }
 
 type ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_SEAT_BASED_ADJUSTMENT".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -2737,12 +2737,12 @@ func (r *ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) UnmarshalJS
 // This field's availability is dependent on your client's configuration.
 type ContractV2CustomerBillingProviderConfiguration struct {
 	// ID of Customer's billing provider configuration.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string `json:"billing_provider,required"`
+	BillingProvider string `json:"billing_provider" api:"required"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
-	DeliveryMethod string `json:"delivery_method,required"`
+	DeliveryMethod string `json:"delivery_method" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -2765,11 +2765,11 @@ type ContractV2HasMore struct {
 	// Whether there are more commits on this contract than the limit for this
 	// endpoint. Use the /contracts/customerCommits/list endpoint to get the full list
 	// of commits.
-	Commits bool `json:"commits,required"`
+	Commits bool `json:"commits" api:"required"`
 	// Whether there are more credits on this contract than the limit for this
 	// endpoint. Use the /contracts/customerCredits/list endpoint to get the full list
 	// of credits.
-	Credits bool `json:"credits,required"`
+	Credits bool `json:"credits" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Commits     respjson.Field
@@ -2835,7 +2835,7 @@ func (r *ContractV2HierarchyConfigurationUnion) UnmarshalJSON(data []byte) error
 
 type ContractV2HierarchyConfigurationParentHierarchyConfiguration struct {
 	// List of contracts that belong to this parent.
-	Children       []ContractV2HierarchyConfigurationParentHierarchyConfigurationChild        `json:"children,required"`
+	Children       []ContractV2HierarchyConfigurationParentHierarchyConfigurationChild        `json:"children" api:"required"`
 	ParentBehavior ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehavior `json:"parent_behavior"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2855,8 +2855,8 @@ func (r *ContractV2HierarchyConfigurationParentHierarchyConfiguration) Unmarshal
 }
 
 type ContractV2HierarchyConfigurationParentHierarchyConfigurationChild struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContractID  respjson.Field
@@ -2903,7 +2903,7 @@ func (r *ContractV2HierarchyConfigurationParentHierarchyConfigurationParentBehav
 
 type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2 struct {
 	// The single parent contract/customer for this child.
-	Parent ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent `json:"parent,required"`
+	Parent ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent `json:"parent" api:"required"`
 	// Indicates which customer should pay for the child's invoice charges **SELF**:
 	// The child pays for its own invoice charges **PARENT**: The parent pays for the
 	// child's invoice charges
@@ -2941,8 +2941,8 @@ func (r *ContractV2HierarchyConfigurationChildHierarchyConfigurationV2) Unmarsha
 
 // The single parent contract/customer for this child.
 type ContractV2HierarchyConfigurationChildHierarchyConfigurationV2Parent struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContractID  respjson.Field
@@ -2972,20 +2972,20 @@ const (
 )
 
 type ContractV2RecurringCommit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
-	AccessAmount ContractV2RecurringCommitAccessAmount `json:"access_amount,required"`
+	AccessAmount ContractV2RecurringCommitAccessAmount `json:"access_amount" api:"required"`
 	// The amount of time the created commits will be valid for
-	CommitDuration ContractV2RecurringCommitCommitDuration `json:"commit_duration,required"`
+	CommitDuration ContractV2RecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
-	Priority float64                          `json:"priority,required"`
-	Product  ContractV2RecurringCommitProduct `json:"product,required"`
+	Priority float64                          `json:"priority" api:"required"`
+	Product  ContractV2RecurringCommitProduct `json:"product" api:"required"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,required"`
+	RateType string `json:"rate_type" api:"required"`
 	// Determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -3062,8 +3062,8 @@ func (r *ContractV2RecurringCommit) UnmarshalJSON(data []byte) error {
 
 // The amount of commit to grant.
 type ContractV2RecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	Quantity     float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3083,7 +3083,7 @@ func (r *ContractV2RecurringCommitAccessAmount) UnmarshalJSON(data []byte) error
 
 // The amount of time the created commits will be valid for
 type ContractV2RecurringCommitCommitDuration struct {
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Any of "PERIODS".
 	Unit string `json:"unit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3102,8 +3102,8 @@ func (r *ContractV2RecurringCommitCommitDuration) UnmarshalJSON(data []byte) err
 }
 
 type ContractV2RecurringCommitProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3120,7 +3120,7 @@ func (r *ContractV2RecurringCommitProduct) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2RecurringCommitContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3137,9 +3137,9 @@ func (r *ContractV2RecurringCommitContract) UnmarshalJSON(data []byte) error {
 
 // The amount the customer should be billed for the commit. Not required.
 type ContractV2RecurringCommitInvoiceAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64 `json:"quantity,required"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	Quantity     float64 `json:"quantity" api:"required"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
@@ -3157,20 +3157,20 @@ func (r *ContractV2RecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) erro
 }
 
 type ContractV2RecurringCredit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
-	AccessAmount ContractV2RecurringCreditAccessAmount `json:"access_amount,required"`
+	AccessAmount ContractV2RecurringCreditAccessAmount `json:"access_amount" api:"required"`
 	// The amount of time the created commits will be valid for
-	CommitDuration ContractV2RecurringCreditCommitDuration `json:"commit_duration,required"`
+	CommitDuration ContractV2RecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
-	Priority float64                          `json:"priority,required"`
-	Product  ContractV2RecurringCreditProduct `json:"product,required"`
+	Priority float64                          `json:"priority" api:"required"`
+	Product  ContractV2RecurringCreditProduct `json:"product" api:"required"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,required"`
+	RateType string `json:"rate_type" api:"required"`
 	// Determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -3244,8 +3244,8 @@ func (r *ContractV2RecurringCredit) UnmarshalJSON(data []byte) error {
 
 // The amount of commit to grant.
 type ContractV2RecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	Quantity     float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3265,7 +3265,7 @@ func (r *ContractV2RecurringCreditAccessAmount) UnmarshalJSON(data []byte) error
 
 // The amount of time the created commits will be valid for
 type ContractV2RecurringCreditCommitDuration struct {
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Any of "PERIODS".
 	Unit string `json:"unit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3284,8 +3284,8 @@ func (r *ContractV2RecurringCreditCommitDuration) UnmarshalJSON(data []byte) err
 }
 
 type ContractV2RecurringCreditProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3302,7 +3302,7 @@ func (r *ContractV2RecurringCreditProduct) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2RecurringCreditContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3319,8 +3319,8 @@ func (r *ContractV2RecurringCreditContract) UnmarshalJSON(data []byte) error {
 
 type ContractV2ResellerRoyalty struct {
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType string                             `json:"reseller_type,required"`
-	Segments     []ContractV2ResellerRoyaltySegment `json:"segments,required"`
+	ResellerType string                             `json:"reseller_type" api:"required"`
+	Segments     []ContractV2ResellerRoyaltySegment `json:"segments" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ResellerType respjson.Field
@@ -3337,11 +3337,11 @@ func (r *ContractV2ResellerRoyalty) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2ResellerRoyaltySegment struct {
-	Fraction           float64 `json:"fraction,required"`
-	NetsuiteResellerID string  `json:"netsuite_reseller_id,required"`
+	Fraction           float64 `json:"fraction" api:"required"`
+	NetsuiteResellerID string  `json:"netsuite_reseller_id" api:"required"`
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType          string    `json:"reseller_type,required"`
-	StartingAt            time.Time `json:"starting_at,required" format:"date-time"`
+	ResellerType          string    `json:"reseller_type" api:"required"`
+	StartingAt            time.Time `json:"starting_at" api:"required" format:"date-time"`
 	ApplicableProductIDs  []string  `json:"applicable_product_ids"`
 	ApplicableProductTags []string  `json:"applicable_product_tags"`
 	AwsAccountNumber      string    `json:"aws_account_number"`
@@ -3389,14 +3389,14 @@ const (
 )
 
 type ContractWithoutAmendments struct {
-	Commits                []Commit                                        `json:"commits,required"`
-	CreatedAt              time.Time                                       `json:"created_at,required" format:"date-time"`
-	CreatedBy              string                                          `json:"created_by,required"`
-	Overrides              []Override                                      `json:"overrides,required"`
-	ScheduledCharges       []ScheduledCharge                               `json:"scheduled_charges,required"`
-	StartingAt             time.Time                                       `json:"starting_at,required" format:"date-time"`
-	Transitions            []ContractWithoutAmendmentsTransition           `json:"transitions,required"`
-	UsageStatementSchedule ContractWithoutAmendmentsUsageStatementSchedule `json:"usage_statement_schedule,required"`
+	Commits                []Commit                                        `json:"commits" api:"required"`
+	CreatedAt              time.Time                                       `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy              string                                          `json:"created_by" api:"required"`
+	Overrides              []Override                                      `json:"overrides" api:"required"`
+	ScheduledCharges       []ScheduledCharge                               `json:"scheduled_charges" api:"required"`
+	StartingAt             time.Time                                       `json:"starting_at" api:"required" format:"date-time"`
+	Transitions            []ContractWithoutAmendmentsTransition           `json:"transitions" api:"required"`
+	UsageStatementSchedule ContractWithoutAmendmentsUsageStatementSchedule `json:"usage_statement_schedule" api:"required"`
 	Credits                []Credit                                        `json:"credits"`
 	// This field's availability is dependent on your client's
 	Discounts    []Discount `json:"discounts"`
@@ -3470,10 +3470,10 @@ func (r *ContractWithoutAmendments) UnmarshalJSON(data []byte) error {
 }
 
 type ContractWithoutAmendmentsTransition struct {
-	FromContractID string `json:"from_contract_id,required" format:"uuid"`
-	ToContractID   string `json:"to_contract_id,required" format:"uuid"`
+	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
+	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
 	// Any of "SUPERSEDE", "RENEWAL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FromContractID respjson.Field
@@ -3492,9 +3492,9 @@ func (r *ContractWithoutAmendmentsTransition) UnmarshalJSON(data []byte) error {
 
 type ContractWithoutAmendmentsUsageStatementSchedule struct {
 	// Contract usage statements follow a selected cadence based on this date.
-	BillingAnchorDate time.Time `json:"billing_anchor_date,required" format:"date-time"`
+	BillingAnchorDate time.Time `json:"billing_anchor_date" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	Frequency string `json:"frequency,required"`
+	Frequency string `json:"frequency" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingAnchorDate respjson.Field
@@ -3511,20 +3511,20 @@ func (r *ContractWithoutAmendmentsUsageStatementSchedule) UnmarshalJSON(data []b
 }
 
 type ContractWithoutAmendmentsRecurringCommit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
-	AccessAmount ContractWithoutAmendmentsRecurringCommitAccessAmount `json:"access_amount,required"`
+	AccessAmount ContractWithoutAmendmentsRecurringCommitAccessAmount `json:"access_amount" api:"required"`
 	// The amount of time the created commits will be valid for
-	CommitDuration ContractWithoutAmendmentsRecurringCommitCommitDuration `json:"commit_duration,required"`
+	CommitDuration ContractWithoutAmendmentsRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
-	Priority float64                                         `json:"priority,required"`
-	Product  ContractWithoutAmendmentsRecurringCommitProduct `json:"product,required"`
+	Priority float64                                         `json:"priority" api:"required"`
+	Product  ContractWithoutAmendmentsRecurringCommitProduct `json:"product" api:"required"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,required"`
+	RateType string `json:"rate_type" api:"required"`
 	// Determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -3601,8 +3601,8 @@ func (r *ContractWithoutAmendmentsRecurringCommit) UnmarshalJSON(data []byte) er
 
 // The amount of commit to grant.
 type ContractWithoutAmendmentsRecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	Quantity     float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3622,7 +3622,7 @@ func (r *ContractWithoutAmendmentsRecurringCommitAccessAmount) UnmarshalJSON(dat
 
 // The amount of time the created commits will be valid for
 type ContractWithoutAmendmentsRecurringCommitCommitDuration struct {
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Any of "PERIODS".
 	Unit string `json:"unit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3641,8 +3641,8 @@ func (r *ContractWithoutAmendmentsRecurringCommitCommitDuration) UnmarshalJSON(d
 }
 
 type ContractWithoutAmendmentsRecurringCommitProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3659,7 +3659,7 @@ func (r *ContractWithoutAmendmentsRecurringCommitProduct) UnmarshalJSON(data []b
 }
 
 type ContractWithoutAmendmentsRecurringCommitContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3676,9 +3676,9 @@ func (r *ContractWithoutAmendmentsRecurringCommitContract) UnmarshalJSON(data []
 
 // The amount the customer should be billed for the commit. Not required.
 type ContractWithoutAmendmentsRecurringCommitInvoiceAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64 `json:"quantity,required"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	Quantity     float64 `json:"quantity" api:"required"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
@@ -3696,20 +3696,20 @@ func (r *ContractWithoutAmendmentsRecurringCommitInvoiceAmount) UnmarshalJSON(da
 }
 
 type ContractWithoutAmendmentsRecurringCredit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
-	AccessAmount ContractWithoutAmendmentsRecurringCreditAccessAmount `json:"access_amount,required"`
+	AccessAmount ContractWithoutAmendmentsRecurringCreditAccessAmount `json:"access_amount" api:"required"`
 	// The amount of time the created commits will be valid for
-	CommitDuration ContractWithoutAmendmentsRecurringCreditCommitDuration `json:"commit_duration,required"`
+	CommitDuration ContractWithoutAmendmentsRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
-	Priority float64                                         `json:"priority,required"`
-	Product  ContractWithoutAmendmentsRecurringCreditProduct `json:"product,required"`
+	Priority float64                                         `json:"priority" api:"required"`
+	Product  ContractWithoutAmendmentsRecurringCreditProduct `json:"product" api:"required"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,required"`
+	RateType string `json:"rate_type" api:"required"`
 	// Determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -3783,8 +3783,8 @@ func (r *ContractWithoutAmendmentsRecurringCredit) UnmarshalJSON(data []byte) er
 
 // The amount of commit to grant.
 type ContractWithoutAmendmentsRecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	Quantity     float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3804,7 +3804,7 @@ func (r *ContractWithoutAmendmentsRecurringCreditAccessAmount) UnmarshalJSON(dat
 
 // The amount of time the created commits will be valid for
 type ContractWithoutAmendmentsRecurringCreditCommitDuration struct {
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Any of "PERIODS".
 	Unit string `json:"unit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3823,8 +3823,8 @@ func (r *ContractWithoutAmendmentsRecurringCreditCommitDuration) UnmarshalJSON(d
 }
 
 type ContractWithoutAmendmentsRecurringCreditProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3841,7 +3841,7 @@ func (r *ContractWithoutAmendmentsRecurringCreditProduct) UnmarshalJSON(data []b
 }
 
 type ContractWithoutAmendmentsRecurringCreditContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3857,11 +3857,11 @@ func (r *ContractWithoutAmendmentsRecurringCreditContract) UnmarshalJSON(data []
 }
 
 type ContractWithoutAmendmentsResellerRoyalty struct {
-	Fraction           float64 `json:"fraction,required"`
-	NetsuiteResellerID string  `json:"netsuite_reseller_id,required"`
+	Fraction           float64 `json:"fraction" api:"required"`
+	NetsuiteResellerID string  `json:"netsuite_reseller_id" api:"required"`
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType          string    `json:"reseller_type,required"`
-	StartingAt            time.Time `json:"starting_at,required" format:"date-time"`
+	ResellerType          string    `json:"reseller_type" api:"required"`
+	StartingAt            time.Time `json:"starting_at" api:"required" format:"date-time"`
 	ApplicableProductIDs  []string  `json:"applicable_product_ids"`
 	ApplicableProductTags []string  `json:"applicable_product_tags"`
 	AwsAccountNumber      string    `json:"aws_account_number"`
@@ -3909,9 +3909,9 @@ const (
 )
 
 type ContractWithoutAmendmentsUsageFilter struct {
-	Current BaseUsageFilter                              `json:"current,required"`
-	Initial BaseUsageFilter                              `json:"initial,required"`
-	Updates []ContractWithoutAmendmentsUsageFilterUpdate `json:"updates,required"`
+	Current BaseUsageFilter                              `json:"current" api:"required"`
+	Initial BaseUsageFilter                              `json:"initial" api:"required"`
+	Updates []ContractWithoutAmendmentsUsageFilterUpdate `json:"updates" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Current     respjson.Field
@@ -3929,9 +3929,9 @@ func (r *ContractWithoutAmendmentsUsageFilter) UnmarshalJSON(data []byte) error 
 }
 
 type ContractWithoutAmendmentsUsageFilterUpdate struct {
-	GroupKey    string    `json:"group_key,required"`
-	GroupValues []string  `json:"group_values,required"`
-	StartingAt  time.Time `json:"starting_at,required" format:"date-time"`
+	GroupKey    string    `json:"group_key" api:"required"`
+	GroupValues []string  `json:"group_values" api:"required"`
+	StartingAt  time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GroupKey    respjson.Field
@@ -3949,10 +3949,10 @@ func (r *ContractWithoutAmendmentsUsageFilterUpdate) UnmarshalJSON(data []byte) 
 }
 
 type Credit struct {
-	ID      string        `json:"id,required" format:"uuid"`
-	Product CreditProduct `json:"product,required"`
+	ID      string        `json:"id" api:"required" format:"uuid"`
+	Product CreditProduct `json:"product" api:"required"`
 	// Any of "CREDIT".
-	Type CreditType `json:"type,required"`
+	Type CreditType `json:"type" api:"required"`
 	// The schedule that the customer will gain access to the credits.
 	AccessSchedule        ScheduleDuration `json:"access_schedule"`
 	ApplicableContractIDs []string         `json:"applicable_contract_ids" format:"uuid"`
@@ -4037,8 +4037,8 @@ func (r *Credit) UnmarshalJSON(data []byte) error {
 }
 
 type CreditProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -4061,7 +4061,7 @@ const (
 )
 
 type CreditContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -4149,11 +4149,11 @@ func (r *CreditLedgerUnion) UnmarshalJSON(data []byte) error {
 }
 
 type CreditLedgerCreditSegmentStartLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_SEGMENT_START".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -4172,12 +4172,12 @@ func (r *CreditLedgerCreditSegmentStartLedgerEntry) UnmarshalJSON(data []byte) e
 }
 
 type CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_AUTOMATED_INVOICE_DEDUCTION".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4199,11 +4199,11 @@ func (r *CreditLedgerCreditAutomatedInvoiceDeductionLedgerEntry) UnmarshalJSON(d
 }
 
 type CreditLedgerCreditExpirationLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_EXPIRATION".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -4222,12 +4222,12 @@ func (r *CreditLedgerCreditExpirationLedgerEntry) UnmarshalJSON(data []byte) err
 }
 
 type CreditLedgerCreditCanceledLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_CANCELED".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4249,12 +4249,12 @@ func (r *CreditLedgerCreditCanceledLedgerEntry) UnmarshalJSON(data []byte) error
 }
 
 type CreditLedgerCreditCreditedLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_CREDITED".
-	Type       string `json:"type,required"`
+	Type       string `json:"type" api:"required"`
 	ContractID string `json:"contract_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4276,11 +4276,11 @@ func (r *CreditLedgerCreditCreditedLedgerEntry) UnmarshalJSON(data []byte) error
 }
 
 type CreditLedgerCreditManualLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	Reason    string    `json:"reason,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	Reason    string    `json:"reason" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_MANUAL".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -4299,11 +4299,11 @@ func (r *CreditLedgerCreditManualLedgerEntry) UnmarshalJSON(data []byte) error {
 }
 
 type CreditLedgerCreditSeatBasedAdjustmentLedgerEntry struct {
-	Amount    float64   `json:"amount,required"`
-	SegmentID string    `json:"segment_id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Amount    float64   `json:"amount" api:"required"`
+	SegmentID string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "CREDIT_SEAT_BASED_ADJUSTMENT".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -4353,7 +4353,7 @@ func (r *CreditSubscriptionConfig) UnmarshalJSON(data []byte) error {
 
 type CreditSubscriptionConfigApplySeatIncreaseConfig struct {
 	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool `json:"is_prorated,required"`
+	IsProrated bool `json:"is_prorated" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsProrated  respjson.Field
@@ -4369,8 +4369,8 @@ func (r *CreditSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []b
 }
 
 type CreditTypeData struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -4387,9 +4387,9 @@ func (r *CreditTypeData) UnmarshalJSON(data []byte) error {
 }
 
 type Discount struct {
-	ID       string              `json:"id,required" format:"uuid"`
-	Product  DiscountProduct     `json:"product,required"`
-	Schedule SchedulePointInTime `json:"schedule,required"`
+	ID       string              `json:"id" api:"required" format:"uuid"`
+	Product  DiscountProduct     `json:"product" api:"required"`
+	Schedule SchedulePointInTime `json:"schedule" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Name         string            `json:"name"`
@@ -4415,8 +4415,8 @@ func (r *Discount) UnmarshalJSON(data []byte) error {
 }
 
 type DiscountProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -4532,7 +4532,7 @@ func (r *HierarchyConfigurationUnion) UnmarshalJSON(data []byte) error {
 
 type HierarchyConfigurationParentHierarchyConfiguration struct {
 	// List of contracts that belong to this parent.
-	Children       []HierarchyConfigurationParentHierarchyConfigurationChild        `json:"children,required"`
+	Children       []HierarchyConfigurationParentHierarchyConfigurationChild        `json:"children" api:"required"`
 	ParentBehavior HierarchyConfigurationParentHierarchyConfigurationParentBehavior `json:"parent_behavior"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4550,8 +4550,8 @@ func (r *HierarchyConfigurationParentHierarchyConfiguration) UnmarshalJSON(data 
 }
 
 type HierarchyConfigurationParentHierarchyConfigurationChild struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContractID  respjson.Field
@@ -4596,7 +4596,7 @@ func (r *HierarchyConfigurationParentHierarchyConfigurationParentBehavior) Unmar
 
 type HierarchyConfigurationChildHierarchyConfiguration struct {
 	// The single parent contract/customer for this child.
-	Parent HierarchyConfigurationChildHierarchyConfigurationParent `json:"parent,required"`
+	Parent HierarchyConfigurationChildHierarchyConfigurationParent `json:"parent" api:"required"`
 	// Indicates which customer should pay for the child's invoice charges
 	//
 	// **SELF**: The child pays for its own invoice charges
@@ -4634,8 +4634,8 @@ func (r *HierarchyConfigurationChildHierarchyConfiguration) UnmarshalJSON(data [
 
 // The single parent contract/customer for this child.
 type HierarchyConfigurationChildHierarchyConfigurationParent struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContractID  respjson.Field
@@ -4652,7 +4652,7 @@ func (r *HierarchyConfigurationChildHierarchyConfigurationParent) UnmarshalJSON(
 }
 
 type ID struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -4678,7 +4678,7 @@ func (r ID) ToParam() IDParam {
 
 // The property ID is required.
 type IDParam struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -4691,8 +4691,8 @@ func (r *IDParam) UnmarshalJSON(data []byte) error {
 }
 
 type Override struct {
-	ID                    string         `json:"id,required" format:"uuid"`
-	StartingAt            time.Time      `json:"starting_at,required" format:"date-time"`
+	ID                    string         `json:"id" api:"required" format:"uuid"`
+	StartingAt            time.Time      `json:"starting_at" api:"required" format:"date-time"`
 	ApplicableProductTags []string       `json:"applicable_product_tags"`
 	CreditType            CreditTypeData `json:"credit_type"`
 	EndingBefore          time.Time      `json:"ending_before" format:"date-time"`
@@ -4790,8 +4790,8 @@ func (r *OverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
 }
 
 type OverrideProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -4834,7 +4834,7 @@ const (
 )
 
 type OverrideTier struct {
-	Multiplier float64 `json:"multiplier,required"`
+	Multiplier float64 `json:"multiplier" api:"required"`
 	Size       float64 `json:"size"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4854,7 +4854,7 @@ func (r *OverrideTier) UnmarshalJSON(data []byte) error {
 type OverwriteRate struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
-	RateType   OverwriteRateRateType `json:"rate_type,required"`
+	RateType   OverwriteRateRateType `json:"rate_type" api:"required"`
 	CreditType CreditTypeData        `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
@@ -4907,7 +4907,7 @@ type PaymentGateConfig struct {
 	// wish to payment gate the commit balance.
 	//
 	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType PaymentGateConfigPaymentGateType `json:"payment_gate_type,required"`
+	PaymentGateType PaymentGateConfigPaymentGateType `json:"payment_gate_type" api:"required"`
 	// Only applicable if using PRECALCULATED as your tax type.
 	PrecalculatedTaxConfig PaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
 	// Only applicable if using STRIPE as your payment gate type.
@@ -4960,7 +4960,7 @@ const (
 type PaymentGateConfigPrecalculatedTaxConfig struct {
 	// Amount of tax to be applied. This should be in the same currency and
 	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
+	TaxAmount float64 `json:"tax_amount" api:"required"`
 	// Name of the tax to be applied. This may be used in an invoice line item
 	// description.
 	TaxName string `json:"tax_name"`
@@ -4984,7 +4984,7 @@ type PaymentGateConfigStripeConfig struct {
 	// If left blank, will default to INVOICE
 	//
 	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,required"`
+	PaymentType string `json:"payment_type" api:"required"`
 	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
 	// your payment type.
 	InvoiceMetadata map[string]string `json:"invoice_metadata"`
@@ -5023,7 +5023,7 @@ type PaymentGateConfigParam struct {
 	// wish to payment gate the commit balance.
 	//
 	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType PaymentGateConfigPaymentGateType `json:"payment_gate_type,omitzero,required"`
+	PaymentGateType PaymentGateConfigPaymentGateType `json:"payment_gate_type,omitzero" api:"required"`
 	// Only applicable if using PRECALCULATED as your tax type.
 	PrecalculatedTaxConfig PaymentGateConfigPrecalculatedTaxConfigParam `json:"precalculated_tax_config,omitzero"`
 	// Only applicable if using STRIPE as your payment gate type.
@@ -5051,7 +5051,7 @@ func (r *PaymentGateConfigParam) UnmarshalJSON(data []byte) error {
 type PaymentGateConfigPrecalculatedTaxConfigParam struct {
 	// Amount of tax to be applied. This should be in the same currency and
 	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
+	TaxAmount float64 `json:"tax_amount" api:"required"`
 	// Name of the tax to be applied. This may be used in an invoice line item
 	// description.
 	TaxName param.Opt[string] `json:"tax_name,omitzero"`
@@ -5073,7 +5073,7 @@ type PaymentGateConfigStripeConfigParam struct {
 	// If left blank, will default to INVOICE
 	//
 	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,omitzero,required"`
+	PaymentType string `json:"payment_type,omitzero" api:"required"`
 	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
 	// your payment type.
 	InvoiceMetadata map[string]string `json:"invoice_metadata,omitzero"`
@@ -5101,7 +5101,7 @@ type PaymentGateConfigV2 struct {
 	// wish to payment gate the commit balance.
 	//
 	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType PaymentGateConfigV2PaymentGateType `json:"payment_gate_type,required"`
+	PaymentGateType PaymentGateConfigV2PaymentGateType `json:"payment_gate_type" api:"required"`
 	// Only applicable if using PRECALCULATED as your tax type.
 	PrecalculatedTaxConfig PaymentGateConfigV2PrecalculatedTaxConfig `json:"precalculated_tax_config"`
 	// Only applicable if using STRIPE as your payment gateway type.
@@ -5154,7 +5154,7 @@ const (
 type PaymentGateConfigV2PrecalculatedTaxConfig struct {
 	// Amount of tax to be applied. This should be in the same currency and
 	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
+	TaxAmount float64 `json:"tax_amount" api:"required"`
 	// Name of the tax to be applied. This may be used in an invoice line item
 	// description.
 	TaxName string `json:"tax_name"`
@@ -5178,7 +5178,7 @@ type PaymentGateConfigV2StripeConfig struct {
 	// If left blank, will default to INVOICE
 	//
 	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,required"`
+	PaymentType string `json:"payment_type" api:"required"`
 	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
 	// your payment type.
 	InvoiceMetadata map[string]string `json:"invoice_metadata"`
@@ -5217,7 +5217,7 @@ type PaymentGateConfigV2Param struct {
 	// wish to payment gate the commit balance.
 	//
 	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType PaymentGateConfigV2PaymentGateType `json:"payment_gate_type,omitzero,required"`
+	PaymentGateType PaymentGateConfigV2PaymentGateType `json:"payment_gate_type,omitzero" api:"required"`
 	// Only applicable if using PRECALCULATED as your tax type.
 	PrecalculatedTaxConfig PaymentGateConfigV2PrecalculatedTaxConfigParam `json:"precalculated_tax_config,omitzero"`
 	// Only applicable if using STRIPE as your payment gateway type.
@@ -5245,7 +5245,7 @@ func (r *PaymentGateConfigV2Param) UnmarshalJSON(data []byte) error {
 type PaymentGateConfigV2PrecalculatedTaxConfigParam struct {
 	// Amount of tax to be applied. This should be in the same currency and
 	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
+	TaxAmount float64 `json:"tax_amount" api:"required"`
 	// Name of the tax to be applied. This may be used in an invoice line item
 	// description.
 	TaxName param.Opt[string] `json:"tax_name,omitzero"`
@@ -5267,7 +5267,7 @@ type PaymentGateConfigV2StripeConfigParam struct {
 	// If left blank, will default to INVOICE
 	//
 	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,omitzero,required"`
+	PaymentType string `json:"payment_type,omitzero" api:"required"`
 	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
 	// your payment type.
 	InvoiceMetadata map[string]string `json:"invoice_metadata,omitzero"`
@@ -5289,17 +5289,17 @@ func init() {
 }
 
 type PrepaidBalanceThresholdConfiguration struct {
-	Commit PrepaidBalanceThresholdConfigurationCommit `json:"commit,required"`
+	Commit PrepaidBalanceThresholdConfigurationCommit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool              `json:"is_enabled,required"`
-	PaymentGateConfig PaymentGateConfig `json:"payment_gate_config,required"`
+	IsEnabled         bool              `json:"is_enabled" api:"required"`
+	PaymentGateConfig PaymentGateConfig `json:"payment_gate_config" api:"required"`
 	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	RechargeToAmount float64 `json:"recharge_to_amount" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's prepaid
 	// balance lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
+	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
 	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
@@ -5366,17 +5366,17 @@ func (r *PrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) 
 // The properties Commit, IsEnabled, PaymentGateConfig, RechargeToAmount,
 // ThresholdAmount are required.
 type PrepaidBalanceThresholdConfigurationParam struct {
-	Commit PrepaidBalanceThresholdConfigurationCommitParam `json:"commit,omitzero,required"`
+	Commit PrepaidBalanceThresholdConfigurationCommitParam `json:"commit,omitzero" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                   `json:"is_enabled,required"`
-	PaymentGateConfig PaymentGateConfigParam `json:"payment_gate_config,omitzero,required"`
+	IsEnabled         bool                   `json:"is_enabled" api:"required"`
+	PaymentGateConfig PaymentGateConfigParam `json:"payment_gate_config,omitzero" api:"required"`
 	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	RechargeToAmount float64 `json:"recharge_to_amount" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's prepaid
 	// balance lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
+	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
 	CustomCreditTypeID param.Opt[string] `json:"custom_credit_type_id,omitzero" format:"uuid"`
@@ -5417,17 +5417,17 @@ func (r PrepaidBalanceThresholdConfigurationCommitParam) MarshalJSON() (data []b
 }
 
 type PrepaidBalanceThresholdConfigurationV2 struct {
-	Commit PrepaidBalanceThresholdConfigurationV2Commit `json:"commit,required"`
+	Commit PrepaidBalanceThresholdConfigurationV2Commit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                `json:"is_enabled,required"`
-	PaymentGateConfig PaymentGateConfigV2 `json:"payment_gate_config,required"`
+	IsEnabled         bool                `json:"is_enabled" api:"required"`
+	PaymentGateConfig PaymentGateConfigV2 `json:"payment_gate_config" api:"required"`
 	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	RechargeToAmount float64 `json:"recharge_to_amount" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
+	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
 	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
@@ -5496,17 +5496,17 @@ func (r *PrepaidBalanceThresholdConfigurationV2Commit) UnmarshalJSON(data []byte
 // The properties Commit, IsEnabled, PaymentGateConfig, RechargeToAmount,
 // ThresholdAmount are required.
 type PrepaidBalanceThresholdConfigurationV2Param struct {
-	Commit PrepaidBalanceThresholdConfigurationV2CommitParam `json:"commit,omitzero,required"`
+	Commit PrepaidBalanceThresholdConfigurationV2CommitParam `json:"commit,omitzero" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                     `json:"is_enabled,required"`
-	PaymentGateConfig PaymentGateConfigV2Param `json:"payment_gate_config,omitzero,required"`
+	IsEnabled         bool                     `json:"is_enabled" api:"required"`
+	PaymentGateConfig PaymentGateConfigV2Param `json:"payment_gate_config,omitzero" api:"required"`
 	// Specify the amount the balance should be recharged to.
-	RechargeToAmount float64 `json:"recharge_to_amount,required"`
+	RechargeToAmount float64 `json:"recharge_to_amount" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
+	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
 	CustomCreditTypeID param.Opt[string] `json:"custom_credit_type_id,omitzero" format:"uuid"`
@@ -5550,7 +5550,7 @@ func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data [
 
 type PropertyFilter struct {
 	// The name of the event property.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Determines whether the property must exist in the event. If true, only events
 	// with this property will pass the filter. If false, only events without this
 	// property will pass the filter. If null or omitted, the existence of the property
@@ -5595,7 +5595,7 @@ func (r PropertyFilter) ToParam() PropertyFilterParam {
 // The property Name is required.
 type PropertyFilterParam struct {
 	// The name of the event property.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Determines whether the property must exist in the event. If true, only events
 	// with this property will pass the filter. If false, only events without this
 	// property will pass the filter. If null or omitted, the existence of the property
@@ -5623,16 +5623,16 @@ func (r *PropertyFilterParam) UnmarshalJSON(data []byte) error {
 }
 
 type ProService struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Maximum amount for the term.
-	MaxAmount float64 `json:"max_amount,required"`
-	ProductID string  `json:"product_id,required" format:"uuid"`
+	MaxAmount float64 `json:"max_amount" api:"required"`
+	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// Quantity for the charge. Will be multiplied by unit_price to determine the
 	// amount.
-	Quantity float64 `json:"quantity,required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	// Unit price for the charge. Will be multiplied by quantity to determine the
 	// amount and must be specified.
-	UnitPrice float64 `json:"unit_price,required"`
+	UnitPrice float64 `json:"unit_price" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -5662,7 +5662,7 @@ func (r *ProService) UnmarshalJSON(data []byte) error {
 type Rate struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED",
 	// "TIERED_PERCENTAGE".
-	RateType   RateRateType   `json:"rate_type,required"`
+	RateType   RateRateType   `json:"rate_type" api:"required"`
 	CreditType CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
@@ -5714,9 +5714,9 @@ const (
 
 type RecurringCommitSubscriptionConfig struct {
 	// Any of "INDIVIDUAL", "POOLED".
-	Allocation              RecurringCommitSubscriptionConfigAllocation              `json:"allocation,required"`
-	ApplySeatIncreaseConfig RecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,required"`
-	SubscriptionID          string                                                   `json:"subscription_id,required" format:"uuid"`
+	Allocation              RecurringCommitSubscriptionConfigAllocation              `json:"allocation" api:"required"`
+	ApplySeatIncreaseConfig RecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config" api:"required"`
+	SubscriptionID          string                                                   `json:"subscription_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allocation              respjson.Field
@@ -5742,7 +5742,7 @@ const (
 
 type RecurringCommitSubscriptionConfigApplySeatIncreaseConfig struct {
 	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool `json:"is_prorated,required"`
+	IsProrated bool `json:"is_prorated" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsProrated  respjson.Field
@@ -5758,9 +5758,9 @@ func (r *RecurringCommitSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON
 }
 
 type ScheduledCharge struct {
-	ID         string                 `json:"id,required" format:"uuid"`
-	Product    ScheduledChargeProduct `json:"product,required"`
-	Schedule   SchedulePointInTime    `json:"schedule,required"`
+	ID         string                 `json:"id" api:"required" format:"uuid"`
+	Product    ScheduledChargeProduct `json:"product" api:"required"`
+	Schedule   SchedulePointInTime    `json:"schedule" api:"required"`
 	ArchivedAt time.Time              `json:"archived_at" format:"date-time"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
@@ -5789,8 +5789,8 @@ func (r *ScheduledCharge) UnmarshalJSON(data []byte) error {
 }
 
 type ScheduledChargeProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -5807,7 +5807,7 @@ func (r *ScheduledChargeProduct) UnmarshalJSON(data []byte) error {
 }
 
 type ScheduleDuration struct {
-	ScheduleItems []ScheduleDurationScheduleItem `json:"schedule_items,required"`
+	ScheduleItems []ScheduleDurationScheduleItem `json:"schedule_items" api:"required"`
 	CreditType    CreditTypeData                 `json:"credit_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5825,10 +5825,10 @@ func (r *ScheduleDuration) UnmarshalJSON(data []byte) error {
 }
 
 type ScheduleDurationScheduleItem struct {
-	ID           string    `json:"id,required" format:"uuid"`
-	Amount       float64   `json:"amount,required"`
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	ID           string    `json:"id" api:"required" format:"uuid"`
+	Amount       float64   `json:"amount" api:"required"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -5869,12 +5869,12 @@ func (r *SchedulePointInTime) UnmarshalJSON(data []byte) error {
 }
 
 type SchedulePointInTimeScheduleItem struct {
-	ID        string    `json:"id,required" format:"uuid"`
-	Amount    float64   `json:"amount,required"`
-	Quantity  float64   `json:"quantity,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
-	UnitPrice float64   `json:"unit_price,required"`
-	InvoiceID string    `json:"invoice_id,nullable" format:"uuid"`
+	ID        string    `json:"id" api:"required" format:"uuid"`
+	Amount    float64   `json:"amount" api:"required"`
+	Quantity  float64   `json:"quantity" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	UnitPrice float64   `json:"unit_price" api:"required"`
+	InvoiceID string    `json:"invoice_id" api:"nullable" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -5895,15 +5895,15 @@ func (r *SchedulePointInTimeScheduleItem) UnmarshalJSON(data []byte) error {
 }
 
 type SpendThresholdConfiguration struct {
-	Commit BaseThresholdCommit `json:"commit,required"`
+	Commit BaseThresholdCommit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool              `json:"is_enabled,required"`
-	PaymentGateConfig PaymentGateConfig `json:"payment_gate_config,required"`
+	IsEnabled         bool              `json:"is_enabled" api:"required"`
+	PaymentGateConfig PaymentGateConfig `json:"payment_gate_config" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
+	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Commit            respjson.Field
@@ -5934,15 +5934,15 @@ func (r SpendThresholdConfiguration) ToParam() SpendThresholdConfigurationParam 
 // The properties Commit, IsEnabled, PaymentGateConfig, ThresholdAmount are
 // required.
 type SpendThresholdConfigurationParam struct {
-	Commit BaseThresholdCommitParam `json:"commit,omitzero,required"`
+	Commit BaseThresholdCommitParam `json:"commit,omitzero" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                   `json:"is_enabled,required"`
-	PaymentGateConfig PaymentGateConfigParam `json:"payment_gate_config,omitzero,required"`
+	IsEnabled         bool                   `json:"is_enabled" api:"required"`
+	PaymentGateConfig PaymentGateConfigParam `json:"payment_gate_config,omitzero" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
+	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	paramObj
 }
 
@@ -5955,15 +5955,15 @@ func (r *SpendThresholdConfigurationParam) UnmarshalJSON(data []byte) error {
 }
 
 type SpendThresholdConfigurationV2 struct {
-	Commit UpdateBaseThresholdCommit `json:"commit,required"`
+	Commit UpdateBaseThresholdCommit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                `json:"is_enabled,required"`
-	PaymentGateConfig PaymentGateConfigV2 `json:"payment_gate_config,required"`
+	IsEnabled         bool                `json:"is_enabled" api:"required"`
+	PaymentGateConfig PaymentGateConfigV2 `json:"payment_gate_config" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
+	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Commit            respjson.Field
@@ -5994,15 +5994,15 @@ func (r SpendThresholdConfigurationV2) ToParam() SpendThresholdConfigurationV2Pa
 // The properties Commit, IsEnabled, PaymentGateConfig, ThresholdAmount are
 // required.
 type SpendThresholdConfigurationV2Param struct {
-	Commit UpdateBaseThresholdCommitParam `json:"commit,omitzero,required"`
+	Commit UpdateBaseThresholdCommitParam `json:"commit,omitzero" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
-	IsEnabled         bool                     `json:"is_enabled,required"`
-	PaymentGateConfig PaymentGateConfigV2Param `json:"payment_gate_config,omitzero,required"`
+	IsEnabled         bool                     `json:"is_enabled" api:"required"`
+	PaymentGateConfig PaymentGateConfigV2Param `json:"payment_gate_config,omitzero" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount,required"`
+	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	paramObj
 }
 
@@ -6016,10 +6016,10 @@ func (r *SpendThresholdConfigurationV2Param) UnmarshalJSON(data []byte) error {
 
 type Subscription struct {
 	// Previous, current, and next billing periods for the subscription.
-	BillingPeriods SubscriptionBillingPeriods `json:"billing_periods,required"`
+	BillingPeriods SubscriptionBillingPeriods `json:"billing_periods" api:"required"`
 	// Any of "ADVANCE", "ARREARS".
-	CollectionSchedule SubscriptionCollectionSchedule `json:"collection_schedule,required"`
-	Proration          SubscriptionProration          `json:"proration,required"`
+	CollectionSchedule SubscriptionCollectionSchedule `json:"collection_schedule" api:"required"`
+	Proration          SubscriptionProration          `json:"proration" api:"required"`
 	// Determines how the subscription's quantity is controlled. Defaults to
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
 	// directly on the subscription. `initial_quantity` must be provided with this
@@ -6031,12 +6031,12 @@ type Subscription struct {
 	// provided with this option.
 	//
 	// Any of "SEAT_BASED", "QUANTITY_ONLY".
-	QuantityManagementMode SubscriptionQuantityManagementMode `json:"quantity_management_mode,required"`
+	QuantityManagementMode SubscriptionQuantityManagementMode `json:"quantity_management_mode" api:"required"`
 	// List of quantity schedule items for the subscription. Only includes the current
 	// quantity and future quantity changes.
-	QuantitySchedule []SubscriptionQuantitySchedule `json:"quantity_schedule,required"`
-	StartingAt       time.Time                      `json:"starting_at,required" format:"date-time"`
-	SubscriptionRate SubscriptionSubscriptionRate   `json:"subscription_rate,required"`
+	QuantitySchedule []SubscriptionQuantitySchedule `json:"quantity_schedule" api:"required"`
+	StartingAt       time.Time                      `json:"starting_at" api:"required" format:"date-time"`
+	SubscriptionRate SubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
 	ID               string                         `json:"id" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string      `json:"custom_fields"`
@@ -6094,8 +6094,8 @@ func (r *SubscriptionBillingPeriods) UnmarshalJSON(data []byte) error {
 }
 
 type SubscriptionBillingPeriodsCurrent struct {
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndingBefore respjson.Field
@@ -6112,8 +6112,8 @@ func (r *SubscriptionBillingPeriodsCurrent) UnmarshalJSON(data []byte) error {
 }
 
 type SubscriptionBillingPeriodsNext struct {
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndingBefore respjson.Field
@@ -6130,8 +6130,8 @@ func (r *SubscriptionBillingPeriodsNext) UnmarshalJSON(data []byte) error {
 }
 
 type SubscriptionBillingPeriodsPrevious struct {
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndingBefore respjson.Field
@@ -6156,8 +6156,8 @@ const (
 
 type SubscriptionProration struct {
 	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
-	InvoiceBehavior string `json:"invoice_behavior,required"`
-	IsProrated      bool   `json:"is_prorated,required"`
+	InvoiceBehavior string `json:"invoice_behavior" api:"required"`
+	IsProrated      bool   `json:"is_prorated" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InvoiceBehavior respjson.Field
@@ -6190,8 +6190,8 @@ const (
 )
 
 type SubscriptionQuantitySchedule struct {
-	Quantity     float64   `json:"quantity,required"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	Quantity     float64   `json:"quantity" api:"required"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6211,8 +6211,8 @@ func (r *SubscriptionQuantitySchedule) UnmarshalJSON(data []byte) error {
 
 type SubscriptionSubscriptionRate struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	BillingFrequency string                              `json:"billing_frequency,required"`
-	Product          SubscriptionSubscriptionRateProduct `json:"product,required"`
+	BillingFrequency string                              `json:"billing_frequency" api:"required"`
+	Product          SubscriptionSubscriptionRateProduct `json:"product" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency respjson.Field
@@ -6229,8 +6229,8 @@ func (r *SubscriptionSubscriptionRate) UnmarshalJSON(data []byte) error {
 }
 
 type SubscriptionSubscriptionRateProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -6253,7 +6253,7 @@ type SubscriptionSeatConfig struct {
 	// presentation/pricing group key on contract products. This allows linked
 	// recurring credits with an allocation per seat to be consumed by only one seat's
 	// usage.
-	SeatGroupKey string `json:"seat_group_key,required"`
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SeatGroupKey respjson.Field
@@ -6269,7 +6269,7 @@ func (r *SubscriptionSeatConfig) UnmarshalJSON(data []byte) error {
 }
 
 type Tier struct {
-	Price float64 `json:"price,required"`
+	Price float64 `json:"price" api:"required"`
 	Size  float64 `json:"size"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6297,7 +6297,7 @@ func (r Tier) ToParam() TierParam {
 
 // The property Price is required.
 type TierParam struct {
-	Price float64            `json:"price,required"`
+	Price float64            `json:"price" api:"required"`
 	Size  param.Opt[float64] `json:"size,omitzero"`
 	paramObj
 }

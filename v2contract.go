@@ -179,7 +179,7 @@ func (r *V2ContractService) GetEditHistory(ctx context.Context, body V2ContractG
 }
 
 type V2ContractGetResponse struct {
-	Data shared.ContractV2 `json:"data,required"`
+	Data shared.ContractV2 `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -195,7 +195,7 @@ func (r *V2ContractGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V2ContractListResponse struct {
-	Data []shared.ContractV2 `json:"data,required"`
+	Data []shared.ContractV2 `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -211,7 +211,7 @@ func (r *V2ContractListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V2ContractEditResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -227,7 +227,7 @@ func (r *V2ContractEditResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V2ContractEditCommitResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -243,7 +243,7 @@ func (r *V2ContractEditCommitResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V2ContractEditCreditResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -259,7 +259,7 @@ func (r *V2ContractEditCreditResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V2ContractGetEditHistoryResponse struct {
-	Data []V2ContractGetEditHistoryResponseData `json:"data,required"`
+	Data []V2ContractGetEditHistoryResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -275,7 +275,7 @@ func (r *V2ContractGetEditHistoryResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V2ContractGetEditHistoryResponseData struct {
-	ID                                      string                                                   `json:"id,required" format:"uuid"`
+	ID                                      string                                                   `json:"id" api:"required" format:"uuid"`
 	AddCommits                              []V2ContractGetEditHistoryResponseDataAddCommit          `json:"add_commits"`
 	AddCredits                              []V2ContractGetEditHistoryResponseDataAddCredit          `json:"add_credits"`
 	AddDiscounts                            []shared.Discount                                        `json:"add_discounts"`
@@ -303,7 +303,7 @@ type V2ContractGetEditHistoryResponseData struct {
 	UpdateContractEndDate time.Time                                          `json:"update_contract_end_date" format:"date-time"`
 	// Value to update the contract name to. If not provided, the contract name will
 	// remain unchanged.
-	UpdateContractName                         string                                                                         `json:"update_contract_name,nullable"`
+	UpdateContractName                         string                                                                         `json:"update_contract_name" api:"nullable"`
 	UpdateCredits                              []V2ContractGetEditHistoryResponseDataUpdateCredit                             `json:"update_credits"`
 	UpdateDiscounts                            []V2ContractGetEditHistoryResponseDataUpdateDiscount                           `json:"update_discounts"`
 	UpdatePrepaidBalanceThresholdConfiguration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfiguration `json:"update_prepaid_balance_threshold_configuration"`
@@ -360,10 +360,10 @@ func (r *V2ContractGetEditHistoryResponseData) UnmarshalJSON(data []byte) error 
 }
 
 type V2ContractGetEditHistoryResponseDataAddCommit struct {
-	ID      string                                               `json:"id,required" format:"uuid"`
-	Product V2ContractGetEditHistoryResponseDataAddCommitProduct `json:"product,required"`
+	ID      string                                               `json:"id" api:"required" format:"uuid"`
+	Product V2ContractGetEditHistoryResponseDataAddCommitProduct `json:"product" api:"required"`
 	// Any of "PREPAID", "POSTPAID".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The schedule that the customer will gain access to the credits purposed with
 	// this commit.
 	AccessSchedule        shared.ScheduleDuration `json:"access_schedule"`
@@ -422,8 +422,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddCommit) UnmarshalJSON(data []byt
 }
 
 type V2ContractGetEditHistoryResponseDataAddCommitProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -464,10 +464,10 @@ func (r *V2ContractGetEditHistoryResponseDataAddCommitInvoiceSchedule) Unmarshal
 }
 
 type V2ContractGetEditHistoryResponseDataAddCommitInvoiceScheduleScheduleItem struct {
-	ID        string    `json:"id,required" format:"uuid"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	ID        string    `json:"id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	Amount    float64   `json:"amount"`
-	InvoiceID string    `json:"invoice_id,nullable" format:"uuid"`
+	InvoiceID string    `json:"invoice_id" api:"nullable" format:"uuid"`
 	Quantity  float64   `json:"quantity"`
 	UnitPrice float64   `json:"unit_price"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -492,10 +492,10 @@ func (r *V2ContractGetEditHistoryResponseDataAddCommitInvoiceScheduleScheduleIte
 }
 
 type V2ContractGetEditHistoryResponseDataAddCredit struct {
-	ID      string                                               `json:"id,required" format:"uuid"`
-	Product V2ContractGetEditHistoryResponseDataAddCreditProduct `json:"product,required"`
+	ID      string                                               `json:"id" api:"required" format:"uuid"`
+	Product V2ContractGetEditHistoryResponseDataAddCreditProduct `json:"product" api:"required"`
 	// Any of "CREDIT".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The schedule that the customer will gain access to the credits.
 	AccessSchedule        shared.ScheduleDuration `json:"access_schedule"`
 	ApplicableProductIDs  []string                `json:"applicable_product_ids" format:"uuid"`
@@ -545,8 +545,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddCredit) UnmarshalJSON(data []byt
 }
 
 type V2ContractGetEditHistoryResponseDataAddCreditProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -563,8 +563,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddCreditProduct) UnmarshalJSON(dat
 }
 
 type V2ContractGetEditHistoryResponseDataAddOverride struct {
-	ID                    string                                                             `json:"id,required" format:"uuid"`
-	StartingAt            time.Time                                                          `json:"starting_at,required" format:"date-time"`
+	ID                    string                                                             `json:"id" api:"required" format:"uuid"`
+	StartingAt            time.Time                                                          `json:"starting_at" api:"required" format:"date-time"`
 	ApplicableProductTags []string                                                           `json:"applicable_product_tags"`
 	EndingBefore          time.Time                                                          `json:"ending_before" format:"date-time"`
 	Entitled              bool                                                               `json:"entitled"`
@@ -642,7 +642,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier) Unmar
 type V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
-	RateType   string                `json:"rate_type,required"`
+	RateType   string                `json:"rate_type" api:"required"`
 	CreditType shared.CreditTypeData `json:"credit_type"`
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
@@ -680,8 +680,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate) Unmarshal
 }
 
 type V2ContractGetEditHistoryResponseDataAddOverrideProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -698,20 +698,20 @@ func (r *V2ContractGetEditHistoryResponseDataAddOverrideProduct) UnmarshalJSON(d
 }
 
 type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
-	AccessAmount V2ContractGetEditHistoryResponseDataAddRecurringCommitAccessAmount `json:"access_amount,required"`
+	AccessAmount V2ContractGetEditHistoryResponseDataAddRecurringCommitAccessAmount `json:"access_amount" api:"required"`
 	// The amount of time the created commits will be valid for
-	CommitDuration V2ContractGetEditHistoryResponseDataAddRecurringCommitCommitDuration `json:"commit_duration,required"`
+	CommitDuration V2ContractGetEditHistoryResponseDataAddRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
-	Priority float64                                                       `json:"priority,required"`
-	Product  V2ContractGetEditHistoryResponseDataAddRecurringCommitProduct `json:"product,required"`
+	Priority float64                                                       `json:"priority" api:"required"`
+	Product  V2ContractGetEditHistoryResponseDataAddRecurringCommitProduct `json:"product" api:"required"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,required"`
+	RateType string `json:"rate_type" api:"required"`
 	// Determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -788,8 +788,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommit) UnmarshalJSON(d
 
 // The amount of commit to grant.
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	Quantity     float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -811,7 +811,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitAccessAmount) Unm
 
 // The amount of time the created commits will be valid for
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitCommitDuration struct {
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Any of "PERIODS".
 	Unit string `json:"unit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -832,8 +832,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitCommitDuration) U
 }
 
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -852,7 +852,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitProduct) Unmarsha
 }
 
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -871,9 +871,9 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitContract) Unmarsh
 
 // The amount the customer should be billed for the commit. Not required.
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitInvoiceAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64 `json:"quantity,required"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	Quantity     float64 `json:"quantity" api:"required"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
@@ -893,20 +893,20 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommitInvoiceAmount) Un
 }
 
 type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
-	AccessAmount V2ContractGetEditHistoryResponseDataAddRecurringCreditAccessAmount `json:"access_amount,required"`
+	AccessAmount V2ContractGetEditHistoryResponseDataAddRecurringCreditAccessAmount `json:"access_amount" api:"required"`
 	// The amount of time the created commits will be valid for
-	CommitDuration V2ContractGetEditHistoryResponseDataAddRecurringCreditCommitDuration `json:"commit_duration,required"`
+	CommitDuration V2ContractGetEditHistoryResponseDataAddRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
-	Priority float64                                                       `json:"priority,required"`
-	Product  V2ContractGetEditHistoryResponseDataAddRecurringCreditProduct `json:"product,required"`
+	Priority float64                                                       `json:"priority" api:"required"`
+	Product  V2ContractGetEditHistoryResponseDataAddRecurringCreditProduct `json:"product" api:"required"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,required"`
+	RateType string `json:"rate_type" api:"required"`
 	// Determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -980,8 +980,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCredit) UnmarshalJSON(d
 
 // The amount of commit to grant.
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	Quantity     float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1003,7 +1003,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditAccessAmount) Unm
 
 // The amount of time the created commits will be valid for
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditCommitDuration struct {
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Any of "PERIODS".
 	Unit string `json:"unit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1024,8 +1024,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditCommitDuration) U
 }
 
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1044,7 +1044,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditProduct) Unmarsha
 }
 
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditContract struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1063,13 +1063,13 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCreditContract) Unmarsh
 
 type V2ContractGetEditHistoryResponseDataAddResellerRoyalty struct {
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType          string    `json:"reseller_type,required"`
+	ResellerType          string    `json:"reseller_type" api:"required"`
 	ApplicableProductIDs  []string  `json:"applicable_product_ids"`
 	ApplicableProductTags []string  `json:"applicable_product_tags"`
 	AwsAccountNumber      string    `json:"aws_account_number"`
 	AwsOfferID            string    `json:"aws_offer_id"`
 	AwsPayerReferenceID   string    `json:"aws_payer_reference_id"`
-	EndingBefore          time.Time `json:"ending_before,nullable" format:"date-time"`
+	EndingBefore          time.Time `json:"ending_before" api:"nullable" format:"date-time"`
 	Fraction              float64   `json:"fraction"`
 	GcpAccountID          string    `json:"gcp_account_id"`
 	GcpOfferID            string    `json:"gcp_offer_id"`
@@ -1103,9 +1103,9 @@ func (r *V2ContractGetEditHistoryResponseDataAddResellerRoyalty) UnmarshalJSON(d
 }
 
 type V2ContractGetEditHistoryResponseDataAddScheduledCharge struct {
-	ID       string                                                        `json:"id,required" format:"uuid"`
-	Product  V2ContractGetEditHistoryResponseDataAddScheduledChargeProduct `json:"product,required"`
-	Schedule shared.SchedulePointInTime                                    `json:"schedule,required"`
+	ID       string                                                        `json:"id" api:"required" format:"uuid"`
+	Product  V2ContractGetEditHistoryResponseDataAddScheduledChargeProduct `json:"product" api:"required"`
+	Schedule shared.SchedulePointInTime                                    `json:"schedule" api:"required"`
 	// displayed on invoices
 	Name string `json:"name"`
 	// This field's availability is dependent on your client's configuration.
@@ -1129,8 +1129,8 @@ func (r *V2ContractGetEditHistoryResponseDataAddScheduledCharge) UnmarshalJSON(d
 }
 
 type V2ContractGetEditHistoryResponseDataAddScheduledChargeProduct struct {
-	ID   string `json:"id,required" format:"uuid"`
-	Name string `json:"name,required"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1149,11 +1149,11 @@ func (r *V2ContractGetEditHistoryResponseDataAddScheduledChargeProduct) Unmarsha
 }
 
 type V2ContractGetEditHistoryResponseDataAddUsageFilter struct {
-	GroupKey    string   `json:"group_key,required"`
-	GroupValues []string `json:"group_values,required"`
+	GroupKey    string   `json:"group_key" api:"required"`
+	GroupValues []string `json:"group_values" api:"required"`
 	// This will match contract starting_at value if usage filter is active from the
 	// beginning of the contract.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// This will match contract ending_before value if usage filter is active until the
 	// end of the contract. It will be undefined if the contract is open-ended.
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
@@ -1175,7 +1175,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddUsageFilter) UnmarshalJSON(data 
 }
 
 type V2ContractGetEditHistoryResponseDataArchiveCommit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1191,7 +1191,7 @@ func (r *V2ContractGetEditHistoryResponseDataArchiveCommit) UnmarshalJSON(data [
 }
 
 type V2ContractGetEditHistoryResponseDataArchiveCredit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1207,7 +1207,7 @@ func (r *V2ContractGetEditHistoryResponseDataArchiveCredit) UnmarshalJSON(data [
 }
 
 type V2ContractGetEditHistoryResponseDataArchiveScheduledCharge struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1225,7 +1225,7 @@ func (r *V2ContractGetEditHistoryResponseDataArchiveScheduledCharge) UnmarshalJS
 }
 
 type V2ContractGetEditHistoryResponseDataRemoveOverride struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1241,38 +1241,38 @@ func (r *V2ContractGetEditHistoryResponseDataRemoveOverride) UnmarshalJSON(data 
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCommit struct {
-	ID             string                                                         `json:"id,required" format:"uuid"`
+	ID             string                                                         `json:"id" api:"required" format:"uuid"`
 	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCommitAccessSchedule `json:"access_schedule"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids,nullable" format:"uuid"`
+	ApplicableProductIDs []string `json:"applicable_product_ids" api:"nullable" format:"uuid"`
 	// Which tags the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
-	ApplicableProductTags []string `json:"applicable_product_tags,nullable"`
+	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
 	Description           string   `json:"description"`
 	// Optional configuration for commit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfiguration                             `json:"hierarchy_configuration"`
 	InvoiceSchedule        V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceSchedule `json:"invoice_schedule"`
 	Name                   string                                                          `json:"name"`
-	NetsuiteSalesOrderID   string                                                          `json:"netsuite_sales_order_id,nullable"`
+	NetsuiteSalesOrderID   string                                                          `json:"netsuite_sales_order_id" api:"nullable"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
-	Priority  float64 `json:"priority,nullable"`
+	Priority  float64 `json:"priority" api:"nullable"`
 	ProductID string  `json:"product_id" format:"uuid"`
 	// If set, the commit's rate type was updated to the specified value.
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
 	RateType         string  `json:"rate_type"`
-	RolloverFraction float64 `json:"rollover_fraction,nullable"`
+	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers []shared.CommitSpecifierInput `json:"specifiers,nullable"`
+	Specifiers []shared.CommitSpecifierInput `json:"specifiers" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -1323,11 +1323,11 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitAccessSchedule) Unmarsh
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCommitAccessScheduleAddScheduleItem struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount       respjson.Field
@@ -1347,7 +1347,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitAccessScheduleAddSchedu
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCommitAccessScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1365,7 +1365,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitAccessScheduleRemoveSch
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCommitAccessScheduleUpdateScheduleItem struct {
-	ID     string  `json:"id,required" format:"uuid"`
+	ID     string  `json:"id" api:"required" format:"uuid"`
 	Amount float64 `json:"amount"`
 	// RFC 3339 timestamp (exclusive)
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
@@ -1413,7 +1413,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceSchedule) Unmars
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleAddScheduleItem struct {
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	Amount    float64   `json:"amount"`
 	Quantity  float64   `json:"quantity"`
 	UnitPrice float64   `json:"unit_price"`
@@ -1437,7 +1437,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleAddSched
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1455,7 +1455,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleRemoveSc
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleUpdateScheduleItem struct {
-	ID        string    `json:"id,required" format:"uuid"`
+	ID        string    `json:"id" api:"required" format:"uuid"`
 	Amount    float64   `json:"amount"`
 	Quantity  float64   `json:"quantity"`
 	Timestamp time.Time `json:"timestamp" format:"date-time"`
@@ -1481,21 +1481,21 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleUpdateSc
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
-	ID             string                                                         `json:"id,required" format:"uuid"`
+	ID             string                                                         `json:"id" api:"required" format:"uuid"`
 	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCreditAccessSchedule `json:"access_schedule"`
 	Description    string                                                         `json:"description"`
 	// Optional configuration for credit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	Name                   string                              `json:"name"`
-	NetsuiteSalesOrderID   string                              `json:"netsuite_sales_order_id,nullable"`
+	NetsuiteSalesOrderID   string                              `json:"netsuite_sales_order_id" api:"nullable"`
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
-	Priority float64 `json:"priority,nullable"`
+	Priority float64 `json:"priority" api:"nullable"`
 	// If set, the credit's rate type was updated to the specified value.
 	//
 	// Any of "LIST_RATE", "COMMIT_RATE".
 	RateType         string  `json:"rate_type"`
-	RolloverFraction float64 `json:"rollover_fraction,nullable"`
+	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -1541,11 +1541,11 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCreditAccessSchedule) Unmarsh
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCreditAccessScheduleAddScheduleItem struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount       respjson.Field
@@ -1565,7 +1565,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCreditAccessScheduleAddSchedu
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCreditAccessScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1583,7 +1583,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCreditAccessScheduleRemoveSch
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateCreditAccessScheduleUpdateScheduleItem struct {
-	ID     string  `json:"id,required" format:"uuid"`
+	ID     string  `json:"id" api:"required" format:"uuid"`
 	Amount float64 `json:"amount"`
 	// RFC 3339 timestamp (exclusive)
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
@@ -1609,7 +1609,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCreditAccessScheduleUpdateSch
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateDiscount struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields         map[string]string `json:"custom_fields"`
 	Name                 string            `json:"name"`
@@ -1671,13 +1671,13 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateDiscountSchedule) UnmarshalJS
 // quantity is inferred to be 1.
 type V2ContractGetEditHistoryResponseDataUpdateDiscountScheduleRecurringSchedule struct {
 	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,required"`
+	AmountDistribution string `json:"amount_distribution" api:"required"`
 	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
-	Frequency string `json:"frequency,required"`
+	Frequency string `json:"frequency" api:"required"`
 	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -1714,7 +1714,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateDiscountScheduleRecurringSche
 
 type V2ContractGetEditHistoryResponseDataUpdateDiscountScheduleScheduleItem struct {
 	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -1750,7 +1750,7 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	Commit V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommit `json:"commit"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string `json:"custom_credit_type_id,nullable" format:"uuid"`
+	CustomCreditTypeID string `json:"custom_credit_type_id" api:"nullable" format:"uuid"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -1786,17 +1786,17 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// Which products the threshold commit applies to. If both applicable_product_ids
 	// and applicable_product_tags are not provided, the commit applies to all
 	// products.
-	ApplicableProductIDs []string `json:"applicable_product_ids,nullable" format:"uuid"`
+	ApplicableProductIDs []string `json:"applicable_product_ids" api:"nullable" format:"uuid"`
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
-	ApplicableProductTags []string `json:"applicable_product_tags,nullable"`
+	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
-	Specifiers []shared.CommitSpecifierInput `json:"specifiers,nullable"`
+	Specifiers []shared.CommitSpecifierInput `json:"specifiers" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
@@ -1817,7 +1817,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfig
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateRecurringCommit struct {
-	ID            string                                                                 `json:"id,required" format:"uuid"`
+	ID            string                                                                 `json:"id" api:"required" format:"uuid"`
 	AccessAmount  V2ContractGetEditHistoryResponseDataUpdateRecurringCommitAccessAmount  `json:"access_amount"`
 	EndingBefore  time.Time                                                              `json:"ending_before" format:"date-time"`
 	InvoiceAmount V2ContractGetEditHistoryResponseDataUpdateRecurringCommitInvoiceAmount `json:"invoice_amount"`
@@ -1884,7 +1884,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateRecurringCommitInvoiceAmount)
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateRecurringCredit struct {
-	ID           string                                                                `json:"id,required" format:"uuid"`
+	ID           string                                                                `json:"id" api:"required" format:"uuid"`
 	AccessAmount V2ContractGetEditHistoryResponseDataUpdateRecurringCreditAccessAmount `json:"access_amount"`
 	EndingBefore time.Time                                                             `json:"ending_before" format:"date-time"`
 	// Any of "LIST_RATE", "COMMIT_RATE".
@@ -1929,8 +1929,8 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateRecurringCreditAccessAmount) 
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateRefundInvoice struct {
-	Date      time.Time `json:"date,required" format:"date-time"`
-	InvoiceID string    `json:"invoice_id,required" format:"uuid"`
+	Date      time.Time `json:"date" api:"required" format:"date-time"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Date        respjson.Field
@@ -1947,10 +1947,10 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateRefundInvoice) UnmarshalJSON(
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateScheduledCharge struct {
-	ID                   string                                                                   `json:"id,required" format:"uuid"`
+	ID                   string                                                                   `json:"id" api:"required" format:"uuid"`
 	InvoiceSchedule      V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceSchedule `json:"invoice_schedule"`
 	Name                 string                                                                   `json:"name"`
-	NetsuiteSalesOrderID string                                                                   `json:"netsuite_sales_order_id,nullable"`
+	NetsuiteSalesOrderID string                                                                   `json:"netsuite_sales_order_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
@@ -1993,7 +1993,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceSchedul
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceScheduleAddScheduleItem struct {
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	Amount    float64   `json:"amount"`
 	Quantity  float64   `json:"quantity"`
 	UnitPrice float64   `json:"unit_price"`
@@ -2017,7 +2017,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceSchedul
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -2035,7 +2035,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceSchedul
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceScheduleUpdateScheduleItem struct {
-	ID        string    `json:"id,required" format:"uuid"`
+	ID        string    `json:"id" api:"required" format:"uuid"`
 	Amount    float64   `json:"amount"`
 	Quantity  float64   `json:"quantity"`
 	Timestamp time.Time `json:"timestamp" format:"date-time"`
@@ -2090,7 +2090,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration) 
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSubscription struct {
-	ID              string                                                                 `json:"id,required" format:"uuid"`
+	ID              string                                                                 `json:"id" api:"required" format:"uuid"`
 	EndingBefore    time.Time                                                              `json:"ending_before" format:"date-time"`
 	QuantityUpdates []V2ContractGetEditHistoryResponseDataUpdateSubscriptionQuantityUpdate `json:"quantity_updates"`
 	// Manage subscription seats for subscriptions in SEAT_BASED mode.
@@ -2113,7 +2113,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSubscription) UnmarshalJSON(d
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSubscriptionQuantityUpdate struct {
-	StartingAt    time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt    time.Time `json:"starting_at" api:"required" format:"date-time"`
 	Quantity      float64   `json:"quantity"`
 	QuantityDelta float64   `json:"quantity_delta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2171,9 +2171,9 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdates) Unma
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddSeatID struct {
-	SeatIDs []string `json:"seat_ids,required"`
+	SeatIDs []string `json:"seat_ids" api:"required"`
 	// Assigned seats will be added/removed starting at this date.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SeatIDs     respjson.Field
@@ -2194,9 +2194,9 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddSea
 type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddUnassignedSeat struct {
 	// The number of unassigned seats on the subscription will increase/decrease by
 	// this delta. Must be greater than 0.
-	Quantity float64 `json:"quantity,required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	// Unassigned seats will be updated starting at this date.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Quantity    respjson.Field
@@ -2215,9 +2215,9 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesAddUna
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveSeatID struct {
-	SeatIDs []string `json:"seat_ids,required"`
+	SeatIDs []string `json:"seat_ids" api:"required"`
 	// Assigned seats will be added/removed starting at this date.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SeatIDs     respjson.Field
@@ -2238,9 +2238,9 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemove
 type V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat struct {
 	// The number of unassigned seats on the subscription will increase/decrease by
 	// this delta. Must be greater than 0.
-	Quantity float64 `json:"quantity,required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	// Unassigned seats will be updated starting at this date.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Quantity    respjson.Field
@@ -2259,8 +2259,8 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdatesRemove
 }
 
 type V2ContractGetParams struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// Optional RFC 3339 timestamp. Return the contract as of this date. Cannot be used
 	// with include_ledgers parameter.
 	AsOfDate param.Opt[time.Time] `json:"as_of_date,omitzero" format:"date-time"`
@@ -2282,7 +2282,7 @@ func (r *V2ContractGetParams) UnmarshalJSON(data []byte) error {
 }
 
 type V2ContractListParams struct {
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// Optional RFC 3339 timestamp. Only include contracts active on the provided date.
 	// This cannot be provided if starting_at filter is provided.
 	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
@@ -2310,9 +2310,9 @@ func (r *V2ContractListParams) UnmarshalJSON(data []byte) error {
 
 type V2ContractEditParams struct {
 	// ID of the contract being edited
-	ContractID string `json:"contract_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
 	// ID of the customer whose contract is being edited
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// RFC 3339 timestamp indicating when the contract will end (exclusive).
 	UpdateContractEndDate param.Opt[time.Time] `json:"update_contract_end_date,omitzero" format:"date-time"`
 	// Value to update the contract name to. If not provided, the contract name will
@@ -2392,10 +2392,10 @@ func (r *V2ContractEditParams) UnmarshalJSON(data []byte) error {
 //
 // The properties BillingProviderConfiguration, Schedule are required.
 type V2ContractEditParamsAddBillingProviderConfigurationUpdate struct {
-	BillingProviderConfiguration V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration `json:"billing_provider_configuration,omitzero,required"`
+	BillingProviderConfiguration V2ContractEditParamsAddBillingProviderConfigurationUpdateBillingProviderConfiguration `json:"billing_provider_configuration,omitzero" api:"required"`
 	// Indicates when the billing provider will be active on the contract. Any charges
 	// accrued during the schedule will be billed to the indicated billing provider.
-	Schedule V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule `json:"schedule,omitzero,required"`
+	Schedule V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule `json:"schedule,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2442,7 +2442,7 @@ type V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule struct {
 	// When the billing provider update will take effect.
 	//
 	// Any of "START_OF_CURRENT_PERIOD".
-	EffectiveAt string `json:"effective_at,omitzero,required"`
+	EffectiveAt string `json:"effective_at,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2462,9 +2462,9 @@ func init() {
 
 // The properties ProductID, Type are required.
 type V2ContractEditParamsAddCommit struct {
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	// Any of "PREPAID", "POSTPAID".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	// (DEPRECATED) Use access_schedule and invoice_schedule instead.
 	Amount param.Opt[float64] `json:"amount,omitzero"`
 	// Used only in UI/API. It is not exposed to end customers.
@@ -2539,7 +2539,7 @@ func init() {
 //
 // The property ScheduleItems is required.
 type V2ContractEditParamsAddCommitAccessSchedule struct {
-	ScheduleItems []V2ContractEditParamsAddCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero,required"`
+	ScheduleItems []V2ContractEditParamsAddCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	CreditTypeID  param.Opt[string]                                         `json:"credit_type_id,omitzero" format:"uuid"`
 	paramObj
 }
@@ -2554,11 +2554,11 @@ func (r *V2ContractEditParamsAddCommitAccessSchedule) UnmarshalJSON(data []byte)
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V2ContractEditParamsAddCommitAccessScheduleScheduleItem struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -2605,13 +2605,13 @@ func (r *V2ContractEditParamsAddCommitInvoiceSchedule) UnmarshalJSON(data []byte
 // required.
 type V2ContractEditParamsAddCommitInvoiceScheduleRecurringSchedule struct {
 	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero,required"`
+	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
 	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
-	Frequency string `json:"frequency,omitzero,required"`
+	Frequency string `json:"frequency,omitzero" api:"required"`
 	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -2647,7 +2647,7 @@ func init() {
 // The property Timestamp is required.
 type V2ContractEditParamsAddCommitInvoiceScheduleScheduleItem struct {
 	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -2681,7 +2681,7 @@ type V2ContractEditParamsAddCommitPaymentGateConfig struct {
 	// wish to payment gate the commit balance.
 	//
 	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType string `json:"payment_gate_type,omitzero,required"`
+	PaymentGateType string `json:"payment_gate_type,omitzero" api:"required"`
 	// Only applicable if using PRECALCULATED as your tax type.
 	PrecalculatedTaxConfig V2ContractEditParamsAddCommitPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config,omitzero"`
 	// Only applicable if using STRIPE as your payment gateway type.
@@ -2718,7 +2718,7 @@ func init() {
 type V2ContractEditParamsAddCommitPaymentGateConfigPrecalculatedTaxConfig struct {
 	// Amount of tax to be applied. This should be in the same currency and
 	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount,required"`
+	TaxAmount float64 `json:"tax_amount" api:"required"`
 	// Name of the tax to be applied. This may be used in an invoice line item
 	// description.
 	TaxName param.Opt[string] `json:"tax_name,omitzero"`
@@ -2740,7 +2740,7 @@ type V2ContractEditParamsAddCommitPaymentGateConfigStripeConfig struct {
 	// If left blank, will default to INVOICE
 	//
 	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,omitzero,required"`
+	PaymentType string `json:"payment_type,omitzero" api:"required"`
 	// If true, the payment will be made assuming the customer is present (i.e. on
 	// session).
 	//
@@ -2773,8 +2773,8 @@ func init() {
 // The properties AccessSchedule, ProductID are required.
 type V2ContractEditParamsAddCredit struct {
 	// Schedule for distributing the credit to the customer.
-	AccessSchedule V2ContractEditParamsAddCreditAccessSchedule `json:"access_schedule,omitzero,required"`
-	ProductID      string                                      `json:"product_id,required" format:"uuid"`
+	AccessSchedule V2ContractEditParamsAddCreditAccessSchedule `json:"access_schedule,omitzero" api:"required"`
+	ProductID      string                                      `json:"product_id" api:"required" format:"uuid"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// displayed on invoices
@@ -2824,7 +2824,7 @@ func init() {
 //
 // The property ScheduleItems is required.
 type V2ContractEditParamsAddCreditAccessSchedule struct {
-	ScheduleItems []V2ContractEditParamsAddCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero,required"`
+	ScheduleItems []V2ContractEditParamsAddCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	CreditTypeID  param.Opt[string]                                         `json:"credit_type_id,omitzero" format:"uuid"`
 	paramObj
 }
@@ -2839,11 +2839,11 @@ func (r *V2ContractEditParamsAddCreditAccessSchedule) UnmarshalJSON(data []byte)
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V2ContractEditParamsAddCreditAccessScheduleScheduleItem struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -2857,9 +2857,9 @@ func (r *V2ContractEditParamsAddCreditAccessScheduleScheduleItem) UnmarshalJSON(
 
 // The properties ProductID, Schedule are required.
 type V2ContractEditParamsAddDiscount struct {
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule V2ContractEditParamsAddDiscountSchedule `json:"schedule,omitzero,required"`
+	Schedule V2ContractEditParamsAddDiscountSchedule `json:"schedule,omitzero" api:"required"`
 	// displayed on invoices
 	Name param.Opt[string] `json:"name,omitzero"`
 	// This field's availability is dependent on your client's configuration.
@@ -2909,13 +2909,13 @@ func (r *V2ContractEditParamsAddDiscountSchedule) UnmarshalJSON(data []byte) err
 // required.
 type V2ContractEditParamsAddDiscountScheduleRecurringSchedule struct {
 	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero,required"`
+	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
 	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
-	Frequency string `json:"frequency,omitzero,required"`
+	Frequency string `json:"frequency,omitzero" api:"required"`
 	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -2951,7 +2951,7 @@ func init() {
 // The property Timestamp is required.
 type V2ContractEditParamsAddDiscountScheduleScheduleItem struct {
 	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -2978,7 +2978,7 @@ func (r *V2ContractEditParamsAddDiscountScheduleScheduleItem) UnmarshalJSON(data
 // The property StartingAt is required.
 type V2ContractEditParamsAddOverride struct {
 	// RFC 3339 timestamp indicating when the override will start applying (inclusive)
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// RFC 3339 timestamp indicating when the override will stop applying (exclusive)
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	Entitled     param.Opt[bool]      `json:"entitled,omitzero"`
@@ -3086,7 +3086,7 @@ func init() {
 type V2ContractEditParamsAddOverrideOverwriteRate struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
-	RateType     string            `json:"rate_type,omitzero,required"`
+	RateType     string            `json:"rate_type,omitzero" api:"required"`
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
 	// set to true.
@@ -3120,7 +3120,7 @@ func init() {
 
 // The property Multiplier is required.
 type V2ContractEditParamsAddOverrideTier struct {
-	Multiplier float64            `json:"multiplier,required"`
+	Multiplier float64            `json:"multiplier" api:"required"`
 	Size       param.Opt[float64] `json:"size,omitzero"`
 	paramObj
 }
@@ -3136,14 +3136,14 @@ func (r *V2ContractEditParamsAddOverrideTier) UnmarshalJSON(data []byte) error {
 // The properties MaxAmount, ProductID, Quantity, UnitPrice are required.
 type V2ContractEditParamsAddProfessionalService struct {
 	// Maximum amount for the term.
-	MaxAmount float64 `json:"max_amount,required"`
-	ProductID string  `json:"product_id,required" format:"uuid"`
+	MaxAmount float64 `json:"max_amount" api:"required"`
+	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// Quantity for the charge. Will be multiplied by unit_price to determine the
 	// amount.
-	Quantity float64 `json:"quantity,required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	// Unit price for the charge. Will be multiplied by quantity to determine the
 	// amount and must be specified.
-	UnitPrice   float64           `json:"unit_price,required"`
+	UnitPrice   float64           `json:"unit_price" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
@@ -3164,16 +3164,16 @@ func (r *V2ContractEditParamsAddProfessionalService) UnmarshalJSON(data []byte) 
 // required.
 type V2ContractEditParamsAddRecurringCommit struct {
 	// The amount of commit to grant.
-	AccessAmount V2ContractEditParamsAddRecurringCommitAccessAmount `json:"access_amount,omitzero,required"`
+	AccessAmount V2ContractEditParamsAddRecurringCommitAccessAmount `json:"access_amount,omitzero" api:"required"`
 	// Defines the length of the access schedule for each created commit/credit. The
 	// value represents the number of units. Unit defaults to "PERIODS", where the
 	// length of a period is determined by the recurrence_frequency.
-	CommitDuration V2ContractEditParamsAddRecurringCommitCommitDuration `json:"commit_duration,omitzero,required"`
+	CommitDuration V2ContractEditParamsAddRecurringCommitCommitDuration `json:"commit_duration,omitzero" api:"required"`
 	// Will be passed down to the individual commits
-	Priority  float64 `json:"priority,required"`
-	ProductID string  `json:"product_id,required" format:"uuid"`
+	Priority  float64 `json:"priority" api:"required"`
+	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
@@ -3250,8 +3250,8 @@ func init() {
 //
 // The properties CreditTypeID, UnitPrice are required.
 type V2ContractEditParamsAddRecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
@@ -3272,7 +3272,7 @@ func (r *V2ContractEditParamsAddRecurringCommitAccessAmount) UnmarshalJSON(data 
 //
 // The property Value is required.
 type V2ContractEditParamsAddRecurringCommitCommitDuration struct {
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Any of "PERIODS".
 	Unit string `json:"unit,omitzero"`
 	paramObj
@@ -3296,9 +3296,9 @@ func init() {
 //
 // The properties CreditTypeID, Quantity, UnitPrice are required.
 type V2ContractEditParamsAddRecurringCommitInvoiceAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	Quantity     float64 `json:"quantity,required"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	Quantity     float64 `json:"quantity" api:"required"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	paramObj
 }
 
@@ -3314,9 +3314,9 @@ func (r *V2ContractEditParamsAddRecurringCommitInvoiceAmount) UnmarshalJSON(data
 //
 // The properties ApplySeatIncreaseConfig, SubscriptionID are required.
 type V2ContractEditParamsAddRecurringCommitSubscriptionConfig struct {
-	ApplySeatIncreaseConfig V2ContractEditParamsAddRecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero,required"`
+	ApplySeatIncreaseConfig V2ContractEditParamsAddRecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero" api:"required"`
 	// ID of the subscription to configure on the recurring commit/credit.
-	SubscriptionID string `json:"subscription_id,required"`
+	SubscriptionID string `json:"subscription_id" api:"required"`
 	// If set to POOLED, allocation added per seat is pooled across the account. If set
 	// to INDIVIDUAL, each seat in the subscription will have its own allocation.
 	//
@@ -3342,7 +3342,7 @@ func init() {
 // The property IsProrated is required.
 type V2ContractEditParamsAddRecurringCommitSubscriptionConfigApplySeatIncreaseConfig struct {
 	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool `json:"is_prorated,required"`
+	IsProrated bool `json:"is_prorated" api:"required"`
 	paramObj
 }
 
@@ -3358,16 +3358,16 @@ func (r *V2ContractEditParamsAddRecurringCommitSubscriptionConfigApplySeatIncrea
 // required.
 type V2ContractEditParamsAddRecurringCredit struct {
 	// The amount of commit to grant.
-	AccessAmount V2ContractEditParamsAddRecurringCreditAccessAmount `json:"access_amount,omitzero,required"`
+	AccessAmount V2ContractEditParamsAddRecurringCreditAccessAmount `json:"access_amount,omitzero" api:"required"`
 	// Defines the length of the access schedule for each created commit/credit. The
 	// value represents the number of units. Unit defaults to "PERIODS", where the
 	// length of a period is determined by the recurrence_frequency.
-	CommitDuration V2ContractEditParamsAddRecurringCreditCommitDuration `json:"commit_duration,omitzero,required"`
+	CommitDuration V2ContractEditParamsAddRecurringCreditCommitDuration `json:"commit_duration,omitzero" api:"required"`
 	// Will be passed down to the individual commits
-	Priority  float64 `json:"priority,required"`
-	ProductID string  `json:"product_id,required" format:"uuid"`
+	Priority  float64 `json:"priority" api:"required"`
+	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
@@ -3442,8 +3442,8 @@ func init() {
 //
 // The properties CreditTypeID, UnitPrice are required.
 type V2ContractEditParamsAddRecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id,required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price,required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
@@ -3464,7 +3464,7 @@ func (r *V2ContractEditParamsAddRecurringCreditAccessAmount) UnmarshalJSON(data 
 //
 // The property Value is required.
 type V2ContractEditParamsAddRecurringCreditCommitDuration struct {
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Any of "PERIODS".
 	Unit string `json:"unit,omitzero"`
 	paramObj
@@ -3488,9 +3488,9 @@ func init() {
 //
 // The properties ApplySeatIncreaseConfig, SubscriptionID are required.
 type V2ContractEditParamsAddRecurringCreditSubscriptionConfig struct {
-	ApplySeatIncreaseConfig V2ContractEditParamsAddRecurringCreditSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero,required"`
+	ApplySeatIncreaseConfig V2ContractEditParamsAddRecurringCreditSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero" api:"required"`
 	// ID of the subscription to configure on the recurring commit/credit.
-	SubscriptionID string `json:"subscription_id,required"`
+	SubscriptionID string `json:"subscription_id" api:"required"`
 	// If set to POOLED, allocation added per seat is pooled across the account. If set
 	// to INDIVIDUAL, each seat in the subscription will have its own allocation.
 	//
@@ -3516,7 +3516,7 @@ func init() {
 // The property IsProrated is required.
 type V2ContractEditParamsAddRecurringCreditSubscriptionConfigApplySeatIncreaseConfig struct {
 	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool `json:"is_prorated,required"`
+	IsProrated bool `json:"is_prorated" api:"required"`
 	paramObj
 }
 
@@ -3531,7 +3531,7 @@ func (r *V2ContractEditParamsAddRecurringCreditSubscriptionConfigApplySeatIncrea
 // The property ResellerType is required.
 type V2ContractEditParamsAddResellerRoyalty struct {
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType string `json:"reseller_type,omitzero,required"`
+	ResellerType string `json:"reseller_type,omitzero" api:"required"`
 	// Use null to indicate that the existing end timestamp should be removed.
 	EndingBefore          param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	Fraction              param.Opt[float64]   `json:"fraction,omitzero"`
@@ -3596,8 +3596,8 @@ func (r *V2ContractEditParamsAddResellerRoyaltyGcpOptions) UnmarshalJSON(data []
 //
 // The properties RevenueSystemConfiguration, Schedule are required.
 type V2ContractEditParamsAddRevenueSystemConfigurationUpdate struct {
-	RevenueSystemConfiguration V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration `json:"revenue_system_configuration,omitzero,required"`
-	Schedule                   V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule                   `json:"schedule,omitzero,required"`
+	RevenueSystemConfiguration V2ContractEditParamsAddRevenueSystemConfigurationUpdateRevenueSystemConfiguration `json:"revenue_system_configuration,omitzero" api:"required"`
+	Schedule                   V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule                   `json:"schedule,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3642,7 +3642,7 @@ type V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule struct {
 	// When the revenue system configuration update will take effect.
 	//
 	// Any of "START_OF_CURRENT_PERIOD".
-	EffectiveAt string `json:"effective_at,omitzero,required"`
+	EffectiveAt string `json:"effective_at,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3662,9 +3662,9 @@ func init() {
 
 // The properties ProductID, Schedule are required.
 type V2ContractEditParamsAddScheduledCharge struct {
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	// Must provide either schedule_items or recurring_schedule.
-	Schedule V2ContractEditParamsAddScheduledChargeSchedule `json:"schedule,omitzero,required"`
+	Schedule V2ContractEditParamsAddScheduledChargeSchedule `json:"schedule,omitzero" api:"required"`
 	// displayed on invoices
 	Name param.Opt[string] `json:"name,omitzero"`
 	// This field's availability is dependent on your client's configuration.
@@ -3714,13 +3714,13 @@ func (r *V2ContractEditParamsAddScheduledChargeSchedule) UnmarshalJSON(data []by
 // required.
 type V2ContractEditParamsAddScheduledChargeScheduleRecurringSchedule struct {
 	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero,required"`
+	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
 	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
-	Frequency string `json:"frequency,omitzero,required"`
+	Frequency string `json:"frequency,omitzero" api:"required"`
 	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -3756,7 +3756,7 @@ func init() {
 // The property Timestamp is required.
 type V2ContractEditParamsAddScheduledChargeScheduleScheduleItem struct {
 	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -3783,9 +3783,9 @@ func (r *V2ContractEditParamsAddScheduledChargeScheduleScheduleItem) UnmarshalJS
 // The properties CollectionSchedule, Proration, SubscriptionRate are required.
 type V2ContractEditParamsAddSubscription struct {
 	// Any of "ADVANCE", "ARREARS".
-	CollectionSchedule string                                              `json:"collection_schedule,omitzero,required"`
-	Proration          V2ContractEditParamsAddSubscriptionProration        `json:"proration,omitzero,required"`
-	SubscriptionRate   V2ContractEditParamsAddSubscriptionSubscriptionRate `json:"subscription_rate,omitzero,required"`
+	CollectionSchedule string                                              `json:"collection_schedule,omitzero" api:"required"`
+	Proration          V2ContractEditParamsAddSubscriptionProration        `json:"proration,omitzero" api:"required"`
+	SubscriptionRate   V2ContractEditParamsAddSubscriptionSubscriptionRate `json:"subscription_rate,omitzero" api:"required"`
 	Description        param.Opt[string]                                   `json:"description,omitzero"`
 	// Exclusive end time for the subscription. If not provided, subscription inherits
 	// contract end date.
@@ -3869,9 +3869,9 @@ type V2ContractEditParamsAddSubscriptionSubscriptionRate struct {
 	// existing rate on the rate card.
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	BillingFrequency string `json:"billing_frequency,omitzero,required"`
+	BillingFrequency string `json:"billing_frequency,omitzero" api:"required"`
 	// Must be subscription type product
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -3892,14 +3892,14 @@ func init() {
 // The properties InitialSeatIDs, SeatGroupKey are required.
 type V2ContractEditParamsAddSubscriptionSeatConfig struct {
 	// The initial assigned seats on this subscription.
-	InitialSeatIDs []string `json:"initial_seat_ids,omitzero,required"`
+	InitialSeatIDs []string `json:"initial_seat_ids,omitzero" api:"required"`
 	// The property name, sent on usage events, that identifies the seat ID associated
 	// with the usage event. For example, the property name might be seat_id or
 	// user_id. The property must be set as a group key on billable metrics and a
 	// presentation/pricing group key on contract products. This allows linked
 	// recurring credits with an allocation per seat to be consumed by only one seat's
 	// usage.
-	SeatGroupKey string `json:"seat_group_key,required"`
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
 	// The initial amount of unassigned seats on this subscription.
 	InitialUnassignedSeats param.Opt[float64] `json:"initial_unassigned_seats,omitzero"`
 	paramObj
@@ -3915,7 +3915,7 @@ func (r *V2ContractEditParamsAddSubscriptionSeatConfig) UnmarshalJSON(data []byt
 
 // The property ID is required.
 type V2ContractEditParamsArchiveCommit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -3929,7 +3929,7 @@ func (r *V2ContractEditParamsArchiveCommit) UnmarshalJSON(data []byte) error {
 
 // The property ID is required.
 type V2ContractEditParamsArchiveCredit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -3943,7 +3943,7 @@ func (r *V2ContractEditParamsArchiveCredit) UnmarshalJSON(data []byte) error {
 
 // The property ID is required.
 type V2ContractEditParamsArchiveScheduledCharge struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -3957,7 +3957,7 @@ func (r *V2ContractEditParamsArchiveScheduledCharge) UnmarshalJSON(data []byte) 
 
 // The property ID is required.
 type V2ContractEditParamsRemoveOverride struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -3971,7 +3971,7 @@ func (r *V2ContractEditParamsRemoveOverride) UnmarshalJSON(data []byte) error {
 
 // The property CommitID is required.
 type V2ContractEditParamsUpdateCommit struct {
-	CommitID             string             `json:"commit_id,required" format:"uuid"`
+	CommitID             string             `json:"commit_id" api:"required" format:"uuid"`
 	NetsuiteSalesOrderID param.Opt[string]  `json:"netsuite_sales_order_id,omitzero"`
 	Priority             param.Opt[float64] `json:"priority,omitzero"`
 	RolloverFraction     param.Opt[float64] `json:"rollover_fraction,omitzero"`
@@ -4030,9 +4030,9 @@ func (r *V2ContractEditParamsUpdateCommitAccessSchedule) UnmarshalJSON(data []by
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V2ContractEditParamsUpdateCommitAccessScheduleAddScheduleItem struct {
-	Amount       float64   `json:"amount,required"`
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	Amount       float64   `json:"amount" api:"required"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -4046,7 +4046,7 @@ func (r *V2ContractEditParamsUpdateCommitAccessScheduleAddScheduleItem) Unmarsha
 
 // The property ID is required.
 type V2ContractEditParamsUpdateCommitAccessScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -4060,7 +4060,7 @@ func (r *V2ContractEditParamsUpdateCommitAccessScheduleRemoveScheduleItem) Unmar
 
 // The property ID is required.
 type V2ContractEditParamsUpdateCommitAccessScheduleUpdateScheduleItem struct {
-	ID           string               `json:"id,required" format:"uuid"`
+	ID           string               `json:"id" api:"required" format:"uuid"`
 	Amount       param.Opt[float64]   `json:"amount,omitzero"`
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	StartingAt   param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
@@ -4092,7 +4092,7 @@ func (r *V2ContractEditParamsUpdateCommitInvoiceSchedule) UnmarshalJSON(data []b
 
 // The property Timestamp is required.
 type V2ContractEditParamsUpdateCommitInvoiceScheduleAddScheduleItem struct {
-	Timestamp time.Time          `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time          `json:"timestamp" api:"required" format:"date-time"`
 	Amount    param.Opt[float64] `json:"amount,omitzero"`
 	Quantity  param.Opt[float64] `json:"quantity,omitzero"`
 	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
@@ -4109,7 +4109,7 @@ func (r *V2ContractEditParamsUpdateCommitInvoiceScheduleAddScheduleItem) Unmarsh
 
 // The property ID is required.
 type V2ContractEditParamsUpdateCommitInvoiceScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -4123,7 +4123,7 @@ func (r *V2ContractEditParamsUpdateCommitInvoiceScheduleRemoveScheduleItem) Unma
 
 // The property ID is required.
 type V2ContractEditParamsUpdateCommitInvoiceScheduleUpdateScheduleItem struct {
-	ID        string               `json:"id,required" format:"uuid"`
+	ID        string               `json:"id" api:"required" format:"uuid"`
 	Amount    param.Opt[float64]   `json:"amount,omitzero"`
 	Quantity  param.Opt[float64]   `json:"quantity,omitzero"`
 	Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
@@ -4141,7 +4141,7 @@ func (r *V2ContractEditParamsUpdateCommitInvoiceScheduleUpdateScheduleItem) Unma
 
 // The property CreditID is required.
 type V2ContractEditParamsUpdateCredit struct {
-	CreditID             string             `json:"credit_id,required" format:"uuid"`
+	CreditID             string             `json:"credit_id" api:"required" format:"uuid"`
 	NetsuiteSalesOrderID param.Opt[string]  `json:"netsuite_sales_order_id,omitzero"`
 	Priority             param.Opt[float64] `json:"priority,omitzero"`
 	Description          param.Opt[string]  `json:"description,omitzero"`
@@ -4198,9 +4198,9 @@ func (r *V2ContractEditParamsUpdateCreditAccessSchedule) UnmarshalJSON(data []by
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V2ContractEditParamsUpdateCreditAccessScheduleAddScheduleItem struct {
-	Amount       float64   `json:"amount,required"`
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	Amount       float64   `json:"amount" api:"required"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -4214,7 +4214,7 @@ func (r *V2ContractEditParamsUpdateCreditAccessScheduleAddScheduleItem) Unmarsha
 
 // The property ID is required.
 type V2ContractEditParamsUpdateCreditAccessScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -4228,7 +4228,7 @@ func (r *V2ContractEditParamsUpdateCreditAccessScheduleRemoveScheduleItem) Unmar
 
 // The property ID is required.
 type V2ContractEditParamsUpdateCreditAccessScheduleUpdateScheduleItem struct {
-	ID           string               `json:"id,required" format:"uuid"`
+	ID           string               `json:"id" api:"required" format:"uuid"`
 	Amount       param.Opt[float64]   `json:"amount,omitzero"`
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	StartingAt   param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
@@ -4297,7 +4297,7 @@ func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) Ma
 
 // The property RecurringCommitID is required.
 type V2ContractEditParamsUpdateRecurringCommit struct {
-	RecurringCommitID string                                                 `json:"recurring_commit_id,required" format:"uuid"`
+	RecurringCommitID string                                                 `json:"recurring_commit_id" api:"required" format:"uuid"`
 	EndingBefore      param.Opt[time.Time]                                   `json:"ending_before,omitzero" format:"date-time"`
 	AccessAmount      V2ContractEditParamsUpdateRecurringCommitAccessAmount  `json:"access_amount,omitzero"`
 	InvoiceAmount     V2ContractEditParamsUpdateRecurringCommitInvoiceAmount `json:"invoice_amount,omitzero"`
@@ -4353,7 +4353,7 @@ func (r *V2ContractEditParamsUpdateRecurringCommitInvoiceAmount) UnmarshalJSON(d
 
 // The property RecurringCreditID is required.
 type V2ContractEditParamsUpdateRecurringCredit struct {
-	RecurringCreditID string                                                `json:"recurring_credit_id,required" format:"uuid"`
+	RecurringCreditID string                                                `json:"recurring_credit_id" api:"required" format:"uuid"`
 	EndingBefore      param.Opt[time.Time]                                  `json:"ending_before,omitzero" format:"date-time"`
 	AccessAmount      V2ContractEditParamsUpdateRecurringCreditAccessAmount `json:"access_amount,omitzero"`
 	// If provided, updates the recurring credit to use the specified rate type when
@@ -4394,7 +4394,7 @@ func (r *V2ContractEditParamsUpdateRecurringCreditAccessAmount) UnmarshalJSON(da
 
 // The property ScheduledChargeID is required.
 type V2ContractEditParamsUpdateScheduledCharge struct {
-	ScheduledChargeID    string                                                   `json:"scheduled_charge_id,required" format:"uuid"`
+	ScheduledChargeID    string                                                   `json:"scheduled_charge_id" api:"required" format:"uuid"`
 	NetsuiteSalesOrderID param.Opt[string]                                        `json:"netsuite_sales_order_id,omitzero"`
 	InvoiceSchedule      V2ContractEditParamsUpdateScheduledChargeInvoiceSchedule `json:"invoice_schedule,omitzero"`
 	paramObj
@@ -4425,7 +4425,7 @@ func (r *V2ContractEditParamsUpdateScheduledChargeInvoiceSchedule) UnmarshalJSON
 
 // The property Timestamp is required.
 type V2ContractEditParamsUpdateScheduledChargeInvoiceScheduleAddScheduleItem struct {
-	Timestamp time.Time          `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time          `json:"timestamp" api:"required" format:"date-time"`
 	Amount    param.Opt[float64] `json:"amount,omitzero"`
 	Quantity  param.Opt[float64] `json:"quantity,omitzero"`
 	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
@@ -4442,7 +4442,7 @@ func (r *V2ContractEditParamsUpdateScheduledChargeInvoiceScheduleAddScheduleItem
 
 // The property ID is required.
 type V2ContractEditParamsUpdateScheduledChargeInvoiceScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -4456,7 +4456,7 @@ func (r *V2ContractEditParamsUpdateScheduledChargeInvoiceScheduleRemoveScheduleI
 
 // The property ID is required.
 type V2ContractEditParamsUpdateScheduledChargeInvoiceScheduleUpdateScheduleItem struct {
-	ID        string               `json:"id,required" format:"uuid"`
+	ID        string               `json:"id" api:"required" format:"uuid"`
 	Amount    param.Opt[float64]   `json:"amount,omitzero"`
 	Quantity  param.Opt[float64]   `json:"quantity,omitzero"`
 	Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
@@ -4495,7 +4495,7 @@ func (r *V2ContractEditParamsUpdateSpendThresholdConfiguration) UnmarshalJSON(da
 
 // The property SubscriptionID is required.
 type V2ContractEditParamsUpdateSubscription struct {
-	SubscriptionID string               `json:"subscription_id,required" format:"uuid"`
+	SubscriptionID string               `json:"subscription_id" api:"required" format:"uuid"`
 	EndingBefore   param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	// Update the subscription's quantity management mode from QUANTITY_ONLY to
 	// SEAT_BASED with the provided seat_group_key.
@@ -4522,8 +4522,8 @@ func (r *V2ContractEditParamsUpdateSubscription) UnmarshalJSON(data []byte) erro
 // The properties QuantityManagementMode, SeatConfig are required.
 type V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate struct {
 	// Any of "SEAT_BASED".
-	QuantityManagementMode string                                                                       `json:"quantity_management_mode,omitzero,required"`
-	SeatConfig             V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig `json:"seat_config,omitzero,required"`
+	QuantityManagementMode string                                                                       `json:"quantity_management_mode,omitzero" api:"required"`
+	SeatConfig             V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig `json:"seat_config,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4543,7 +4543,7 @@ func init() {
 
 // The property SeatGroupKey is required.
 type V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig struct {
-	SeatGroupKey string `json:"seat_group_key,required"`
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
 	paramObj
 }
 
@@ -4557,7 +4557,7 @@ func (r *V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatC
 
 // The property StartingAt is required.
 type V2ContractEditParamsUpdateSubscriptionQuantityUpdate struct {
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// The new quantity for the subscription. Must be provided if quantity_delta is not
 	// provided. Must be non-negative.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
@@ -4605,9 +4605,9 @@ func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdates) UnmarshalJSON(data [
 
 // The properties SeatIDs, StartingAt are required.
 type V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID struct {
-	SeatIDs []string `json:"seat_ids,omitzero,required"`
+	SeatIDs []string `json:"seat_ids,omitzero" api:"required"`
 	// Assigned seats will be added/removed starting at this date.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -4623,9 +4623,9 @@ func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddSeatID) UnmarshalJS
 type V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat struct {
 	// The number of unassigned seats on the subscription will increase/decrease by
 	// this delta. Must be greater than 0.
-	Quantity float64 `json:"quantity,required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	// Unassigned seats will be updated starting at this date.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -4639,9 +4639,9 @@ func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdatesAddUnassignedSeat) Unm
 
 // The properties SeatIDs, StartingAt are required.
 type V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID struct {
-	SeatIDs []string `json:"seat_ids,omitzero,required"`
+	SeatIDs []string `json:"seat_ids,omitzero" api:"required"`
 	// Assigned seats will be added/removed starting at this date.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -4657,9 +4657,9 @@ func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveSeatID) Unmarsha
 type V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat struct {
 	// The number of unassigned seats on the subscription will increase/decrease by
 	// this delta. Must be greater than 0.
-	Quantity float64 `json:"quantity,required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	// Unassigned seats will be updated starting at this date.
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -4673,9 +4673,9 @@ func (r *V2ContractEditParamsUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat) 
 
 type V2ContractEditCommitParams struct {
 	// ID of the commit to edit
-	CommitID string `json:"commit_id,required" format:"uuid"`
+	CommitID string `json:"commit_id" api:"required" format:"uuid"`
 	// ID of the customer whose commit is being edited
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
 	Priority param.Opt[float64] `json:"priority,omitzero"`
@@ -4739,9 +4739,9 @@ func (r *V2ContractEditCommitParamsAccessSchedule) UnmarshalJSON(data []byte) er
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V2ContractEditCommitParamsAccessScheduleAddScheduleItem struct {
-	Amount       float64   `json:"amount,required"`
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	Amount       float64   `json:"amount" api:"required"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -4755,7 +4755,7 @@ func (r *V2ContractEditCommitParamsAccessScheduleAddScheduleItem) UnmarshalJSON(
 
 // The property ID is required.
 type V2ContractEditCommitParamsAccessScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -4769,7 +4769,7 @@ func (r *V2ContractEditCommitParamsAccessScheduleRemoveScheduleItem) UnmarshalJS
 
 // The property ID is required.
 type V2ContractEditCommitParamsAccessScheduleUpdateScheduleItem struct {
-	ID           string               `json:"id,required" format:"uuid"`
+	ID           string               `json:"id" api:"required" format:"uuid"`
 	Amount       param.Opt[float64]   `json:"amount,omitzero"`
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	StartingAt   param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
@@ -4801,7 +4801,7 @@ func (r *V2ContractEditCommitParamsInvoiceSchedule) UnmarshalJSON(data []byte) e
 
 // The property Timestamp is required.
 type V2ContractEditCommitParamsInvoiceScheduleAddScheduleItem struct {
-	Timestamp time.Time          `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time          `json:"timestamp" api:"required" format:"date-time"`
 	Amount    param.Opt[float64] `json:"amount,omitzero"`
 	Quantity  param.Opt[float64] `json:"quantity,omitzero"`
 	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
@@ -4818,7 +4818,7 @@ func (r *V2ContractEditCommitParamsInvoiceScheduleAddScheduleItem) UnmarshalJSON
 
 // The property ID is required.
 type V2ContractEditCommitParamsInvoiceScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -4832,7 +4832,7 @@ func (r *V2ContractEditCommitParamsInvoiceScheduleRemoveScheduleItem) UnmarshalJ
 
 // The property ID is required.
 type V2ContractEditCommitParamsInvoiceScheduleUpdateScheduleItem struct {
-	ID        string               `json:"id,required" format:"uuid"`
+	ID        string               `json:"id" api:"required" format:"uuid"`
 	Amount    param.Opt[float64]   `json:"amount,omitzero"`
 	Quantity  param.Opt[float64]   `json:"quantity,omitzero"`
 	Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
@@ -4860,9 +4860,9 @@ const (
 
 type V2ContractEditCreditParams struct {
 	// ID of the credit to edit
-	CreditID string `json:"credit_id,required" format:"uuid"`
+	CreditID string `json:"credit_id" api:"required" format:"uuid"`
 	// ID of the customer whose credit is being edited
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// If multiple commits are applicable, the one with the lower priority will apply
 	// first.
 	Priority param.Opt[float64] `json:"priority,omitzero"`
@@ -4921,9 +4921,9 @@ func (r *V2ContractEditCreditParamsAccessSchedule) UnmarshalJSON(data []byte) er
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V2ContractEditCreditParamsAccessScheduleAddScheduleItem struct {
-	Amount       float64   `json:"amount,required"`
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	Amount       float64   `json:"amount" api:"required"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -4937,7 +4937,7 @@ func (r *V2ContractEditCreditParamsAccessScheduleAddScheduleItem) UnmarshalJSON(
 
 // The property ID is required.
 type V2ContractEditCreditParamsAccessScheduleRemoveScheduleItem struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -4951,7 +4951,7 @@ func (r *V2ContractEditCreditParamsAccessScheduleRemoveScheduleItem) UnmarshalJS
 
 // The property ID is required.
 type V2ContractEditCreditParamsAccessScheduleUpdateScheduleItem struct {
-	ID           string               `json:"id,required" format:"uuid"`
+	ID           string               `json:"id" api:"required" format:"uuid"`
 	Amount       param.Opt[float64]   `json:"amount,omitzero"`
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	StartingAt   param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
@@ -4977,8 +4977,8 @@ const (
 )
 
 type V2ContractGetEditHistoryParams struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	paramObj
 }
 

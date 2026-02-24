@@ -54,7 +54,7 @@ func (r *V1ContractNamedScheduleService) Update(ctx context.Context, body V1Cont
 }
 
 type V1ContractNamedScheduleGetResponse struct {
-	Data []V1ContractNamedScheduleGetResponseData `json:"data,required"`
+	Data []V1ContractNamedScheduleGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -70,8 +70,8 @@ func (r *V1ContractNamedScheduleGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractNamedScheduleGetResponseData struct {
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
-	Value        any       `json:"value,required"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	Value        any       `json:"value" api:"required"`
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -91,9 +91,9 @@ func (r *V1ContractNamedScheduleGetResponseData) UnmarshalJSON(data []byte) erro
 
 type V1ContractNamedScheduleGetParams struct {
 	// ID of the rate card whose named schedule is to be retrieved
-	RateCardID string `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id" api:"required" format:"uuid"`
 	// The identifier for the schedule to be retrieved
-	ScheduleName string `json:"schedule_name,required"`
+	ScheduleName string `json:"schedule_name" api:"required"`
 	// If provided, at most one schedule segment will be returned (the one that covers
 	// this date). If not provided, all segments will be returned.
 	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
@@ -110,13 +110,13 @@ func (r *V1ContractNamedScheduleGetParams) UnmarshalJSON(data []byte) error {
 
 type V1ContractNamedScheduleUpdateParams struct {
 	// ID of the rate card whose named schedule is to be updated
-	RateCardID string `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id" api:"required" format:"uuid"`
 	// The identifier for the schedule to be updated
-	ScheduleName string    `json:"schedule_name,required"`
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	ScheduleName string    `json:"schedule_name" api:"required"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// The value to set for the named schedule. The structure of this object is
 	// specific to the named schedule.
-	Value        any                  `json:"value,omitzero,required"`
+	Value        any                  `json:"value,omitzero" api:"required"`
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	paramObj
 }

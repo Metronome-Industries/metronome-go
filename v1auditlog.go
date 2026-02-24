@@ -137,9 +137,9 @@ func (r *V1AuditLogService) ListAutoPaging(ctx context.Context, query V1AuditLog
 }
 
 type V1AuditLogListResponse struct {
-	ID           string                        `json:"id,required"`
-	Request      V1AuditLogListResponseRequest `json:"request,required"`
-	Timestamp    time.Time                     `json:"timestamp,required" format:"date-time"`
+	ID           string                        `json:"id" api:"required"`
+	Request      V1AuditLogListResponseRequest `json:"request" api:"required"`
+	Timestamp    time.Time                     `json:"timestamp" api:"required" format:"date-time"`
 	Action       string                        `json:"action"`
 	Actor        V1AuditLogListResponseActor   `json:"actor"`
 	Description  string                        `json:"description"`
@@ -170,7 +170,7 @@ func (r *V1AuditLogListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1AuditLogListResponseRequest struct {
-	ID        string `json:"id,required"`
+	ID        string `json:"id" api:"required"`
 	IP        string `json:"ip"`
 	UserAgent string `json:"user_agent"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -190,8 +190,8 @@ func (r *V1AuditLogListResponseRequest) UnmarshalJSON(data []byte) error {
 }
 
 type V1AuditLogListResponseActor struct {
-	ID    string `json:"id,required"`
-	Name  string `json:"name,required"`
+	ID    string `json:"id" api:"required"`
+	Name  string `json:"name" api:"required"`
 	Email string `json:"email"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
