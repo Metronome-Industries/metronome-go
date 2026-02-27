@@ -21,6 +21,10 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// [Usage events](https://docs.metronome.com/connecting-metronome/send-usage-data/)
+// are the basis for billable metrics. Use these endpoints to send usage events to
+// Metronome and retrieve aggregated event data.
+//
 // V1UsageService contains methods and other services that help with interacting
 // with the metronome API.
 //

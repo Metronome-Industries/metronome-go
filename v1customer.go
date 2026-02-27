@@ -30,13 +30,34 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1CustomerService] method instead.
 type V1CustomerService struct {
-	Options        []option.RequestOption
-	Alerts         V1CustomerAlertService
-	Plans          V1CustomerPlanService
-	Invoices       V1CustomerInvoiceService
-	BillingConfig  V1CustomerBillingConfigService
-	Commits        V1CustomerCommitService
-	Credits        V1CustomerCreditService
+	Options []option.RequestOption
+	// [Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor
+	// customer spending, balances, and other billing factors. Use these endpoints to
+	// create, retrieve, and archive customer alerts. To view sample alert payloads by
+	// alert type, navigate
+	// [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)
+	Alerts V1CustomerAlertService
+	// [Plans](https://docs.metronome.com/pricing-and-packaging/create-plans/)
+	// determine the base pricing for a customer. Use these endpoints to add a plan to
+	// a customer, end a customer plan, retrieve plans, and retrieve plan details.
+	// Create plans in the [Metronome app](https://app.metronome.com/plans).
+	Plans V1CustomerPlanService
+	// [Invoices](https://docs.metronome.com/invoicing/) reflect how much a customer
+	// spent during a period, which is the basis for billing. Metronome automatically
+	// generates invoices based upon your pricing, packaging, and usage events. Use
+	// these endpoints to retrieve invoices.
+	Invoices V1CustomerInvoiceService
+	// [Customers](https://docs.metronome.com/provisioning/create-customers/) in
+	// Metronome represent your users for all billing and reporting. Use these
+	// endpoints to create, retrieve, update, and archive customers and their billing
+	// configuration.
+	BillingConfig V1CustomerBillingConfigService
+	// Credits and commits are used to manage customer balances.
+	Commits V1CustomerCommitService
+	// Credits and commits are used to manage customer balances.
+	Credits V1CustomerCreditService
+	// Named schedules are used for storing custom data that can change over time.
+	// Named schedules are often used in custom pricing logic.
 	NamedSchedules V1CustomerNamedScheduleService
 }
 

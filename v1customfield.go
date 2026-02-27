@@ -17,6 +17,10 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// [Custom fields](https://docs.metronome.com/integrations/custom-fields/) enable
+// adding additional data to Metronome entities. Use these endpoints to create,
+// retrieve, update, and delete custom fields.
+//
 // V1CustomFieldService contains methods and other services that help with
 // interacting with the metronome API.
 //

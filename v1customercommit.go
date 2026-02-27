@@ -17,6 +17,8 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// Credits and commits are used to manage customer balances.
+//
 // V1CustomerCommitService contains methods and other services that help with
 // interacting with the metronome API.
 //

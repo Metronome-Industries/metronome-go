@@ -14,6 +14,9 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// Use these endpoints to configure a billing API key, a webhook secret, or invoice
+// finalization behavior.
+//
 // V1SettingService contains methods and other services that help with interacting
 // with the metronome API.
 //
@@ -21,7 +24,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1SettingService] method instead.
 type V1SettingService struct {
-	Options          []option.RequestOption
+	Options []option.RequestOption
+	// Use these endpoints to configure a billing API key, a webhook secret, or invoice
+	// finalization behavior.
 	BillingProviders V1SettingBillingProviderService
 }
 

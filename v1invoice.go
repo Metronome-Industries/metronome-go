@@ -14,6 +14,11 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// [Invoices](https://docs.metronome.com/invoicing/) reflect how much a customer
+// spent during a period, which is the basis for billing. Metronome automatically
+// generates invoices based upon your pricing, packaging, and usage events. Use
+// these endpoints to retrieve invoices.
+//
 // V1InvoiceService contains methods and other services that help with interacting
 // with the metronome API.
 //

@@ -15,6 +15,9 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// Named schedules are used for storing custom data that can change over time.
+// Named schedules are often used in custom pricing logic.
+//
 // V1CustomerNamedScheduleService contains methods and other services that help
 // with interacting with the metronome API.
 //

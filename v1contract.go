@@ -27,9 +27,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1ContractService] method instead.
 type V1ContractService struct {
-	Options        []option.RequestOption
-	Products       V1ContractProductService
-	RateCards      V1ContractRateCardService
+	Options []option.RequestOption
+	// Products are the items that customers purchase.
+	Products V1ContractProductService
+	// Rate cards are used to define default pricing for products.
+	RateCards V1ContractRateCardService
+	// Named schedules are used for storing custom data that can change over time.
+	// Named schedules are often used in custom pricing logic.
 	NamedSchedules V1ContractNamedScheduleService
 }
 

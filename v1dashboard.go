@@ -14,6 +14,11 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// [Customers](https://docs.metronome.com/provisioning/create-customers/) in
+// Metronome represent your users for all billing and reporting. Use these
+// endpoints to create, retrieve, update, and archive customers and their billing
+// configuration.
+//
 // V1DashboardService contains methods and other services that help with
 // interacting with the metronome API.
 //

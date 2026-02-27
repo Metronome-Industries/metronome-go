@@ -21,6 +21,8 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// Rate cards are used to define default pricing for products.
+//
 // V1ContractRateCardService contains methods and other services that help with
 // interacting with the metronome API.
 //
@@ -28,9 +30,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1ContractRateCardService] method instead.
 type V1ContractRateCardService struct {
-	Options        []option.RequestOption
-	ProductOrders  V1ContractRateCardProductOrderService
-	Rates          V1ContractRateCardRateService
+	Options []option.RequestOption
+	// Rate cards are used to define default pricing for products.
+	ProductOrders V1ContractRateCardProductOrderService
+	// Rate cards are used to define default pricing for products.
+	Rates V1ContractRateCardRateService
+	// Named schedules are used for storing custom data that can change over time.
+	// Named schedules are often used in custom pricing logic.
 	NamedSchedules V1ContractRateCardNamedScheduleService
 }
 
