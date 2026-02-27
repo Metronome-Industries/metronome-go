@@ -19,6 +19,10 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// [Credit grants](https://docs.metronome.com/invoicing/how-billing-works/manage-credits/)
+// adjust a customer balance for prepayments, reimbursements, promotions, and so
+// on. Use these endpoints to create, retrieve, update, and delete credit grants.
+//
 // V1CreditGrantService contains methods and other services that help with
 // interacting with the metronome API.
 //

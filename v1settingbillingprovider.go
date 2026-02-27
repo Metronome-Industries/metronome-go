@@ -14,6 +14,9 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// Use these endpoints to configure a billing API key, a webhook secret, or invoice
+// finalization behavior.
+//
 // V1SettingBillingProviderService contains methods and other services that help
 // with interacting with the metronome API.
 //

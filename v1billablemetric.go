@@ -23,6 +23,10 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// [Billable metrics](https://docs.metronome.com/understanding-metronome/how-metronome-works#billable-metrics)
+// in Metronome represent the various consumption components that Metronome meters
+// and aggregates.
+//
 // V1BillableMetricService contains methods and other services that help with
 // interacting with the metronome API.
 //

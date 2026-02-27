@@ -21,6 +21,8 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// Products are the items that customers purchase.
+//
 // V1ContractProductService contains methods and other services that help with
 // interacting with the metronome API.
 //

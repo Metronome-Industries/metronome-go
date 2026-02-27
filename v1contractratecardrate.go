@@ -19,6 +19,8 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// Rate cards are used to define default pricing for products.
+//
 // V1ContractRateCardRateService contains methods and other services that help with
 // interacting with the metronome API.
 //

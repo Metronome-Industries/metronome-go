@@ -13,6 +13,9 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// [Security](https://docs.metronome.com/developer-resources/security/) endpoints
+// allow you to retrieve security-related data.
+//
 // V1ServiceService contains methods and other services that help with interacting
 // with the metronome API.
 //
