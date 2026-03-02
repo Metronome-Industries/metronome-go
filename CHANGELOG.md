@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.2.0 (2026-03-02)
+
+Full Changelog: [v3.1.0...v3.2.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.1.0...v3.2.0)
+
+### Features
+
+* [ORCH-1333] removes AVALARA enum value from PaymetGateConfig ([91dcb08](https://github.com/Metronome-Industries/metronome-go/commit/91dcb088e6e38bcbf807506f74d778261fdbd3f1))
+* Add minimum config to percentage and tiered percentage overwrites ([5a8e4ab](https://github.com/Metronome-Industries/metronome-go/commit/5a8e4ab76d6c1a502c25ee675aaf3b39708e80fb))
+* **api:** add minimum_config to rates/commits, specialized override tier types ([0357182](https://github.com/Metronome-Industries/metronome-go/commit/03571829ebd36aa7741521a3d798051b0fe541bc))
+* **api:** add subscription_id field to invoice line items ([d1f69ff](https://github.com/Metronome-Industries/metronome-go/commit/d1f69ff52ae701593ff67131eacf93a4d650dd8a))
+* **api:** remove priority parameter and response field from contracts ([d51cdfd](https://github.com/Metronome-Industries/metronome-go/commit/d51cdfd4205ce5e6d85faf46b1a82c6569f094f9))
+* **api:** support compound group keys in `v1/usage/groups` endpoint ([56e4cef](https://github.com/Metronome-Industries/metronome-go/commit/56e4cefbd7169ced14b35f3d2c8af11eb0b09bd1))
+* update stainless sdk to include new package endpoints ([dcdbe81](https://github.com/Metronome-Industries/metronome-go/commit/dcdbe8190ad377f13af187bd4c51165f94935508))
+
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([d023bb1](https://github.com/Metronome-Industries/metronome-go/commit/d023bb1f02a858b832dd17f93f02c21f536d39c6))
+* **encoder:** correctly serialize NullStruct ([ab630bc](https://github.com/Metronome-Industries/metronome-go/commit/ab630bccd55f4ff640dc3b64bc8f50fb6851f79e))
+
+
+### Chores
+
+* **ci:** add build step ([6bce6b4](https://github.com/Metronome-Industries/metronome-go/commit/6bce6b4149a9e3eb9fe79d2214eb33f93cb0962c))
+* configure new SDK language ([3ff14f8](https://github.com/Metronome-Industries/metronome-go/commit/3ff14f8c916a53c30e591fbfba725ce3e56349a6))
+* **docs:** add missing descriptions ([ba24ae9](https://github.com/Metronome-Industries/metronome-go/commit/ba24ae95b85aacee84e1db3a2c5c12e38fcb31a1))
+* **internal:** move custom custom `json` tags to `api` ([766f7f9](https://github.com/Metronome-Industries/metronome-go/commit/766f7f968b6a9aebd198a205f9f6250760ca6a75))
+* **internal:** regenerate SDK with no functional changes ([d37bacc](https://github.com/Metronome-Industries/metronome-go/commit/d37baccc13469e164195d03932c0f2a5f0c95e24))
+* **tests:** add netsuite test case to customer billing configurations ([50cfb72](https://github.com/Metronome-Industries/metronome-go/commit/50cfb72f24257437b7b00f148e1fef13c61bf576))
+* update mock server docs ([1d532f0](https://github.com/Metronome-Industries/metronome-go/commit/1d532f08029451ba1e8eeb3fce7dce7fe9ed7610))
+
 ## 3.1.0 (2026-02-04)
 
 Full Changelog: [v3.0.0...v3.1.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.0.0...v3.1.0)
