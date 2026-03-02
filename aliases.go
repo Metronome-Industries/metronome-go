@@ -302,6 +302,11 @@ type ContractV2OverrideOverrideSpecifier = shared.ContractV2OverrideOverrideSpec
 // This is an alias to an internal type.
 type ContractV2OverrideOverwriteRate = shared.ContractV2OverrideOverwriteRate
 
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type ContractV2OverrideOverwriteRateMinimumConfig = shared.ContractV2OverrideOverwriteRateMinimumConfig
+
 // This is an alias to an internal type.
 type ContractV2OverrideProduct = shared.ContractV2OverrideProduct
 
@@ -711,6 +716,11 @@ const OverwriteRateRateTypeTieredPercentage = shared.OverwriteRateRateTypeTiered
 
 // Equals "CUSTOM"
 const OverwriteRateRateTypeCustom = shared.OverwriteRateRateTypeCustom
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type OverwriteRateMinimumConfig = shared.OverwriteRateMinimumConfig
 
 // This is an alias to an internal type.
 type PaymentGateConfig = shared.PaymentGateConfig

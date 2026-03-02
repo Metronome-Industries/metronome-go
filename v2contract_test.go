@@ -266,8 +266,11 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					"foo": "bar",
 				},
 				IsProrated: metronome.Bool(true),
-				Price:      metronome.Float(0),
-				Quantity:   metronome.Float(0),
+				MinimumConfig: metronome.V2ContractEditParamsAddOverrideOverwriteRateMinimumConfig{
+					Minimum: 0,
+				},
+				Price:    metronome.Float(0),
+				Quantity: metronome.Float(0),
 				Tiers: []shared.TierParam{{
 					Price: 0,
 					Size:  metronome.Float(0),

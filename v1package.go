@@ -3712,6 +3712,8 @@ type V1PackageNewParamsOverrideOverwriteRate struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]any `json:"custom_rate,omitzero"`
+	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+	MinimumConfig V1PackageNewParamsOverrideOverwriteRateMinimumConfig `json:"minimum_config,omitzero"`
 	// Only set for TIERED rate_type.
 	Tiers []shared.TierParam `json:"tiers,omitzero"`
 	paramObj
@@ -3729,6 +3731,22 @@ func init() {
 	apijson.RegisterFieldValidator[V1PackageNewParamsOverrideOverwriteRate](
 		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
 	)
+}
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// The property Minimum is required.
+type V1PackageNewParamsOverrideOverwriteRateMinimumConfig struct {
+	Minimum float64 `json:"minimum" api:"required"`
+	paramObj
+}
+
+func (r V1PackageNewParamsOverrideOverwriteRateMinimumConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V1PackageNewParamsOverrideOverwriteRateMinimumConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1PackageNewParamsOverrideOverwriteRateMinimumConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Multiplier is required.
