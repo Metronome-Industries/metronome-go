@@ -15,6 +15,12 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// [Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor
+// customer spending, balances, and other billing factors. Use these endpoints to
+// create, retrieve, and archive customer alerts. To view sample alert payloads by
+// alert type, navigate
+// [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)
+//
 // V1AlertService contains methods and other services that help with interacting
 // with the metronome API.
 //
@@ -122,7 +128,7 @@ func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams,
 }
 
 type V1AlertNewResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -138,7 +144,7 @@ func (r *V1AlertNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1AlertArchiveResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -167,13 +173,13 @@ type V1AlertNewParams struct {
 	// "low_remaining_contract_credit_percentage_reached",
 	// "low_remaining_contract_credit_and_commit_balance_reached",
 	// "invoice_total_reached", "low_remaining_seat_balance_reached".
-	AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero,required"`
+	AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero" api:"required"`
 	// Name of the threshold notification
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Threshold value of the notification policy. Depending upon the notification
 	// type, this number may represent a financial amount, the days remaining, or a
 	// percentage reached.
-	Threshold float64 `json:"threshold,required"`
+	Threshold float64 `json:"threshold" api:"required"`
 	// For threshold notifications of type `usage_threshold_reached`, specifies which
 	// billable metric to track the usage for.
 	BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
@@ -247,9 +253,9 @@ const (
 // The properties Entity, Key, Value are required.
 type V1AlertNewParamsCustomFieldFilter struct {
 	// Any of "Contract", "Commit", "ContractCredit".
-	Entity string `json:"entity,omitzero,required"`
-	Key    string `json:"key,required"`
-	Value  string `json:"value,required"`
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -269,7 +275,7 @@ func init() {
 
 // The property Key is required.
 type V1AlertNewParamsGroupValue struct {
-	Key   string            `json:"key,required"`
+	Key   string            `json:"key" api:"required"`
 	Value param.Opt[string] `json:"value,omitzero"`
 	paramObj
 }
@@ -288,7 +294,7 @@ func (r *V1AlertNewParamsGroupValue) UnmarshalJSON(data []byte) error {
 // The property SeatGroupKey is required.
 type V1AlertNewParamsSeatFilter struct {
 	// The seat group key (e.g., "seat_id", "user_id")
-	SeatGroupKey string `json:"seat_group_key,required"`
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
 	// Optional seat identifier the alert is scoped to.
 	SeatGroupValue param.Opt[string] `json:"seat_group_value,omitzero"`
 	paramObj
@@ -304,7 +310,7 @@ func (r *V1AlertNewParamsSeatFilter) UnmarshalJSON(data []byte) error {
 
 type V1AlertArchiveParams struct {
 	// The Metronome ID of the threshold notification
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// If true, resets the uniqueness key on this threshold notification so it can be
 	// re-used
 	ReleaseUniquenessKey param.Opt[bool] `json:"release_uniqueness_key,omitzero"`

@@ -75,7 +75,10 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		BillingFrequency: metronome.V1ContractRateCardRateAddParamsBillingFrequencyMonthly,
 		CommitRate: shared.CommitRateParam{
 			RateType: shared.CommitRateRateTypeFlat,
-			Price:    metronome.Float(0),
+			MinimumConfig: shared.CommitRateMinimumConfigParam{
+				Minimum: 0,
+			},
+			Price: metronome.Float(0),
 			Tiers: []shared.TierParam{{
 				Price: 0,
 				Size:  metronome.Float(0),
@@ -87,7 +90,10 @@ func TestV1ContractRateCardRateAddWithOptionalParams(t *testing.T) {
 		},
 		EndingBefore: metronome.Time(time.Now()),
 		IsProrated:   metronome.Bool(true),
-		Price:        metronome.Float(100),
+		MinimumConfig: metronome.V1ContractRateCardRateAddParamsMinimumConfig{
+			Minimum: 0,
+		},
+		Price: metronome.Float(100),
 		PricingGroupValues: map[string]string{
 			"foo": "string",
 		},
@@ -128,7 +134,10 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 			BillingFrequency: "MONTHLY",
 			CommitRate: shared.CommitRateParam{
 				RateType: shared.CommitRateRateTypeFlat,
-				Price:    metronome.Float(0),
+				MinimumConfig: shared.CommitRateMinimumConfigParam{
+					Minimum: 0,
+				},
+				Price: metronome.Float(0),
 				Tiers: []shared.TierParam{{
 					Price: 0,
 					Size:  metronome.Float(0),
@@ -140,7 +149,10 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 			},
 			EndingBefore: metronome.Time(time.Now()),
 			IsProrated:   metronome.Bool(true),
-			Price:        metronome.Float(100),
+			MinimumConfig: metronome.V1ContractRateCardRateAddManyParamsRateMinimumConfig{
+				Minimum: 0,
+			},
+			Price: metronome.Float(100),
 			PricingGroupValues: map[string]string{
 				"region": "us-west-2",
 				"cloud":  "aws",
@@ -158,7 +170,10 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 			BillingFrequency: "MONTHLY",
 			CommitRate: shared.CommitRateParam{
 				RateType: shared.CommitRateRateTypeFlat,
-				Price:    metronome.Float(0),
+				MinimumConfig: shared.CommitRateMinimumConfigParam{
+					Minimum: 0,
+				},
+				Price: metronome.Float(0),
 				Tiers: []shared.TierParam{{
 					Price: 0,
 					Size:  metronome.Float(0),
@@ -170,7 +185,10 @@ func TestV1ContractRateCardRateAddMany(t *testing.T) {
 			},
 			EndingBefore: metronome.Time(time.Now()),
 			IsProrated:   metronome.Bool(true),
-			Price:        metronome.Float(120),
+			MinimumConfig: metronome.V1ContractRateCardRateAddManyParamsRateMinimumConfig{
+				Minimum: 0,
+			},
+			Price: metronome.Float(120),
 			PricingGroupValues: map[string]string{
 				"region": "us-east-2",
 				"cloud":  "aws",

@@ -17,6 +17,10 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// [Custom fields](https://docs.metronome.com/integrations/custom-fields/) enable
+// adding additional data to Metronome entities. Use these endpoints to create,
+// retrieve, update, and delete custom fields.
+//
 // V1CustomFieldService contains methods and other services that help with
 // interacting with the metronome API.
 //
@@ -139,14 +143,14 @@ func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomField
 }
 
 type V1CustomFieldListKeysResponse struct {
-	EnforceUniqueness bool `json:"enforce_uniqueness,required"`
+	EnforceUniqueness bool `json:"enforce_uniqueness" api:"required"`
 	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
 	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
 	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
 	// "scheduled_charge", "subscription", "package_commit", "package_credit",
 	// "package_subscription", "package_scheduled_charge".
-	Entity V1CustomFieldListKeysResponseEntity `json:"entity,required"`
-	Key    string                              `json:"key,required"`
+	Entity V1CustomFieldListKeysResponseEntity `json:"entity" api:"required"`
+	Key    string                              `json:"key" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EnforceUniqueness respjson.Field
@@ -191,14 +195,14 @@ const (
 )
 
 type V1CustomFieldAddKeyParams struct {
-	EnforceUniqueness bool `json:"enforce_uniqueness,required"`
+	EnforceUniqueness bool `json:"enforce_uniqueness" api:"required"`
 	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
 	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
 	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
 	// "scheduled_charge", "subscription", "package_commit", "package_credit",
 	// "package_subscription", "package_scheduled_charge".
-	Entity V1CustomFieldAddKeyParamsEntity `json:"entity,omitzero,required"`
-	Key    string                          `json:"key,required"`
+	Entity V1CustomFieldAddKeyParamsEntity `json:"entity,omitzero" api:"required"`
+	Key    string                          `json:"key" api:"required"`
 	paramObj
 }
 
@@ -243,9 +247,9 @@ type V1CustomFieldDeleteValuesParams struct {
 	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
 	// "scheduled_charge", "subscription", "package_commit", "package_credit",
 	// "package_subscription", "package_scheduled_charge".
-	Entity   V1CustomFieldDeleteValuesParamsEntity `json:"entity,omitzero,required"`
-	EntityID string                                `json:"entity_id,required" format:"uuid"`
-	Keys     []string                              `json:"keys,omitzero,required"`
+	Entity   V1CustomFieldDeleteValuesParamsEntity `json:"entity,omitzero" api:"required"`
+	EntityID string                                `json:"entity_id" api:"required" format:"uuid"`
+	Keys     []string                              `json:"keys,omitzero" api:"required"`
 	paramObj
 }
 
@@ -321,8 +325,8 @@ type V1CustomFieldRemoveKeyParams struct {
 	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
 	// "scheduled_charge", "subscription", "package_commit", "package_credit",
 	// "package_subscription", "package_scheduled_charge".
-	Entity V1CustomFieldRemoveKeyParamsEntity `json:"entity,omitzero,required"`
-	Key    string                             `json:"key,required"`
+	Entity V1CustomFieldRemoveKeyParamsEntity `json:"entity,omitzero" api:"required"`
+	Key    string                             `json:"key" api:"required"`
 	paramObj
 }
 
@@ -363,14 +367,14 @@ const (
 
 type V1CustomFieldSetValuesParams struct {
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero,required"`
+	CustomFields map[string]string `json:"custom_fields,omitzero" api:"required"`
 	// Any of "alert", "billable_metric", "charge", "commit", "contract_credit",
 	// "contract_product", "contract", "credit_grant", "customer_plan", "customer",
 	// "discount", "invoice", "plan", "professional_service", "product", "rate_card",
 	// "scheduled_charge", "subscription", "package_commit", "package_credit",
 	// "package_subscription", "package_scheduled_charge".
-	Entity   V1CustomFieldSetValuesParamsEntity `json:"entity,omitzero,required"`
-	EntityID string                             `json:"entity_id,required" format:"uuid"`
+	Entity   V1CustomFieldSetValuesParamsEntity `json:"entity,omitzero" api:"required"`
+	EntityID string                             `json:"entity_id" api:"required" format:"uuid"`
 	paramObj
 }
 

@@ -21,6 +21,11 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// [Invoices](https://docs.metronome.com/invoicing/) reflect how much a customer
+// spent during a period, which is the basis for billing. Metronome automatically
+// generates invoices based upon your pricing, packaging, and usage events. Use
+// these endpoints to retrieve invoices.
+//
 // V1CustomerInvoiceService contains methods and other services that help with
 // interacting with the metronome API.
 //
@@ -369,13 +374,13 @@ func (r *V1CustomerInvoiceService) GetPdf(ctx context.Context, query V1CustomerI
 }
 
 type Invoice struct {
-	ID          string                `json:"id,required" format:"uuid"`
-	CreditType  shared.CreditTypeData `json:"credit_type,required"`
-	CustomerID  string                `json:"customer_id,required" format:"uuid"`
-	LineItems   []InvoiceLineItem     `json:"line_items,required"`
-	Status      string                `json:"status,required"`
-	Total       float64               `json:"total,required"`
-	Type        string                `json:"type,required"`
+	ID          string                `json:"id" api:"required" format:"uuid"`
+	CreditType  shared.CreditTypeData `json:"credit_type" api:"required"`
+	CustomerID  string                `json:"customer_id" api:"required" format:"uuid"`
+	LineItems   []InvoiceLineItem     `json:"line_items" api:"required"`
+	Status      string                `json:"status" api:"required"`
+	Total       float64               `json:"total" api:"required"`
+	Type        string                `json:"type" api:"required"`
 	AmendmentID string                `json:"amendment_id" format:"uuid"`
 	// This field's availability is dependent on your client's configuration.
 	BillableStatus any `json:"billable_status"`
@@ -394,7 +399,7 @@ type Invoice struct {
 	CustomerCustomFields map[string]string `json:"customer_custom_fields"`
 	// End of the usage period this invoice covers (UTC)
 	EndTimestamp       time.Time                  `json:"end_timestamp" format:"date-time"`
-	ExternalInvoice    InvoiceExternalInvoice     `json:"external_invoice,nullable"`
+	ExternalInvoice    InvoiceExternalInvoice     `json:"external_invoice" api:"nullable"`
 	InvoiceAdjustments []InvoiceInvoiceAdjustment `json:"invoice_adjustments"`
 	// When the invoice was issued (UTC)
 	IssuedAt            time.Time `json:"issued_at" format:"date-time"`
@@ -410,7 +415,7 @@ type Invoice struct {
 	PlanName         string            `json:"plan_name"`
 	// Only present for contract invoices with reseller royalties.
 	ResellerRoyalty       InvoiceResellerRoyalty        `json:"reseller_royalty"`
-	RevenueSystemInvoices []InvoiceRevenueSystemInvoice `json:"revenue_system_invoices,nullable"`
+	RevenueSystemInvoices []InvoiceRevenueSystemInvoice `json:"revenue_system_invoices" api:"nullable"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// Beginning of the usage period this invoice covers (UTC)
@@ -461,9 +466,9 @@ func (r *Invoice) UnmarshalJSON(data []byte) error {
 }
 
 type InvoiceLineItem struct {
-	CreditType shared.CreditTypeData `json:"credit_type,required"`
-	Name       string                `json:"name,required"`
-	Total      float64               `json:"total,required"`
+	CreditType shared.CreditTypeData `json:"credit_type" api:"required"`
+	Name       string                `json:"name" api:"required"`
+	Total      float64               `json:"total" api:"required"`
 	// The type of line item.
 	//
 	//   - `scheduled`: Line item is associated with a scheduled charge. View the
@@ -487,7 +492,7 @@ type InvoiceLineItem struct {
 	//     insufficient prepaid commit/credit in that custom pricing unit to fully cover
 	//     the spend. Then, the outstanding spend in custom pricing units will be
 	//     converted to fiat currency using a cpu_conversion line item.
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Details about the credit or commit that was applied to this line item. Only
 	// present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
 	// types.
@@ -514,7 +519,7 @@ type InvoiceLineItem struct {
 	// The line item's end date (exclusive).
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	GroupKey     string    `json:"group_key"`
-	GroupValue   string    `json:"group_value,nullable"`
+	GroupValue   string    `json:"group_value" api:"nullable"`
 	// Indicates whether the line item is prorated for `SUBSCRIPTION` type product.
 	IsProrated bool `json:"is_prorated"`
 	// Only present for contract invoices and when the `include_list_prices` query
@@ -567,6 +572,9 @@ type InvoiceLineItem struct {
 	SubLineItems []InvoiceLineItemSubLineItem `json:"sub_line_items"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	SubscriptionCustomFields map[string]string `json:"subscription_custom_fields"`
+	// ID of the subscription that this line item is associated with. Only present on
+	// line items with product of `SUBSCRIPTION` type.
+	SubscriptionID string `json:"subscription_id" format:"uuid"`
 	// Populated if the line item has a tiered price.
 	Tier InvoiceLineItemTier `json:"tier"`
 	// The unit price associated with the line item.
@@ -613,6 +621,7 @@ type InvoiceLineItem struct {
 		StartingAt                      respjson.Field
 		SubLineItems                    respjson.Field
 		SubscriptionCustomFields        respjson.Field
+		SubscriptionID                  respjson.Field
 		Tier                            respjson.Field
 		UnitPrice                       respjson.Field
 		ExtraFields                     map[string]respjson.Field
@@ -630,9 +639,9 @@ func (r *InvoiceLineItem) UnmarshalJSON(data []byte) error {
 // present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
 // types.
 type InvoiceLineItemAppliedCommitOrCredit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "PREPAID", "POSTPAID", "CREDIT".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -652,10 +661,10 @@ func (r *InvoiceLineItemAppliedCommitOrCredit) UnmarshalJSON(data []byte) error 
 // original customer, contract, invoice and line item from which this line item was
 // copied.
 type InvoiceLineItemOrigin struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
-	InvoiceID  string `json:"invoice_id,required" format:"uuid"`
-	LineItemID string `json:"line_item_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	InvoiceID  string `json:"invoice_id" api:"required" format:"uuid"`
+	LineItemID string `json:"line_item_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContractID  respjson.Field
@@ -675,7 +684,7 @@ func (r *InvoiceLineItemOrigin) UnmarshalJSON(data []byte) error {
 
 // Only present for line items paying for a postpaid commit true-up.
 type InvoiceLineItemPostpaidCommit struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -692,10 +701,10 @@ func (r *InvoiceLineItemPostpaidCommit) UnmarshalJSON(data []byte) error {
 
 type InvoiceLineItemSubLineItem struct {
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields  map[string]string `json:"custom_fields,required"`
-	Name          string            `json:"name,required"`
-	Quantity      float64           `json:"quantity,required"`
-	Subtotal      float64           `json:"subtotal,required"`
+	CustomFields  map[string]string `json:"custom_fields" api:"required"`
+	Name          string            `json:"name" api:"required"`
+	Quantity      float64           `json:"quantity" api:"required"`
+	Subtotal      float64           `json:"subtotal" api:"required"`
 	ChargeID      string            `json:"charge_id" format:"uuid"`
 	CreditGrantID string            `json:"credit_grant_id" format:"uuid"`
 	// The end date for the charge (for seats charges only).
@@ -734,7 +743,7 @@ func (r *InvoiceLineItemSubLineItem) UnmarshalJSON(data []byte) error {
 
 // when the current tier started and ends (for tiered charges only)
 type InvoiceLineItemSubLineItemTierPeriod struct {
-	StartingAt   time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -752,11 +761,11 @@ func (r *InvoiceLineItemSubLineItemTierPeriod) UnmarshalJSON(data []byte) error 
 }
 
 type InvoiceLineItemSubLineItemTier struct {
-	Price    float64 `json:"price,required"`
-	Quantity float64 `json:"quantity,required"`
+	Price    float64 `json:"price" api:"required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	// at what metric amount this tier begins
-	StartingAt float64 `json:"starting_at,required"`
-	Subtotal   float64 `json:"subtotal,required"`
+	StartingAt float64 `json:"starting_at" api:"required"`
+	Subtotal   float64 `json:"subtotal" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Price       respjson.Field
@@ -776,9 +785,9 @@ func (r *InvoiceLineItemSubLineItemTier) UnmarshalJSON(data []byte) error {
 
 // Populated if the line item has a tiered price.
 type InvoiceLineItemTier struct {
-	Level      float64 `json:"level,required"`
-	StartingAt string  `json:"starting_at,required"`
-	Size       string  `json:"size,nullable"`
+	Level      float64 `json:"level" api:"required"`
+	StartingAt string  `json:"starting_at" api:"required"`
+	Size       string  `json:"size" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Level       respjson.Field
@@ -796,9 +805,9 @@ func (r *InvoiceLineItemTier) UnmarshalJSON(data []byte) error {
 }
 
 type InvoiceConstituentInvoice struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
-	InvoiceID  string `json:"invoice_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	InvoiceID  string `json:"invoice_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContractID  respjson.Field
@@ -816,9 +825,9 @@ func (r *InvoiceConstituentInvoice) UnmarshalJSON(data []byte) error {
 }
 
 type InvoiceCorrectionRecord struct {
-	CorrectedInvoiceID       string                                          `json:"corrected_invoice_id,required" format:"uuid"`
-	Memo                     string                                          `json:"memo,required"`
-	Reason                   string                                          `json:"reason,required"`
+	CorrectedInvoiceID       string                                          `json:"corrected_invoice_id" api:"required" format:"uuid"`
+	Memo                     string                                          `json:"memo" api:"required"`
+	Reason                   string                                          `json:"reason" api:"required"`
 	CorrectedExternalInvoice InvoiceCorrectionRecordCorrectedExternalInvoice `json:"corrected_external_invoice"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -840,7 +849,7 @@ func (r *InvoiceCorrectionRecord) UnmarshalJSON(data []byte) error {
 type InvoiceCorrectionRecordCorrectedExternalInvoice struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType string `json:"billing_provider_type,required"`
+	BillingProviderType string `json:"billing_provider_type" api:"required"`
 	// Error message from the billing provider, if available.
 	BillingProviderError string `json:"billing_provider_error"`
 	// The ID of the payment in the external system, if available.
@@ -909,7 +918,7 @@ func (r *InvoiceCorrectionRecordCorrectedExternalInvoiceTax) UnmarshalJSON(data 
 type InvoiceExternalInvoice struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType string `json:"billing_provider_type,required"`
+	BillingProviderType string `json:"billing_provider_type" api:"required"`
 	// Error message from the billing provider, if available.
 	BillingProviderError string `json:"billing_provider_error"`
 	// The ID of the payment in the external system, if available.
@@ -976,9 +985,9 @@ func (r *InvoiceExternalInvoiceTax) UnmarshalJSON(data []byte) error {
 }
 
 type InvoiceInvoiceAdjustment struct {
-	CreditType shared.CreditTypeData `json:"credit_type,required"`
-	Name       string                `json:"name,required"`
-	Total      float64               `json:"total,required"`
+	CreditType shared.CreditTypeData `json:"credit_type" api:"required"`
+	Name       string                `json:"name" api:"required"`
+	Total      float64               `json:"total" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CreditGrantCustomFields map[string]string `json:"credit_grant_custom_fields"`
 	CreditGrantID           string            `json:"credit_grant_id"`
@@ -1003,8 +1012,8 @@ func (r *InvoiceInvoiceAdjustment) UnmarshalJSON(data []byte) error {
 // Required for account hierarchy usage invoices. An object containing the contract
 // and customer UUIDs that pay for this invoice.
 type InvoicePayer struct {
-	ContractID string `json:"contract_id,required" format:"uuid"`
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContractID  respjson.Field
@@ -1022,10 +1031,10 @@ func (r *InvoicePayer) UnmarshalJSON(data []byte) error {
 
 // Only present for contract invoices with reseller royalties.
 type InvoiceResellerRoyalty struct {
-	Fraction           string `json:"fraction,required"`
-	NetsuiteResellerID string `json:"netsuite_reseller_id,required"`
+	Fraction           string `json:"fraction" api:"required"`
+	NetsuiteResellerID string `json:"netsuite_reseller_id" api:"required"`
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType string                           `json:"reseller_type,required"`
+	ResellerType string                           `json:"reseller_type" api:"required"`
 	AwsOptions   InvoiceResellerRoyaltyAwsOptions `json:"aws_options"`
 	GcpOptions   InvoiceResellerRoyaltyGcpOptions `json:"gcp_options"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1085,9 +1094,9 @@ func (r *InvoiceResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) error {
 }
 
 type InvoiceRevenueSystemInvoice struct {
-	RevenueSystemExternalEntityType string `json:"revenue_system_external_entity_type,required"`
-	RevenueSystemProvider           string `json:"revenue_system_provider,required"`
-	SyncStatus                      string `json:"sync_status,required"`
+	RevenueSystemExternalEntityType string `json:"revenue_system_external_entity_type" api:"required"`
+	RevenueSystemProvider           string `json:"revenue_system_provider" api:"required"`
+	SyncStatus                      string `json:"sync_status" api:"required"`
 	// The error message from the revenue system, if available.
 	ErrorMessage                  string `json:"error_message"`
 	RevenueSystemExternalEntityID string `json:"revenue_system_external_entity_id"`
@@ -1110,7 +1119,7 @@ func (r *InvoiceRevenueSystemInvoice) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerInvoiceGetResponse struct {
-	Data Invoice `json:"data,required"`
+	Data Invoice `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -1140,8 +1149,8 @@ func (r *V1CustomerInvoiceAddChargeResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerInvoiceListBreakdownsResponse struct {
-	BreakdownEndTimestamp   time.Time `json:"breakdown_end_timestamp,required" format:"date-time"`
-	BreakdownStartTimestamp time.Time `json:"breakdown_start_timestamp,required" format:"date-time"`
+	BreakdownEndTimestamp   time.Time `json:"breakdown_end_timestamp" api:"required" format:"date-time"`
+	BreakdownStartTimestamp time.Time `json:"breakdown_start_timestamp" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BreakdownEndTimestamp   respjson.Field
@@ -1159,8 +1168,8 @@ func (r *V1CustomerInvoiceListBreakdownsResponse) UnmarshalJSON(data []byte) err
 }
 
 type V1CustomerInvoiceGetParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
-	InvoiceID  string `path:"invoice_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
+	InvoiceID  string `path:"invoice_id" api:"required" format:"uuid" json:"-"`
 	// If set, all zero quantity line items will be filtered out of the response
 	SkipZeroQtyLineItems param.Opt[bool] `query:"skip_zero_qty_line_items,omitzero" json:"-"`
 	paramObj
@@ -1176,7 +1185,7 @@ func (r V1CustomerInvoiceGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type V1CustomerInvoiceListParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// Only return invoices for the specified credit type
 	CreditTypeID param.Opt[string] `query:"credit_type_id,omitzero" json:"-"`
 	// RFC 3339 timestamp (exclusive). Invoices will only be returned for billing
@@ -1220,20 +1229,20 @@ const (
 )
 
 type V1CustomerInvoiceAddChargeParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// The Metronome ID of the charge to add to the invoice. Note that the charge must
 	// be on a product that is not on the current plan, and the product must have only
 	// fixed charges.
-	ChargeID string `json:"charge_id,required" format:"uuid"`
+	ChargeID string `json:"charge_id" api:"required" format:"uuid"`
 	// The Metronome ID of the customer plan to add the charge to.
-	CustomerPlanID string `json:"customer_plan_id,required" format:"uuid"`
-	Description    string `json:"description,required"`
+	CustomerPlanID string `json:"customer_plan_id" api:"required" format:"uuid"`
+	Description    string `json:"description" api:"required"`
 	// The start_timestamp of the invoice to add the charge to.
-	InvoiceStartTimestamp time.Time `json:"invoice_start_timestamp,required" format:"date-time"`
+	InvoiceStartTimestamp time.Time `json:"invoice_start_timestamp" api:"required" format:"date-time"`
 	// The price of the charge. This price will match the currency on the invoice, e.g.
 	// USD cents.
-	Price    float64 `json:"price,required"`
-	Quantity float64 `json:"quantity,required"`
+	Price    float64 `json:"price" api:"required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	paramObj
 }
 
@@ -1246,13 +1255,13 @@ func (r *V1CustomerInvoiceAddChargeParams) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerInvoiceListBreakdownsParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
 	// RFC 3339 timestamp. Breakdowns will only be returned for time windows that end
 	// on or before this time.
-	EndingBefore time.Time `query:"ending_before,required" format:"date-time" json:"-"`
+	EndingBefore time.Time `query:"ending_before" api:"required" format:"date-time" json:"-"`
 	// RFC 3339 timestamp. Breakdowns will only be returned for time windows that start
 	// on or after this time.
-	StartingOn time.Time `query:"starting_on,required" format:"date-time" json:"-"`
+	StartingOn time.Time `query:"starting_on" api:"required" format:"date-time" json:"-"`
 	// Only return invoices for the specified credit type
 	CreditTypeID param.Opt[string] `query:"credit_type_id,omitzero" json:"-"`
 	// Max number of results that should be returned. For daily breakdowns, the
@@ -1305,7 +1314,7 @@ const (
 )
 
 type V1CustomerInvoiceGetPdfParams struct {
-	CustomerID string `path:"customer_id,required" format:"uuid" json:"-"`
-	InvoiceID  string `path:"invoice_id,required" format:"uuid" json:"-"`
+	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
+	InvoiceID  string `path:"invoice_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

@@ -15,6 +15,8 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// Rate cards are used to define default pricing for products.
+//
 // V1ContractRateCardProductOrderService contains methods and other services that
 // help with interacting with the metronome API.
 //
@@ -56,7 +58,7 @@ func (r *V1ContractRateCardProductOrderService) Set(ctx context.Context, body V1
 }
 
 type V1ContractRateCardProductOrderUpdateResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -72,7 +74,7 @@ func (r *V1ContractRateCardProductOrderUpdateResponse) UnmarshalJSON(data []byte
 }
 
 type V1ContractRateCardProductOrderSetResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -88,9 +90,9 @@ func (r *V1ContractRateCardProductOrderSetResponse) UnmarshalJSON(data []byte) e
 }
 
 type V1ContractRateCardProductOrderUpdateParams struct {
-	ProductMoves []V1ContractRateCardProductOrderUpdateParamsProductMove `json:"product_moves,omitzero,required"`
+	ProductMoves []V1ContractRateCardProductOrderUpdateParamsProductMove `json:"product_moves,omitzero" api:"required"`
 	// ID of the rate card to update
-	RateCardID string `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -105,9 +107,9 @@ func (r *V1ContractRateCardProductOrderUpdateParams) UnmarshalJSON(data []byte) 
 // The properties Position, ProductID are required.
 type V1ContractRateCardProductOrderUpdateParamsProductMove struct {
 	// 0-based index of the new position of the product
-	Position float64 `json:"position,required"`
+	Position float64 `json:"position" api:"required"`
 	// ID of the product to move
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -120,9 +122,9 @@ func (r *V1ContractRateCardProductOrderUpdateParamsProductMove) UnmarshalJSON(da
 }
 
 type V1ContractRateCardProductOrderSetParams struct {
-	ProductOrder []string `json:"product_order,omitzero,required" format:"uuid"`
+	ProductOrder []string `json:"product_order,omitzero" api:"required" format:"uuid"`
 	// ID of the rate card to update
-	RateCardID string `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id" api:"required" format:"uuid"`
 	paramObj
 }
 

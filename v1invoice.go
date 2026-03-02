@@ -14,6 +14,11 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// [Invoices](https://docs.metronome.com/invoicing/) reflect how much a customer
+// spent during a period, which is the basis for billing. Metronome automatically
+// generates invoices based upon your pricing, packaging, and usage events. Use
+// these endpoints to retrieve invoices.
+//
 // V1InvoiceService contains methods and other services that help with interacting
 // with the metronome API.
 //
@@ -88,7 +93,7 @@ func (r *V1InvoiceRegenerateResponse) UnmarshalJSON(data []byte) error {
 
 type V1InvoiceRegenerateResponseData struct {
 	// The new invoice id
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -120,7 +125,7 @@ func (r *V1InvoiceVoidResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1InvoiceVoidResponseData struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -137,7 +142,7 @@ func (r *V1InvoiceVoidResponseData) UnmarshalJSON(data []byte) error {
 
 type V1InvoiceRegenerateParams struct {
 	// The invoice id to regenerate
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -151,7 +156,7 @@ func (r *V1InvoiceRegenerateParams) UnmarshalJSON(data []byte) error {
 
 type V1InvoiceVoidParams struct {
 	// The invoice id to void
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 

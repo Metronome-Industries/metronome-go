@@ -19,6 +19,8 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// Rate cards are used to define default pricing for products.
+//
 // V1ContractRateCardRateService contains methods and other services that help with
 // interacting with the metronome API.
 //
@@ -94,14 +96,14 @@ func (r *V1ContractRateCardRateService) AddMany(ctx context.Context, body V1Cont
 }
 
 type V1ContractRateCardRateListResponse struct {
-	Entitled bool `json:"entitled,required"`
+	Entitled bool `json:"entitled" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
-	ProductID           string            `json:"product_id,required" format:"uuid"`
-	ProductName         string            `json:"product_name,required"`
-	ProductTags         []string          `json:"product_tags,required"`
-	Rate                shared.Rate       `json:"rate,required"`
-	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
+	ProductCustomFields map[string]string `json:"product_custom_fields" api:"required"`
+	ProductID           string            `json:"product_id" api:"required" format:"uuid"`
+	ProductName         string            `json:"product_name" api:"required"`
+	ProductTags         []string          `json:"product_tags" api:"required"`
+	Rate                shared.Rate       `json:"rate" api:"required"`
+	StartingAt          time.Time         `json:"starting_at" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency V1ContractRateCardRateListResponseBillingFrequency `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
@@ -143,7 +145,7 @@ const (
 )
 
 type V1ContractRateCardRateAddResponse struct {
-	Data V1ContractRateCardRateAddResponseData `json:"data,required"`
+	Data V1ContractRateCardRateAddResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -161,7 +163,7 @@ func (r *V1ContractRateCardRateAddResponse) UnmarshalJSON(data []byte) error {
 type V1ContractRateCardRateAddResponseData struct {
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "CUSTOM", "TIERED",
 	// "TIERED_PERCENTAGE".
-	RateType string `json:"rate_type,required"`
+	RateType string `json:"rate_type" api:"required"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
 	CommitRate shared.CommitRate     `json:"commit_rate"`
@@ -206,7 +208,7 @@ func (r *V1ContractRateCardRateAddResponseData) UnmarshalJSON(data []byte) error
 
 type V1ContractRateCardRateAddManyResponse struct {
 	// The ID of the rate card to which the rates were added.
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -223,9 +225,9 @@ func (r *V1ContractRateCardRateAddManyResponse) UnmarshalJSON(data []byte) error
 
 type V1ContractRateCardRateListParams struct {
 	// inclusive starting point for the rates schedule
-	At time.Time `json:"at,required" format:"date-time"`
+	At time.Time `json:"at" api:"required" format:"date-time"`
 	// ID of the rate card to get the schedule for
-	RateCardID string `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id" api:"required" format:"uuid"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
@@ -288,16 +290,16 @@ func init() {
 }
 
 type V1ContractRateCardRateAddParams struct {
-	Entitled bool `json:"entitled,required"`
+	Entitled bool `json:"entitled" api:"required"`
 	// ID of the product to add a rate for
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	// ID of the rate card to update
-	RateCardID string `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id" api:"required" format:"uuid"`
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
-	RateType V1ContractRateCardRateAddParamsRateType `json:"rate_type,omitzero,required"`
+	RateType V1ContractRateCardRateAddParamsRateType `json:"rate_type,omitzero" api:"required"`
 	// inclusive effective date
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// The Metronome ID of the credit type to associate with price, defaults to USD
 	// (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
 	// rates use the credit type of associated rates.
@@ -324,6 +326,8 @@ type V1ContractRateCardRateAddParams struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]any `json:"custom_rate,omitzero"`
+	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+	MinimumConfig V1ContractRateCardRateAddParamsMinimumConfig `json:"minimum_config,omitzero"`
 	// Optional. List of pricing group key value pairs which will be used to calculate
 	// the price.
 	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
@@ -362,9 +366,25 @@ const (
 	V1ContractRateCardRateAddParamsBillingFrequencyWeekly    V1ContractRateCardRateAddParamsBillingFrequency = "WEEKLY"
 )
 
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// The property Minimum is required.
+type V1ContractRateCardRateAddParamsMinimumConfig struct {
+	Minimum float64 `json:"minimum" api:"required"`
+	paramObj
+}
+
+func (r V1ContractRateCardRateAddParamsMinimumConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractRateCardRateAddParamsMinimumConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardRateAddParamsMinimumConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1ContractRateCardRateAddManyParams struct {
-	RateCardID string                                    `json:"rate_card_id,required" format:"uuid"`
-	Rates      []V1ContractRateCardRateAddManyParamsRate `json:"rates,omitzero,required"`
+	RateCardID string                                    `json:"rate_card_id" api:"required" format:"uuid"`
+	Rates      []V1ContractRateCardRateAddManyParamsRate `json:"rates,omitzero" api:"required"`
 	paramObj
 }
 
@@ -378,14 +398,14 @@ func (r *V1ContractRateCardRateAddManyParams) UnmarshalJSON(data []byte) error {
 
 // The properties Entitled, ProductID, RateType, StartingAt are required.
 type V1ContractRateCardRateAddManyParamsRate struct {
-	Entitled bool `json:"entitled,required"`
+	Entitled bool `json:"entitled" api:"required"`
 	// ID of the product to add a rate for
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
 	// "CUSTOM".
-	RateType string `json:"rate_type,omitzero,required"`
+	RateType string `json:"rate_type,omitzero" api:"required"`
 	// inclusive effective date
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// "The Metronome ID of the credit type to associate with price, defaults to USD
 	// (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
 	// rates use the credit type of associated rates."
@@ -412,6 +432,8 @@ type V1ContractRateCardRateAddManyParamsRate struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]any `json:"custom_rate,omitzero"`
+	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+	MinimumConfig V1ContractRateCardRateAddManyParamsRateMinimumConfig `json:"minimum_config,omitzero"`
 	// Optional. List of pricing group key value pairs which will be used to calculate
 	// the price.
 	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
@@ -435,4 +457,20 @@ func init() {
 	apijson.RegisterFieldValidator[V1ContractRateCardRateAddManyParamsRate](
 		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
 	)
+}
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// The property Minimum is required.
+type V1ContractRateCardRateAddManyParamsRateMinimumConfig struct {
+	Minimum float64 `json:"minimum" api:"required"`
+	paramObj
+}
+
+func (r V1ContractRateCardRateAddManyParamsRateMinimumConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractRateCardRateAddManyParamsRateMinimumConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardRateAddManyParamsRateMinimumConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

@@ -21,6 +21,11 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// [Plans](https://docs.metronome.com/pricing-and-packaging/create-plans/)
+// determine the base pricing for a customer. Use these endpoints to add a plan to
+// a customer, end a customer plan, retrieve plans, and retrieve plan details.
+// Create plans in the [Metronome app](https://app.metronome.com/plans).
+//
 // V1PlanService contains methods and other services that help with interacting
 // with the metronome API.
 //
@@ -139,10 +144,10 @@ func (r *V1PlanService) ListCustomersAutoPaging(ctx context.Context, params V1Pl
 }
 
 type PlanDetail struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string       `json:"custom_fields,required"`
-	Name         string                  `json:"name,required"`
+	CustomFields map[string]string       `json:"custom_fields" api:"required"`
+	Name         string                  `json:"name" api:"required"`
 	CreditGrants []PlanDetailCreditGrant `json:"credit_grants"`
 	Description  string                  `json:"description"`
 	Minimums     []PlanDetailMinimum     `json:"minimums"`
@@ -168,14 +173,14 @@ func (r *PlanDetail) UnmarshalJSON(data []byte) error {
 }
 
 type PlanDetailCreditGrant struct {
-	AmountGranted           float64               `json:"amount_granted,required"`
-	AmountGrantedCreditType shared.CreditTypeData `json:"amount_granted_credit_type,required"`
-	AmountPaid              float64               `json:"amount_paid,required"`
-	AmountPaidCreditType    shared.CreditTypeData `json:"amount_paid_credit_type,required"`
-	EffectiveDuration       float64               `json:"effective_duration,required"`
-	Name                    string                `json:"name,required"`
-	Priority                string                `json:"priority,required"`
-	SendInvoice             bool                  `json:"send_invoice,required"`
+	AmountGranted           float64               `json:"amount_granted" api:"required"`
+	AmountGrantedCreditType shared.CreditTypeData `json:"amount_granted_credit_type" api:"required"`
+	AmountPaid              float64               `json:"amount_paid" api:"required"`
+	AmountPaidCreditType    shared.CreditTypeData `json:"amount_paid_credit_type" api:"required"`
+	EffectiveDuration       float64               `json:"effective_duration" api:"required"`
+	Name                    string                `json:"name" api:"required"`
+	Priority                string                `json:"priority" api:"required"`
+	SendInvoice             bool                  `json:"send_invoice" api:"required"`
 	Reason                  string                `json:"reason"`
 	RecurrenceDuration      float64               `json:"recurrence_duration"`
 	RecurrenceInterval      float64               `json:"recurrence_interval"`
@@ -204,12 +209,12 @@ func (r *PlanDetailCreditGrant) UnmarshalJSON(data []byte) error {
 }
 
 type PlanDetailMinimum struct {
-	CreditType shared.CreditTypeData `json:"credit_type,required"`
-	Name       string                `json:"name,required"`
+	CreditType shared.CreditTypeData `json:"credit_type" api:"required"`
+	Name       string                `json:"name" api:"required"`
 	// Used in price ramps. Indicates how many billing periods pass before the charge
 	// applies.
-	StartPeriod float64 `json:"start_period,required"`
-	Value       float64 `json:"value,required"`
+	StartPeriod float64 `json:"start_period" api:"required"`
+	Value       float64 `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditType  respjson.Field
@@ -228,12 +233,12 @@ func (r *PlanDetailMinimum) UnmarshalJSON(data []byte) error {
 }
 
 type PlanDetailOverageRate struct {
-	CreditType     shared.CreditTypeData `json:"credit_type,required"`
-	FiatCreditType shared.CreditTypeData `json:"fiat_credit_type,required"`
+	CreditType     shared.CreditTypeData `json:"credit_type" api:"required"`
+	FiatCreditType shared.CreditTypeData `json:"fiat_credit_type" api:"required"`
 	// Used in price ramps. Indicates how many billing periods pass before the charge
 	// applies.
-	StartPeriod            float64 `json:"start_period,required"`
-	ToFiatConversionFactor float64 `json:"to_fiat_conversion_factor,required"`
+	StartPeriod            float64 `json:"start_period" api:"required"`
+	ToFiatConversionFactor float64 `json:"to_fiat_conversion_factor" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditType             respjson.Field
@@ -252,9 +257,9 @@ func (r *PlanDetailOverageRate) UnmarshalJSON(data []byte) error {
 }
 
 type V1PlanListResponse struct {
-	ID          string `json:"id,required" format:"uuid"`
-	Description string `json:"description,required"`
-	Name        string `json:"name,required"`
+	ID          string `json:"id" api:"required" format:"uuid"`
+	Description string `json:"description" api:"required"`
+	Name        string `json:"name" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -275,7 +280,7 @@ func (r *V1PlanListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1PlanGetDetailsResponse struct {
-	Data PlanDetail `json:"data,required"`
+	Data PlanDetail `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -291,16 +296,16 @@ func (r *V1PlanGetDetailsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1PlanListChargesResponse struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "usage", "fixed", "composite", "minimum", "seat".
-	ChargeType V1PlanListChargesResponseChargeType `json:"charge_type,required"`
-	CreditType shared.CreditTypeData               `json:"credit_type,required"`
+	ChargeType V1PlanListChargesResponseChargeType `json:"charge_type" api:"required"`
+	CreditType shared.CreditTypeData               `json:"credit_type" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string                `json:"custom_fields,required"`
-	Name         string                           `json:"name,required"`
-	Prices       []V1PlanListChargesResponsePrice `json:"prices,required"`
-	ProductID    string                           `json:"product_id,required"`
-	ProductName  string                           `json:"product_name,required"`
+	CustomFields map[string]string                `json:"custom_fields" api:"required"`
+	Name         string                           `json:"name" api:"required"`
+	Prices       []V1PlanListChargesResponsePrice `json:"prices" api:"required"`
+	ProductID    string                           `json:"product_id" api:"required"`
+	ProductName  string                           `json:"product_name" api:"required"`
 	Quantity     float64                          `json:"quantity"`
 	// Used in price ramps. Indicates how many billing periods pass before the charge
 	// applies.
@@ -347,8 +352,8 @@ const (
 
 type V1PlanListChargesResponsePrice struct {
 	// Used in pricing tiers. Indicates at what metric value the price applies.
-	Tier               float64 `json:"tier,required"`
-	Value              float64 `json:"value,required"`
+	Tier               float64 `json:"tier" api:"required"`
+	Value              float64 `json:"value" api:"required"`
 	CollectionInterval float64 `json:"collection_interval"`
 	CollectionSchedule string  `json:"collection_schedule"`
 	Quantity           float64 `json:"quantity"`
@@ -373,7 +378,7 @@ func (r *V1PlanListChargesResponsePrice) UnmarshalJSON(data []byte) error {
 // Specifies how quantities for usage based charges will be converted.
 type V1PlanListChargesResponseUnitConversion struct {
 	// The conversion factor
-	DivisionFactor float64 `json:"division_factor,required"`
+	DivisionFactor float64 `json:"division_factor" api:"required"`
 	// Whether usage should be rounded down or up to the nearest whole number. If null,
 	// quantity will be rounded to 20 decimal places.
 	//
@@ -395,8 +400,8 @@ func (r *V1PlanListChargesResponseUnitConversion) UnmarshalJSON(data []byte) err
 }
 
 type V1PlanListCustomersResponse struct {
-	CustomerDetails CustomerDetail                         `json:"customer_details,required"`
-	PlanDetails     V1PlanListCustomersResponsePlanDetails `json:"plan_details,required"`
+	CustomerDetails CustomerDetail                         `json:"customer_details" api:"required"`
+	PlanDetails     V1PlanListCustomersResponsePlanDetails `json:"plan_details" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CustomerDetails respjson.Field
@@ -413,15 +418,15 @@ func (r *V1PlanListCustomersResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1PlanListCustomersResponsePlanDetails struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields   map[string]string `json:"custom_fields,required"`
-	CustomerPlanID string            `json:"customer_plan_id,required" format:"uuid"`
-	Name           string            `json:"name,required"`
+	CustomFields   map[string]string `json:"custom_fields" api:"required"`
+	CustomerPlanID string            `json:"customer_plan_id" api:"required" format:"uuid"`
+	Name           string            `json:"name" api:"required"`
 	// The start date of the plan
-	StartingOn time.Time `json:"starting_on,required" format:"date-time"`
+	StartingOn time.Time `json:"starting_on" api:"required" format:"date-time"`
 	// The end date of the plan
-	EndingBefore time.Time `json:"ending_before,nullable" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -458,12 +463,12 @@ func (r V1PlanListParams) URLQuery() (v url.Values, err error) {
 }
 
 type V1PlanGetDetailsParams struct {
-	PlanID string `path:"plan_id,required" format:"uuid" json:"-"`
+	PlanID string `path:"plan_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type V1PlanListChargesParams struct {
-	PlanID string `path:"plan_id,required" format:"uuid" json:"-"`
+	PlanID string `path:"plan_id" api:"required" format:"uuid" json:"-"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.
@@ -481,7 +486,7 @@ func (r V1PlanListChargesParams) URLQuery() (v url.Values, err error) {
 }
 
 type V1PlanListCustomersParams struct {
-	PlanID string `path:"plan_id,required" format:"uuid" json:"-"`
+	PlanID string `path:"plan_id" api:"required" format:"uuid" json:"-"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.

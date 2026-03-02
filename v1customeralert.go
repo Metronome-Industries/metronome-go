@@ -19,6 +19,12 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// [Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor
+// customer spending, balances, and other billing factors. Use these endpoints to
+// create, retrieve, and archive customer alerts. To view sample alert payloads by
+// alert type, navigate
+// [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)
+//
 // V1CustomerAlertService contains methods and other services that help with
 // interacting with the metronome API.
 //
@@ -223,14 +229,14 @@ func (r *V1CustomerAlertService) Reset(ctx context.Context, body V1CustomerAlert
 }
 
 type CustomerAlert struct {
-	Alert CustomerAlertAlert `json:"alert,required"`
+	Alert CustomerAlertAlert `json:"alert" api:"required"`
 	// The status of the threshold notification. If the notification is archived, null
 	// will be returned.
 	//
 	// Any of "ok", "in_alarm", "evaluating".
-	CustomerStatus CustomerAlertCustomerStatus `json:"customer_status,required"`
+	CustomerStatus CustomerAlertCustomerStatus `json:"customer_status" api:"required"`
 	// If present, indicates the reason the threshold notification was triggered.
-	TriggeredBy string `json:"triggered_by,nullable"`
+	TriggeredBy string `json:"triggered_by" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Alert          respjson.Field
@@ -249,15 +255,15 @@ func (r *CustomerAlert) UnmarshalJSON(data []byte) error {
 
 type CustomerAlertAlert struct {
 	// the Metronome ID of the threshold notification
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the threshold notification
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Status of the threshold notification
 	//
 	// Any of "enabled", "archived", "disabled".
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Threshold value of the notification policy
-	Threshold float64 `json:"threshold,required"`
+	Threshold float64 `json:"threshold" api:"required"`
 	// Type of the threshold notification
 	//
 	// Any of "low_credit_balance_reached", "spend_threshold_reached",
@@ -271,15 +277,15 @@ type CustomerAlertAlert struct {
 	// "low_remaining_contract_credit_percentage_reached",
 	// "low_remaining_contract_credit_and_commit_balance_reached",
 	// "low_remaining_seat_balance_reached", "invoice_total_reached".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Timestamp for when the threshold notification was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// An array of strings, representing a way to filter the credit grant this
 	// threshold notification applies to, by looking at the credit_grant_type field on
 	// the credit grant. This field is only defined for CreditPercentage and
 	// CreditBalance notifications
 	CreditGrantTypeFilters []string              `json:"credit_grant_type_filters"`
-	CreditType             shared.CreditTypeData `json:"credit_type,nullable"`
+	CreditType             shared.CreditTypeData `json:"credit_type" api:"nullable"`
 	// A list of custom field filters for notification types that support advanced
 	// filtering
 	CustomFieldFilters []CustomerAlertAlertCustomFieldFilter `json:"custom_field_filters"`
@@ -328,9 +334,9 @@ func (r *CustomerAlertAlert) UnmarshalJSON(data []byte) error {
 
 type CustomerAlertAlertCustomFieldFilter struct {
 	// Any of "Contract", "Commit", "ContractCredit".
-	Entity string `json:"entity,required"`
-	Key    string `json:"key,required"`
-	Value  string `json:"value,required"`
+	Entity string `json:"entity" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entity      respjson.Field
@@ -350,8 +356,8 @@ func (r *CustomerAlertAlertCustomFieldFilter) UnmarshalJSON(data []byte) error {
 // Scopes threshold notification evaluation to a specific presentation group key on
 // individual line items. Only present for spend notifications.
 type CustomerAlertAlertGroupKeyFilter struct {
-	Key   string `json:"key,required"`
-	Value string `json:"value,required"`
+	Key   string `json:"key" api:"required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Key         respjson.Field
@@ -368,7 +374,7 @@ func (r *CustomerAlertAlertGroupKeyFilter) UnmarshalJSON(data []byte) error {
 }
 
 type CustomerAlertAlertGroupValue struct {
-	Key   string `json:"key,required"`
+	Key   string `json:"key" api:"required"`
 	Value string `json:"value"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -389,7 +395,7 @@ func (r *CustomerAlertAlertGroupValue) UnmarshalJSON(data []byte) error {
 // group key or seat group key-value pair the alert is scoped to.
 type CustomerAlertAlertSeatFilter struct {
 	// The seat group key (e.g., "seat_id", "user_id") that the alert is scoped to.
-	SeatGroupKey string `json:"seat_group_key,required"`
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
 	// The seat group value that the alert is scoped to.
 	SeatGroupValue string `json:"seat_group_value"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -418,7 +424,7 @@ const (
 )
 
 type V1CustomerAlertGetResponse struct {
-	Data CustomerAlert `json:"data,required"`
+	Data CustomerAlert `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -435,9 +441,9 @@ func (r *V1CustomerAlertGetResponse) UnmarshalJSON(data []byte) error {
 
 type V1CustomerAlertGetParams struct {
 	// The Metronome ID of the threshold notification
-	AlertID string `json:"alert_id,required" format:"uuid"`
+	AlertID string `json:"alert_id" api:"required" format:"uuid"`
 	// The Metronome ID of the customer
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// Only present for `spend_threshold_reached` notifications. Retrieve the
 	// notification for a specific group key-value pair.
 	GroupValues []V1CustomerAlertGetParamsGroupValue `json:"group_values,omitzero"`
@@ -465,8 +471,8 @@ func (r *V1CustomerAlertGetParams) UnmarshalJSON(data []byte) error {
 //
 // The properties Key, Value are required.
 type V1CustomerAlertGetParamsGroupValue struct {
-	Key   string `json:"key,required"`
-	Value string `json:"value,required"`
+	Key   string `json:"key" api:"required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -493,9 +499,9 @@ const (
 // The properties SeatGroupKey, SeatGroupValue are required.
 type V1CustomerAlertGetParamsSeatFilter struct {
 	// The seat group key (e.g., "seat_id", "user_id")
-	SeatGroupKey string `json:"seat_group_key,required"`
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
 	// The specific seat identifier to filter by
-	SeatGroupValue string `json:"seat_group_value,required"`
+	SeatGroupValue string `json:"seat_group_value" api:"required"`
 	paramObj
 }
 
@@ -509,7 +515,7 @@ func (r *V1CustomerAlertGetParamsSeatFilter) UnmarshalJSON(data []byte) error {
 
 type V1CustomerAlertListParams struct {
 	// The Metronome ID of the customer
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// Cursor that indicates where the next page of results should start.
 	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// Optionally filter by threshold notification status. If absent, only enabled
@@ -539,9 +545,9 @@ func (r V1CustomerAlertListParams) URLQuery() (v url.Values, err error) {
 
 type V1CustomerAlertResetParams struct {
 	// The Metronome ID of the threshold notification
-	AlertID string `json:"alert_id,required" format:"uuid"`
+	AlertID string `json:"alert_id" api:"required" format:"uuid"`
 	// The Metronome ID of the customer
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	paramObj
 }
 

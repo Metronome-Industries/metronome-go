@@ -104,9 +104,13 @@ func TestV1UsageListWithGroupsWithOptionalParams(t *testing.T) {
 		CurrentPeriod:    metronome.Bool(true),
 		EndingBefore:     metronome.Time(time.Now()),
 		GroupBy: metronome.V1UsageListWithGroupsParamsGroupBy{
-			Key:    "region",
-			Values: []string{"US-East", "US-West", "EU-Central"},
+			Key:    "key",
+			Values: []string{"x"},
 		},
+		GroupFilters: map[string][]string{
+			"region": {"us-east1", "us-west1"},
+		},
+		GroupKey:   []string{"region"},
 		StartingOn: metronome.Time(time.Now()),
 	})
 	if err != nil {

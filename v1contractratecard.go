@@ -21,6 +21,8 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// Rate cards are used to define default pricing for products.
+//
 // V1ContractRateCardService contains methods and other services that help with
 // interacting with the metronome API.
 //
@@ -28,9 +30,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1ContractRateCardService] method instead.
 type V1ContractRateCardService struct {
-	Options        []option.RequestOption
-	ProductOrders  V1ContractRateCardProductOrderService
-	Rates          V1ContractRateCardRateService
+	Options []option.RequestOption
+	// Rate cards are used to define default pricing for products.
+	ProductOrders V1ContractRateCardProductOrderService
+	// Rate cards are used to define default pricing for products.
+	Rates V1ContractRateCardRateService
+	// Named schedules are used for storing custom data that can change over time.
+	// Named schedules are often used in custom pricing logic.
 	NamedSchedules V1ContractRateCardNamedScheduleService
 }
 
@@ -214,7 +220,7 @@ func (r *V1ContractRateCardService) GetRateSchedule(ctx context.Context, params 
 }
 
 type V1ContractRateCardNewResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -230,7 +236,7 @@ func (r *V1ContractRateCardNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractRateCardGetResponse struct {
-	Data V1ContractRateCardGetResponseData `json:"data,required"`
+	Data V1ContractRateCardGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -246,10 +252,10 @@ func (r *V1ContractRateCardGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractRateCardGetResponseData struct {
-	ID                    string                                                  `json:"id,required" format:"uuid"`
-	CreatedAt             time.Time                                               `json:"created_at,required" format:"date-time"`
-	CreatedBy             string                                                  `json:"created_by,required"`
-	Name                  string                                                  `json:"name,required"`
+	ID                    string                                                  `json:"id" api:"required" format:"uuid"`
+	CreatedAt             time.Time                                               `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy             string                                                  `json:"created_by" api:"required"`
+	Name                  string                                                  `json:"name" api:"required"`
 	Aliases               []V1ContractRateCardGetResponseDataAlias                `json:"aliases"`
 	CreditTypeConversions []V1ContractRateCardGetResponseDataCreditTypeConversion `json:"credit_type_conversions"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
@@ -279,7 +285,7 @@ func (r *V1ContractRateCardGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractRateCardGetResponseDataAlias struct {
-	Name         string    `json:"name,required"`
+	Name         string    `json:"name" api:"required"`
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	StartingAt   time.Time `json:"starting_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -299,8 +305,8 @@ func (r *V1ContractRateCardGetResponseDataAlias) UnmarshalJSON(data []byte) erro
 }
 
 type V1ContractRateCardGetResponseDataCreditTypeConversion struct {
-	CustomCreditType    shared.CreditTypeData `json:"custom_credit_type,required"`
-	FiatPerCustomCredit string                `json:"fiat_per_custom_credit,required"`
+	CustomCreditType    shared.CreditTypeData `json:"custom_credit_type" api:"required"`
+	FiatPerCustomCredit string                `json:"fiat_per_custom_credit" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CustomCreditType    respjson.Field
@@ -317,7 +323,7 @@ func (r *V1ContractRateCardGetResponseDataCreditTypeConversion) UnmarshalJSON(da
 }
 
 type V1ContractRateCardUpdateResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -333,10 +339,10 @@ func (r *V1ContractRateCardUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractRateCardListResponse struct {
-	ID                    string                                               `json:"id,required" format:"uuid"`
-	CreatedAt             time.Time                                            `json:"created_at,required" format:"date-time"`
-	CreatedBy             string                                               `json:"created_by,required"`
-	Name                  string                                               `json:"name,required"`
+	ID                    string                                               `json:"id" api:"required" format:"uuid"`
+	CreatedAt             time.Time                                            `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy             string                                               `json:"created_by" api:"required"`
+	Name                  string                                               `json:"name" api:"required"`
 	Aliases               []V1ContractRateCardListResponseAlias                `json:"aliases"`
 	CreditTypeConversions []V1ContractRateCardListResponseCreditTypeConversion `json:"credit_type_conversions"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
@@ -366,7 +372,7 @@ func (r *V1ContractRateCardListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractRateCardListResponseAlias struct {
-	Name         string    `json:"name,required"`
+	Name         string    `json:"name" api:"required"`
 	EndingBefore time.Time `json:"ending_before" format:"date-time"`
 	StartingAt   time.Time `json:"starting_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -386,8 +392,8 @@ func (r *V1ContractRateCardListResponseAlias) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractRateCardListResponseCreditTypeConversion struct {
-	CustomCreditType    shared.CreditTypeData `json:"custom_credit_type,required"`
-	FiatPerCustomCredit string                `json:"fiat_per_custom_credit,required"`
+	CustomCreditType    shared.CreditTypeData `json:"custom_credit_type" api:"required"`
+	FiatPerCustomCredit string                `json:"fiat_per_custom_credit" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CustomCreditType    respjson.Field
@@ -404,7 +410,7 @@ func (r *V1ContractRateCardListResponseCreditTypeConversion) UnmarshalJSON(data 
 }
 
 type V1ContractRateCardArchiveResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -420,8 +426,8 @@ func (r *V1ContractRateCardArchiveResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1ContractRateCardGetRateScheduleResponse struct {
-	Data     []V1ContractRateCardGetRateScheduleResponseData `json:"data,required"`
-	NextPage string                                          `json:"next_page,nullable"`
+	Data     []V1ContractRateCardGetRateScheduleResponseData `json:"data" api:"required"`
+	NextPage string                                          `json:"next_page" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -438,14 +444,14 @@ func (r *V1ContractRateCardGetRateScheduleResponse) UnmarshalJSON(data []byte) e
 }
 
 type V1ContractRateCardGetRateScheduleResponseData struct {
-	Entitled bool `json:"entitled,required"`
+	Entitled bool `json:"entitled" api:"required"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	ProductCustomFields map[string]string `json:"product_custom_fields,required"`
-	ProductID           string            `json:"product_id,required" format:"uuid"`
-	ProductName         string            `json:"product_name,required"`
-	ProductTags         []string          `json:"product_tags,required"`
-	Rate                shared.Rate       `json:"rate,required"`
-	StartingAt          time.Time         `json:"starting_at,required" format:"date-time"`
+	ProductCustomFields map[string]string `json:"product_custom_fields" api:"required"`
+	ProductID           string            `json:"product_id" api:"required" format:"uuid"`
+	ProductName         string            `json:"product_name" api:"required"`
+	ProductTags         []string          `json:"product_tags" api:"required"`
+	Rate                shared.Rate       `json:"rate" api:"required"`
+	StartingAt          time.Time         `json:"starting_at" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
@@ -479,7 +485,7 @@ func (r *V1ContractRateCardGetRateScheduleResponseData) UnmarshalJSON(data []byt
 
 type V1ContractRateCardNewParams struct {
 	// Used only in UI/API. It is not exposed to end customers.
-	Name        string            `json:"name,required"`
+	Name        string            `json:"name" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The Metronome ID of the credit type to associate with the rate card, defaults to
 	// USD (cents) if not passed.
@@ -505,7 +511,7 @@ func (r *V1ContractRateCardNewParams) UnmarshalJSON(data []byte) error {
 
 // The property Name is required.
 type V1ContractRateCardNewParamsAlias struct {
-	Name         string               `json:"name,required"`
+	Name         string               `json:"name" api:"required"`
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	StartingAt   param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
 	paramObj
@@ -521,8 +527,8 @@ func (r *V1ContractRateCardNewParamsAlias) UnmarshalJSON(data []byte) error {
 
 // The properties CustomCreditTypeID, FiatPerCustomCredit are required.
 type V1ContractRateCardNewParamsCreditTypeConversion struct {
-	CustomCreditTypeID  string  `json:"custom_credit_type_id,required" format:"uuid"`
-	FiatPerCustomCredit float64 `json:"fiat_per_custom_credit,required"`
+	CustomCreditTypeID  string  `json:"custom_credit_type_id" api:"required" format:"uuid"`
+	FiatPerCustomCredit float64 `json:"fiat_per_custom_credit" api:"required"`
 	paramObj
 }
 
@@ -548,7 +554,7 @@ func (r *V1ContractRateCardGetParams) UnmarshalJSON(data []byte) error {
 
 type V1ContractRateCardUpdateParams struct {
 	// ID of the rate card to update
-	RateCardID  string            `json:"rate_card_id,required" format:"uuid"`
+	RateCardID  string            `json:"rate_card_id" api:"required" format:"uuid"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Name param.Opt[string] `json:"name,omitzero"`
@@ -569,7 +575,7 @@ func (r *V1ContractRateCardUpdateParams) UnmarshalJSON(data []byte) error {
 
 // The property Name is required.
 type V1ContractRateCardUpdateParamsAlias struct {
-	Name         string               `json:"name,required"`
+	Name         string               `json:"name" api:"required"`
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	StartingAt   param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
 	paramObj
@@ -622,9 +628,9 @@ func (r *V1ContractRateCardArchiveParams) UnmarshalJSON(data []byte) error {
 
 type V1ContractRateCardGetRateScheduleParams struct {
 	// ID of the rate card to get the schedule for
-	RateCardID string `json:"rate_card_id,required" format:"uuid"`
+	RateCardID string `json:"rate_card_id" api:"required" format:"uuid"`
 	// inclusive starting point for the rates schedule
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.

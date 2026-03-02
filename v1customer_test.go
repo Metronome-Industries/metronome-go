@@ -333,6 +333,15 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+		}, {
+			BillingProvider: "netsuite",
+			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
+			Configuration: map[string]any{
+				"netsuite_customer_id": "bar",
+			},
+			DeliveryMethod:   "direct_to_billing_provider",
+			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			TaxProvider:      "anrok",
 		}},
 	})
 	if err != nil {

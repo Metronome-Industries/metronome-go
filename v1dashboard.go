@@ -14,6 +14,11 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// [Customers](https://docs.metronome.com/provisioning/create-customers/) in
+// Metronome represent your users for all billing and reporting. Use these
+// endpoints to create, retrieve, update, and archive customers and their billing
+// configuration.
+//
 // V1DashboardService contains methods and other services that help with
 // interacting with the metronome API.
 //
@@ -71,7 +76,7 @@ func (r *V1DashboardService) GetEmbeddableURL(ctx context.Context, body V1Dashbo
 }
 
 type V1DashboardGetEmbeddableURLResponse struct {
-	Data V1DashboardGetEmbeddableURLResponseData `json:"data,required"`
+	Data V1DashboardGetEmbeddableURLResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -103,11 +108,11 @@ func (r *V1DashboardGetEmbeddableURLResponseData) UnmarshalJSON(data []byte) err
 }
 
 type V1DashboardGetEmbeddableURLParams struct {
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// The type of dashboard to retrieve.
 	//
 	// Any of "invoices", "usage", "credits", "commits_and_credits".
-	Dashboard V1DashboardGetEmbeddableURLParamsDashboard `json:"dashboard,omitzero,required"`
+	Dashboard V1DashboardGetEmbeddableURLParamsDashboard `json:"dashboard,omitzero" api:"required"`
 	// Optional list of billable metric group key overrides
 	BmGroupKeyOverrides []V1DashboardGetEmbeddableURLParamsBmGroupKeyOverride `json:"bm_group_key_overrides,omitzero"`
 	// Optional list of colors to override
@@ -138,7 +143,7 @@ const (
 // The property GroupKeyName is required.
 type V1DashboardGetEmbeddableURLParamsBmGroupKeyOverride struct {
 	// The name of the billable metric group key.
-	GroupKeyName string `json:"group_key_name,required"`
+	GroupKeyName string `json:"group_key_name" api:"required"`
 	// The display name for the billable metric group key
 	DisplayName param.Opt[string] `json:"display_name,omitzero"`
 	// <key, value> pairs of the billable metric group key values and their display
@@ -186,9 +191,9 @@ func init() {
 // The properties Key, Value are required.
 type V1DashboardGetEmbeddableURLParamsDashboardOption struct {
 	// The option key name
-	Key string `json:"key,required"`
+	Key string `json:"key" api:"required"`
 	// The option value
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 

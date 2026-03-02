@@ -87,7 +87,7 @@ func (r *V1PaymentService) Cancel(ctx context.Context, body V1PaymentCancelParam
 }
 
 type Payment struct {
-	ID                    string                        `json:"id,required" format:"uuid"`
+	ID                    string                        `json:"id" api:"required" format:"uuid"`
 	Amount                float64                       `json:"amount"`
 	AmountPaid            float64                       `json:"amount_paid"`
 	ContractID            string                        `json:"contract_id" format:"uuid"`
@@ -128,9 +128,9 @@ func (r *Payment) UnmarshalJSON(data []byte) error {
 }
 
 type PaymentPaymentGateway struct {
-	Stripe PaymentPaymentGatewayStripe `json:"stripe,required"`
+	Stripe PaymentPaymentGatewayStripe `json:"stripe" api:"required"`
 	// Any of "stripe".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Stripe      respjson.Field
@@ -147,7 +147,7 @@ func (r *PaymentPaymentGateway) UnmarshalJSON(data []byte) error {
 }
 
 type PaymentPaymentGatewayStripe struct {
-	PaymentIntentID string                           `json:"payment_intent_id,required"`
+	PaymentIntentID string                           `json:"payment_intent_id" api:"required"`
 	Error           PaymentPaymentGatewayStripeError `json:"error"`
 	PaymentMethodID string                           `json:"payment_method_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -187,8 +187,8 @@ func (r *PaymentPaymentGatewayStripeError) UnmarshalJSON(data []byte) error {
 }
 
 type PaymentRevenueSystemPayment struct {
-	RevenueSystemProvider string `json:"revenue_system_provider,required"`
-	SyncStatus            string `json:"sync_status,required"`
+	RevenueSystemProvider string `json:"revenue_system_provider" api:"required"`
+	SyncStatus            string `json:"sync_status" api:"required"`
 	// The error message from the revenue system, if available.
 	ErrorMessage                   string `json:"error_message"`
 	RevenueSystemExternalPaymentID string `json:"revenue_system_external_payment_id"`
@@ -219,7 +219,7 @@ const (
 )
 
 type V1PaymentAttemptResponse struct {
-	Data Payment `json:"data,required"`
+	Data Payment `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -235,7 +235,7 @@ func (r *V1PaymentAttemptResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1PaymentCancelResponse struct {
-	Data Payment `json:"data,required"`
+	Data Payment `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -251,8 +251,8 @@ func (r *V1PaymentCancelResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1PaymentListParams struct {
-	CustomerID string `json:"customer_id,required" format:"uuid"`
-	InvoiceID  string `json:"invoice_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	InvoiceID  string `json:"invoice_id" api:"required" format:"uuid"`
 	// The maximum number of payments to return. Defaults to 25.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// The next page token from a previous response.
@@ -270,8 +270,8 @@ func (r *V1PaymentListParams) UnmarshalJSON(data []byte) error {
 }
 
 type V1PaymentAttemptParams struct {
-	CustomerID string `json:"customer_id,required" format:"uuid"`
-	InvoiceID  string `json:"invoice_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	InvoiceID  string `json:"invoice_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -284,8 +284,8 @@ func (r *V1PaymentAttemptParams) UnmarshalJSON(data []byte) error {
 }
 
 type V1PaymentCancelParams struct {
-	CustomerID string `json:"customer_id,required" format:"uuid"`
-	InvoiceID  string `json:"invoice_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	InvoiceID  string `json:"invoice_id" api:"required" format:"uuid"`
 	paramObj
 }
 

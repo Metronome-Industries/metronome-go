@@ -17,6 +17,8 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
+// Credits and commits are used to manage customer balances.
+//
 // V1CustomerCommitService contains methods and other services that help with
 // interacting with the metronome API.
 //
@@ -236,7 +238,7 @@ func (r *V1CustomerCommitService) UpdateEndDate(ctx context.Context, body V1Cust
 }
 
 type V1CustomerCommitNewResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -252,7 +254,7 @@ func (r *V1CustomerCommitNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V1CustomerCommitUpdateEndDateResponse struct {
-	Data shared.ID `json:"data,required"`
+	Data shared.ID `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -270,16 +272,16 @@ func (r *V1CustomerCommitUpdateEndDateResponse) UnmarshalJSON(data []byte) error
 type V1CustomerCommitNewParams struct {
 	// Schedule for distributing the commit to the customer. For "POSTPAID" commits
 	// only one schedule item is allowed and amount must match invoice_schedule total.
-	AccessSchedule V1CustomerCommitNewParamsAccessSchedule `json:"access_schedule,omitzero,required"`
-	CustomerID     string                                  `json:"customer_id,required" format:"uuid"`
+	AccessSchedule V1CustomerCommitNewParamsAccessSchedule `json:"access_schedule,omitzero" api:"required"`
+	CustomerID     string                                  `json:"customer_id" api:"required" format:"uuid"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
-	Priority float64 `json:"priority,required"`
+	Priority float64 `json:"priority" api:"required"`
 	// ID of the fixed product associated with the commit. This is required because
 	// products are used to invoice the commit amount.
-	ProductID string `json:"product_id,required" format:"uuid"`
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
 	// Any of "PREPAID", "POSTPAID".
-	Type V1CustomerCommitNewParamsType `json:"type,omitzero,required"`
+	Type V1CustomerCommitNewParamsType `json:"type,omitzero" api:"required"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The contract that this commit will be billed on. This is required for "POSTPAID"
@@ -338,7 +340,7 @@ func (r *V1CustomerCommitNewParams) UnmarshalJSON(data []byte) error {
 //
 // The property ScheduleItems is required.
 type V1CustomerCommitNewParamsAccessSchedule struct {
-	ScheduleItems []V1CustomerCommitNewParamsAccessScheduleScheduleItem `json:"schedule_items,omitzero,required"`
+	ScheduleItems []V1CustomerCommitNewParamsAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	paramObj
@@ -354,11 +356,11 @@ func (r *V1CustomerCommitNewParamsAccessSchedule) UnmarshalJSON(data []byte) err
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V1CustomerCommitNewParamsAccessScheduleScheduleItem struct {
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -412,13 +414,13 @@ func (r *V1CustomerCommitNewParamsInvoiceSchedule) UnmarshalJSON(data []byte) er
 // required.
 type V1CustomerCommitNewParamsInvoiceScheduleRecurringSchedule struct {
 	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero,required"`
+	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
 	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before,required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
 	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
-	Frequency string `json:"frequency,omitzero,required"`
+	Frequency string `json:"frequency,omitzero" api:"required"`
 	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at,required" format:"date-time"`
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -454,7 +456,7 @@ func init() {
 // The property Timestamp is required.
 type V1CustomerCommitNewParamsInvoiceScheduleScheduleItem struct {
 	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Amount for the charge. Can be provided instead of unit_price and quantity. If
 	// amount is sent, the unit_price is assumed to be the amount and quantity is
 	// inferred to be 1.
@@ -486,7 +488,7 @@ const (
 )
 
 type V1CustomerCommitListParams struct {
-	CustomerID string            `json:"customer_id,required" format:"uuid"`
+	CustomerID string            `json:"customer_id" api:"required" format:"uuid"`
 	CommitID   param.Opt[string] `json:"commit_id,omitzero" format:"uuid"`
 	// Include only commits that have access schedules that "cover" the provided date
 	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
@@ -521,9 +523,9 @@ func (r *V1CustomerCommitListParams) UnmarshalJSON(data []byte) error {
 
 type V1CustomerCommitUpdateEndDateParams struct {
 	// ID of the commit to update. Only supports "PREPAID" commits.
-	CommitID string `json:"commit_id,required" format:"uuid"`
+	CommitID string `json:"commit_id" api:"required" format:"uuid"`
 	// ID of the customer whose commit is to be updated
-	CustomerID string `json:"customer_id,required" format:"uuid"`
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
 	// RFC 3339 timestamp indicating when access to the commit will end and it will no
 	// longer be possible to draw it down (exclusive). If not provided, the access will
 	// not be updated.

@@ -177,11 +177,21 @@ const CommitRateRateTypeTieredPercentage = shared.CommitRateRateTypeTieredPercen
 // Equals "CUSTOM"
 const CommitRateRateTypeCustom = shared.CommitRateRateTypeCustom
 
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type CommitRateMinimumConfig = shared.CommitRateMinimumConfig
+
 // A distinct rate on the rate card. You can choose to use this rate rather than
 // list rate when consuming a credit or commit.
 //
 // This is an alias to an internal type.
 type CommitRateParam = shared.CommitRateParam
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type CommitRateMinimumConfigParam = shared.CommitRateMinimumConfigParam
 
 // This is an alias to an internal type.
 type CommitSpecifier = shared.CommitSpecifier
@@ -291,6 +301,11 @@ type ContractV2OverrideOverrideSpecifier = shared.ContractV2OverrideOverrideSpec
 
 // This is an alias to an internal type.
 type ContractV2OverrideOverwriteRate = shared.ContractV2OverrideOverwriteRate
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type ContractV2OverrideOverwriteRateMinimumConfig = shared.ContractV2OverrideOverwriteRateMinimumConfig
 
 // This is an alias to an internal type.
 type ContractV2OverrideProduct = shared.ContractV2OverrideProduct
@@ -702,6 +717,11 @@ const OverwriteRateRateTypeTieredPercentage = shared.OverwriteRateRateTypeTiered
 // Equals "CUSTOM"
 const OverwriteRateRateTypeCustom = shared.OverwriteRateRateTypeCustom
 
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type OverwriteRateMinimumConfig = shared.OverwriteRateMinimumConfig
+
 // This is an alias to an internal type.
 type PaymentGateConfig = shared.PaymentGateConfig
 
@@ -747,9 +767,6 @@ const PaymentGateConfigTaxTypeStripe = shared.PaymentGateConfigTaxTypeStripe
 
 // Equals "ANROK"
 const PaymentGateConfigTaxTypeAnrok = shared.PaymentGateConfigTaxTypeAnrok
-
-// Equals "AVALARA"
-const PaymentGateConfigTaxTypeAvalara = shared.PaymentGateConfigTaxTypeAvalara
 
 // Equals "PRECALCULATED"
 const PaymentGateConfigTaxTypePrecalculated = shared.PaymentGateConfigTaxTypePrecalculated
@@ -812,9 +829,6 @@ const PaymentGateConfigV2TaxTypeStripe = shared.PaymentGateConfigV2TaxTypeStripe
 
 // Equals "ANROK"
 const PaymentGateConfigV2TaxTypeAnrok = shared.PaymentGateConfigV2TaxTypeAnrok
-
-// Equals "AVALARA"
-const PaymentGateConfigV2TaxTypeAvalara = shared.PaymentGateConfigV2TaxTypeAvalara
 
 // Equals "PRECALCULATED"
 const PaymentGateConfigV2TaxTypePrecalculated = shared.PaymentGateConfigV2TaxTypePrecalculated
@@ -888,6 +902,11 @@ const RateRateTypeTiered = shared.RateRateTypeTiered
 
 // Equals "TIERED_PERCENTAGE"
 const RateRateTypeTieredPercentage = shared.RateRateTypeTieredPercentage
+
+// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+//
+// This is an alias to an internal type.
+type RateMinimumConfig = shared.RateMinimumConfig
 
 // This is an alias to an internal type.
 type RecurringCommitSubscriptionConfig = shared.RecurringCommitSubscriptionConfig

@@ -14,6 +14,9 @@ import (
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
+// Use these endpoints to configure a billing API key, a webhook secret, or invoice
+// finalization behavior.
+//
 // V1SettingService contains methods and other services that help with interacting
 // with the metronome API.
 //
@@ -21,7 +24,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1SettingService] method instead.
 type V1SettingService struct {
-	Options          []option.RequestOption
+	Options []option.RequestOption
+	// Use these endpoints to configure a billing API key, a webhook secret, or invoice
+	// finalization behavior.
 	BillingProviders V1SettingBillingProviderService
 }
 
@@ -64,14 +69,14 @@ type V1SettingUpsertAvalaraCredentialsParams struct {
 	// The Avalara environment to use (SANDBOX or PRODUCTION).
 	//
 	// Any of "PRODUCTION", "SANDBOX".
-	AvalaraEnvironment V1SettingUpsertAvalaraCredentialsParamsAvalaraEnvironment `json:"avalara_environment,omitzero,required"`
+	AvalaraEnvironment V1SettingUpsertAvalaraCredentialsParamsAvalaraEnvironment `json:"avalara_environment,omitzero" api:"required"`
 	// The password for the Avalara account.
-	AvalaraPassword string `json:"avalara_password,required"`
+	AvalaraPassword string `json:"avalara_password" api:"required"`
 	// The username for the Avalara account.
-	AvalaraUsername string `json:"avalara_username,required"`
+	AvalaraUsername string `json:"avalara_username" api:"required"`
 	// The delivery method IDs of the billing provider configurations to update, can be
 	// found in the response of the `/listConfiguredBillingProviders` endpoint.
-	DeliveryMethodIDs []string `json:"delivery_method_ids,omitzero,required"`
+	DeliveryMethodIDs []string `json:"delivery_method_ids,omitzero" api:"required"`
 	// Commit transactions if you want Metronome tax calculations used for reporting
 	// and tax filings.
 	CommitTransactions param.Opt[bool] `json:"commit_transactions,omitzero"`
