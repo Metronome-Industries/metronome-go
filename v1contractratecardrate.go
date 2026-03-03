@@ -326,8 +326,6 @@ type V1ContractRateCardRateAddParams struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]any `json:"custom_rate,omitzero"`
-	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-	MinimumConfig V1ContractRateCardRateAddParamsMinimumConfig `json:"minimum_config,omitzero"`
 	// Optional. List of pricing group key value pairs which will be used to calculate
 	// the price.
 	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
@@ -365,22 +363,6 @@ const (
 	V1ContractRateCardRateAddParamsBillingFrequencyAnnual    V1ContractRateCardRateAddParamsBillingFrequency = "ANNUAL"
 	V1ContractRateCardRateAddParamsBillingFrequencyWeekly    V1ContractRateCardRateAddParamsBillingFrequency = "WEEKLY"
 )
-
-// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-//
-// The property Minimum is required.
-type V1ContractRateCardRateAddParamsMinimumConfig struct {
-	Minimum float64 `json:"minimum" api:"required"`
-	paramObj
-}
-
-func (r V1ContractRateCardRateAddParamsMinimumConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractRateCardRateAddParamsMinimumConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractRateCardRateAddParamsMinimumConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type V1ContractRateCardRateAddManyParams struct {
 	RateCardID string                                    `json:"rate_card_id" api:"required" format:"uuid"`
@@ -432,8 +414,6 @@ type V1ContractRateCardRateAddManyParamsRate struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]any `json:"custom_rate,omitzero"`
-	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-	MinimumConfig V1ContractRateCardRateAddManyParamsRateMinimumConfig `json:"minimum_config,omitzero"`
 	// Optional. List of pricing group key value pairs which will be used to calculate
 	// the price.
 	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
@@ -457,20 +437,4 @@ func init() {
 	apijson.RegisterFieldValidator[V1ContractRateCardRateAddManyParamsRate](
 		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
 	)
-}
-
-// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-//
-// The property Minimum is required.
-type V1ContractRateCardRateAddManyParamsRateMinimumConfig struct {
-	Minimum float64 `json:"minimum" api:"required"`
-	paramObj
-}
-
-func (r V1ContractRateCardRateAddManyParamsRateMinimumConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractRateCardRateAddManyParamsRateMinimumConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractRateCardRateAddManyParamsRateMinimumConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }

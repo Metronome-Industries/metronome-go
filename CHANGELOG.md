@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.0 (2026-03-03)
+
+Full Changelog: [v3.2.0...v3.3.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.2.0...v3.3.0)
+
+### Features
+
+* Skip stainless for non-GA's minimum config ([8bca505](https://github.com/Metronome-Industries/metronome-go/commit/8bca505a2ec7c9490944a77ccaa3cb54b96151a1))
+
 ## 3.2.0 (2026-03-02)
 
 Full Changelog: [v3.1.0...v3.2.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.1.0...v3.2.0)
