@@ -650,8 +650,6 @@ type V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate struct {
 	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
 	// set to true.
 	IsProrated bool `json:"is_prorated"`
-	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-	MinimumConfig V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRateMinimumConfig `json:"minimum_config"`
 	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
 	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
 	Price float64 `json:"price"`
@@ -661,16 +659,15 @@ type V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate struct {
 	Tiers []shared.Tier `json:"tiers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RateType      respjson.Field
-		CreditType    respjson.Field
-		CustomRate    respjson.Field
-		IsProrated    respjson.Field
-		MinimumConfig respjson.Field
-		Price         respjson.Field
-		Quantity      respjson.Field
-		Tiers         respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		RateType    respjson.Field
+		CreditType  respjson.Field
+		CustomRate  respjson.Field
+		IsProrated  respjson.Field
+		Price       respjson.Field
+		Quantity    respjson.Field
+		Tiers       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -679,25 +676,6 @@ func (r V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate) RawJSON() 
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRate) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-type V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRateMinimumConfig struct {
-	Minimum float64 `json:"minimum" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Minimum     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRateMinimumConfig) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V2ContractGetEditHistoryResponseDataAddOverrideOverwriteRateMinimumConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3121,8 +3099,6 @@ type V2ContractEditParamsAddOverrideOverwriteRate struct {
 	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
 	// processors.
 	CustomRate map[string]any `json:"custom_rate,omitzero"`
-	// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-	MinimumConfig V2ContractEditParamsAddOverrideOverwriteRateMinimumConfig `json:"minimum_config,omitzero"`
 	// Only set for TIERED rate_type.
 	Tiers []shared.TierParam `json:"tiers,omitzero"`
 	paramObj
@@ -3140,22 +3116,6 @@ func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddOverrideOverwriteRate](
 		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
 	)
-}
-
-// Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-//
-// The property Minimum is required.
-type V2ContractEditParamsAddOverrideOverwriteRateMinimumConfig struct {
-	Minimum float64 `json:"minimum" api:"required"`
-	paramObj
-}
-
-func (r V2ContractEditParamsAddOverrideOverwriteRateMinimumConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V2ContractEditParamsAddOverrideOverwriteRateMinimumConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V2ContractEditParamsAddOverrideOverwriteRateMinimumConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Multiplier is required.
