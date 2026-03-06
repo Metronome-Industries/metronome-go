@@ -1466,6 +1466,8 @@ type V1ContractNewParamsCredit struct {
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
 	Priority param.Opt[float64] `json:"priority,omitzero"`
+	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// Which products the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
@@ -3192,6 +3194,8 @@ type V1ContractAmendParamsCredit struct {
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
 	Priority param.Opt[float64] `json:"priority,omitzero"`
+	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// Which products the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
