@@ -138,6 +138,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Priority:             metronome.Float(0),
 			RateType:             "COMMIT_RATE",
+			RolloverFraction:     metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -736,6 +737,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Priority:             metronome.Float(0),
 			RateType:             "COMMIT_RATE",
+			RolloverFraction:     metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",

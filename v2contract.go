@@ -2784,6 +2784,8 @@ type V2ContractEditParamsAddCredit struct {
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
 	Priority param.Opt[float64] `json:"priority,omitzero"`
+	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// Which products the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
@@ -4144,6 +4146,7 @@ type V2ContractEditParamsUpdateCredit struct {
 	CreditID             string             `json:"credit_id" api:"required" format:"uuid"`
 	NetsuiteSalesOrderID param.Opt[string]  `json:"netsuite_sales_order_id,omitzero"`
 	Priority             param.Opt[float64] `json:"priority,omitzero"`
+	RolloverFraction     param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	Description          param.Opt[string]  `json:"description,omitzero"`
 	Name                 param.Opt[string]  `json:"name,omitzero"`
 	ProductID            param.Opt[string]  `json:"product_id,omitzero" format:"uuid"`
