@@ -188,6 +188,43 @@ func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveP
 	return
 }
 
+// Deprecate an existing billing configuration for a customer to handle churn or
+// billing and collection preference changes. Archiving a billing configuration
+// takes effect immediately. If there are active contracts using the configuration,
+// Metronome will archive the configuration on the contract and immediately stop
+// metering to downstream systems.
+//
+// ### Use this endpoint to:
+//
+//   - Remove billing provider customer data and configurations when no longer needed
+//   - Clean up test or deprecated billing provider configurations
+//   - Free up uniqueness keys for reuse with new billing provider configurations
+//   - Disable threshold recharge configurations associated with archived billing
+//     providers
+//
+// ### Key response fields:
+//
+// A successful response returns:
+//
+// - `success`: Boolean indicating the operation completed successfully
+// - `error`: Null on success, error message on failure
+//
+// ### Usage guidelines:
+//
+//   - Archiving a contract configuration during a grace period will result in the
+//     invoice not being sent to the customer
+//   - Automatically disables both spend-based and credit-based threshold recharge
+//     configurations for contracts using the archived billing provider
+//   - You can archive multiple configurations for a single customer in a single
+//     request, but any validation failures for an individual configuration will
+//     prevent the entire operation from succeeding
+func (r *V1CustomerService) ArchiveBillingConfigurations(ctx context.Context, body V1CustomerArchiveBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerArchiveBillingConfigurationsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/archiveCustomerBillingProviderConfigurations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Get all billable metrics available for a specific customer. Supports pagination
 // and filtering by current plan status or archived metrics. Use this endpoint to
 // see which metrics are being tracked for billing calculations for a given
@@ -542,6 +579,42 @@ type V1CustomerArchiveResponse struct {
 // Returns the unmodified JSON received from the API
 func (r V1CustomerArchiveResponse) RawJSON() string { return r.JSON.raw }
 func (r *V1CustomerArchiveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerArchiveBillingConfigurationsResponse struct {
+	Data V1CustomerArchiveBillingConfigurationsResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerArchiveBillingConfigurationsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerArchiveBillingConfigurationsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerArchiveBillingConfigurationsResponseData struct {
+	// Array of billing provider configuration IDs to archive
+	CustomerBillingProviderConfigurationIDs []string `json:"customer_billing_provider_configuration_ids" api:"required" format:"uuid"`
+	// The customer ID the billing provider configurations belong to
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerBillingProviderConfigurationIDs respjson.Field
+		CustomerID                              respjson.Field
+		ExtraFields                             map[string]respjson.Field
+		raw                                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerArchiveBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerArchiveBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1026,6 +1099,22 @@ func (r V1CustomerArchiveParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *V1CustomerArchiveParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.ID)
+}
+
+type V1CustomerArchiveBillingConfigurationsParams struct {
+	// Array of billing provider configuration IDs to archive
+	CustomerBillingProviderConfigurationIDs []string `json:"customer_billing_provider_configuration_ids,omitzero" api:"required" format:"uuid"`
+	// The customer ID the billing provider configurations belong to
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	paramObj
+}
+
+func (r V1CustomerArchiveBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerArchiveBillingConfigurationsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerArchiveBillingConfigurationsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerListBillableMetricsParams struct {

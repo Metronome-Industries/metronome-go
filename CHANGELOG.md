@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.4.0 (2026-03-07)
+
+Full Changelog: [v3.3.0...v3.4.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.3.0...v3.4.0)
+
+### Features
+
+* Add archive_billing_configurations endpoint ([2ea4324](https://github.com/Metronome-Industries/metronome-go/commit/2ea43249743f0feb914bba553e38c25f059df47c))
+* Enable rollover fraction on credits ([b0f8c9f](https://github.com/Metronome-Industries/metronome-go/commit/b0f8c9f46a50c8526db50bb1b71114124df7de25))
+
+
+### Bug Fixes
+
+* fix request delays for retrying to be more respectful of high requested delays ([6cca086](https://github.com/Metronome-Industries/metronome-go/commit/6cca08669cf013cb0839b154f8d2b5f00699f66d))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([98f8f2f](https://github.com/Metronome-Industries/metronome-go/commit/98f8f2fbea212314a650c71ada697c567757336e))
+* **test:** do not count install time for mock server timeout ([0da6667](https://github.com/Metronome-Industries/metronome-go/commit/0da6667d1b3296ff03c079235b65b661a83e7f8f))
+
 ## 3.3.0 (2026-03-03)
 
 Full Changelog: [v3.2.0...v3.3.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.2.0...v3.3.0)

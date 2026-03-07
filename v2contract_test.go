@@ -200,6 +200,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Priority:             metronome.Float(0),
 			RateType:             "COMMIT_RATE",
+			RolloverFraction:     metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -642,6 +643,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Priority:             metronome.Float(0),
 			ProductID:            metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			RateType:             "LIST_RATE",
+			RolloverFraction:     metronome.Float(0),
 		}},
 		UpdateNetPaymentTermsDays: metronome.Float(0),
 		UpdatePrepaidBalanceThresholdConfiguration: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration{
