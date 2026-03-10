@@ -84,7 +84,7 @@ func (r *V1ContractRateCardRateService) Add(ctx context.Context, body V1Contract
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/addRate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Add new rates
@@ -92,7 +92,7 @@ func (r *V1ContractRateCardRateService) AddMany(ctx context.Context, body V1Cont
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/addRates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1ContractRateCardRateListResponse struct {

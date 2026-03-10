@@ -91,7 +91,7 @@ func (r *V1CustomerCreditService) New(ctx context.Context, body V1CustomerCredit
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/customerCredits/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a detailed list of all credits available to a customer, including
@@ -219,7 +219,7 @@ func (r *V1CustomerCreditService) UpdateEndDate(ctx context.Context, body V1Cust
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/customerCredits/updateEndDate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1CustomerCreditNewResponse struct {

@@ -43,7 +43,7 @@ func (r *V1SettingBillingProviderService) New(ctx context.Context, body V1Settin
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/setUpBillingProvider"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all configured billing providers and their delivery method configurations
@@ -54,7 +54,7 @@ func (r *V1SettingBillingProviderService) List(ctx context.Context, body V1Setti
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/listConfiguredBillingProviders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1SettingBillingProviderNewResponse struct {

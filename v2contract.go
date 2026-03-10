@@ -56,7 +56,7 @@ func (r *V2ContractService) Get(ctx context.Context, body V2ContractGetParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // For a given customer, lists all of their contracts in chronological order.
@@ -78,7 +78,7 @@ func (r *V2ContractService) List(ctx context.Context, body V2ContractListParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // The ability to edit a contract helps you react quickly to the needs of your
@@ -107,7 +107,7 @@ func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit specific details for a contract-level or customer-level commit. Use this
@@ -130,7 +130,7 @@ func (r *V2ContractService) EditCommit(ctx context.Context, body V2ContractEditC
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/commits/edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit details for a contract-level or customer-level credit.
@@ -153,7 +153,7 @@ func (r *V2ContractService) EditCredit(ctx context.Context, body V2ContractEditC
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/credits/edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all the edits made to a contract over time. In Metronome, you can edit a
@@ -175,7 +175,7 @@ func (r *V2ContractService) GetEditHistory(ctx context.Context, body V2ContractG
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/getEditHistory"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V2ContractGetResponse struct {

@@ -89,7 +89,7 @@ func (r *V1ContractRateCardService) New(ctx context.Context, body V1ContractRate
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Return details for a specific rate card including name, description, and
@@ -99,7 +99,7 @@ func (r *V1ContractRateCardService) Get(ctx context.Context, body V1ContractRate
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the metadata properties of an existing rate card, including its name,
@@ -158,7 +158,7 @@ func (r *V1ContractRateCardService) Update(ctx context.Context, body V1ContractR
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/update"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all rate cards. Returns rate card IDs, names, descriptions, aliases, and
@@ -197,7 +197,7 @@ func (r *V1ContractRateCardService) Archive(ctx context.Context, body V1Contract
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // A rate card defines the prices that you charge for your products. Rate cards
@@ -216,7 +216,7 @@ func (r *V1ContractRateCardService) GetRateSchedule(ctx context.Context, params 
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/getRateSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type V1ContractRateCardNewResponse struct {

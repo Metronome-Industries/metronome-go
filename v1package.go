@@ -92,7 +92,7 @@ func (r *V1PackageService) New(ctx context.Context, body V1PackageNewParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/packages/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets the details for a specific package, including name, aliases, duration, and
@@ -102,7 +102,7 @@ func (r *V1PackageService) Get(ctx context.Context, body V1PackageGetParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/packages/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all packages with details including name, aliases, duration, and terms. To
@@ -138,7 +138,7 @@ func (r *V1PackageService) Archive(ctx context.Context, body V1PackageArchivePar
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/packages/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // For a given package, returns all contract IDs and customer IDs associated with

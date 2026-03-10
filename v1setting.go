@@ -48,7 +48,7 @@ func (r *V1SettingService) UpsertAvalaraCredentials(ctx context.Context, body V1
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/upsertAvalaraCredentials"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1SettingUpsertAvalaraCredentialsResponse struct {
