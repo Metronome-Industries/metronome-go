@@ -38,7 +38,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.V1.Contracts.New(context.Background(), metronome.V1ContractNewParams{
+	_, _ = client.V1.Contracts.New(context.Background(), metronome.V1ContractNewParams{
 		CustomerID: "13117714-3f05-48e5-a6e9-a66093f13b4d",
 		StartingAt: time.Now(),
 	})
