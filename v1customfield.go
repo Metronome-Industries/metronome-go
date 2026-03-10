@@ -74,7 +74,7 @@ func (r *V1CustomFieldService) AddKey(ctx context.Context, body V1CustomFieldAdd
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customFields/addKey"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Remove specific custom field values from a Metronome entity instance by
@@ -86,7 +86,7 @@ func (r *V1CustomFieldService) DeleteValues(ctx context.Context, body V1CustomFi
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customFields/deleteValues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve all your active custom field keys, with optional filtering by entity
@@ -127,7 +127,7 @@ func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomField
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customFields/removeKey"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Sets custom field values on a specific Metronome entity instance. Overwrites
@@ -139,7 +139,7 @@ func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomField
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customFields/setValues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 type V1CustomFieldListKeysResponse struct {

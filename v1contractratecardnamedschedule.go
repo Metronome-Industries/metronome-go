@@ -43,7 +43,7 @@ func (r *V1ContractRateCardNamedScheduleService) Get(ctx context.Context, body V
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/getNamedSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a named schedule for the given contract. This endpoint's availability is
@@ -53,7 +53,7 @@ func (r *V1ContractRateCardNamedScheduleService) Update(ctx context.Context, bod
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/contracts/updateNamedSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 type V1ContractRateCardNamedScheduleGetResponse struct {

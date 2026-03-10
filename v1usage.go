@@ -224,7 +224,7 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/ingest"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve granular usage data for a specific customer and billable metric, with
@@ -410,7 +410,7 @@ func (r *V1UsageService) Search(ctx context.Context, body V1UsageSearchParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/events/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1UsageListResponse struct {

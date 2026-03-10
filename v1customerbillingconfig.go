@@ -48,11 +48,11 @@ func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1Custo
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", params.CustomerID, params.BillingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Fetch the billing configuration for the given customer. This is a Plans
@@ -61,11 +61,11 @@ func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1Custom
 	opts = slices.Concat(r.Options, opts)
 	if query.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", query.CustomerID, query.BillingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the billing configuration for a given customer. Note: this is unsupported
@@ -76,11 +76,11 @@ func (r *V1CustomerBillingConfigService) Delete(ctx context.Context, body V1Cust
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", body.CustomerID, body.BillingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type V1CustomerBillingConfigGetResponse struct {

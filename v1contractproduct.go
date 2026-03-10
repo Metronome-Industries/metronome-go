@@ -51,7 +51,7 @@ func (r *V1ContractProductService) New(ctx context.Context, body V1ContractProdu
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/products/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a product by its ID, including all metadata and historical changes.
@@ -59,7 +59,7 @@ func (r *V1ContractProductService) Get(ctx context.Context, body V1ContractProdu
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/products/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a product's configuration while maintaining billing continuity for
@@ -77,7 +77,7 @@ func (r *V1ContractProductService) Update(ctx context.Context, body V1ContractPr
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/products/update"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a paginated list of all products in your organization with their complete
@@ -115,7 +115,7 @@ func (r *V1ContractProductService) Archive(ctx context.Context, body V1ContractP
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/products/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ProductListItemState struct {

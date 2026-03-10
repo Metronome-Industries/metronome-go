@@ -89,15 +89,15 @@ func (r *V1CustomerInvoiceService) Get(ctx context.Context, params V1CustomerInv
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	if params.InvoiceID == "" {
 		err = errors.New("missing required invoice_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/invoices/%s", params.CustomerID, params.InvoiceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a paginated list of invoices for a specific customer, with flexible
@@ -152,7 +152,7 @@ func (r *V1CustomerInvoiceService) List(ctx context.Context, params V1CustomerIn
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/invoices", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -223,11 +223,11 @@ func (r *V1CustomerInvoiceService) AddCharge(ctx context.Context, params V1Custo
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/addCharge", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve granular time-series breakdowns of invoice data at hourly or daily
@@ -274,7 +274,7 @@ func (r *V1CustomerInvoiceService) ListBreakdowns(ctx context.Context, params V1
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/invoices/breakdowns", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -362,15 +362,15 @@ func (r *V1CustomerInvoiceService) GetPdf(ctx context.Context, query V1CustomerI
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	if query.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	if query.InvoiceID == "" {
 		err = errors.New("missing required invoice_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/invoices/%s/pdf", query.CustomerID, query.InvoiceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Invoice struct {

@@ -89,7 +89,7 @@ func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/alerts/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Permanently disable a threshold notification and remove it from active
@@ -124,7 +124,7 @@ func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/alerts/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1AlertNewResponse struct {

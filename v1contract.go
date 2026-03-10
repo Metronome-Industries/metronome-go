@@ -176,7 +176,7 @@ func (r *V1ContractService) New(ctx context.Context, body V1ContractNewParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This is the v1 endpoint to get a contract. New clients should implement using
@@ -185,7 +185,7 @@ func (r *V1ContractService) Get(ctx context.Context, body V1ContractGetParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all contracts for a specific customer, including pricing, terms,
@@ -199,7 +199,7 @@ func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Manually adjust the available balance on a commit or credit. This entry is
@@ -225,7 +225,7 @@ func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1Co
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/contracts/addManualBalanceLedgerEntry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Amendments will be replaced by Contract editing. New clients should implement
@@ -237,7 +237,7 @@ func (r *V1ContractService) Amend(ctx context.Context, body V1ContractAmendParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/amend"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Permanently end and archive a contract along with all its terms. Any draft
@@ -264,7 +264,7 @@ func (r *V1ContractService) Archive(ctx context.Context, body V1ContractArchiveP
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Create historical usage invoices for past billing periods on specific contracts.
@@ -276,7 +276,7 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/createHistoricalInvoices"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the combined current balance across any grouping of credits and commits
@@ -329,7 +329,7 @@ func (r *V1ContractService) GetNetBalance(ctx context.Context, body V1ContractGe
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/customerBalances/getNetBalance"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a comprehensive view of all available balances (commits and credits)
@@ -432,7 +432,7 @@ func (r *V1ContractService) GetRateSchedule(ctx context.Context, params V1Contra
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/getContractRateSchedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the history of subscription quantities and prices over time for a given
@@ -449,7 +449,7 @@ func (r *V1ContractService) GetSubscriptionQuantityHistory(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/getSubscriptionQuantityHistory"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Create a new scheduled invoice for Professional Services terms on a contract.
@@ -458,7 +458,7 @@ func (r *V1ContractService) ScheduleProServicesInvoice(ctx context.Context, body
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/scheduleProServicesInvoice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // If a customer has multiple contracts with overlapping rates, the usage filter
@@ -484,7 +484,7 @@ func (r *V1ContractService) SetUsageFilter(ctx context.Context, body V1ContractS
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/contracts/setUsageFilter"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Update or add an end date to a contract. Ending a contract early will impact
@@ -497,7 +497,7 @@ func (r *V1ContractService) UpdateEndDate(ctx context.Context, body V1ContractUp
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/updateEndDate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1ContractNewResponse struct {

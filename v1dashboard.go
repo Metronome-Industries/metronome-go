@@ -72,7 +72,7 @@ func (r *V1DashboardService) GetEmbeddableURL(ctx context.Context, body V1Dashbo
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/dashboards/getEmbeddableUrl"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1DashboardGetEmbeddableURLResponse struct {

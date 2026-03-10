@@ -60,7 +60,7 @@ func (r *V1InvoiceService) Regenerate(ctx context.Context, body V1InvoiceRegener
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/invoices/regenerate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Permanently cancels an invoice by setting its status to voided, preventing
@@ -72,7 +72,7 @@ func (r *V1InvoiceService) Void(ctx context.Context, body V1InvoiceVoidParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/invoices/void"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1InvoiceRegenerateResponse struct {

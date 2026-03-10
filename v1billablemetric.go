@@ -79,7 +79,7 @@ func (r *V1BillableMetricService) New(ctx context.Context, body V1BillableMetric
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/billable-metrics/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the complete configuration for a specific billable metric by its ID.
@@ -97,11 +97,11 @@ func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetri
 	opts = slices.Concat(r.Options, opts)
 	if query.BillableMetricID == "" {
 		err = errors.New("missing required billable_metric_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/billable-metrics/%s", query.BillableMetricID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all billable metrics with their complete configurations. Use this for
@@ -148,7 +148,7 @@ func (r *V1BillableMetricService) Archive(ctx context.Context, body V1BillableMe
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/billable-metrics/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1BillableMetricNewResponse struct {

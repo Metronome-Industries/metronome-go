@@ -103,7 +103,7 @@ func (r *V1CustomerAlertService) Get(ctx context.Context, body V1CustomerAlertGe
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/customer-alerts/get"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve all threshold notification configurations and their current statuses
@@ -225,7 +225,7 @@ func (r *V1CustomerAlertService) Reset(ctx context.Context, body V1CustomerAlert
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/customer-alerts/reset"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 type CustomerAlert struct {

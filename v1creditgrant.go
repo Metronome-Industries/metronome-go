@@ -48,7 +48,7 @@ func (r *V1CreditGrantService) New(ctx context.Context, body V1CreditGrantNewPar
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/createGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List credit grants. This list does not included voided grants. This is a Plans
@@ -82,7 +82,7 @@ func (r *V1CreditGrantService) Edit(ctx context.Context, body V1CreditGrantEditP
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/editGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a list of credit ledger entries. Returns lists of ledgers per customer.
@@ -120,7 +120,7 @@ func (r *V1CreditGrantService) Void(ctx context.Context, body V1CreditGrantVoidP
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/credits/voidGrant"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CreditLedgerEntry struct {
