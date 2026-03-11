@@ -53,7 +53,7 @@ func (r *V1CustomerPlanService) List(ctx context.Context, params V1CustomerPlanL
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/plans", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -82,11 +82,11 @@ func (r *V1CustomerPlanService) Add(ctx context.Context, params V1CustomerPlanAd
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/plans/add", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Change the end date of a customer's plan. This is a Plans (deprecated) endpoint.
@@ -95,15 +95,15 @@ func (r *V1CustomerPlanService) End(ctx context.Context, params V1CustomerPlanEn
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	if params.CustomerPlanID == "" {
 		err = errors.New("missing required customer_plan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/plans/%s/end", params.CustomerID, params.CustomerPlanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists a customer plans adjustments. See the
@@ -116,11 +116,11 @@ func (r *V1CustomerPlanService) ListPriceAdjustments(ctx context.Context, params
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	if params.CustomerPlanID == "" {
 		err = errors.New("missing required customer_plan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/plans/%s/priceAdjustments", params.CustomerID, params.CustomerPlanID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)

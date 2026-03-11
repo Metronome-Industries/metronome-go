@@ -115,7 +115,7 @@ func (r *V1CustomerService) New(ctx context.Context, body V1CustomerNewParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/customers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get detailed information for a specific customer by their Metronome ID. Returns
@@ -129,11 +129,11 @@ func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, 
 	opts = slices.Concat(r.Options, opts)
 	if query.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s", query.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a paginated list of all customers in your Metronome account. Use this
@@ -185,7 +185,44 @@ func (r *V1CustomerService) Archive(ctx context.Context, body V1CustomerArchiveP
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/customers/archive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
+}
+
+// Deprecate an existing billing configuration for a customer to handle churn or
+// billing and collection preference changes. Archiving a billing configuration
+// takes effect immediately. If there are active contracts using the configuration,
+// Metronome will archive the configuration on the contract and immediately stop
+// metering to downstream systems.
+//
+// ### Use this endpoint to:
+//
+//   - Remove billing provider customer data and configurations when no longer needed
+//   - Clean up test or deprecated billing provider configurations
+//   - Free up uniqueness keys for reuse with new billing provider configurations
+//   - Disable threshold recharge configurations associated with archived billing
+//     providers
+//
+// ### Key response fields:
+//
+// A successful response returns:
+//
+// - `success`: Boolean indicating the operation completed successfully
+// - `error`: Null on success, error message on failure
+//
+// ### Usage guidelines:
+//
+//   - Archiving a contract configuration during a grace period will result in the
+//     invoice not being sent to the customer
+//   - Automatically disables both spend-based and credit-based threshold recharge
+//     configurations for contracts using the archived billing provider
+//   - You can archive multiple configurations for a single customer in a single
+//     request, but any validation failures for an individual configuration will
+//     prevent the entire operation from succeeding
+func (r *V1CustomerService) ArchiveBillingConfigurations(ctx context.Context, body V1CustomerArchiveBillingConfigurationsParams, opts ...option.RequestOption) (res *V1CustomerArchiveBillingConfigurationsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/archiveCustomerBillingProviderConfigurations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Get all billable metrics available for a specific customer. Supports pagination
@@ -198,7 +235,7 @@ func (r *V1CustomerService) ListBillableMetrics(ctx context.Context, params V1Cu
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/billable-metrics", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -231,7 +268,7 @@ func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerList
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/costs", params.CustomerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -263,11 +300,11 @@ func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1Customer
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/previewEvents", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns all billing configurations previously set for the customer. Use during
@@ -278,7 +315,7 @@ func (r *V1CustomerService) GetBillingConfigurations(ctx context.Context, body V
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/getCustomerBillingProviderConfigurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Create a billing configuration for a customer. Once created, these
@@ -325,7 +362,7 @@ func (r *V1CustomerService) SetBillingConfigurations(ctx context.Context, body V
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/setCustomerBillingProviderConfigurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Sets the ingest aliases for a customer. Use this endpoint to associate a
@@ -346,11 +383,11 @@ func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1Custo
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/customers/%s/setIngestAliases", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Updates the display name for a customer record. Use this to correct customer
@@ -362,11 +399,11 @@ func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNam
 	opts = slices.Concat(r.Options, opts)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customers/%s/setName", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Update configuration settings for a specific customer, such as external system
@@ -378,11 +415,11 @@ func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerU
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.CustomerID == "" {
 		err = errors.New("missing required customer_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/customers/%s/updateConfig", params.CustomerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
-	return
+	return err
 }
 
 type Customer struct {
@@ -542,6 +579,42 @@ type V1CustomerArchiveResponse struct {
 // Returns the unmodified JSON received from the API
 func (r V1CustomerArchiveResponse) RawJSON() string { return r.JSON.raw }
 func (r *V1CustomerArchiveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerArchiveBillingConfigurationsResponse struct {
+	Data V1CustomerArchiveBillingConfigurationsResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerArchiveBillingConfigurationsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerArchiveBillingConfigurationsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1CustomerArchiveBillingConfigurationsResponseData struct {
+	// Array of billing provider configuration IDs to archive
+	CustomerBillingProviderConfigurationIDs []string `json:"customer_billing_provider_configuration_ids" api:"required" format:"uuid"`
+	// The customer ID the billing provider configurations belong to
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerBillingProviderConfigurationIDs respjson.Field
+		CustomerID                              respjson.Field
+		ExtraFields                             map[string]respjson.Field
+		raw                                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerArchiveBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1CustomerArchiveBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1026,6 +1099,22 @@ func (r V1CustomerArchiveParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *V1CustomerArchiveParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.ID)
+}
+
+type V1CustomerArchiveBillingConfigurationsParams struct {
+	// Array of billing provider configuration IDs to archive
+	CustomerBillingProviderConfigurationIDs []string `json:"customer_billing_provider_configuration_ids,omitzero" api:"required" format:"uuid"`
+	// The customer ID the billing provider configurations belong to
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	paramObj
+}
+
+func (r V1CustomerArchiveBillingConfigurationsParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerArchiveBillingConfigurationsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerArchiveBillingConfigurationsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerListBillableMetricsParams struct {

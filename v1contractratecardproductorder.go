@@ -44,7 +44,7 @@ func (r *V1ContractRateCardProductOrderService) Update(ctx context.Context, body
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/moveRateCardProducts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // The ordering of products on a rate card determines the order in which the
@@ -54,7 +54,7 @@ func (r *V1ContractRateCardProductOrderService) Set(ctx context.Context, body V1
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/setRateCardProductsOrder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1ContractRateCardProductOrderUpdateResponse struct {

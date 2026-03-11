@@ -76,11 +76,11 @@ func (r *V1PlanService) GetDetails(ctx context.Context, query V1PlanGetDetailsPa
 	opts = slices.Concat(r.Options, opts)
 	if query.PlanID == "" {
 		err = errors.New("missing required plan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/planDetails/%s", query.PlanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a list of charges of a specific plan. This is a Plans (deprecated)
@@ -91,7 +91,7 @@ func (r *V1PlanService) ListCharges(ctx context.Context, params V1PlanListCharge
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.PlanID == "" {
 		err = errors.New("missing required plan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/planDetails/%s/charges", params.PlanID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -121,7 +121,7 @@ func (r *V1PlanService) ListCustomers(ctx context.Context, params V1PlanListCust
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.PlanID == "" {
 		err = errors.New("missing required plan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/planDetails/%s/customers", params.PlanID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)

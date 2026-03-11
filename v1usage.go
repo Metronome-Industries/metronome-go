@@ -224,7 +224,7 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/ingest"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve granular usage data for a specific customer and billable metric, with
@@ -238,6 +238,29 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 //     department, etc.)
 //   - Build detailed usage dashboards with dimensional filtering
 //   - Identify high-usage segments for optimization opportunities
+//
+// ### Request parameters
+//
+// Use [`group_key`](#body-group-key) and [`group_filters`](#body-group-filters) to
+// group by one or more dimensions. This is required for compound group keys and
+// recommended for all new integrations:
+//
+// ```json
+//
+//	{
+//	  "group_key": ["region", "team"],
+//	  "group_filters": {
+//	    "region": ["US-East", "US-West"]
+//	  }
+//	}
+//
+// ```
+//
+// Important: For compound group keys, you must pass the complete set of keys that
+// make up the compound key. Partial key combinations are not supported. For
+// example, if your billable metric has a compound group key [region, team,
+// environment], you must pass all three keys in group_key—you cannot pass just
+// `[region]` or `[region, team]`.
 //
 // ### Key response fields:
 //
@@ -294,6 +317,29 @@ func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListW
 //     department, etc.)
 //   - Build detailed usage dashboards with dimensional filtering
 //   - Identify high-usage segments for optimization opportunities
+//
+// ### Request parameters
+//
+// Use [`group_key`](#body-group-key) and [`group_filters`](#body-group-filters) to
+// group by one or more dimensions. This is required for compound group keys and
+// recommended for all new integrations:
+//
+// ```json
+//
+//	{
+//	  "group_key": ["region", "team"],
+//	  "group_filters": {
+//	    "region": ["US-East", "US-West"]
+//	  }
+//	}
+//
+// ```
+//
+// Important: For compound group keys, you must pass the complete set of keys that
+// make up the compound key. Partial key combinations are not supported. For
+// example, if your billable metric has a compound group key [region, team,
+// environment], you must pass all three keys in group_key—you cannot pass just
+// `[region]` or `[region, team]`.
 //
 // ### Key response fields:
 //
@@ -364,7 +410,7 @@ func (r *V1UsageService) Search(ctx context.Context, body V1UsageSearchParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/events/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1UsageListResponse struct {

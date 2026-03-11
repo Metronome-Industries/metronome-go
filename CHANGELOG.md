@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.4.0 (2026-03-10)
+
+Full Changelog: [v3.3.0...v3.4.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.3.0...v3.4.0)
+
+### Features
+
+* (docs): update documentation for /usage/groups ([d52bbb3](https://github.com/Metronome-Industries/metronome-go/commit/d52bbb34bb4f1c4ae44b12bbd4b6f4e6f6397d11))
+* Add archive_billing_configurations endpoint ([2ea4324](https://github.com/Metronome-Industries/metronome-go/commit/2ea43249743f0feb914bba553e38c25f059df47c))
+* Enable rollover fraction on credits ([b0f8c9f](https://github.com/Metronome-Industries/metronome-go/commit/b0f8c9f46a50c8526db50bb1b71114124df7de25))
+
+
+### Bug Fixes
+
+* fix request delays for retrying to be more respectful of high requested delays ([6cca086](https://github.com/Metronome-Industries/metronome-go/commit/6cca08669cf013cb0839b154f8d2b5f00699f66d))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([98f8f2f](https://github.com/Metronome-Industries/metronome-go/commit/98f8f2fbea212314a650c71ada697c567757336e))
+* **internal:** minor cleanup ([eb19008](https://github.com/Metronome-Industries/metronome-go/commit/eb1900873974538a54895c02deaf048241057b7b))
+* **internal:** use explicit returns ([cc43802](https://github.com/Metronome-Industries/metronome-go/commit/cc438023d3bd7ad26b03e1cbbcf386ff8500861f))
+* **internal:** use explicit returns in more places ([dd3b1a4](https://github.com/Metronome-Industries/metronome-go/commit/dd3b1a40cfffab53e711f9ea6a714a8fccd1dc92))
+* **test:** do not count install time for mock server timeout ([0da6667](https://github.com/Metronome-Industries/metronome-go/commit/0da6667d1b3296ff03c079235b65b661a83e7f8f))
+
 ## 3.3.0 (2026-03-03)
 
 Full Changelog: [v3.2.0...v3.3.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.2.0...v3.3.0)

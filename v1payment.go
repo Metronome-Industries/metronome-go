@@ -75,7 +75,7 @@ func (r *V1PaymentService) Attempt(ctx context.Context, body V1PaymentAttemptPar
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/payments/attempt"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Cancel an existing payment attempt for an invoice.
@@ -83,7 +83,7 @@ func (r *V1PaymentService) Cancel(ctx context.Context, body V1PaymentCancelParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/payments/cancel"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Payment struct {

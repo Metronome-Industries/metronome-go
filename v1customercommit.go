@@ -105,7 +105,7 @@ func (r *V1CustomerCommitService) New(ctx context.Context, body V1CustomerCommit
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/customerCommits/create"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve all commit agreements for a customer, including both prepaid and
@@ -234,7 +234,7 @@ func (r *V1CustomerCommitService) UpdateEndDate(ctx context.Context, body V1Cust
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/customerCommits/updateEndDate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type V1CustomerCommitNewResponse struct {
