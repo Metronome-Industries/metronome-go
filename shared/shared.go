@@ -2411,7 +2411,8 @@ type ContractV2Credit struct {
 	// will apply first.
 	Priority float64 `json:"priority"`
 	// The ID of the recurring credit that created this credit
-	RecurringCreditID string `json:"recurring_credit_id" format:"uuid"`
+	RecurringCreditID string                         `json:"recurring_credit_id" format:"uuid"`
+	RolledOverFrom    ContractV2CreditRolledOverFrom `json:"rolled_over_from"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -2440,6 +2441,7 @@ type ContractV2Credit struct {
 		NetsuiteSalesOrderID    respjson.Field
 		Priority                respjson.Field
 		RecurringCreditID       respjson.Field
+		RolledOverFrom          respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
 		SubscriptionConfig      respjson.Field
@@ -2495,7 +2497,8 @@ func (r *ContractV2CreditContract) UnmarshalJSON(data []byte) error {
 // [ContractV2CreditLedgerCreditCanceledLedgerEntry],
 // [ContractV2CreditLedgerCreditCreditedLedgerEntry],
 // [ContractV2CreditLedgerCreditManualLedgerEntry],
-// [ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry].
+// [ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry],
+// [ContractV2CreditLedgerCreditRolloverLedgerEntry].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type ContractV2CreditLedgerUnion struct {
@@ -2507,15 +2510,18 @@ type ContractV2CreditLedgerUnion struct {
 	ContractID string    `json:"contract_id"`
 	// This field is from variant [ContractV2CreditLedgerCreditManualLedgerEntry].
 	Reason string `json:"reason"`
-	JSON   struct {
-		Amount     respjson.Field
-		SegmentID  respjson.Field
-		Timestamp  respjson.Field
-		Type       respjson.Field
-		InvoiceID  respjson.Field
-		ContractID respjson.Field
-		Reason     respjson.Field
-		raw        string
+	// This field is from variant [ContractV2CreditLedgerCreditRolloverLedgerEntry].
+	NewContractID string `json:"new_contract_id"`
+	JSON          struct {
+		Amount        respjson.Field
+		SegmentID     respjson.Field
+		Timestamp     respjson.Field
+		Type          respjson.Field
+		InvoiceID     respjson.Field
+		ContractID    respjson.Field
+		Reason        respjson.Field
+		NewContractID respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -2550,6 +2556,11 @@ func (u ContractV2CreditLedgerUnion) AsContractV2CreditLedgerCreditManualLedgerE
 }
 
 func (u ContractV2CreditLedgerUnion) AsContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry() (v ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ContractV2CreditLedgerUnion) AsContractV2CreditLedgerCreditRolloverLedgerEntry() (v ContractV2CreditLedgerCreditRolloverLedgerEntry) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -2735,6 +2746,49 @@ func (r ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) RawJSON() st
 	return r.JSON.raw
 }
 func (r *ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2CreditLedgerCreditRolloverLedgerEntry struct {
+	Amount        float64   `json:"amount" api:"required"`
+	NewContractID string    `json:"new_contract_id" api:"required" format:"uuid"`
+	SegmentID     string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp     time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Any of "CREDIT_ROLLOVER".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount        respjson.Field
+		NewContractID respjson.Field
+		SegmentID     respjson.Field
+		Timestamp     respjson.Field
+		Type          respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2CreditLedgerCreditRolloverLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2CreditLedgerCreditRolloverLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2CreditRolledOverFrom struct {
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CreditID   string `json:"credit_id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CreditID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2CreditRolledOverFrom) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2CreditRolledOverFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3990,7 +4044,8 @@ type Credit struct {
 	RateType CreditRateType `json:"rate_type"`
 	// The ID of the recurring credit that this credit was generated from, if
 	// applicable.
-	RecurringCreditID string `json:"recurring_credit_id" format:"uuid"`
+	RecurringCreditID string               `json:"recurring_credit_id" format:"uuid"`
+	RolledOverFrom    CreditRolledOverFrom `json:"rolled_over_from"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -4025,6 +4080,7 @@ type Credit struct {
 		Priority                respjson.Field
 		RateType                respjson.Field
 		RecurringCreditID       respjson.Field
+		RolledOverFrom          respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
 		SubscriptionConfig      respjson.Field
@@ -4086,7 +4142,8 @@ func (r *CreditContract) UnmarshalJSON(data []byte) error {
 // [CreditLedgerCreditExpirationLedgerEntry],
 // [CreditLedgerCreditCanceledLedgerEntry],
 // [CreditLedgerCreditCreditedLedgerEntry], [CreditLedgerCreditManualLedgerEntry],
-// [CreditLedgerCreditSeatBasedAdjustmentLedgerEntry].
+// [CreditLedgerCreditSeatBasedAdjustmentLedgerEntry],
+// [CreditLedgerCreditRolloverLedgerEntry].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type CreditLedgerUnion struct {
@@ -4098,15 +4155,18 @@ type CreditLedgerUnion struct {
 	ContractID string    `json:"contract_id"`
 	// This field is from variant [CreditLedgerCreditManualLedgerEntry].
 	Reason string `json:"reason"`
-	JSON   struct {
-		Amount     respjson.Field
-		SegmentID  respjson.Field
-		Timestamp  respjson.Field
-		Type       respjson.Field
-		InvoiceID  respjson.Field
-		ContractID respjson.Field
-		Reason     respjson.Field
-		raw        string
+	// This field is from variant [CreditLedgerCreditRolloverLedgerEntry].
+	NewContractID string `json:"new_contract_id"`
+	JSON          struct {
+		Amount        respjson.Field
+		SegmentID     respjson.Field
+		Timestamp     respjson.Field
+		Type          respjson.Field
+		InvoiceID     respjson.Field
+		ContractID    respjson.Field
+		Reason        respjson.Field
+		NewContractID respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -4141,6 +4201,11 @@ func (u CreditLedgerUnion) AsCreditLedgerCreditManualLedgerEntry() (v CreditLedg
 }
 
 func (u CreditLedgerUnion) AsCreditLedgerCreditSeatBasedAdjustmentLedgerEntry() (v CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CreditLedgerUnion) AsCreditLedgerCreditRolloverLedgerEntry() (v CreditLedgerCreditRolloverLedgerEntry) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -4325,12 +4390,55 @@ func (r *CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CreditLedgerCreditRolloverLedgerEntry struct {
+	Amount        float64   `json:"amount" api:"required"`
+	NewContractID string    `json:"new_contract_id" api:"required" format:"uuid"`
+	SegmentID     string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp     time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Any of "CREDIT_ROLLOVER".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount        respjson.Field
+		NewContractID respjson.Field
+		SegmentID     respjson.Field
+		Timestamp     respjson.Field
+		Type          respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CreditLedgerCreditRolloverLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *CreditLedgerCreditRolloverLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CreditRateType string
 
 const (
 	CreditRateTypeCommitRate CreditRateType = "COMMIT_RATE"
 	CreditRateTypeListRate   CreditRateType = "LIST_RATE"
 )
+
+type CreditRolledOverFrom struct {
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CreditID   string `json:"credit_id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CreditID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CreditRolledOverFrom) RawJSON() string { return r.JSON.raw }
+func (r *CreditRolledOverFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The subscription configuration for this credit, if it was generated from a
 // recurring credit with a subscription attached.

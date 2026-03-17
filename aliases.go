@@ -337,6 +337,12 @@ type ContractV2CreditLedgerCreditManualLedgerEntry = shared.ContractV2CreditLedg
 // This is an alias to an internal type.
 type ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry = shared.ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry
 
+// This is an alias to an internal type.
+type ContractV2CreditLedgerCreditRolloverLedgerEntry = shared.ContractV2CreditLedgerCreditRolloverLedgerEntry
+
+// This is an alias to an internal type.
+type ContractV2CreditRolledOverFrom = shared.ContractV2CreditRolledOverFrom
+
 // This field's availability is dependent on your client's configuration.
 //
 // This is an alias to an internal type.
@@ -559,6 +565,9 @@ type CreditLedgerCreditManualLedgerEntry = shared.CreditLedgerCreditManualLedger
 type CreditLedgerCreditSeatBasedAdjustmentLedgerEntry = shared.CreditLedgerCreditSeatBasedAdjustmentLedgerEntry
 
 // This is an alias to an internal type.
+type CreditLedgerCreditRolloverLedgerEntry = shared.CreditLedgerCreditRolloverLedgerEntry
+
+// This is an alias to an internal type.
 type CreditRateType = shared.CreditRateType
 
 // Equals "COMMIT_RATE"
@@ -566,6 +575,9 @@ const CreditRateTypeCommitRate = shared.CreditRateTypeCommitRate
 
 // Equals "LIST_RATE"
 const CreditRateTypeListRate = shared.CreditRateTypeListRate
+
+// This is an alias to an internal type.
+type CreditRolledOverFrom = shared.CreditRolledOverFrom
 
 // The subscription configuration for this credit, if it was generated from a
 // recurring credit with a subscription attached.
