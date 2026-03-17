@@ -674,8 +674,9 @@ type V1ContractListBalancesResponseUnion struct {
 	RateType             string                                    `json:"rate_type"`
 	// This field is from variant [shared.Commit].
 	RecurringCommitID string `json:"recurring_commit_id"`
-	// This field is from variant [shared.Commit].
-	RolledOverFrom shared.CommitRolledOverFrom `json:"rolled_over_from"`
+	// This field is a union of [shared.CommitRolledOverFrom],
+	// [shared.CreditRolledOverFrom]
+	RolledOverFrom V1ContractListBalancesResponseUnionRolledOverFrom `json:"rolled_over_from"`
 	// This field is from variant [shared.Commit].
 	RolloverFraction        float64                  `json:"rollover_fraction"`
 	SalesforceOpportunityID string                   `json:"salesforce_opportunity_id"`
@@ -802,6 +803,31 @@ type V1ContractListBalancesResponseUnionLedger struct {
 }
 
 func (r *V1ContractListBalancesResponseUnionLedger) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// V1ContractListBalancesResponseUnionRolledOverFrom is an implicit subunion of
+// [V1ContractListBalancesResponseUnion].
+// V1ContractListBalancesResponseUnionRolledOverFrom provides convenient access to
+// the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [V1ContractListBalancesResponseUnion].
+type V1ContractListBalancesResponseUnionRolledOverFrom struct {
+	// This field is from variant [shared.CommitRolledOverFrom].
+	CommitID   string `json:"commit_id"`
+	ContractID string `json:"contract_id"`
+	// This field is from variant [shared.CreditRolledOverFrom].
+	CreditID string `json:"credit_id"`
+	JSON     struct {
+		CommitID   respjson.Field
+		ContractID respjson.Field
+		CreditID   respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (r *V1ContractListBalancesResponseUnionRolledOverFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
