@@ -215,7 +215,6 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				ProductID:          metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags:        []string{"string"},
 				RecurringCommitIDs: []string{"string"},
-				RecurringCreditIDs: []string{"string"},
 			}},
 			OverwriteRate: metronome.V1ContractNewParamsOverrideOverwriteRate{
 				RateType:     "FLAT",
@@ -805,7 +804,6 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:          metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags:        []string{"string"},
 				RecurringCommitIDs: []string{"string"},
-				RecurringCreditIDs: []string{"string"},
 			}},
 			OverwriteRate: metronome.V1ContractAmendParamsOverrideOverwriteRate{
 				RateType:     "FLAT",

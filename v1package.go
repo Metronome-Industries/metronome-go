@@ -584,7 +584,6 @@ type V1PackageGetResponseDataOverrideOverrideSpecifier struct {
 	ProductID                  string            `json:"product_id" format:"uuid"`
 	ProductTags                []string          `json:"product_tags"`
 	RecurringCommitTemplateIDs []string          `json:"recurring_commit_template_ids"`
-	RecurringCreditTemplateIDs []string          `json:"recurring_credit_template_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency           respjson.Field
@@ -594,7 +593,6 @@ type V1PackageGetResponseDataOverrideOverrideSpecifier struct {
 		ProductID                  respjson.Field
 		ProductTags                respjson.Field
 		RecurringCommitTemplateIDs respjson.Field
-		RecurringCreditTemplateIDs respjson.Field
 		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`
@@ -1958,7 +1956,6 @@ type V1PackageListResponseOverrideOverrideSpecifier struct {
 	ProductID                  string            `json:"product_id" format:"uuid"`
 	ProductTags                []string          `json:"product_tags"`
 	RecurringCommitTemplateIDs []string          `json:"recurring_commit_template_ids"`
-	RecurringCreditTemplateIDs []string          `json:"recurring_credit_template_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency           respjson.Field
@@ -1968,7 +1965,6 @@ type V1PackageListResponseOverrideOverrideSpecifier struct {
 		ProductID                  respjson.Field
 		ProductTags                respjson.Field
 		RecurringCommitTemplateIDs respjson.Field
-		RecurringCreditTemplateIDs respjson.Field
 		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`
@@ -3621,11 +3617,6 @@ type V1PackageNewParamsOverrideOverrideSpecifier struct {
 	// `presentation_group_values`. If provided, the override will only apply to
 	// commits created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to
-	// credits created by the specified recurring credit ids.
-	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
 

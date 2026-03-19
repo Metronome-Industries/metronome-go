@@ -258,7 +258,6 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				ProductID:          metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags:        []string{"string"},
 				RecurringCommitIDs: []string{"string"},
-				RecurringCreditIDs: []string{"string"},
 			}},
 			OverwriteRate: metronome.V2ContractEditParamsAddOverrideOverwriteRate{
 				RateType:     "FLAT",

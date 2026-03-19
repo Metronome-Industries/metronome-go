@@ -615,7 +615,6 @@ type V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier struct {
 	ProductID               string            `json:"product_id" format:"uuid"`
 	ProductTags             []string          `json:"product_tags"`
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
-	RecurringCreditIDs      []string          `json:"recurring_credit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency        respjson.Field
@@ -625,7 +624,6 @@ type V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier struct {
 		ProductID               respjson.Field
 		ProductTags             respjson.Field
 		RecurringCommitIDs      respjson.Field
-		RecurringCreditIDs      respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
@@ -1751,7 +1749,7 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
 	CustomCreditTypeID    string                                                                                              `json:"custom_credit_type_id" api:"nullable" format:"uuid"`
-	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
+	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -2085,7 +2083,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceSchedul
 
 type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration struct {
 	Commit                shared.UpdateBaseThresholdCommit                                                           `json:"commit"`
-	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
+	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -3106,11 +3104,6 @@ type V2ContractEditParamsAddOverrideOverrideSpecifier struct {
 	// presentation_group_values. If provided, the override will only apply to commits
 	// created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of product_id, product_tags, pricing_group_values, or
-	// presentation_group_values. If provided, the override will only apply to commits
-	// created by the specified recurring credit ids.
-	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
 
@@ -4305,8 +4298,8 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
 	ThresholdAmount       param.Opt[float64]                                                                  `json:"threshold_amount,omitzero"`
-	DiscountConfiguration V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
 	Commit                V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit                `json:"commit,omitzero"`
+	DiscountConfiguration V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
 	PaymentGateConfig     shared.PaymentGateConfigV2Param                                                     `json:"payment_gate_config,omitzero"`
 	paramObj
 }
@@ -4547,8 +4540,8 @@ type V2ContractEditParamsUpdateSpendThresholdConfiguration struct {
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
 	ThresholdAmount       param.Opt[float64]                                                         `json:"threshold_amount,omitzero"`
-	DiscountConfiguration V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
 	Commit                shared.UpdateBaseThresholdCommitParam                                      `json:"commit,omitzero"`
+	DiscountConfiguration V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
 	PaymentGateConfig     shared.PaymentGateConfigV2Param                                            `json:"payment_gate_config,omitzero"`
 	paramObj
 }
