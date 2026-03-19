@@ -2226,7 +2226,6 @@ type ContractV2OverrideOverrideSpecifier struct {
 	ProductID               string            `json:"product_id" format:"uuid"`
 	ProductTags             []string          `json:"product_tags"`
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
-	RecurringCreditIDs      []string          `json:"recurring_credit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency        respjson.Field
@@ -2236,7 +2235,6 @@ type ContractV2OverrideOverrideSpecifier struct {
 		ProductID               respjson.Field
 		ProductTags             respjson.Field
 		RecurringCommitIDs      respjson.Field
-		RecurringCreditIDs      respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
@@ -4879,7 +4877,6 @@ type OverrideOverrideSpecifier struct {
 	ProductID               string            `json:"product_id" format:"uuid"`
 	ProductTags             []string          `json:"product_tags"`
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
-	RecurringCreditIDs      []string          `json:"recurring_credit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency        respjson.Field
@@ -4889,7 +4886,6 @@ type OverrideOverrideSpecifier struct {
 		ProductID               respjson.Field
 		ProductTags             respjson.Field
 		RecurringCommitIDs      respjson.Field
-		RecurringCreditIDs      respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
@@ -5415,7 +5411,7 @@ type PrepaidBalanceThresholdConfiguration struct {
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
 	CustomCreditTypeID    string                                                    `json:"custom_credit_type_id" format:"uuid"`
-	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Commit                respjson.Field
@@ -5584,7 +5580,7 @@ type PrepaidBalanceThresholdConfigurationV2 struct {
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
 	CustomCreditTypeID    string                                                      `json:"custom_credit_type_id" format:"uuid"`
-	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration" api:"nullable"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Commit                respjson.Field
@@ -6098,7 +6094,7 @@ type SpendThresholdConfiguration struct {
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
 	ThresholdAmount       float64                                          `json:"threshold_amount" api:"required"`
-	DiscountConfiguration SpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
+	DiscountConfiguration SpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Commit                respjson.Field
@@ -6197,7 +6193,7 @@ type SpendThresholdConfigurationV2 struct {
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
 	ThresholdAmount       float64                                            `json:"threshold_amount" api:"required"`
-	DiscountConfiguration SpendThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration" api:"nullable"`
+	DiscountConfiguration SpendThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Commit                respjson.Field

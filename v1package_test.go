@@ -144,7 +144,6 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 				ProductID:          metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags:        []string{"string"},
 				RecurringCommitIDs: []string{"string"},
-				RecurringCreditIDs: []string{"string"},
 			}},
 			StartingAtOffset: metronome.V1PackageNewParamsOverrideStartingAtOffset{
 				Unit:  "DAYS",

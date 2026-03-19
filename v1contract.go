@@ -1866,11 +1866,6 @@ type V1ContractNewParamsOverrideOverrideSpecifier struct {
 	// `presentation_group_values`. If provided, the override will only apply to
 	// commits created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to
-	// credits created by the specified recurring credit ids.
-	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
 
@@ -3498,11 +3493,6 @@ type V1ContractAmendParamsOverrideOverrideSpecifier struct {
 	// `presentation_group_values`. If provided, the override will only apply to
 	// commits created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to
-	// credits created by the specified recurring credit ids.
-	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
 
