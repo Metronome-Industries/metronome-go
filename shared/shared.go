@@ -5414,17 +5414,19 @@ type PrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
+	CustomCreditTypeID    string                                                    `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit             respjson.Field
-		IsEnabled          respjson.Field
-		PaymentGateConfig  respjson.Field
-		RechargeToAmount   respjson.Field
-		ThresholdAmount    respjson.Field
-		CustomCreditTypeID respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		Commit                respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		RechargeToAmount      respjson.Field
+		ThresholdAmount       respjson.Field
+		CustomCreditTypeID    respjson.Field
+		DiscountConfiguration respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -5475,6 +5477,27 @@ func (r *PrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationDiscountConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, RechargeToAmount,
 // ThresholdAmount are required.
 type PrepaidBalanceThresholdConfigurationParam struct {
@@ -5491,7 +5514,8 @@ type PrepaidBalanceThresholdConfigurationParam struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Opt[string] `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	CustomCreditTypeID    param.Opt[string]                                              `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfigurationParam `json:"discount_configuration,omitzero"`
 	paramObj
 }
 
@@ -5528,6 +5552,23 @@ func (r PrepaidBalanceThresholdConfigurationCommitParam) MarshalJSON() (data []b
 	return param.MarshalObject(r, shadow{&r, false})
 }
 
+// The property PaymentFraction is required.
+type PrepaidBalanceThresholdConfigurationDiscountConfigurationParam struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationDiscountConfigurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationDiscountConfigurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type PrepaidBalanceThresholdConfigurationV2 struct {
 	Commit PrepaidBalanceThresholdConfigurationV2Commit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
@@ -5542,17 +5583,19 @@ type PrepaidBalanceThresholdConfigurationV2 struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
+	CustomCreditTypeID    string                                                      `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit             respjson.Field
-		IsEnabled          respjson.Field
-		PaymentGateConfig  respjson.Field
-		RechargeToAmount   respjson.Field
-		ThresholdAmount    respjson.Field
-		CustomCreditTypeID respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		Commit                respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		RechargeToAmount      respjson.Field
+		ThresholdAmount       respjson.Field
+		CustomCreditTypeID    respjson.Field
+		DiscountConfiguration respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -5605,6 +5648,27 @@ func (r *PrepaidBalanceThresholdConfigurationV2Commit) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PrepaidBalanceThresholdConfigurationV2DiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationV2DiscountConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, RechargeToAmount,
 // ThresholdAmount are required.
 type PrepaidBalanceThresholdConfigurationV2Param struct {
@@ -5621,7 +5685,8 @@ type PrepaidBalanceThresholdConfigurationV2Param struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Opt[string] `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	CustomCreditTypeID    param.Opt[string]                                                `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam `json:"discount_configuration,omitzero"`
 	paramObj
 }
 
@@ -5658,6 +5723,23 @@ func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data [
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The property PaymentFraction is required.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type PropertyFilter struct {
@@ -6015,15 +6097,17 @@ type SpendThresholdConfiguration struct {
 	PaymentGateConfig PaymentGateConfig `json:"payment_gate_config" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
+	ThresholdAmount       float64                                          `json:"threshold_amount" api:"required"`
+	DiscountConfiguration SpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit            respjson.Field
-		IsEnabled         respjson.Field
-		PaymentGateConfig respjson.Field
-		ThresholdAmount   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		Commit                respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		ThresholdAmount       respjson.Field
+		DiscountConfiguration respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -6043,6 +6127,25 @@ func (r SpendThresholdConfiguration) ToParam() SpendThresholdConfigurationParam 
 	return param.Override[SpendThresholdConfigurationParam](json.RawMessage(r.RawJSON()))
 }
 
+type SpendThresholdConfigurationDiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendThresholdConfigurationDiscountConfiguration) RawJSON() string { return r.JSON.raw }
+func (r *SpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, ThresholdAmount are
 // required.
 type SpendThresholdConfigurationParam struct {
@@ -6054,7 +6157,8 @@ type SpendThresholdConfigurationParam struct {
 	PaymentGateConfig PaymentGateConfigParam `json:"payment_gate_config,omitzero" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
+	ThresholdAmount       float64                                               `json:"threshold_amount" api:"required"`
+	DiscountConfiguration SpendThresholdConfigurationDiscountConfigurationParam `json:"discount_configuration,omitzero"`
 	paramObj
 }
 
@@ -6063,6 +6167,23 @@ func (r SpendThresholdConfigurationParam) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SpendThresholdConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property PaymentFraction is required.
+type SpendThresholdConfigurationDiscountConfigurationParam struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r SpendThresholdConfigurationDiscountConfigurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow SpendThresholdConfigurationDiscountConfigurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SpendThresholdConfigurationDiscountConfigurationParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6075,15 +6196,17 @@ type SpendThresholdConfigurationV2 struct {
 	PaymentGateConfig PaymentGateConfigV2 `json:"payment_gate_config" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
+	ThresholdAmount       float64                                            `json:"threshold_amount" api:"required"`
+	DiscountConfiguration SpendThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit            respjson.Field
-		IsEnabled         respjson.Field
-		PaymentGateConfig respjson.Field
-		ThresholdAmount   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		Commit                respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		ThresholdAmount       respjson.Field
+		DiscountConfiguration respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -6103,6 +6226,25 @@ func (r SpendThresholdConfigurationV2) ToParam() SpendThresholdConfigurationV2Pa
 	return param.Override[SpendThresholdConfigurationV2Param](json.RawMessage(r.RawJSON()))
 }
 
+type SpendThresholdConfigurationV2DiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendThresholdConfigurationV2DiscountConfiguration) RawJSON() string { return r.JSON.raw }
+func (r *SpendThresholdConfigurationV2DiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, ThresholdAmount are
 // required.
 type SpendThresholdConfigurationV2Param struct {
@@ -6114,7 +6256,8 @@ type SpendThresholdConfigurationV2Param struct {
 	PaymentGateConfig PaymentGateConfigV2Param `json:"payment_gate_config,omitzero" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
+	ThresholdAmount       float64                                                 `json:"threshold_amount" api:"required"`
+	DiscountConfiguration SpendThresholdConfigurationV2DiscountConfigurationParam `json:"discount_configuration,omitzero"`
 	paramObj
 }
 
@@ -6123,6 +6266,23 @@ func (r SpendThresholdConfigurationV2Param) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SpendThresholdConfigurationV2Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property PaymentFraction is required.
+type SpendThresholdConfigurationV2DiscountConfigurationParam struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r SpendThresholdConfigurationV2DiscountConfigurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow SpendThresholdConfigurationV2DiscountConfigurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SpendThresholdConfigurationV2DiscountConfigurationParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

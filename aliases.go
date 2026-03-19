@@ -845,10 +845,16 @@ type PrepaidBalanceThresholdConfiguration = shared.PrepaidBalanceThresholdConfig
 type PrepaidBalanceThresholdConfigurationCommit = shared.PrepaidBalanceThresholdConfigurationCommit
 
 // This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationDiscountConfiguration = shared.PrepaidBalanceThresholdConfigurationDiscountConfiguration
+
+// This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationParam = shared.PrepaidBalanceThresholdConfigurationParam
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationCommitParam = shared.PrepaidBalanceThresholdConfigurationCommitParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationDiscountConfigurationParam = shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2 = shared.PrepaidBalanceThresholdConfigurationV2
@@ -857,10 +863,16 @@ type PrepaidBalanceThresholdConfigurationV2 = shared.PrepaidBalanceThresholdConf
 type PrepaidBalanceThresholdConfigurationV2Commit = shared.PrepaidBalanceThresholdConfigurationV2Commit
 
 // This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfiguration = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfiguration
+
+// This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2Param = shared.PrepaidBalanceThresholdConfigurationV2Param
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2CommitParam = shared.PrepaidBalanceThresholdConfigurationV2CommitParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam
 
 // This is an alias to an internal type.
 type PropertyFilter = shared.PropertyFilter
@@ -932,13 +944,25 @@ type SchedulePointInTimeScheduleItem = shared.SchedulePointInTimeScheduleItem
 type SpendThresholdConfiguration = shared.SpendThresholdConfiguration
 
 // This is an alias to an internal type.
+type SpendThresholdConfigurationDiscountConfiguration = shared.SpendThresholdConfigurationDiscountConfiguration
+
+// This is an alias to an internal type.
 type SpendThresholdConfigurationParam = shared.SpendThresholdConfigurationParam
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationDiscountConfigurationParam = shared.SpendThresholdConfigurationDiscountConfigurationParam
 
 // This is an alias to an internal type.
 type SpendThresholdConfigurationV2 = shared.SpendThresholdConfigurationV2
 
 // This is an alias to an internal type.
+type SpendThresholdConfigurationV2DiscountConfiguration = shared.SpendThresholdConfigurationV2DiscountConfiguration
+
+// This is an alias to an internal type.
 type SpendThresholdConfigurationV2Param = shared.SpendThresholdConfigurationV2Param
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationV2DiscountConfigurationParam = shared.SpendThresholdConfigurationV2DiscountConfigurationParam
 
 // This is an alias to an internal type.
 type Subscription = shared.Subscription

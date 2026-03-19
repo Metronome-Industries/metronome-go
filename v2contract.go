@@ -1750,7 +1750,8 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	Commit V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommit `json:"commit"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string `json:"custom_credit_type_id" api:"nullable" format:"uuid"`
+	CustomCreditTypeID    string                                                                                              `json:"custom_credit_type_id" api:"nullable" format:"uuid"`
+	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -1763,14 +1764,15 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	ThresholdAmount float64 `json:"threshold_amount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit             respjson.Field
-		CustomCreditTypeID respjson.Field
-		IsEnabled          respjson.Field
-		PaymentGateConfig  respjson.Field
-		RechargeToAmount   respjson.Field
-		ThresholdAmount    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		Commit                respjson.Field
+		CustomCreditTypeID    respjson.Field
+		DiscountConfiguration respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		RechargeToAmount      respjson.Field
+		ThresholdAmount       respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -1813,6 +1815,27 @@ func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigu
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2061,7 +2084,8 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceSchedul
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration struct {
-	Commit shared.UpdateBaseThresholdCommit `json:"commit"`
+	Commit                shared.UpdateBaseThresholdCommit                                                           `json:"commit"`
+	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -2072,12 +2096,13 @@ type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration struc
 	ThresholdAmount float64 `json:"threshold_amount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit            respjson.Field
-		IsEnabled         respjson.Field
-		PaymentGateConfig respjson.Field
-		ThresholdAmount   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		Commit                respjson.Field
+		DiscountConfiguration respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		ThresholdAmount       respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -2086,6 +2111,27 @@ func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration) R
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4258,9 +4304,10 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	RechargeToAmount param.Opt[float64] `json:"recharge_to_amount,omitzero"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount   param.Opt[float64]                                                   `json:"threshold_amount,omitzero"`
-	Commit            V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit `json:"commit,omitzero"`
-	PaymentGateConfig shared.PaymentGateConfigV2Param                                      `json:"payment_gate_config,omitzero"`
+	ThresholdAmount       param.Opt[float64]                                                                  `json:"threshold_amount,omitzero"`
+	DiscountConfiguration V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
+	Commit                V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit                `json:"commit,omitzero"`
+	PaymentGateConfig     shared.PaymentGateConfigV2Param                                                     `json:"payment_gate_config,omitzero"`
 	paramObj
 }
 
@@ -4296,6 +4343,23 @@ func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) Ma
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The property PaymentFraction is required.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property RecurringCommitID is required.
@@ -4482,9 +4546,10 @@ type V2ContractEditParamsUpdateSpendThresholdConfiguration struct {
 	IsEnabled param.Opt[bool] `json:"is_enabled,omitzero"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount   param.Opt[float64]                    `json:"threshold_amount,omitzero"`
-	Commit            shared.UpdateBaseThresholdCommitParam `json:"commit,omitzero"`
-	PaymentGateConfig shared.PaymentGateConfigV2Param       `json:"payment_gate_config,omitzero"`
+	ThresholdAmount       param.Opt[float64]                                                         `json:"threshold_amount,omitzero"`
+	DiscountConfiguration V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
+	Commit                shared.UpdateBaseThresholdCommitParam                                      `json:"commit,omitzero"`
+	PaymentGateConfig     shared.PaymentGateConfigV2Param                                            `json:"payment_gate_config,omitzero"`
 	paramObj
 }
 
@@ -4493,6 +4558,23 @@ func (r V2ContractEditParamsUpdateSpendThresholdConfiguration) MarshalJSON() (da
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V2ContractEditParamsUpdateSpendThresholdConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property PaymentFraction is required.
+type V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -321,6 +321,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			RechargeToAmount:   0,
 			ThresholdAmount:    0,
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			DiscountConfiguration: shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam{
+				PaymentFraction: 0,
+			},
 		},
 		AddProfessionalServices: []metronome.V2ContractEditParamsAddProfessionalService{{
 			MaxAmount: 0,
@@ -514,6 +517,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				TaxType: shared.PaymentGateConfigV2TaxTypeNone,
 			},
 			ThresholdAmount: 0,
+			DiscountConfiguration: shared.SpendThresholdConfigurationV2DiscountConfigurationParam{
+				PaymentFraction: 0,
+			},
 		},
 		AddSubscriptions: []metronome.V2ContractEditParamsAddSubscription{{
 			CollectionSchedule: "ADVANCE",
@@ -667,7 +673,10 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				}},
 			},
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			IsEnabled:          metronome.Bool(true),
+			DiscountConfiguration: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration{
+				PaymentFraction: 0,
+			},
+			IsEnabled: metronome.Bool(true),
 			PaymentGateConfig: shared.PaymentGateConfigV2Param{
 				PaymentGateType: shared.PaymentGateConfigV2PaymentGateTypeNone,
 				PrecalculatedTaxConfig: shared.PaymentGateConfigV2PrecalculatedTaxConfigParam{
@@ -734,6 +743,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				Description: metronome.String("description"),
 				Name:        metronome.String("name"),
 				ProductID:   metronome.String("product_id"),
+			},
+			DiscountConfiguration: metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration{
+				PaymentFraction: 0,
 			},
 			IsEnabled: metronome.Bool(true),
 			PaymentGateConfig: shared.PaymentGateConfigV2Param{

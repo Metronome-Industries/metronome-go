@@ -217,6 +217,9 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 			RechargeToAmount:   0,
 			ThresholdAmount:    0,
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			DiscountConfiguration: shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam{
+				PaymentFraction: 0,
+			},
 		},
 		RateCardAlias: metronome.String("rate_card_alias"),
 		RateCardID:    metronome.String("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
@@ -360,6 +363,9 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 				TaxType: shared.PaymentGateConfigTaxTypeNone,
 			},
 			ThresholdAmount: 0,
+			DiscountConfiguration: shared.SpendThresholdConfigurationDiscountConfigurationParam{
+				PaymentFraction: 0,
+			},
 		},
 		Subscriptions: []metronome.V1PackageNewParamsSubscription{{
 			CollectionSchedule: "ADVANCE",
