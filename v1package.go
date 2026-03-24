@@ -240,8 +240,10 @@ type V1PackageGetResponseData struct {
 	ArchivedAt             time.Time                                      `json:"archived_at" format:"date-time"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string                           `json:"billing_provider"`
-	Credits         []V1PackageGetResponseDataCredit `json:"credits"`
+	BillingProvider string `json:"billing_provider"`
+	// The name to use for contracts created from this package.
+	ContractName string                           `json:"contract_name"`
+	Credits      []V1PackageGetResponseDataCredit `json:"credits"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string                           `json:"delivery_method"`
 	Duration       V1PackageGetResponseDataDuration `json:"duration"`
@@ -284,6 +286,7 @@ type V1PackageGetResponseData struct {
 		Aliases                              respjson.Field
 		ArchivedAt                           respjson.Field
 		BillingProvider                      respjson.Field
+		ContractName                         respjson.Field
 		Credits                              respjson.Field
 		DeliveryMethod                       respjson.Field
 		Duration                             respjson.Field
@@ -1615,7 +1618,9 @@ type V1PackageListResponse struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider V1PackageListResponseBillingProvider `json:"billing_provider"`
-	Credits         []V1PackageListResponseCredit        `json:"credits"`
+	// The name to use for contracts created from this package.
+	ContractName string                        `json:"contract_name"`
+	Credits      []V1PackageListResponseCredit `json:"credits"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod V1PackageListResponseDeliveryMethod `json:"delivery_method"`
 	Duration       V1PackageListResponseDuration       `json:"duration"`
@@ -1658,6 +1663,7 @@ type V1PackageListResponse struct {
 		Aliases                              respjson.Field
 		ArchivedAt                           respjson.Field
 		BillingProvider                      respjson.Field
+		ContractName                         respjson.Field
 		Credits                              respjson.Field
 		DeliveryMethod                       respjson.Field
 		Duration                             respjson.Field
