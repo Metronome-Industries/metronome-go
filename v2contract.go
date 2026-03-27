@@ -1749,7 +1749,7 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
 	CustomCreditTypeID    string                                                                                              `json:"custom_credit_type_id" api:"nullable" format:"uuid"`
-	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
+	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -1818,9 +1818,9 @@ func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfig
 
 type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
 	// The fraction of the original amount that the customer pays after applying the
-	// discount. For example, 0.85 means the customer pays 85% of the original amount
-	// (a 15% discount).
-	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// discount. Set to null to remove the discount fraction. For example, 0.85 means
+	// the customer pays 85% of the original amount (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PaymentFraction respjson.Field
@@ -2083,7 +2083,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateScheduledChargeInvoiceSchedul
 
 type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration struct {
 	Commit                shared.UpdateBaseThresholdCommit                                                           `json:"commit"`
-	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
+	DiscountConfiguration V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -2114,9 +2114,9 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration) 
 
 type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration struct {
 	// The fraction of the original amount that the customer pays after applying the
-	// discount. For example, 0.85 means the customer pays 85% of the original amount
-	// (a 15% discount).
-	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// discount. Set to null to remove the discount fraction. For example, 0.85 means
+	// the customer pays 85% of the original amount (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PaymentFraction respjson.Field
@@ -4298,8 +4298,8 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
 	ThresholdAmount       param.Opt[float64]                                                                  `json:"threshold_amount,omitzero"`
-	Commit                V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit                `json:"commit,omitzero"`
 	DiscountConfiguration V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
+	Commit                V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit                `json:"commit,omitzero"`
 	PaymentGateConfig     shared.PaymentGateConfigV2Param                                                     `json:"payment_gate_config,omitzero"`
 	paramObj
 }
@@ -4338,12 +4338,11 @@ func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) Ma
 	return param.MarshalObject(r, shadow{&r, false})
 }
 
-// The property PaymentFraction is required.
 type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
 	// The fraction of the original amount that the customer pays after applying the
-	// discount. For example, 0.85 means the customer pays 85% of the original amount
-	// (a 15% discount).
-	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// discount. Set to null to remove the discount fraction. For example, 0.85 means
+	// the customer pays 85% of the original amount (a 15% discount).
+	PaymentFraction param.Opt[float64] `json:"payment_fraction,omitzero"`
 	paramObj
 }
 
@@ -4540,8 +4539,8 @@ type V2ContractEditParamsUpdateSpendThresholdConfiguration struct {
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
 	ThresholdAmount       param.Opt[float64]                                                         `json:"threshold_amount,omitzero"`
-	Commit                shared.UpdateBaseThresholdCommitParam                                      `json:"commit,omitzero"`
 	DiscountConfiguration V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
+	Commit                shared.UpdateBaseThresholdCommitParam                                      `json:"commit,omitzero"`
 	PaymentGateConfig     shared.PaymentGateConfigV2Param                                            `json:"payment_gate_config,omitzero"`
 	paramObj
 }
@@ -4554,12 +4553,11 @@ func (r *V2ContractEditParamsUpdateSpendThresholdConfiguration) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property PaymentFraction is required.
 type V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration struct {
 	// The fraction of the original amount that the customer pays after applying the
-	// discount. For example, 0.85 means the customer pays 85% of the original amount
-	// (a 15% discount).
-	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// discount. Set to null to remove the discount fraction. For example, 0.85 means
+	// the customer pays 85% of the original amount (a 15% discount).
+	PaymentFraction param.Opt[float64] `json:"payment_fraction,omitzero"`
 	paramObj
 }
 

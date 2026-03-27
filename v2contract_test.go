@@ -673,7 +673,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			},
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			DiscountConfiguration: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration{
-				PaymentFraction: 0,
+				PaymentFraction: metronome.Float(0),
 			},
 			IsEnabled: metronome.Bool(true),
 			PaymentGateConfig: shared.PaymentGateConfigV2Param{
@@ -744,7 +744,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.String("product_id"),
 			},
 			DiscountConfiguration: metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration{
-				PaymentFraction: 0,
+				PaymentFraction: metronome.Float(0),
 			},
 			IsEnabled: metronome.Bool(true),
 			PaymentGateConfig: shared.PaymentGateConfigV2Param{
