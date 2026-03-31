@@ -4,7 +4,6 @@ package metronome
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -1098,7 +1097,7 @@ func (r V1CustomerArchiveParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.ID)
 }
 func (r *V1CustomerArchiveParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.ID)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1CustomerArchiveBillingConfigurationsParams struct {
