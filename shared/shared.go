@@ -45,11 +45,15 @@ type BaseThresholdCommit struct {
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name string `json:"name"`
+	// The priority of the commit, used to determine drawdown order. Lower priority
+	// commits are consumed first. Defaults to 100 if not specified.
+	Priority float64 `json:"priority"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ProductID   respjson.Field
 		Description respjson.Field
 		Name        respjson.Field
+		Priority    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -79,6 +83,9 @@ type BaseThresholdCommitParam struct {
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name param.Opt[string] `json:"name,omitzero"`
+	// The priority of the commit, used to determine drawdown order. Lower priority
+	// commits are consumed first. Defaults to 100 if not specified.
+	Priority param.Opt[float64] `json:"priority,omitzero"`
 	paramObj
 }
 
@@ -5635,7 +5642,7 @@ type PrepaidBalanceThresholdConfigurationV2Commit struct {
 		ExtraFields           map[string]respjson.Field
 		raw                   string
 	} `json:"-"`
-	UpdateBaseThresholdCommit
+	BaseThresholdCommit
 }
 
 // Returns the unmodified JSON received from the API
@@ -5710,7 +5717,7 @@ type PrepaidBalanceThresholdConfigurationV2CommitParam struct {
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
 	Specifiers []CommitSpecifierInputParam `json:"specifiers,omitzero"`
-	UpdateBaseThresholdCommitParam
+	BaseThresholdCommitParam
 }
 
 func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data []byte, err error) {
@@ -6184,7 +6191,7 @@ func (r *SpendThresholdConfigurationDiscountConfigurationParam) UnmarshalJSON(da
 }
 
 type SpendThresholdConfigurationV2 struct {
-	Commit UpdateBaseThresholdCommit `json:"commit" api:"required"`
+	Commit BaseThresholdCommit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -6244,7 +6251,7 @@ func (r *SpendThresholdConfigurationV2DiscountConfiguration) UnmarshalJSON(data 
 // The properties Commit, IsEnabled, PaymentGateConfig, ThresholdAmount are
 // required.
 type SpendThresholdConfigurationV2Param struct {
-	Commit UpdateBaseThresholdCommitParam `json:"commit,omitzero" api:"required"`
+	Commit BaseThresholdCommitParam `json:"commit,omitzero" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -6583,6 +6590,10 @@ type UpdateBaseThresholdCommit struct {
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name string `json:"name"`
+	// The priority of the commit, used to determine drawdown order. Lower priority
+	// commits are consumed first. Defaults to 100 if not specified. On updates, set to
+	// null to clear a previously configured priority.
+	Priority float64 `json:"priority" api:"nullable"`
 	// The commit product that will be used to generate the line item for commit
 	// payment.
 	ProductID string `json:"product_id"`
@@ -6590,6 +6601,7 @@ type UpdateBaseThresholdCommit struct {
 	JSON struct {
 		Description respjson.Field
 		Name        respjson.Field
+		Priority    respjson.Field
 		ProductID   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -6613,7 +6625,11 @@ func (r UpdateBaseThresholdCommit) ToParam() UpdateBaseThresholdCommitParam {
 }
 
 type UpdateBaseThresholdCommitParam struct {
-	Description param.Opt[string] `json:"description,omitzero"`
+	// The priority of the commit, used to determine drawdown order. Lower priority
+	// commits are consumed first. Defaults to 100 if not specified. On updates, set to
+	// null to clear a previously configured priority.
+	Priority    param.Opt[float64] `json:"priority,omitzero"`
+	Description param.Opt[string]  `json:"description,omitzero"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name param.Opt[string] `json:"name,omitzero"`

@@ -284,10 +284,11 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}},
 		AddPrepaidBalanceThresholdConfiguration: shared.PrepaidBalanceThresholdConfigurationV2Param{
 			Commit: shared.PrepaidBalanceThresholdConfigurationV2CommitParam{
-				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{
+				BaseThresholdCommitParam: shared.BaseThresholdCommitParam{
+					ProductID:   "product_id",
 					Description: metronome.String("description"),
 					Name:        metronome.String("name"),
-					ProductID:   metronome.String("product_id"),
+					Priority:    metronome.Float(0),
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 				ApplicableProductTags: []string{"string"},
@@ -495,10 +496,11 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 		}},
 		AddSpendThresholdConfiguration: shared.SpendThresholdConfigurationV2Param{
-			Commit: shared.UpdateBaseThresholdCommitParam{
+			Commit: shared.BaseThresholdCommitParam{
+				ProductID:   "product_id",
 				Description: metronome.String("description"),
 				Name:        metronome.String("name"),
-				ProductID:   metronome.String("product_id"),
+				Priority:    metronome.Float(0),
 			},
 			IsEnabled: true,
 			PaymentGateConfig: shared.PaymentGateConfigV2Param{
@@ -656,6 +658,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{
 					Description: metronome.String("description"),
 					Name:        metronome.String("name"),
+					Priority:    metronome.Float(0),
 					ProductID:   metronome.String("product_id"),
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
@@ -741,6 +744,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Commit: shared.UpdateBaseThresholdCommitParam{
 				Description: metronome.String("description"),
 				Name:        metronome.String("name"),
+				Priority:    metronome.Float(0),
 				ProductID:   metronome.String("product_id"),
 			},
 			DiscountConfiguration: metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration{
