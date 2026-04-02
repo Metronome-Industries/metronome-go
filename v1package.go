@@ -774,9 +774,12 @@ func (r *V1PackageGetResponseDataScheduledChargeScheduleScheduleItemDateOffset) 
 type V1PackageGetResponseDataUsageStatementSchedule struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	Day string `json:"day"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Frequency   respjson.Field
+		Day         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -2147,9 +2150,12 @@ func (r *V1PackageListResponseScheduledChargeScheduleScheduleItemDateOffset) Unm
 type V1PackageListResponseUsageStatementSchedule struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	Day string `json:"day"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Frequency   respjson.Field
+		Day         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
