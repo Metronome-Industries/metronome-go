@@ -184,6 +184,7 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 					ProductID:   "product_id",
 					Description: metronome.String("description"),
 					Name:        metronome.String("name"),
+					Priority:    metronome.Float(0),
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 				ApplicableProductTags: []string{"string"},
@@ -345,6 +346,7 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 				ProductID:   "product_id",
 				Description: metronome.String("description"),
 				Name:        metronome.String("name"),
+				Priority:    metronome.Float(0),
 			},
 			IsEnabled: true,
 			PaymentGateConfig: shared.PaymentGateConfigParam{
