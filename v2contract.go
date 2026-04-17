@@ -564,6 +564,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddCreditProduct) UnmarshalJSON(dat
 
 type V2ContractGetEditHistoryResponseDataAddOverride struct {
 	ID                    string                                                             `json:"id" api:"required" format:"uuid"`
+	CreatedAt             time.Time                                                          `json:"created_at" api:"required" format:"date-time"`
 	StartingAt            time.Time                                                          `json:"starting_at" api:"required" format:"date-time"`
 	ApplicableProductTags []string                                                           `json:"applicable_product_tags"`
 	EndingBefore          time.Time                                                          `json:"ending_before" format:"date-time"`
@@ -582,6 +583,7 @@ type V2ContractGetEditHistoryResponseDataAddOverride struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		CreatedAt             respjson.Field
 		StartingAt            respjson.Field
 		ApplicableProductTags respjson.Field
 		EndingBefore          respjson.Field
