@@ -509,6 +509,9 @@ type V2ContractGetEditHistoryResponseDataAddCredit struct {
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority float64 `json:"priority"`
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType         string  `json:"rate_type"`
+	RolloverFraction float64 `json:"rollover_fraction"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -531,6 +534,8 @@ type V2ContractGetEditHistoryResponseDataAddCredit struct {
 		Name                    respjson.Field
 		NetsuiteSalesOrderID    respjson.Field
 		Priority                respjson.Field
+		RateType                respjson.Field
+		RolloverFraction        respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
 		ExtraFields             map[string]respjson.Field
@@ -1483,30 +1488,50 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateCommitInvoiceScheduleUpdateSc
 type V2ContractGetEditHistoryResponseDataUpdateCredit struct {
 	ID             string                                                         `json:"id" api:"required" format:"uuid"`
 	AccessSchedule V2ContractGetEditHistoryResponseDataUpdateCreditAccessSchedule `json:"access_schedule"`
-	Description    string                                                         `json:"description"`
+	// Which products the credit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the credit applies to
+	// all products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" api:"nullable" format:"uuid"`
+	// Which tags the credit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the credit applies to
+	// all products.
+	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
+	Description           string   `json:"description"`
 	// Optional configuration for credit hierarchy access control
 	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	Name                   string                              `json:"name"`
 	NetsuiteSalesOrderID   string                              `json:"netsuite_sales_order_id" api:"nullable"`
 	// If multiple credits are applicable, the one with the lower priority will apply
 	// first.
-	Priority float64 `json:"priority" api:"nullable"`
+	Priority  float64 `json:"priority" api:"nullable"`
+	ProductID string  `json:"product_id" format:"uuid"`
 	// If set, the credit's rate type was updated to the specified value.
 	//
 	// Any of "LIST_RATE", "COMMIT_RATE".
 	RateType         string  `json:"rate_type"`
 	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
+	Specifiers []shared.CommitSpecifierInput `json:"specifiers" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
 		AccessSchedule         respjson.Field
+		ApplicableProductIDs   respjson.Field
+		ApplicableProductTags  respjson.Field
 		Description            respjson.Field
 		HierarchyConfiguration respjson.Field
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Priority               respjson.Field
+		ProductID              respjson.Field
 		RateType               respjson.Field
 		RolloverFraction       respjson.Field
+		Specifiers             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -4191,12 +4216,12 @@ type V2ContractEditParamsUpdateCredit struct {
 	Description          param.Opt[string]  `json:"description,omitzero"`
 	Name                 param.Opt[string]  `json:"name,omitzero"`
 	ProductID            param.Opt[string]  `json:"product_id,omitzero" format:"uuid"`
-	// Which products the commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// Which products the credit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the credit applies to
 	// all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Which tags the commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// Which tags the credit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the credit applies to
 	// all products.
 	ApplicableProductTags []string                                       `json:"applicable_product_tags,omitzero"`
 	AccessSchedule        V2ContractEditParamsUpdateCreditAccessSchedule `json:"access_schedule,omitzero"`
