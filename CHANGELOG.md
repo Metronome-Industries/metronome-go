@@ -1,5 +1,55 @@
 # Changelog
 
+## 3.5.0 (2026-04-18)
+
+Full Changelog: [v3.4.0...v3.5.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.4.0...v3.5.0)
+
+### Features
+
+* add override created at in api responses ([63fd5e1](https://github.com/Metronome-Industries/metronome-go/commit/63fd5e1f80f7c9de31461c52a35afc2644ddad91))
+* add override created at in api responses ([80125df](https://github.com/Metronome-Industries/metronome-go/commit/80125df8db3f434428a22e5d1db5874502076d3c))
+* Add recurring_commit_ids and remove recurring_credit_ids from api ([d83ebe0](https://github.com/Metronome-Industries/metronome-go/commit/d83ebe04cd0ac70e6390cd13e9017241aab922a8))
+* Docs: Dd/update balance guides ([56c8e8c](https://github.com/Metronome-Industries/metronome-go/commit/56c8e8c29f8e75ab3117d361cc69d3044dc75248))
+* Enable OIDC auth for npm publisher ([14ce2d3](https://github.com/Metronome-Industries/metronome-go/commit/14ce2d33c0c4419df8bb113e4366503c0fa2e8ce))
+* External fixes for rollover credits ([f216357](https://github.com/Metronome-Industries/metronome-go/commit/f216357cef812a47ec6c52863f0de14b735c5c7a))
+* Fully document CreditAdd/CreditUpdate fields in API spec ([1eb4554](https://github.com/Metronome-Industries/metronome-go/commit/1eb4554aedd34369a1c9de83c05c10b2df916cb1))
+* **internal:** support comma format in multipart form encoding ([8c29ce5](https://github.com/Metronome-Industries/metronome-go/commit/8c29ce5e151a72f0f354be4eaeac8fe5a740b52e))
+* Map missing `contract_name` when returning Packages ([c8bd466](https://github.com/Metronome-Industries/metronome-go/commit/c8bd46642a39dea87820063db217d1f7804ba99c))
+* **ORCH-1361:** add priority to threshold commit OpenAPI schemas ([f938913](https://github.com/Metronome-Industries/metronome-go/commit/f938913b982abd95efb095f188bb72a8751b0b43))
+* ORCH-1410: Add discount_configuration to POST v2/contracts/edit ([2da9383](https://github.com/Metronome-Industries/metronome-go/commit/2da93834bc6c9dcfb6f9a0914a07019e7cfbaf09))
+* remove dead field, pipe day through to MRI, return day when get package ([18ddc04](https://github.com/Metronome-Industries/metronome-go/commit/18ddc04a88100c67d564a33b32a1e7b22c775303))
+* Support nullable discount fraction on contract update inputs ([5880125](https://github.com/Metronome-Industries/metronome-go/commit/58801251fe86bc23d6313ffabd90d72b7cfa5aa9))
+
+
+### Bug Fixes
+
+* fix issue with unmarshaling in some cases ([f41988a](https://github.com/Metronome-Industries/metronome-go/commit/f41988a5db0380a83848fbc0feeaccb94749e906))
+* prevent duplicate ? in query params ([ed3c4ab](https://github.com/Metronome-Industries/metronome-go/commit/ed3c4abf627ee8f66acab6e4c835f936aa5d8021))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([ad29064](https://github.com/Metronome-Industries/metronome-go/commit/ad29064e4c3da56d32c68e13603f86a5386b96c4))
+* **ci:** support opting out of skipping builds on metadata-only commits ([dd92c40](https://github.com/Metronome-Industries/metronome-go/commit/dd92c40d29f7ae7584e365b7b42a49402136cb7c))
+* **client:** fix multipart serialisation of Default() fields ([6a261a7](https://github.com/Metronome-Industries/metronome-go/commit/6a261a71d33d6344ffae208e4273e2032371daf0))
+* **internal:** support default value struct tag ([73e2af9](https://github.com/Metronome-Industries/metronome-go/commit/73e2af93b528ceba577778f02ebbf89b14a81c58))
+* **internal:** tweak CI branches ([9cba72d](https://github.com/Metronome-Industries/metronome-go/commit/9cba72dd19199856a3f996b6cbe3b30bcc4428f4))
+* **internal:** update gitignore ([cdd9101](https://github.com/Metronome-Industries/metronome-go/commit/cdd9101b19c689cb055d1ce514a0bf50c3a5bb2b))
+* remove unnecessary error check for url parsing ([45bf968](https://github.com/Metronome-Industries/metronome-go/commit/45bf9680a247caf9f687c20a882b055170def9a5))
+* **tests:** bump steady to v0.19.4 ([360824f](https://github.com/Metronome-Industries/metronome-go/commit/360824faa84531588792e4e76cec7a26fbccda9a))
+* **tests:** bump steady to v0.19.5 ([81008a7](https://github.com/Metronome-Industries/metronome-go/commit/81008a7cd8dfb31c7870eaaff6803902a8bcf8a9))
+* **tests:** bump steady to v0.19.6 ([96d7298](https://github.com/Metronome-Industries/metronome-go/commit/96d72982bccd9a4e94296c2c2f8930abd9f5486c))
+* **tests:** bump steady to v0.19.7 ([85267de](https://github.com/Metronome-Industries/metronome-go/commit/85267defc2508f9eef698928205568b2f82c30ed))
+* **tests:** bump steady to v0.20.1 ([2edfa64](https://github.com/Metronome-Industries/metronome-go/commit/2edfa64eb90d7d39ea5f757a11589976d0b868ca))
+* **tests:** bump steady to v0.20.2 ([2e40bd9](https://github.com/Metronome-Industries/metronome-go/commit/2e40bd93d92a32eb963b87c8226bef38831c619e))
+* **tests:** bump steady to v0.22.1 ([e001baa](https://github.com/Metronome-Industries/metronome-go/commit/e001baa3fcbeaa4bed94276cfbb2767f5d536359))
+* update docs for api:"required" ([5cc02f8](https://github.com/Metronome-Industries/metronome-go/commit/5cc02f83d52806a4f65bc865d6d735999f2bb3ac))
+
+
+### Refactors
+
+* **tests:** switch from prism to steady ([cf7b341](https://github.com/Metronome-Industries/metronome-go/commit/cf7b34113266de47361a4efabfc9b3456e018b06))
+
 ## 3.4.0 (2026-03-10)
 
 Full Changelog: [v3.3.0...v3.4.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.3.0...v3.4.0)
