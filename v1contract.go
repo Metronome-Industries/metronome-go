@@ -315,6 +315,10 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 //
 // ### Usage guidelines:
 //
+//   - **Balance ledger details**: Use the
+//     [listBalances](https://docs.metronome.com/api-reference/credits-and-commits/list-balances)
+//     endpoint instead to understand detailed ledger drawdowns for each individual
+//     balance
 //   - **Draft invoice handling**: Use `invoice_inclusion_mode` to control whether
 //     pending draft invoice deductions are included (`FINALIZED_AND_DRAFT`, the
 //     default) or excluded (`FINALIZED`) from the balance calculation
@@ -357,6 +361,9 @@ func (r *V1ContractService) GetNetBalance(ctx context.Context, body V1ContractGe
 //
 // ### Usage guidelines:
 //
+//   - Use the
+//     [getNetBalance](https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer)
+//     endpoint to retrieve a single combined current balance
 //   - Date filtering: Use `effective_before` to include only balances with access
 //     before a specific date (exclusive)
 //   - Set `include_balance=true` for calculated balance amounts on each commit or
@@ -408,6 +415,9 @@ func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractLis
 //
 // ### Usage guidelines:
 //
+//   - Use the
+//     [getNetBalance](https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer)
+//     endpoint to retrieve a single combined current balance
 //   - Date filtering: Use `effective_before` to include only balances with access
 //     before a specific date (exclusive)
 //   - Set `include_balance=true` for calculated balance amounts on each commit or
@@ -674,8 +684,9 @@ type V1ContractListBalancesResponseUnion struct {
 	RateType             string                                    `json:"rate_type"`
 	// This field is from variant [shared.Commit].
 	RecurringCommitID string `json:"recurring_commit_id"`
-	// This field is from variant [shared.Commit].
-	RolledOverFrom shared.CommitRolledOverFrom `json:"rolled_over_from"`
+	// This field is a union of [shared.CommitRolledOverFrom],
+	// [shared.CreditRolledOverFrom]
+	RolledOverFrom V1ContractListBalancesResponseUnionRolledOverFrom `json:"rolled_over_from"`
 	// This field is from variant [shared.Commit].
 	RolloverFraction        float64                  `json:"rollover_fraction"`
 	SalesforceOpportunityID string                   `json:"salesforce_opportunity_id"`
@@ -802,6 +813,31 @@ type V1ContractListBalancesResponseUnionLedger struct {
 }
 
 func (r *V1ContractListBalancesResponseUnionLedger) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// V1ContractListBalancesResponseUnionRolledOverFrom is an implicit subunion of
+// [V1ContractListBalancesResponseUnion].
+// V1ContractListBalancesResponseUnionRolledOverFrom provides convenient access to
+// the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [V1ContractListBalancesResponseUnion].
+type V1ContractListBalancesResponseUnionRolledOverFrom struct {
+	// This field is from variant [shared.CommitRolledOverFrom].
+	CommitID   string `json:"commit_id"`
+	ContractID string `json:"contract_id"`
+	// This field is from variant [shared.CreditRolledOverFrom].
+	CreditID string `json:"credit_id"`
+	JSON     struct {
+		CommitID   respjson.Field
+		ContractID respjson.Field
+		CreditID   respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (r *V1ContractListBalancesResponseUnionRolledOverFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1840,11 +1876,6 @@ type V1ContractNewParamsOverrideOverrideSpecifier struct {
 	// `presentation_group_values`. If provided, the override will only apply to
 	// commits created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to
-	// credits created by the specified recurring credit ids.
-	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
 
@@ -3472,11 +3503,6 @@ type V1ContractAmendParamsOverrideOverrideSpecifier struct {
 	// `presentation_group_values`. If provided, the override will only apply to
 	// commits created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to
-	// credits created by the specified recurring credit ids.
-	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
 

@@ -4,7 +4,6 @@ package metronome
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -686,7 +685,7 @@ func (r V1UsageIngestParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Usage)
 }
 func (r *V1UsageIngestParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Usage)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties CustomerID, EventType, Timestamp, TransactionID are required.

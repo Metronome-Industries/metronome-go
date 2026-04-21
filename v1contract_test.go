@@ -215,7 +215,6 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				ProductID:          metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags:        []string{"string"},
 				RecurringCommitIDs: []string{"string"},
-				RecurringCreditIDs: []string{"string"},
 			}},
 			OverwriteRate: metronome.V1ContractNewParamsOverrideOverwriteRate{
 				RateType:     "FLAT",
@@ -248,6 +247,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 					ProductID:   "product_id",
 					Description: metronome.String("description"),
 					Name:        metronome.String("name"),
+					Priority:    metronome.Float(0),
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 				ApplicableProductTags: []string{"string"},
@@ -280,6 +280,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			RechargeToAmount:   0,
 			ThresholdAmount:    0,
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			DiscountConfiguration: shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam{
+				PaymentFraction: 0,
+			},
 		},
 		ProfessionalServices: []metronome.V1ContractNewParamsProfessionalService{{
 			MaxAmount: 0,
@@ -455,6 +458,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   "product_id",
 				Description: metronome.String("description"),
 				Name:        metronome.String("name"),
+				Priority:    metronome.Float(0),
 			},
 			IsEnabled: true,
 			PaymentGateConfig: shared.PaymentGateConfigParam{
@@ -472,6 +476,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				TaxType: shared.PaymentGateConfigTaxTypeNone,
 			},
 			ThresholdAmount: 0,
+			DiscountConfiguration: shared.SpendThresholdConfigurationDiscountConfigurationParam{
+				PaymentFraction: 0,
+			},
 		},
 		Subscriptions: []metronome.V1ContractNewParamsSubscription{{
 			CollectionSchedule: "ADVANCE",
@@ -799,7 +806,6 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:          metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags:        []string{"string"},
 				RecurringCommitIDs: []string{"string"},
-				RecurringCreditIDs: []string{"string"},
 			}},
 			OverwriteRate: metronome.V1ContractAmendParamsOverrideOverwriteRate{
 				RateType:     "FLAT",

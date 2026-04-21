@@ -240,8 +240,10 @@ type V1PackageGetResponseData struct {
 	ArchivedAt             time.Time                                      `json:"archived_at" format:"date-time"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string                           `json:"billing_provider"`
-	Credits         []V1PackageGetResponseDataCredit `json:"credits"`
+	BillingProvider string `json:"billing_provider"`
+	// The name to use for contracts created from this package.
+	ContractName string                           `json:"contract_name"`
+	Credits      []V1PackageGetResponseDataCredit `json:"credits"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string                           `json:"delivery_method"`
 	Duration       V1PackageGetResponseDataDuration `json:"duration"`
@@ -284,6 +286,7 @@ type V1PackageGetResponseData struct {
 		Aliases                              respjson.Field
 		ArchivedAt                           respjson.Field
 		BillingProvider                      respjson.Field
+		ContractName                         respjson.Field
 		Credits                              respjson.Field
 		DeliveryMethod                       respjson.Field
 		Duration                             respjson.Field
@@ -584,7 +587,6 @@ type V1PackageGetResponseDataOverrideOverrideSpecifier struct {
 	ProductID                  string            `json:"product_id" format:"uuid"`
 	ProductTags                []string          `json:"product_tags"`
 	RecurringCommitTemplateIDs []string          `json:"recurring_commit_template_ids"`
-	RecurringCreditTemplateIDs []string          `json:"recurring_credit_template_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency           respjson.Field
@@ -594,7 +596,6 @@ type V1PackageGetResponseDataOverrideOverrideSpecifier struct {
 		ProductID                  respjson.Field
 		ProductTags                respjson.Field
 		RecurringCommitTemplateIDs respjson.Field
-		RecurringCreditTemplateIDs respjson.Field
 		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`
@@ -773,9 +774,12 @@ func (r *V1PackageGetResponseDataScheduledChargeScheduleScheduleItemDateOffset) 
 type V1PackageGetResponseDataUsageStatementSchedule struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	Day string `json:"day"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Frequency   respjson.Field
+		Day         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1617,7 +1621,9 @@ type V1PackageListResponse struct {
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider V1PackageListResponseBillingProvider `json:"billing_provider"`
-	Credits         []V1PackageListResponseCredit        `json:"credits"`
+	// The name to use for contracts created from this package.
+	ContractName string                        `json:"contract_name"`
+	Credits      []V1PackageListResponseCredit `json:"credits"`
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod V1PackageListResponseDeliveryMethod `json:"delivery_method"`
 	Duration       V1PackageListResponseDuration       `json:"duration"`
@@ -1660,6 +1666,7 @@ type V1PackageListResponse struct {
 		Aliases                              respjson.Field
 		ArchivedAt                           respjson.Field
 		BillingProvider                      respjson.Field
+		ContractName                         respjson.Field
 		Credits                              respjson.Field
 		DeliveryMethod                       respjson.Field
 		Duration                             respjson.Field
@@ -1958,7 +1965,6 @@ type V1PackageListResponseOverrideOverrideSpecifier struct {
 	ProductID                  string            `json:"product_id" format:"uuid"`
 	ProductTags                []string          `json:"product_tags"`
 	RecurringCommitTemplateIDs []string          `json:"recurring_commit_template_ids"`
-	RecurringCreditTemplateIDs []string          `json:"recurring_credit_template_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency           respjson.Field
@@ -1968,7 +1974,6 @@ type V1PackageListResponseOverrideOverrideSpecifier struct {
 		ProductID                  respjson.Field
 		ProductTags                respjson.Field
 		RecurringCommitTemplateIDs respjson.Field
-		RecurringCreditTemplateIDs respjson.Field
 		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`
@@ -2145,9 +2150,12 @@ func (r *V1PackageListResponseScheduledChargeScheduleScheduleItemDateOffset) Unm
 type V1PackageListResponseUsageStatementSchedule struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	Day string `json:"day"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Frequency   respjson.Field
+		Day         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -3621,11 +3629,6 @@ type V1PackageNewParamsOverrideOverrideSpecifier struct {
 	// `presentation_group_values`. If provided, the override will only apply to
 	// commits created by the specified recurring commit ids.
 	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to
-	// credits created by the specified recurring credit ids.
-	RecurringCreditIDs []string `json:"recurring_credit_ids,omitzero"`
 	paramObj
 }
 

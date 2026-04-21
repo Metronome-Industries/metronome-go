@@ -258,7 +258,6 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				ProductID:          metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags:        []string{"string"},
 				RecurringCommitIDs: []string{"string"},
-				RecurringCreditIDs: []string{"string"},
 			}},
 			OverwriteRate: metronome.V2ContractEditParamsAddOverrideOverwriteRate{
 				RateType:     "FLAT",
@@ -285,10 +284,11 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}},
 		AddPrepaidBalanceThresholdConfiguration: shared.PrepaidBalanceThresholdConfigurationV2Param{
 			Commit: shared.PrepaidBalanceThresholdConfigurationV2CommitParam{
-				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{
+				BaseThresholdCommitParam: shared.BaseThresholdCommitParam{
+					ProductID:   "product_id",
 					Description: metronome.String("description"),
 					Name:        metronome.String("name"),
-					ProductID:   metronome.String("product_id"),
+					Priority:    metronome.Float(0),
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 				ApplicableProductTags: []string{"string"},
@@ -321,6 +321,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			RechargeToAmount:   0,
 			ThresholdAmount:    0,
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			DiscountConfiguration: shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam{
+				PaymentFraction: 0,
+			},
 		},
 		AddProfessionalServices: []metronome.V2ContractEditParamsAddProfessionalService{{
 			MaxAmount: 0,
@@ -493,10 +496,11 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 		}},
 		AddSpendThresholdConfiguration: shared.SpendThresholdConfigurationV2Param{
-			Commit: shared.UpdateBaseThresholdCommitParam{
+			Commit: shared.BaseThresholdCommitParam{
+				ProductID:   "product_id",
 				Description: metronome.String("description"),
 				Name:        metronome.String("name"),
-				ProductID:   metronome.String("product_id"),
+				Priority:    metronome.Float(0),
 			},
 			IsEnabled: true,
 			PaymentGateConfig: shared.PaymentGateConfigV2Param{
@@ -514,6 +518,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				TaxType: shared.PaymentGateConfigV2TaxTypeNone,
 			},
 			ThresholdAmount: 0,
+			DiscountConfiguration: shared.SpendThresholdConfigurationV2DiscountConfigurationParam{
+				PaymentFraction: 0,
+			},
 		},
 		AddSubscriptions: []metronome.V2ContractEditParamsAddSubscription{{
 			CollectionSchedule: "ADVANCE",
@@ -651,6 +658,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				UpdateBaseThresholdCommitParam: shared.UpdateBaseThresholdCommitParam{
 					Description: metronome.String("description"),
 					Name:        metronome.String("name"),
+					Priority:    metronome.Float(0),
 					ProductID:   metronome.String("product_id"),
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
@@ -667,7 +675,10 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				}},
 			},
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			IsEnabled:          metronome.Bool(true),
+			DiscountConfiguration: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration{
+				PaymentFraction: metronome.Float(0),
+			},
+			IsEnabled: metronome.Bool(true),
 			PaymentGateConfig: shared.PaymentGateConfigV2Param{
 				PaymentGateType: shared.PaymentGateConfigV2PaymentGateTypeNone,
 				PrecalculatedTaxConfig: shared.PaymentGateConfigV2PrecalculatedTaxConfigParam{
@@ -733,7 +744,11 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Commit: shared.UpdateBaseThresholdCommitParam{
 				Description: metronome.String("description"),
 				Name:        metronome.String("name"),
+				Priority:    metronome.Float(0),
 				ProductID:   metronome.String("product_id"),
+			},
+			DiscountConfiguration: metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration{
+				PaymentFraction: metronome.Float(0),
 			},
 			IsEnabled: metronome.Bool(true),
 			PaymentGateConfig: shared.PaymentGateConfigV2Param{

@@ -337,6 +337,12 @@ type ContractV2CreditLedgerCreditManualLedgerEntry = shared.ContractV2CreditLedg
 // This is an alias to an internal type.
 type ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry = shared.ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry
 
+// This is an alias to an internal type.
+type ContractV2CreditLedgerCreditRolloverLedgerEntry = shared.ContractV2CreditLedgerCreditRolloverLedgerEntry
+
+// This is an alias to an internal type.
+type ContractV2CreditRolledOverFrom = shared.ContractV2CreditRolledOverFrom
+
 // This field's availability is dependent on your client's configuration.
 //
 // This is an alias to an internal type.
@@ -559,6 +565,9 @@ type CreditLedgerCreditManualLedgerEntry = shared.CreditLedgerCreditManualLedger
 type CreditLedgerCreditSeatBasedAdjustmentLedgerEntry = shared.CreditLedgerCreditSeatBasedAdjustmentLedgerEntry
 
 // This is an alias to an internal type.
+type CreditLedgerCreditRolloverLedgerEntry = shared.CreditLedgerCreditRolloverLedgerEntry
+
+// This is an alias to an internal type.
 type CreditRateType = shared.CreditRateType
 
 // Equals "COMMIT_RATE"
@@ -566,6 +575,9 @@ const CreditRateTypeCommitRate = shared.CreditRateTypeCommitRate
 
 // Equals "LIST_RATE"
 const CreditRateTypeListRate = shared.CreditRateTypeListRate
+
+// This is an alias to an internal type.
+type CreditRolledOverFrom = shared.CreditRolledOverFrom
 
 // The subscription configuration for this credit, if it was generated from a
 // recurring credit with a subscription attached.
@@ -833,10 +845,16 @@ type PrepaidBalanceThresholdConfiguration = shared.PrepaidBalanceThresholdConfig
 type PrepaidBalanceThresholdConfigurationCommit = shared.PrepaidBalanceThresholdConfigurationCommit
 
 // This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationDiscountConfiguration = shared.PrepaidBalanceThresholdConfigurationDiscountConfiguration
+
+// This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationParam = shared.PrepaidBalanceThresholdConfigurationParam
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationCommitParam = shared.PrepaidBalanceThresholdConfigurationCommitParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationDiscountConfigurationParam = shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2 = shared.PrepaidBalanceThresholdConfigurationV2
@@ -845,10 +863,16 @@ type PrepaidBalanceThresholdConfigurationV2 = shared.PrepaidBalanceThresholdConf
 type PrepaidBalanceThresholdConfigurationV2Commit = shared.PrepaidBalanceThresholdConfigurationV2Commit
 
 // This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfiguration = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfiguration
+
+// This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2Param = shared.PrepaidBalanceThresholdConfigurationV2Param
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2CommitParam = shared.PrepaidBalanceThresholdConfigurationV2CommitParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam
 
 // This is an alias to an internal type.
 type PropertyFilter = shared.PropertyFilter
@@ -920,13 +944,25 @@ type SchedulePointInTimeScheduleItem = shared.SchedulePointInTimeScheduleItem
 type SpendThresholdConfiguration = shared.SpendThresholdConfiguration
 
 // This is an alias to an internal type.
+type SpendThresholdConfigurationDiscountConfiguration = shared.SpendThresholdConfigurationDiscountConfiguration
+
+// This is an alias to an internal type.
 type SpendThresholdConfigurationParam = shared.SpendThresholdConfigurationParam
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationDiscountConfigurationParam = shared.SpendThresholdConfigurationDiscountConfigurationParam
 
 // This is an alias to an internal type.
 type SpendThresholdConfigurationV2 = shared.SpendThresholdConfigurationV2
 
 // This is an alias to an internal type.
+type SpendThresholdConfigurationV2DiscountConfiguration = shared.SpendThresholdConfigurationV2DiscountConfiguration
+
+// This is an alias to an internal type.
 type SpendThresholdConfigurationV2Param = shared.SpendThresholdConfigurationV2Param
+
+// This is an alias to an internal type.
+type SpendThresholdConfigurationV2DiscountConfigurationParam = shared.SpendThresholdConfigurationV2DiscountConfigurationParam
 
 // This is an alias to an internal type.
 type Subscription = shared.Subscription

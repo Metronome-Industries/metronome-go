@@ -45,11 +45,15 @@ type BaseThresholdCommit struct {
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name string `json:"name"`
+	// The priority of the commit, used to determine drawdown order. Lower priority
+	// commits are consumed first. Defaults to 100 if not specified.
+	Priority float64 `json:"priority"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ProductID   respjson.Field
 		Description respjson.Field
 		Name        respjson.Field
+		Priority    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -79,6 +83,9 @@ type BaseThresholdCommitParam struct {
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name param.Opt[string] `json:"name,omitzero"`
+	// The priority of the commit, used to determine drawdown order. Lower priority
+	// commits are consumed first. Defaults to 100 if not specified.
+	Priority param.Opt[float64] `json:"priority,omitzero"`
 	paramObj
 }
 
@@ -2175,6 +2182,7 @@ func (r *ContractV2CommitRolledOverFrom) UnmarshalJSON(data []byte) error {
 
 type ContractV2Override struct {
 	ID                    string                                `json:"id" api:"required" format:"uuid"`
+	CreatedAt             time.Time                             `json:"created_at" api:"required" format:"date-time"`
 	StartingAt            time.Time                             `json:"starting_at" api:"required" format:"date-time"`
 	ApplicableProductTags []string                              `json:"applicable_product_tags"`
 	EndingBefore          time.Time                             `json:"ending_before" format:"date-time"`
@@ -2193,6 +2201,7 @@ type ContractV2Override struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		CreatedAt             respjson.Field
 		StartingAt            respjson.Field
 		ApplicableProductTags respjson.Field
 		EndingBefore          respjson.Field
@@ -2226,7 +2235,6 @@ type ContractV2OverrideOverrideSpecifier struct {
 	ProductID               string            `json:"product_id" format:"uuid"`
 	ProductTags             []string          `json:"product_tags"`
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
-	RecurringCreditIDs      []string          `json:"recurring_credit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency        respjson.Field
@@ -2236,7 +2244,6 @@ type ContractV2OverrideOverrideSpecifier struct {
 		ProductID               respjson.Field
 		ProductTags             respjson.Field
 		RecurringCommitIDs      respjson.Field
-		RecurringCreditIDs      respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
@@ -2411,7 +2418,8 @@ type ContractV2Credit struct {
 	// will apply first.
 	Priority float64 `json:"priority"`
 	// The ID of the recurring credit that created this credit
-	RecurringCreditID string `json:"recurring_credit_id" format:"uuid"`
+	RecurringCreditID string                         `json:"recurring_credit_id" format:"uuid"`
+	RolledOverFrom    ContractV2CreditRolledOverFrom `json:"rolled_over_from"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -2440,6 +2448,7 @@ type ContractV2Credit struct {
 		NetsuiteSalesOrderID    respjson.Field
 		Priority                respjson.Field
 		RecurringCreditID       respjson.Field
+		RolledOverFrom          respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
 		SubscriptionConfig      respjson.Field
@@ -2495,7 +2504,8 @@ func (r *ContractV2CreditContract) UnmarshalJSON(data []byte) error {
 // [ContractV2CreditLedgerCreditCanceledLedgerEntry],
 // [ContractV2CreditLedgerCreditCreditedLedgerEntry],
 // [ContractV2CreditLedgerCreditManualLedgerEntry],
-// [ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry].
+// [ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry],
+// [ContractV2CreditLedgerCreditRolloverLedgerEntry].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type ContractV2CreditLedgerUnion struct {
@@ -2507,15 +2517,18 @@ type ContractV2CreditLedgerUnion struct {
 	ContractID string    `json:"contract_id"`
 	// This field is from variant [ContractV2CreditLedgerCreditManualLedgerEntry].
 	Reason string `json:"reason"`
-	JSON   struct {
-		Amount     respjson.Field
-		SegmentID  respjson.Field
-		Timestamp  respjson.Field
-		Type       respjson.Field
-		InvoiceID  respjson.Field
-		ContractID respjson.Field
-		Reason     respjson.Field
-		raw        string
+	// This field is from variant [ContractV2CreditLedgerCreditRolloverLedgerEntry].
+	NewContractID string `json:"new_contract_id"`
+	JSON          struct {
+		Amount        respjson.Field
+		SegmentID     respjson.Field
+		Timestamp     respjson.Field
+		Type          respjson.Field
+		InvoiceID     respjson.Field
+		ContractID    respjson.Field
+		Reason        respjson.Field
+		NewContractID respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -2550,6 +2563,11 @@ func (u ContractV2CreditLedgerUnion) AsContractV2CreditLedgerCreditManualLedgerE
 }
 
 func (u ContractV2CreditLedgerUnion) AsContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry() (v ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ContractV2CreditLedgerUnion) AsContractV2CreditLedgerCreditRolloverLedgerEntry() (v ContractV2CreditLedgerCreditRolloverLedgerEntry) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -2735,6 +2753,49 @@ func (r ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) RawJSON() st
 	return r.JSON.raw
 }
 func (r *ContractV2CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2CreditLedgerCreditRolloverLedgerEntry struct {
+	Amount        float64   `json:"amount" api:"required"`
+	NewContractID string    `json:"new_contract_id" api:"required" format:"uuid"`
+	SegmentID     string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp     time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Any of "CREDIT_ROLLOVER".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount        respjson.Field
+		NewContractID respjson.Field
+		SegmentID     respjson.Field
+		Timestamp     respjson.Field
+		Type          respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2CreditLedgerCreditRolloverLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2CreditLedgerCreditRolloverLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2CreditRolledOverFrom struct {
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CreditID   string `json:"credit_id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CreditID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2CreditRolledOverFrom) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2CreditRolledOverFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3990,7 +4051,8 @@ type Credit struct {
 	RateType CreditRateType `json:"rate_type"`
 	// The ID of the recurring credit that this credit was generated from, if
 	// applicable.
-	RecurringCreditID string `json:"recurring_credit_id" format:"uuid"`
+	RecurringCreditID string               `json:"recurring_credit_id" format:"uuid"`
+	RolledOverFrom    CreditRolledOverFrom `json:"rolled_over_from"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -4025,6 +4087,7 @@ type Credit struct {
 		Priority                respjson.Field
 		RateType                respjson.Field
 		RecurringCreditID       respjson.Field
+		RolledOverFrom          respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
 		SubscriptionConfig      respjson.Field
@@ -4086,7 +4149,8 @@ func (r *CreditContract) UnmarshalJSON(data []byte) error {
 // [CreditLedgerCreditExpirationLedgerEntry],
 // [CreditLedgerCreditCanceledLedgerEntry],
 // [CreditLedgerCreditCreditedLedgerEntry], [CreditLedgerCreditManualLedgerEntry],
-// [CreditLedgerCreditSeatBasedAdjustmentLedgerEntry].
+// [CreditLedgerCreditSeatBasedAdjustmentLedgerEntry],
+// [CreditLedgerCreditRolloverLedgerEntry].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type CreditLedgerUnion struct {
@@ -4098,15 +4162,18 @@ type CreditLedgerUnion struct {
 	ContractID string    `json:"contract_id"`
 	// This field is from variant [CreditLedgerCreditManualLedgerEntry].
 	Reason string `json:"reason"`
-	JSON   struct {
-		Amount     respjson.Field
-		SegmentID  respjson.Field
-		Timestamp  respjson.Field
-		Type       respjson.Field
-		InvoiceID  respjson.Field
-		ContractID respjson.Field
-		Reason     respjson.Field
-		raw        string
+	// This field is from variant [CreditLedgerCreditRolloverLedgerEntry].
+	NewContractID string `json:"new_contract_id"`
+	JSON          struct {
+		Amount        respjson.Field
+		SegmentID     respjson.Field
+		Timestamp     respjson.Field
+		Type          respjson.Field
+		InvoiceID     respjson.Field
+		ContractID    respjson.Field
+		Reason        respjson.Field
+		NewContractID respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -4141,6 +4208,11 @@ func (u CreditLedgerUnion) AsCreditLedgerCreditManualLedgerEntry() (v CreditLedg
 }
 
 func (u CreditLedgerUnion) AsCreditLedgerCreditSeatBasedAdjustmentLedgerEntry() (v CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CreditLedgerUnion) AsCreditLedgerCreditRolloverLedgerEntry() (v CreditLedgerCreditRolloverLedgerEntry) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -4325,12 +4397,55 @@ func (r *CreditLedgerCreditSeatBasedAdjustmentLedgerEntry) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CreditLedgerCreditRolloverLedgerEntry struct {
+	Amount        float64   `json:"amount" api:"required"`
+	NewContractID string    `json:"new_contract_id" api:"required" format:"uuid"`
+	SegmentID     string    `json:"segment_id" api:"required" format:"uuid"`
+	Timestamp     time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Any of "CREDIT_ROLLOVER".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount        respjson.Field
+		NewContractID respjson.Field
+		SegmentID     respjson.Field
+		Timestamp     respjson.Field
+		Type          respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CreditLedgerCreditRolloverLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *CreditLedgerCreditRolloverLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CreditRateType string
 
 const (
 	CreditRateTypeCommitRate CreditRateType = "COMMIT_RATE"
 	CreditRateTypeListRate   CreditRateType = "LIST_RATE"
 )
+
+type CreditRolledOverFrom struct {
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	CreditID   string `json:"credit_id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContractID  respjson.Field
+		CreditID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CreditRolledOverFrom) RawJSON() string { return r.JSON.raw }
+func (r *CreditRolledOverFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The subscription configuration for this credit, if it was generated from a
 // recurring credit with a subscription attached.
@@ -4696,6 +4811,7 @@ func (r *IDParam) UnmarshalJSON(data []byte) error {
 
 type Override struct {
 	ID                    string         `json:"id" api:"required" format:"uuid"`
+	CreatedAt             time.Time      `json:"created_at" api:"required" format:"date-time"`
 	StartingAt            time.Time      `json:"starting_at" api:"required" format:"date-time"`
 	ApplicableProductTags []string       `json:"applicable_product_tags"`
 	CreditType            CreditTypeData `json:"credit_type"`
@@ -4731,6 +4847,7 @@ type Override struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		CreatedAt             respjson.Field
 		StartingAt            respjson.Field
 		ApplicableProductTags respjson.Field
 		CreditType            respjson.Field
@@ -4771,7 +4888,6 @@ type OverrideOverrideSpecifier struct {
 	ProductID               string            `json:"product_id" format:"uuid"`
 	ProductTags             []string          `json:"product_tags"`
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
-	RecurringCreditIDs      []string          `json:"recurring_credit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFrequency        respjson.Field
@@ -4781,7 +4897,6 @@ type OverrideOverrideSpecifier struct {
 		ProductID               respjson.Field
 		ProductTags             respjson.Field
 		RecurringCommitIDs      respjson.Field
-		RecurringCreditIDs      respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
@@ -5306,17 +5421,19 @@ type PrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
+	CustomCreditTypeID    string                                                    `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit             respjson.Field
-		IsEnabled          respjson.Field
-		PaymentGateConfig  respjson.Field
-		RechargeToAmount   respjson.Field
-		ThresholdAmount    respjson.Field
-		CustomCreditTypeID respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		Commit                respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		RechargeToAmount      respjson.Field
+		ThresholdAmount       respjson.Field
+		CustomCreditTypeID    respjson.Field
+		DiscountConfiguration respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -5367,6 +5484,27 @@ func (r *PrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationDiscountConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, RechargeToAmount,
 // ThresholdAmount are required.
 type PrepaidBalanceThresholdConfigurationParam struct {
@@ -5383,7 +5521,8 @@ type PrepaidBalanceThresholdConfigurationParam struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Opt[string] `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	CustomCreditTypeID    param.Opt[string]                                              `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfigurationParam `json:"discount_configuration,omitzero"`
 	paramObj
 }
 
@@ -5420,6 +5559,23 @@ func (r PrepaidBalanceThresholdConfigurationCommitParam) MarshalJSON() (data []b
 	return param.MarshalObject(r, shadow{&r, false})
 }
 
+// The property PaymentFraction is required.
+type PrepaidBalanceThresholdConfigurationDiscountConfigurationParam struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationDiscountConfigurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationDiscountConfigurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type PrepaidBalanceThresholdConfigurationV2 struct {
 	Commit PrepaidBalanceThresholdConfigurationV2Commit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
@@ -5434,17 +5590,19 @@ type PrepaidBalanceThresholdConfigurationV2 struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
+	CustomCreditTypeID    string                                                      `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit             respjson.Field
-		IsEnabled          respjson.Field
-		PaymentGateConfig  respjson.Field
-		RechargeToAmount   respjson.Field
-		ThresholdAmount    respjson.Field
-		CustomCreditTypeID respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		Commit                respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		RechargeToAmount      respjson.Field
+		ThresholdAmount       respjson.Field
+		CustomCreditTypeID    respjson.Field
+		DiscountConfiguration respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -5488,12 +5646,33 @@ type PrepaidBalanceThresholdConfigurationV2Commit struct {
 		ExtraFields           map[string]respjson.Field
 		raw                   string
 	} `json:"-"`
-	UpdateBaseThresholdCommit
+	BaseThresholdCommit
 }
 
 // Returns the unmodified JSON received from the API
 func (r PrepaidBalanceThresholdConfigurationV2Commit) RawJSON() string { return r.JSON.raw }
 func (r *PrepaidBalanceThresholdConfigurationV2Commit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PrepaidBalanceThresholdConfigurationV2DiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationV2DiscountConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5513,7 +5692,8 @@ type PrepaidBalanceThresholdConfigurationV2Param struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID param.Opt[string] `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	CustomCreditTypeID    param.Opt[string]                                                `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam `json:"discount_configuration,omitzero"`
 	paramObj
 }
 
@@ -5541,7 +5721,7 @@ type PrepaidBalanceThresholdConfigurationV2CommitParam struct {
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
 	Specifiers []CommitSpecifierInputParam `json:"specifiers,omitzero"`
-	UpdateBaseThresholdCommitParam
+	BaseThresholdCommitParam
 }
 
 func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data []byte, err error) {
@@ -5550,6 +5730,23 @@ func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data [
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The property PaymentFraction is required.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type PropertyFilter struct {
@@ -5907,15 +6104,17 @@ type SpendThresholdConfiguration struct {
 	PaymentGateConfig PaymentGateConfig `json:"payment_gate_config" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
+	ThresholdAmount       float64                                          `json:"threshold_amount" api:"required"`
+	DiscountConfiguration SpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit            respjson.Field
-		IsEnabled         respjson.Field
-		PaymentGateConfig respjson.Field
-		ThresholdAmount   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		Commit                respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		ThresholdAmount       respjson.Field
+		DiscountConfiguration respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -5935,6 +6134,25 @@ func (r SpendThresholdConfiguration) ToParam() SpendThresholdConfigurationParam 
 	return param.Override[SpendThresholdConfigurationParam](json.RawMessage(r.RawJSON()))
 }
 
+type SpendThresholdConfigurationDiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendThresholdConfigurationDiscountConfiguration) RawJSON() string { return r.JSON.raw }
+func (r *SpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, ThresholdAmount are
 // required.
 type SpendThresholdConfigurationParam struct {
@@ -5946,7 +6164,8 @@ type SpendThresholdConfigurationParam struct {
 	PaymentGateConfig PaymentGateConfigParam `json:"payment_gate_config,omitzero" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
+	ThresholdAmount       float64                                               `json:"threshold_amount" api:"required"`
+	DiscountConfiguration SpendThresholdConfigurationDiscountConfigurationParam `json:"discount_configuration,omitzero"`
 	paramObj
 }
 
@@ -5958,8 +6177,25 @@ func (r *SpendThresholdConfigurationParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property PaymentFraction is required.
+type SpendThresholdConfigurationDiscountConfigurationParam struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r SpendThresholdConfigurationDiscountConfigurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow SpendThresholdConfigurationDiscountConfigurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SpendThresholdConfigurationDiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SpendThresholdConfigurationV2 struct {
-	Commit UpdateBaseThresholdCommit `json:"commit" api:"required"`
+	Commit BaseThresholdCommit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -5967,15 +6203,17 @@ type SpendThresholdConfigurationV2 struct {
 	PaymentGateConfig PaymentGateConfigV2 `json:"payment_gate_config" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
+	ThresholdAmount       float64                                            `json:"threshold_amount" api:"required"`
+	DiscountConfiguration SpendThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit            respjson.Field
-		IsEnabled         respjson.Field
-		PaymentGateConfig respjson.Field
-		ThresholdAmount   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		Commit                respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		ThresholdAmount       respjson.Field
+		DiscountConfiguration respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -5995,10 +6233,29 @@ func (r SpendThresholdConfigurationV2) ToParam() SpendThresholdConfigurationV2Pa
 	return param.Override[SpendThresholdConfigurationV2Param](json.RawMessage(r.RawJSON()))
 }
 
+type SpendThresholdConfigurationV2DiscountConfiguration struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendThresholdConfigurationV2DiscountConfiguration) RawJSON() string { return r.JSON.raw }
+func (r *SpendThresholdConfigurationV2DiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, ThresholdAmount are
 // required.
 type SpendThresholdConfigurationV2Param struct {
-	Commit UpdateBaseThresholdCommitParam `json:"commit,omitzero" api:"required"`
+	Commit BaseThresholdCommitParam `json:"commit,omitzero" api:"required"`
 	// When set to false, the contract will not be evaluated against the
 	// threshold_amount. Toggling to true will result an immediate evaluation,
 	// regardless of prior state.
@@ -6006,7 +6263,8 @@ type SpendThresholdConfigurationV2Param struct {
 	PaymentGateConfig PaymentGateConfigV2Param `json:"payment_gate_config,omitzero" api:"required"`
 	// Specify the threshold amount for the contract. Each time the contract's usage
 	// hits this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
+	ThresholdAmount       float64                                                 `json:"threshold_amount" api:"required"`
+	DiscountConfiguration SpendThresholdConfigurationV2DiscountConfigurationParam `json:"discount_configuration,omitzero"`
 	paramObj
 }
 
@@ -6015,6 +6273,23 @@ func (r SpendThresholdConfigurationV2Param) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SpendThresholdConfigurationV2Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property PaymentFraction is required.
+type SpendThresholdConfigurationV2DiscountConfigurationParam struct {
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. For example, 0.85 means the customer pays 85% of the original amount
+	// (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	paramObj
+}
+
+func (r SpendThresholdConfigurationV2DiscountConfigurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow SpendThresholdConfigurationV2DiscountConfigurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SpendThresholdConfigurationV2DiscountConfigurationParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6319,6 +6594,10 @@ type UpdateBaseThresholdCommit struct {
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name string `json:"name"`
+	// The priority of the commit, used to determine drawdown order. Lower priority
+	// commits are consumed first. Defaults to 100 if not specified. On updates, set to
+	// null to clear a previously configured priority.
+	Priority float64 `json:"priority" api:"nullable"`
 	// The commit product that will be used to generate the line item for commit
 	// payment.
 	ProductID string `json:"product_id"`
@@ -6326,6 +6605,7 @@ type UpdateBaseThresholdCommit struct {
 	JSON struct {
 		Description respjson.Field
 		Name        respjson.Field
+		Priority    respjson.Field
 		ProductID   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -6349,7 +6629,11 @@ func (r UpdateBaseThresholdCommit) ToParam() UpdateBaseThresholdCommitParam {
 }
 
 type UpdateBaseThresholdCommitParam struct {
-	Description param.Opt[string] `json:"description,omitzero"`
+	// The priority of the commit, used to determine drawdown order. Lower priority
+	// commits are consumed first. Defaults to 100 if not specified. On updates, set to
+	// null to clear a previously configured priority.
+	Priority    param.Opt[float64] `json:"priority,omitzero"`
+	Description param.Opt[string]  `json:"description,omitzero"`
 	// Specify the name of the line item for the threshold charge. If left blank, it
 	// will default to the commit product name.
 	Name param.Opt[string] `json:"name,omitzero"`

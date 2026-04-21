@@ -668,7 +668,7 @@ func (r V1ContractProductGetParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.ID)
 }
 func (r *V1ContractProductGetParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.ID)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductUpdateParams struct {

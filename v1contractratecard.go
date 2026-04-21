@@ -4,7 +4,6 @@ package metronome
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -549,7 +548,7 @@ func (r V1ContractRateCardGetParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.ID)
 }
 func (r *V1ContractRateCardGetParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.ID)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractRateCardUpdateParams struct {
@@ -602,7 +601,7 @@ func (r V1ContractRateCardListParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Body)
 }
 func (r *V1ContractRateCardListParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1ContractRateCardListParams]'s query parameters as
@@ -623,7 +622,7 @@ func (r V1ContractRateCardArchiveParams) MarshalJSON() (data []byte, err error) 
 	return shimjson.Marshal(r.ID)
 }
 func (r *V1ContractRateCardArchiveParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.ID)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractRateCardGetRateScheduleParams struct {
