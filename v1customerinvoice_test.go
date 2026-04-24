@@ -58,6 +58,7 @@ func TestV1CustomerInvoiceListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.V1.Customers.Invoices.List(context.TODO(), metronome.V1CustomerInvoiceListParams{
 		CustomerID:           "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		ContractID:           metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		CreditTypeID:         metronome.String("credit_type_id"),
 		EndingBefore:         metronome.Time(time.Now()),
 		Limit:                metronome.Int(1),
