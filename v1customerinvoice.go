@@ -1209,6 +1209,10 @@ type V1CustomerInvoiceListParams struct {
 	//
 	// Any of "date_asc", "date_desc".
 	Sort V1CustomerInvoiceListParamsSort `query:"sort,omitzero" json:"-"`
+	// Filter invoices by type. Defaults to returning all invoice types.
+	//
+	// Any of "USAGE", "USAGE_CONSOLIDATED", "SCHEDULED".
+	Type V1CustomerInvoiceListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1228,6 +1232,15 @@ type V1CustomerInvoiceListParamsSort string
 const (
 	V1CustomerInvoiceListParamsSortDateAsc  V1CustomerInvoiceListParamsSort = "date_asc"
 	V1CustomerInvoiceListParamsSortDateDesc V1CustomerInvoiceListParamsSort = "date_desc"
+)
+
+// Filter invoices by type. Defaults to returning all invoice types.
+type V1CustomerInvoiceListParamsType string
+
+const (
+	V1CustomerInvoiceListParamsTypeUsage             V1CustomerInvoiceListParamsType = "USAGE"
+	V1CustomerInvoiceListParamsTypeUsageConsolidated V1CustomerInvoiceListParamsType = "USAGE_CONSOLIDATED"
+	V1CustomerInvoiceListParamsTypeScheduled         V1CustomerInvoiceListParamsType = "SCHEDULED"
 )
 
 type V1CustomerInvoiceAddChargeParams struct {
