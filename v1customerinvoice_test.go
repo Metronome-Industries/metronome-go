@@ -67,6 +67,7 @@ func TestV1CustomerInvoiceListWithOptionalParams(t *testing.T) {
 		Sort:                 metronome.V1CustomerInvoiceListParamsSortDateAsc,
 		StartingOn:           metronome.Time(time.Now()),
 		Status:               metronome.String("status"),
+		Type:                 metronome.V1CustomerInvoiceListParamsTypeUsage,
 	})
 	if err != nil {
 		var apierr *metronome.Error
