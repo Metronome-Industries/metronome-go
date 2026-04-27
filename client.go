@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"strings"
 
 	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/v3/option"
@@ -34,6 +35,14 @@ func DefaultClientOptions() []option.RequestOption {
 	}
 	if o, ok := os.LookupEnv("METRONOME_WEBHOOK_SECRET"); ok {
 		defaults = append(defaults, option.WithWebhookSecret(o))
+	}
+	if o, ok := os.LookupEnv("METRONOME_CUSTOM_HEADERS"); ok {
+		for _, line := range strings.Split(o, "\n") {
+			colon := strings.Index(line, ":")
+			if colon >= 0 {
+				defaults = append(defaults, option.WithHeader(strings.TrimSpace(line[:colon]), strings.TrimSpace(line[colon+1:])))
+			}
+		}
 	}
 	return defaults
 }
