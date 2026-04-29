@@ -1186,6 +1186,8 @@ func (r V1CustomerInvoiceGetParams) URLQuery() (v url.Values, err error) {
 
 type V1CustomerInvoiceListParams struct {
 	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
+	// Only return invoices for the specified contract
+	ContractID param.Opt[string] `query:"contract_id,omitzero" format:"uuid" json:"-"`
 	// Only return invoices for the specified credit type
 	CreditTypeID param.Opt[string] `query:"credit_type_id,omitzero" json:"-"`
 	// RFC 3339 timestamp (exclusive). Invoices will only be returned for billing
@@ -1207,6 +1209,10 @@ type V1CustomerInvoiceListParams struct {
 	//
 	// Any of "date_asc", "date_desc".
 	Sort V1CustomerInvoiceListParamsSort `query:"sort,omitzero" json:"-"`
+	// Filter invoices by type. Defaults to returning all invoice types.
+	//
+	// Any of "USAGE", "USAGE_CONSOLIDATED", "SCHEDULED".
+	Type V1CustomerInvoiceListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1226,6 +1232,15 @@ type V1CustomerInvoiceListParamsSort string
 const (
 	V1CustomerInvoiceListParamsSortDateAsc  V1CustomerInvoiceListParamsSort = "date_asc"
 	V1CustomerInvoiceListParamsSortDateDesc V1CustomerInvoiceListParamsSort = "date_desc"
+)
+
+// Filter invoices by type. Defaults to returning all invoice types.
+type V1CustomerInvoiceListParamsType string
+
+const (
+	V1CustomerInvoiceListParamsTypeUsage             V1CustomerInvoiceListParamsType = "USAGE"
+	V1CustomerInvoiceListParamsTypeUsageConsolidated V1CustomerInvoiceListParamsType = "USAGE_CONSOLIDATED"
+	V1CustomerInvoiceListParamsTypeScheduled         V1CustomerInvoiceListParamsType = "SCHEDULED"
 )
 
 type V1CustomerInvoiceAddChargeParams struct {

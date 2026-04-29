@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.6.0 (2026-04-29)
+
+Full Changelog: [v3.5.0...v3.6.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.5.0...v3.6.0)
+
+### Features
+
+* add contract_id filter to list invoices endpoint ([0a6727e](https://github.com/Metronome-Industries/metronome-go/commit/0a6727eb2e0d55db6f6213cb61bdb7ba35f493c8))
+* add invoice type filter for list invoices api ([e4fc335](https://github.com/Metronome-Industries/metronome-go/commit/e4fc335ae4565570f63b65be362eb5c4f6c6d260))
+* added custom fields to create contract with package ([c31b5ef](https://github.com/Metronome-Industries/metronome-go/commit/c31b5efe6bf72d1f8b92c32b7396f92220399141))
+* **go:** add default http client with timeout ([be6190f](https://github.com/Metronome-Industries/metronome-go/commit/be6190f4440465466105d9978aceecf231849a0f))
+* Pranadreddy/launch 2486 remove dead billing anchor date field from api ([e2a87f6](https://github.com/Metronome-Industries/metronome-go/commit/e2a87f66c77d5d3a4f23948dc533cf9f3adb9130))
+* support setting headers via env ([cb8900b](https://github.com/Metronome-Industries/metronome-go/commit/cb8900b5bfb0b464f556fc39aaa4a64cc307dd85))
+* Update stainless.yml to include Java configuration logic ([15f13da](https://github.com/Metronome-Industries/metronome-go/commit/15f13dabec6447c43579975aa3fe4da6863dc586))
+
+
+### Chores
+
+* configure new SDK language ([5f5c5e9](https://github.com/Metronome-Industries/metronome-go/commit/5f5c5e9483ef4a43f03fbe6487248f017e4b6c50))
+* configure new SDK language ([21dd6a6](https://github.com/Metronome-Industries/metronome-go/commit/21dd6a6f8a237cc27f7537b0e6dc154eacbbbf21))
+* configure new SDK language ([2fa92c2](https://github.com/Metronome-Industries/metronome-go/commit/2fa92c211c95d76de4967ab238178be946486d8b))
+* **internal:** more robust bootstrap script ([15e8038](https://github.com/Metronome-Industries/metronome-go/commit/15e80382b668998a6b9e4b4308055c1f369185b4))
+
 ## 3.5.0 (2026-04-18)
 
 Full Changelog: [v3.4.0...v3.5.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.4.0...v3.5.0)

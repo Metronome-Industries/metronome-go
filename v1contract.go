@@ -1073,7 +1073,7 @@ type V1ContractNewParams struct {
 	PackageAlias param.Opt[string] `json:"package_alias,omitzero"`
 	// If provided, provisions a customer on a package instead of creating a
 	// traditional contract. When specified, only customer_id, starting_at, package_id,
-	// and uniqueness_key are allowed.
+	// uniqueness_key, transition, and custom_fields are allowed.
 	PackageID param.Opt[string] `json:"package_id,omitzero" format:"uuid"`
 	// Selects the rate card linked to the specified alias as of the contract's start
 	// date.
