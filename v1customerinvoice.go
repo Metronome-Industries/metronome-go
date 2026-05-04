@@ -410,9 +410,10 @@ type Invoice struct {
 	// and customer UUIDs that pay for this invoice.
 	Payer InvoicePayer `json:"payer"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	PlanCustomFields map[string]string `json:"plan_custom_fields"`
-	PlanID           string            `json:"plan_id" format:"uuid"`
-	PlanName         string            `json:"plan_name"`
+	PlanCustomFields         map[string]string `json:"plan_custom_fields"`
+	PlanID                   string            `json:"plan_id" format:"uuid"`
+	PlanName                 string            `json:"plan_name"`
+	RegeneratedFromInvoiceID string            `json:"regenerated_from_invoice_id" format:"uuid"`
 	// Only present for contract invoices with reseller royalties.
 	ResellerRoyalty       InvoiceResellerRoyalty        `json:"reseller_royalty"`
 	RevenueSystemInvoices []InvoiceRevenueSystemInvoice `json:"revenue_system_invoices" api:"nullable"`
@@ -423,39 +424,40 @@ type Invoice struct {
 	Subtotal       float64   `json:"subtotal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                      respjson.Field
-		CreditType              respjson.Field
-		CustomerID              respjson.Field
-		LineItems               respjson.Field
-		Status                  respjson.Field
-		Total                   respjson.Field
-		Type                    respjson.Field
-		AmendmentID             respjson.Field
-		BillableStatus          respjson.Field
-		ConstituentInvoices     respjson.Field
-		ContractCustomFields    respjson.Field
-		ContractID              respjson.Field
-		CorrectionRecord        respjson.Field
-		CreatedAt               respjson.Field
-		CustomFields            respjson.Field
-		CustomerCustomFields    respjson.Field
-		EndTimestamp            respjson.Field
-		ExternalInvoice         respjson.Field
-		InvoiceAdjustments      respjson.Field
-		IssuedAt                respjson.Field
-		NetPaymentTermsDays     respjson.Field
-		NetsuiteSalesOrderID    respjson.Field
-		Payer                   respjson.Field
-		PlanCustomFields        respjson.Field
-		PlanID                  respjson.Field
-		PlanName                respjson.Field
-		ResellerRoyalty         respjson.Field
-		RevenueSystemInvoices   respjson.Field
-		SalesforceOpportunityID respjson.Field
-		StartTimestamp          respjson.Field
-		Subtotal                respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
+		ID                       respjson.Field
+		CreditType               respjson.Field
+		CustomerID               respjson.Field
+		LineItems                respjson.Field
+		Status                   respjson.Field
+		Total                    respjson.Field
+		Type                     respjson.Field
+		AmendmentID              respjson.Field
+		BillableStatus           respjson.Field
+		ConstituentInvoices      respjson.Field
+		ContractCustomFields     respjson.Field
+		ContractID               respjson.Field
+		CorrectionRecord         respjson.Field
+		CreatedAt                respjson.Field
+		CustomFields             respjson.Field
+		CustomerCustomFields     respjson.Field
+		EndTimestamp             respjson.Field
+		ExternalInvoice          respjson.Field
+		InvoiceAdjustments       respjson.Field
+		IssuedAt                 respjson.Field
+		NetPaymentTermsDays      respjson.Field
+		NetsuiteSalesOrderID     respjson.Field
+		Payer                    respjson.Field
+		PlanCustomFields         respjson.Field
+		PlanID                   respjson.Field
+		PlanName                 respjson.Field
+		RegeneratedFromInvoiceID respjson.Field
+		ResellerRoyalty          respjson.Field
+		RevenueSystemInvoices    respjson.Field
+		SalesforceOpportunityID  respjson.Field
+		StartTimestamp           respjson.Field
+		Subtotal                 respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
 	} `json:"-"`
 }
 
