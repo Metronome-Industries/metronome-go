@@ -252,7 +252,7 @@ const (
 
 // The properties Entity, Key, Value are required.
 type V1AlertNewParamsCustomFieldFilter struct {
-	// Any of "Contract", "Commit", "ContractCredit".
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
 	Entity string `json:"entity,omitzero" api:"required"`
 	Key    string `json:"key" api:"required"`
 	Value  string `json:"value" api:"required"`
@@ -269,7 +269,7 @@ func (r *V1AlertNewParamsCustomFieldFilter) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[V1AlertNewParamsCustomFieldFilter](
-		"entity", "Contract", "Commit", "ContractCredit",
+		"entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
 	)
 }
 
