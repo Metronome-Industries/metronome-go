@@ -431,6 +431,36 @@ func (r *V1ContractService) ListBalancesAutoPaging(ctx context.Context, body V1C
 	return pagination.NewBodyCursorPageAutoPager(r.ListBalances(ctx, body, opts...))
 }
 
+// Retrieve detailed balance for seat-based credits and commits from the contract's
+// subscriptions, broken down by individual seats.
+//
+// ### Use this endpoint to:
+//
+// - Display per-seat balance information in customer dashboards
+// - Filter balance data by subscription or specific seats
+//
+// ### Key response fields:
+//
+// An array of seat balance objects containing:
+//
+// - Seat id
+// - Balance: current total balance across all commits and credits
+//
+// ### Usage guidelines:
+//
+//   - Date filtering: use `covering_date` OR `starting_at`/`ending_before` to filter
+//     balance data by time range
+//   - Set `include_credits_and_commits=true` for detailed commits and credits
+//     breakdown per seat
+//   - Set `include_ledgers=true` for detailed transaction history per commit/credit
+//     per seat
+func (r *V1ContractService) ListSeatBalances(ctx context.Context, body V1ContractListSeatBalancesParams, opts ...option.RequestOption) (res *V1ContractListSeatBalancesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contracts/seatBalances/list"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // For a specific customer and contract, get the rates at a specific point in time.
 // This endpoint takes the contract's rate card into consideration, including
 // scheduled changes. It also takes into account overrides on the contract.
@@ -883,6 +913,212 @@ type V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfi
 }
 
 func (r *V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponse struct {
+	Data       []V1ContractListSeatBalancesResponseData     `json:"data" api:"required"`
+	Pagination V1ContractListSeatBalancesResponsePagination `json:"pagination" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Pagination  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseData struct {
+	Balances []V1ContractListSeatBalancesResponseDataBalance `json:"balances" api:"required"`
+	// The unique identifier for the seat
+	SeatID string `json:"seat_id" api:"required"`
+	// Array of commits applicable to this seat with their balances
+	Commits []V1ContractListSeatBalancesResponseDataCommit `json:"commits" api:"nullable"`
+	// Array of credits applicable to this seat with their balances
+	Credits []V1ContractListSeatBalancesResponseDataCredit `json:"credits"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Balances    respjson.Field
+		SeatID      respjson.Field
+		Commits     respjson.Field
+		Credits     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataBalance struct {
+	// The total balance across all commits and credits for this seat, of this credit
+	// type.
+	Balance      float64 `json:"balance" api:"required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	// The total initial balances of all commits and credits for this seat, of this
+	// credit type.
+	StartingBalance float64 `json:"starting_balance" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Balance         respjson.Field
+		CreditTypeID    respjson.Field
+		StartingBalance respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataBalance) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataBalance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataCommit struct {
+	// The commit or credit ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// The current balance for this commit for this specific seat
+	Balance float64 `json:"balance" api:"required"`
+	// The datetime when the commit becomes active
+	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+	// The datetime when the commit expires
+	EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
+	// Transaction history for this commit for this seat (only included if
+	// include_ledgers=true)
+	LedgerEntries []V1ContractListSeatBalancesResponseDataCommitLedgerEntry `json:"ledger_entries"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Balance       respjson.Field
+		StartDate     respjson.Field
+		EndDate       respjson.Field
+		LedgerEntries respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataCommit) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataCommitLedgerEntry struct {
+	// Amount of the ledger entry
+	Amount float64 `json:"amount" api:"required"`
+	// The datetime when the ledger is created
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Commit ledger type
+	//
+	// Any of "PREPAID_COMMIT_SEGMENT_START",
+	// "PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION", "PREPAID_COMMIT_ROLLOVER",
+	// "PREPAID_COMMIT_EXPIRATION", "PREPAID_COMMIT_CANCELED",
+	// "PREPAID_COMMIT_CREDITED", "PREPAID_COMMIT_MANUAL",
+	// "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Timestamp   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataCommitLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCommitLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataCredit struct {
+	// The credit ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// The current balance for this credit for this specific seat
+	Balance float64 `json:"balance" api:"required"`
+	// The datetime when the credit becomes active
+	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+	// The datetime when the credit expires
+	EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
+	// Transaction history for this credit for this seat (only included if
+	// include_ledgers=true)
+	LedgerEntries []V1ContractListSeatBalancesResponseDataCreditLedgerEntry `json:"ledger_entries"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Balance       respjson.Field
+		StartDate     respjson.Field
+		EndDate       respjson.Field
+		LedgerEntries respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataCredit) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataCreditLedgerEntry struct {
+	// Amount of the ledger entry
+	Amount float64 `json:"amount" api:"required"`
+	// The datetime when the ledger is created
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Credit ledger type
+	//
+	// Any of "CREDIT_SEGMENT_START", "CREDIT_AUTOMATED_INVOICE_DEDUCTION",
+	// "CREDIT_EXPIRATION", "CREDIT_CANCELED", "CREDIT_CREDITED", "CREDIT_MANUAL",
+	// "CREDIT_SEAT_BASED_ADJUSTMENT", "CREDIT_ROLLOVER".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Timestamp   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataCreditLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCreditLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponsePagination struct {
+	// Number of seats available to fetch in the next page
+	SeatsAvailableForNextPage float64 `json:"seats_available_for_next_page" api:"required"`
+	// Number of seats included in this response
+	SeatsIncluded float64 `json:"seats_included" api:"required"`
+	// Token to retrieve the next page of results. Null if no more pages available
+	NextPage string `json:"next_page" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatsAvailableForNextPage respjson.Field
+		SeatsIncluded             respjson.Field
+		NextPage                  respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponsePagination) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponsePagination) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3958,6 +4194,52 @@ func (r V1ContractListBalancesParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V1ContractListBalancesParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesParams struct {
+	// The contract ID to retrieve seat balances for
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	// The customer ID to retrieve seat balances for
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	// Include only commits or credits with access that cover this specific date
+	// (cannot be used with starting_at or ending_before).
+	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+	// Page token from a previous response to retrieve the next page
+	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Include only commits or credits with access effective on or before this date
+	// (cannot be used with covering_date).
+	EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
+	// Include credits and commits in the response
+	IncludeCreditsAndCommits param.Opt[bool] `json:"include_credits_and_commits,omitzero"`
+	// Include ledger entries for each commit and commit. `include_credits_and_commits`
+	// must be set to `true` for `include_ledgers=true` to apply.
+	IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
+	// Maximum number of seats to return. Range: 1-100. Default: 25. When
+	// `include_credits_and_commits = true`, if the total commits/credits across all
+	// seats exceeds 100, a limit of 100 applies to the total credits and commits.
+	// Seats are included greedily to maximize the number of seats returned. Example:
+	// if seat 1 has 98 commits and seat 2 has 10 commits, both seats will be returned
+	// (total: 108 commits). Each returned seat includes all of its associated credits
+	// and commits.
+	Limit param.Opt[int64] `json:"limit,omitzero"`
+	// Include only commits or credits with access effective on or after this date
+	// (cannot be used with covering_date).
+	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	// Optional filter to only include specific seats
+	SeatIDs []string `json:"seat_ids,omitzero"`
+	// Optional filter to only include seats from specific subscriptions. If
+	// subscriptions ids are not mapped to SEAT_BASED subscriptions, error will be
+	// returned.
+	SubscriptionIDs []string `json:"subscription_ids,omitzero" format:"uuid"`
+	paramObj
+}
+
+func (r V1ContractListSeatBalancesParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractListSeatBalancesParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractListSeatBalancesParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
