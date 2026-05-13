@@ -4226,7 +4226,7 @@ type V1ContractListSeatBalancesParams struct {
 	// Include only commits or credits with access effective on or after this date
 	// (cannot be used with covering_date).
 	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
-	// Optional filter to only include specific seats
+	// Optional filter to only include specific seats.
 	SeatIDs []string `json:"seat_ids,omitzero"`
 	// Optional filter to only include seats from specific subscriptions. If
 	// subscriptions ids are not mapped to SEAT_BASED subscriptions, error will be
