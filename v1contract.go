@@ -1457,8 +1457,6 @@ type V1ContractNewParamsCommit struct {
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
 	// "complimentary" commit with no invoice.
 	InvoiceSchedule V1ContractNewParamsCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
-	// optionally payment gate this commit
-	PaymentGateConfig V1ContractNewParamsCommitPaymentGateConfig `json:"payment_gate_config,omitzero"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
 	RateType string `json:"rate_type,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -1623,105 +1621,6 @@ func (r V1ContractNewParamsCommitInvoiceScheduleScheduleItem) MarshalJSON() (dat
 }
 func (r *V1ContractNewParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// optionally payment gate this commit
-//
-// The property PaymentGateType is required.
-type V1ContractNewParamsCommitPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	//
-	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType string `json:"payment_gate_type,omitzero" api:"required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config,omitzero"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig V1ContractNewParamsCommitPaymentGateConfigStripeConfig `json:"stripe_config,omitzero"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	//
-	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
-	TaxType string `json:"tax_type,omitzero"`
-	paramObj
-}
-
-func (r V1ContractNewParamsCommitPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitPaymentGateConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractNewParamsCommitPaymentGateConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommitPaymentGateConfig](
-		"payment_gate_type", "NONE", "STRIPE", "EXTERNAL",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommitPaymentGateConfig](
-		"tax_type", "NONE", "STRIPE", "ANROK", "PRECALCULATED",
-	)
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// The property TaxAmount is required.
-type V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount" api:"required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Opt[string] `json:"tax_name,omitzero"`
-	paramObj
-}
-
-func (r V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-//
-// The property PaymentType is required.
-type V1ContractNewParamsCommitPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	//
-	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,omitzero" api:"required"`
-	// If true, the payment will be made assuming the customer is present (i.e. on
-	// session).
-	//
-	// If false, the payment will be made assuming the customer is not present (i.e.
-	// off session). For cardholders from a country with an e-mandate requirement (e.g.
-	// India), the payment may be declined.
-	//
-	// If left blank, will default to false.
-	OnSessionPayment param.Opt[bool] `json:"on_session_payment,omitzero"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string `json:"invoice_metadata,omitzero"`
-	paramObj
-}
-
-func (r V1ContractNewParamsCommitPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitPaymentGateConfigStripeConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractNewParamsCommitPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommitPaymentGateConfigStripeConfig](
-		"payment_type", "INVOICE", "PAYMENT_INTENT",
-	)
 }
 
 // The properties AccessSchedule, ProductID are required.
@@ -3180,8 +3079,6 @@ type V1ContractAmendParamsCommit struct {
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
 	// "complimentary" commit with no invoice.
 	InvoiceSchedule V1ContractAmendParamsCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
-	// optionally payment gate this commit
-	PaymentGateConfig V1ContractAmendParamsCommitPaymentGateConfig `json:"payment_gate_config,omitzero"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
 	RateType string `json:"rate_type,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -3346,105 +3243,6 @@ func (r V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) MarshalJSON() (d
 }
 func (r *V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// optionally payment gate this commit
-//
-// The property PaymentGateType is required.
-type V1ContractAmendParamsCommitPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	//
-	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType string `json:"payment_gate_type,omitzero" api:"required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config,omitzero"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig V1ContractAmendParamsCommitPaymentGateConfigStripeConfig `json:"stripe_config,omitzero"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	//
-	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
-	TaxType string `json:"tax_type,omitzero"`
-	paramObj
-}
-
-func (r V1ContractAmendParamsCommitPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitPaymentGateConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractAmendParamsCommitPaymentGateConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitPaymentGateConfig](
-		"payment_gate_type", "NONE", "STRIPE", "EXTERNAL",
-	)
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitPaymentGateConfig](
-		"tax_type", "NONE", "STRIPE", "ANROK", "PRECALCULATED",
-	)
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// The property TaxAmount is required.
-type V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount" api:"required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Opt[string] `json:"tax_name,omitzero"`
-	paramObj
-}
-
-func (r V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-//
-// The property PaymentType is required.
-type V1ContractAmendParamsCommitPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	//
-	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,omitzero" api:"required"`
-	// If true, the payment will be made assuming the customer is present (i.e. on
-	// session).
-	//
-	// If false, the payment will be made assuming the customer is not present (i.e.
-	// off session). For cardholders from a country with an e-mandate requirement (e.g.
-	// India), the payment may be declined.
-	//
-	// If left blank, will default to false.
-	OnSessionPayment param.Opt[bool] `json:"on_session_payment,omitzero"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string `json:"invoice_metadata,omitzero"`
-	paramObj
-}
-
-func (r V1ContractAmendParamsCommitPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitPaymentGateConfigStripeConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractAmendParamsCommitPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitPaymentGateConfigStripeConfig](
-		"payment_type", "INVOICE", "PAYMENT_INTENT",
-	)
 }
 
 // The properties AccessSchedule, ProductID are required.
