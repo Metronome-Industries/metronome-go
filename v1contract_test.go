@@ -81,24 +81,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			},
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
-			PaymentGateConfig: metronome.V1ContractNewParamsCommitPaymentGateConfig{
-				PaymentGateType: "NONE",
-				PrecalculatedTaxConfig: metronome.V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig{
-					TaxAmount: 0,
-					TaxName:   metronome.String("tax_name"),
-				},
-				StripeConfig: metronome.V1ContractNewParamsCommitPaymentGateConfigStripeConfig{
-					PaymentType: "INVOICE",
-					InvoiceMetadata: map[string]string{
-						"foo": "string",
-					},
-					OnSessionPayment: metronome.Bool(true),
-				},
-				TaxType: "NONE",
-			},
-			Priority:         metronome.Float(0),
-			RateType:         "COMMIT_RATE",
-			RolloverFraction: metronome.Float(0),
+			Priority:             metronome.Float(0),
+			RateType:             "COMMIT_RATE",
+			RolloverFraction:     metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -687,24 +672,9 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			},
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
-			PaymentGateConfig: metronome.V1ContractAmendParamsCommitPaymentGateConfig{
-				PaymentGateType: "NONE",
-				PrecalculatedTaxConfig: metronome.V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig{
-					TaxAmount: 0,
-					TaxName:   metronome.String("tax_name"),
-				},
-				StripeConfig: metronome.V1ContractAmendParamsCommitPaymentGateConfigStripeConfig{
-					PaymentType: "INVOICE",
-					InvoiceMetadata: map[string]string{
-						"foo": "string",
-					},
-					OnSessionPayment: metronome.Bool(true),
-				},
-				TaxType: "NONE",
-			},
-			Priority:         metronome.Float(0),
-			RateType:         "COMMIT_RATE",
-			RolloverFraction: metronome.Float(0),
+			Priority:             metronome.Float(0),
+			RateType:             "COMMIT_RATE",
+			RolloverFraction:     metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
