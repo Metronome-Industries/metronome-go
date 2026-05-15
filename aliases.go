@@ -453,6 +453,38 @@ type ContractV2ScheduledChargesOnUsageInvoices = shared.ContractV2ScheduledCharg
 const ContractV2ScheduledChargesOnUsageInvoicesAll = shared.ContractV2ScheduledChargesOnUsageInvoicesAll
 
 // This is an alias to an internal type.
+type ContractV2Subscription = shared.ContractV2Subscription
+
+// Previous, current, and next billing periods for the subscription.
+//
+// This is an alias to an internal type.
+type ContractV2SubscriptionBillingPeriods = shared.ContractV2SubscriptionBillingPeriods
+
+// This is an alias to an internal type.
+type ContractV2SubscriptionBillingPeriodsCurrent = shared.ContractV2SubscriptionBillingPeriodsCurrent
+
+// This is an alias to an internal type.
+type ContractV2SubscriptionBillingPeriodsNext = shared.ContractV2SubscriptionBillingPeriodsNext
+
+// This is an alias to an internal type.
+type ContractV2SubscriptionBillingPeriodsPrevious = shared.ContractV2SubscriptionBillingPeriodsPrevious
+
+// This is an alias to an internal type.
+type ContractV2SubscriptionProration = shared.ContractV2SubscriptionProration
+
+// This is an alias to an internal type.
+type ContractV2SubscriptionQuantitySchedule = shared.ContractV2SubscriptionQuantitySchedule
+
+// This is an alias to an internal type.
+type ContractV2SubscriptionSubscriptionRate = shared.ContractV2SubscriptionSubscriptionRate
+
+// This is an alias to an internal type.
+type ContractV2SubscriptionSubscriptionRateProduct = shared.ContractV2SubscriptionSubscriptionRateProduct
+
+// This is an alias to an internal type.
+type ContractV2SubscriptionSeatConfig = shared.ContractV2SubscriptionSeatConfig
+
+// This is an alias to an internal type.
 type ContractWithoutAmendments = shared.ContractWithoutAmendments
 
 // This is an alias to an internal type.
