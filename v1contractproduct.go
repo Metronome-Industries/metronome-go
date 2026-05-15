@@ -636,7 +636,16 @@ type V1ContractProductNewParams struct {
 	// of values in the pricing group key and presentation group key must be set as one
 	// compound group key on the billable metric.
 	PricingGroupKey []string `json:"pricing_group_key,omitzero"`
-	Tags            []string `json:"tags,omitzero"`
+	// Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
+	// If set to 'service_period' (default), the usage will be evaluated once for all
+	// events the invoice service period and the usage will be applied at the last
+	// instant of the invoice. If set to 'hour', it will be broken down and evaluated
+	// for each hour. For most use cases, 'hour' is recommended. The setting has no
+	// effect for Streaming Billable Metrics.
+	//
+	// Any of "HOUR", "SERVICE_PERIOD".
+	SqlBreakdownGranularity V1ContractProductNewParamsSqlBreakdownGranularity `json:"sql_breakdown_granularity,omitzero"`
+	Tags                    []string                                          `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -657,6 +666,19 @@ const (
 	V1ContractProductNewParamsTypeSubscription        V1ContractProductNewParamsType = "SUBSCRIPTION"
 	V1ContractProductNewParamsTypeProfessionalService V1ContractProductNewParamsType = "PROFESSIONAL_SERVICE"
 	V1ContractProductNewParamsTypeProService          V1ContractProductNewParamsType = "PRO_SERVICE"
+)
+
+// Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
+// If set to 'service_period' (default), the usage will be evaluated once for all
+// events the invoice service period and the usage will be applied at the last
+// instant of the invoice. If set to 'hour', it will be broken down and evaluated
+// for each hour. For most use cases, 'hour' is recommended. The setting has no
+// effect for Streaming Billable Metrics.
+type V1ContractProductNewParamsSqlBreakdownGranularity string
+
+const (
+	V1ContractProductNewParamsSqlBreakdownGranularityHour          V1ContractProductNewParamsSqlBreakdownGranularity = "HOUR"
+	V1ContractProductNewParamsSqlBreakdownGranularityServicePeriod V1ContractProductNewParamsSqlBreakdownGranularity = "SERVICE_PERIOD"
 )
 
 type V1ContractProductGetParams struct {
@@ -723,6 +745,15 @@ type V1ContractProductUpdateParams struct {
 	// of values in the pricing group key and presentation group key must be set as one
 	// compound group key on the billable metric.
 	PricingGroupKey []string `json:"pricing_group_key,omitzero"`
+	// Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
+	// If set to 'service_period' (default), the usage will be evaluated once for all
+	// events the invoice service period and the usage will be applied at the last
+	// instant of the invoice. If set to 'hour', it will be broken down and evaluated
+	// for each hour. For most use cases, 'hour' is recommended. The setting has no
+	// effect for Streaming Billable Metrics.
+	//
+	// Any of "HOUR", "SERVICE_PERIOD".
+	SqlBreakdownGranularity V1ContractProductUpdateParamsSqlBreakdownGranularity `json:"sql_breakdown_granularity,omitzero"`
 	// If not provided, defaults to product's current tags
 	Tags []string `json:"tags,omitzero"`
 	paramObj
@@ -735,6 +766,19 @@ func (r V1ContractProductUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *V1ContractProductUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
+// If set to 'service_period' (default), the usage will be evaluated once for all
+// events the invoice service period and the usage will be applied at the last
+// instant of the invoice. If set to 'hour', it will be broken down and evaluated
+// for each hour. For most use cases, 'hour' is recommended. The setting has no
+// effect for Streaming Billable Metrics.
+type V1ContractProductUpdateParamsSqlBreakdownGranularity string
+
+const (
+	V1ContractProductUpdateParamsSqlBreakdownGranularityHour          V1ContractProductUpdateParamsSqlBreakdownGranularity = "HOUR"
+	V1ContractProductUpdateParamsSqlBreakdownGranularityServicePeriod V1ContractProductUpdateParamsSqlBreakdownGranularity = "SERVICE_PERIOD"
+)
 
 type V1ContractProductListParams struct {
 	// Max number of results that should be returned
