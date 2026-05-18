@@ -2388,6 +2388,7 @@ type ContractV2Credit struct {
 	ApplicableContractIDs []string         `json:"applicable_contract_ids" format:"uuid"`
 	ApplicableProductIDs  []string         `json:"applicable_product_ids" format:"uuid"`
 	ApplicableProductTags []string         `json:"applicable_product_tags"`
+	ArchivedAt            time.Time        `json:"archived_at" format:"date-time"`
 	// The current balance of the credit or commit. This balance reflects the amount of
 	// credit or commit that the customer has access to use at this moment - thus,
 	// expired and upcoming credit or commit segments contribute 0 to the balance. The
@@ -2437,6 +2438,7 @@ type ContractV2Credit struct {
 		ApplicableContractIDs   respjson.Field
 		ApplicableProductIDs    respjson.Field
 		ApplicableProductTags   respjson.Field
+		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
 		CreatedAt               respjson.Field
