@@ -333,7 +333,7 @@ func (r *CustomerAlertAlert) UnmarshalJSON(data []byte) error {
 }
 
 type CustomerAlertAlertCustomFieldFilter struct {
-	// Any of "Contract", "Commit", "ContractCredit".
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
 	Entity string `json:"entity" api:"required"`
 	Key    string `json:"key" api:"required"`
 	Value  string `json:"value" api:"required"`

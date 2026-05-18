@@ -81,24 +81,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			},
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
-			PaymentGateConfig: metronome.V1ContractNewParamsCommitPaymentGateConfig{
-				PaymentGateType: "NONE",
-				PrecalculatedTaxConfig: metronome.V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig{
-					TaxAmount: 0,
-					TaxName:   metronome.String("tax_name"),
-				},
-				StripeConfig: metronome.V1ContractNewParamsCommitPaymentGateConfigStripeConfig{
-					PaymentType: "INVOICE",
-					InvoiceMetadata: map[string]string{
-						"foo": "string",
-					},
-					OnSessionPayment: metronome.Bool(true),
-				},
-				TaxType: "NONE",
-			},
-			Priority:         metronome.Float(0),
-			RateType:         "COMMIT_RATE",
-			RolloverFraction: metronome.Float(0),
+			Priority:             metronome.Float(0),
+			RateType:             "COMMIT_RATE",
+			RolloverFraction:     metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -687,24 +672,9 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			},
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
-			PaymentGateConfig: metronome.V1ContractAmendParamsCommitPaymentGateConfig{
-				PaymentGateType: "NONE",
-				PrecalculatedTaxConfig: metronome.V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig{
-					TaxAmount: 0,
-					TaxName:   metronome.String("tax_name"),
-				},
-				StripeConfig: metronome.V1ContractAmendParamsCommitPaymentGateConfigStripeConfig{
-					PaymentType: "INVOICE",
-					InvoiceMetadata: map[string]string{
-						"foo": "string",
-					},
-					OnSessionPayment: metronome.Bool(true),
-				},
-				TaxType: "NONE",
-			},
-			Priority:         metronome.Float(0),
-			RateType:         "COMMIT_RATE",
-			RolloverFraction: metronome.Float(0),
+			Priority:             metronome.Float(0),
+			RateType:             "COMMIT_RATE",
+			RolloverFraction:     metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -1043,6 +1013,40 @@ func TestV1ContractListBalancesWithOptionalParams(t *testing.T) {
 		Limit:                   metronome.Int(1),
 		NextPage:                metronome.String("next_page"),
 		StartingAt:              metronome.Time(time.Now()),
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestV1ContractListSeatBalancesWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.V1.Contracts.ListSeatBalances(context.TODO(), metronome.V1ContractListSeatBalancesParams{
+		ContractID:               "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		CustomerID:               "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		CoveringDate:             metronome.Time(time.Now()),
+		Cursor:                   metronome.String("cursor"),
+		EffectiveBefore:          metronome.Time(time.Now()),
+		IncludeCreditsAndCommits: metronome.Bool(true),
+		IncludeLedgers:           metronome.Bool(true),
+		Limit:                    metronome.Int(25),
+		SeatIDs:                  []string{"string"},
+		StartingAt:               metronome.Time(time.Now()),
+		SubscriptionIDs:          []string{"8deed800-1b7a-495d-a207-6c52bac54dc9"},
 	})
 	if err != nil {
 		var apierr *metronome.Error

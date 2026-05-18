@@ -51,7 +51,8 @@ func TestV1ContractProductNewWithOptionalParams(t *testing.T) {
 			DecimalPlaces:  0,
 			RoundingMethod: metronome.QuantityRoundingRoundingMethodRoundUp,
 		},
-		Tags: []string{"string"},
+		SqlBreakdownGranularity: metronome.V1ContractProductNewParamsSqlBreakdownGranularityHour,
+		Tags:                    []string{"string"},
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -122,7 +123,8 @@ func TestV1ContractProductUpdateWithOptionalParams(t *testing.T) {
 			DecimalPlaces:  0,
 			RoundingMethod: metronome.QuantityRoundingRoundingMethodRoundUp,
 		},
-		Tags: []string{"string"},
+		SqlBreakdownGranularity: metronome.V1ContractProductUpdateParamsSqlBreakdownGranularityHour,
+		Tags:                    []string{"string"},
 	})
 	if err != nil {
 		var apierr *metronome.Error

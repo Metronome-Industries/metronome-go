@@ -34,8 +34,7 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 			EndingBefore: metronome.Time(time.Now()),
 			StartingAt:   metronome.Time(time.Now()),
 		}},
-		BillingAnchorDate: metronome.V1PackageNewParamsBillingAnchorDateContractStartDate,
-		BillingProvider:   metronome.V1PackageNewParamsBillingProviderStripe,
+		BillingProvider: metronome.V1PackageNewParamsBillingProviderStripe,
 		Commits: []metronome.V1PackageNewParamsCommit{{
 			AccessSchedule: metronome.V1PackageNewParamsCommitAccessSchedule{
 				ScheduleItems: []metronome.V1PackageNewParamsCommitAccessScheduleScheduleItem{{

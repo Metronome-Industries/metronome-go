@@ -410,9 +410,10 @@ type Invoice struct {
 	// and customer UUIDs that pay for this invoice.
 	Payer InvoicePayer `json:"payer"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	PlanCustomFields map[string]string `json:"plan_custom_fields"`
-	PlanID           string            `json:"plan_id" format:"uuid"`
-	PlanName         string            `json:"plan_name"`
+	PlanCustomFields         map[string]string `json:"plan_custom_fields"`
+	PlanID                   string            `json:"plan_id" format:"uuid"`
+	PlanName                 string            `json:"plan_name"`
+	RegeneratedFromInvoiceID string            `json:"regenerated_from_invoice_id" format:"uuid"`
 	// Only present for contract invoices with reseller royalties.
 	ResellerRoyalty       InvoiceResellerRoyalty        `json:"reseller_royalty"`
 	RevenueSystemInvoices []InvoiceRevenueSystemInvoice `json:"revenue_system_invoices" api:"nullable"`
@@ -423,39 +424,40 @@ type Invoice struct {
 	Subtotal       float64   `json:"subtotal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                      respjson.Field
-		CreditType              respjson.Field
-		CustomerID              respjson.Field
-		LineItems               respjson.Field
-		Status                  respjson.Field
-		Total                   respjson.Field
-		Type                    respjson.Field
-		AmendmentID             respjson.Field
-		BillableStatus          respjson.Field
-		ConstituentInvoices     respjson.Field
-		ContractCustomFields    respjson.Field
-		ContractID              respjson.Field
-		CorrectionRecord        respjson.Field
-		CreatedAt               respjson.Field
-		CustomFields            respjson.Field
-		CustomerCustomFields    respjson.Field
-		EndTimestamp            respjson.Field
-		ExternalInvoice         respjson.Field
-		InvoiceAdjustments      respjson.Field
-		IssuedAt                respjson.Field
-		NetPaymentTermsDays     respjson.Field
-		NetsuiteSalesOrderID    respjson.Field
-		Payer                   respjson.Field
-		PlanCustomFields        respjson.Field
-		PlanID                  respjson.Field
-		PlanName                respjson.Field
-		ResellerRoyalty         respjson.Field
-		RevenueSystemInvoices   respjson.Field
-		SalesforceOpportunityID respjson.Field
-		StartTimestamp          respjson.Field
-		Subtotal                respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
+		ID                       respjson.Field
+		CreditType               respjson.Field
+		CustomerID               respjson.Field
+		LineItems                respjson.Field
+		Status                   respjson.Field
+		Total                    respjson.Field
+		Type                     respjson.Field
+		AmendmentID              respjson.Field
+		BillableStatus           respjson.Field
+		ConstituentInvoices      respjson.Field
+		ContractCustomFields     respjson.Field
+		ContractID               respjson.Field
+		CorrectionRecord         respjson.Field
+		CreatedAt                respjson.Field
+		CustomFields             respjson.Field
+		CustomerCustomFields     respjson.Field
+		EndTimestamp             respjson.Field
+		ExternalInvoice          respjson.Field
+		InvoiceAdjustments       respjson.Field
+		IssuedAt                 respjson.Field
+		NetPaymentTermsDays      respjson.Field
+		NetsuiteSalesOrderID     respjson.Field
+		Payer                    respjson.Field
+		PlanCustomFields         respjson.Field
+		PlanID                   respjson.Field
+		PlanName                 respjson.Field
+		RegeneratedFromInvoiceID respjson.Field
+		ResellerRoyalty          respjson.Field
+		RevenueSystemInvoices    respjson.Field
+		SalesforceOpportunityID  respjson.Field
+		StartTimestamp           respjson.Field
+		Subtotal                 respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
 	} `json:"-"`
 }
 
@@ -1186,6 +1188,8 @@ func (r V1CustomerInvoiceGetParams) URLQuery() (v url.Values, err error) {
 
 type V1CustomerInvoiceListParams struct {
 	CustomerID string `path:"customer_id" api:"required" format:"uuid" json:"-"`
+	// Only return invoices for the specified contract
+	ContractID param.Opt[string] `query:"contract_id,omitzero" format:"uuid" json:"-"`
 	// Only return invoices for the specified credit type
 	CreditTypeID param.Opt[string] `query:"credit_type_id,omitzero" json:"-"`
 	// RFC 3339 timestamp (exclusive). Invoices will only be returned for billing
@@ -1207,6 +1211,10 @@ type V1CustomerInvoiceListParams struct {
 	//
 	// Any of "date_asc", "date_desc".
 	Sort V1CustomerInvoiceListParamsSort `query:"sort,omitzero" json:"-"`
+	// Filter invoices by type. Defaults to returning all invoice types.
+	//
+	// Any of "USAGE", "USAGE_CONSOLIDATED", "SCHEDULED".
+	Type V1CustomerInvoiceListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1226,6 +1234,15 @@ type V1CustomerInvoiceListParamsSort string
 const (
 	V1CustomerInvoiceListParamsSortDateAsc  V1CustomerInvoiceListParamsSort = "date_asc"
 	V1CustomerInvoiceListParamsSortDateDesc V1CustomerInvoiceListParamsSort = "date_desc"
+)
+
+// Filter invoices by type. Defaults to returning all invoice types.
+type V1CustomerInvoiceListParamsType string
+
+const (
+	V1CustomerInvoiceListParamsTypeUsage             V1CustomerInvoiceListParamsType = "USAGE"
+	V1CustomerInvoiceListParamsTypeUsageConsolidated V1CustomerInvoiceListParamsType = "USAGE_CONSOLIDATED"
+	V1CustomerInvoiceListParamsTypeScheduled         V1CustomerInvoiceListParamsType = "SCHEDULED"
 )
 
 type V1CustomerInvoiceAddChargeParams struct {

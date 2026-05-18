@@ -3079,8 +3079,6 @@ type V1PackageNewParams struct {
 	// multiple packages, it will reference the package to which it was most recently
 	// assigned. It is not exposed to end customers.
 	Aliases []V1PackageNewParamsAlias `json:"aliases,omitzero"`
-	// Any of "contract_start_date", "first_billing_period".
-	BillingAnchorDate V1PackageNewParamsBillingAnchorDate `json:"billing_anchor_date,omitzero"`
 	// Any of "aws_marketplace", "azure_marketplace", "gcp_marketplace", "stripe",
 	// "netsuite".
 	BillingProvider V1PackageNewParamsBillingProvider `json:"billing_provider,omitzero"`
@@ -3138,13 +3136,6 @@ func (r V1PackageNewParamsAlias) MarshalJSON() (data []byte, err error) {
 func (r *V1PackageNewParamsAlias) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type V1PackageNewParamsBillingAnchorDate string
-
-const (
-	V1PackageNewParamsBillingAnchorDateContractStartDate  V1PackageNewParamsBillingAnchorDate = "contract_start_date"
-	V1PackageNewParamsBillingAnchorDateFirstBillingPeriod V1PackageNewParamsBillingAnchorDate = "first_billing_period"
-)
 
 type V1PackageNewParamsBillingProvider string
 

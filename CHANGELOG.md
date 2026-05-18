@@ -1,5 +1,46 @@
 # Changelog
 
+## 3.6.0 (2026-05-18)
+
+Full Changelog: [v3.5.0...v3.6.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.5.0...v3.6.0)
+
+### Features
+
+* [docs] fix typo in "Create a Contract" [1] page ([ffa3dd8](https://github.com/Metronome-Industries/metronome-go/commit/ffa3dd8487ba3d9200f72a7a20ecfeb041ea6f97))
+* [orch-383] fix API docs for one-off payment-gated commits ([51b3858](https://github.com/Metronome-Industries/metronome-go/commit/51b3858be76090eff8b6062caedc770d3a2ebead))
+* Add alert specifiers to contract create API ([595d958](https://github.com/Metronome-Industries/metronome-go/commit/595d958fc509c6cbc400cd11684caac1ad376eb2))
+* add contract_id filter to list invoices endpoint ([0a6727e](https://github.com/Metronome-Industries/metronome-go/commit/0a6727eb2e0d55db6f6213cb61bdb7ba35f493c8))
+* add invoice type filter for list invoices api ([e4fc335](https://github.com/Metronome-Industries/metronome-go/commit/e4fc335ae4565570f63b65be362eb5c4f6c6d260))
+* Add list seat balances API endpoint to SDK ([71924d0](https://github.com/Metronome-Industries/metronome-go/commit/71924d019c02e83e1c5c132d04322b9c25f12500))
+* Add regenerated_from_invoice_id to getInvoice response ([6f2a0df](https://github.com/Metronome-Industries/metronome-go/commit/6f2a0df4a32614d882248c0d001cc8bbdd93193d))
+* Add sql_breakdown_granularity flag to product create/edit ([2b6b1f1](https://github.com/Metronome-Industries/metronome-go/commit/2b6b1f17116edfccdeba3be3cc90c953d1570531))
+* added custom fields to create contract with package ([c31b5ef](https://github.com/Metronome-Industries/metronome-go/commit/c31b5efe6bf72d1f8b92c32b7396f92220399141))
+* **client:** optimize json encoder for internal types ([2b37b46](https://github.com/Metronome-Industries/metronome-go/commit/2b37b46d82d76a893ea8f4fb22498b14392e3499))
+* doc updates ([c657bef](https://github.com/Metronome-Industries/metronome-go/commit/c657bef018afeb6d68fc99689a8208fdc7ec112f))
+* **go:** add default http client with timeout ([be6190f](https://github.com/Metronome-Industries/metronome-go/commit/be6190f4440465466105d9978aceecf231849a0f))
+* Limit spend breakdown/seat balances to 100 vals ([959fb40](https://github.com/Metronome-Industries/metronome-go/commit/959fb40ace3f1f19eef5fc5b194cb1903e1e0125))
+* Pranadreddy/launch 2486 remove dead billing anchor date field from api ([e2a87f6](https://github.com/Metronome-Industries/metronome-go/commit/e2a87f66c77d5d3a4f23948dc533cf9f3adb9130))
+* support setting headers via env ([cb8900b](https://github.com/Metronome-Industries/metronome-go/commit/cb8900b5bfb0b464f556fc39aaa4a64cc307dd85))
+* Update stainless.yml to include Java configuration logic ([15f13da](https://github.com/Metronome-Industries/metronome-go/commit/15f13dabec6447c43579975aa3fe4da6863dc586))
+* wip ([6d273c5](https://github.com/Metronome-Industries/metronome-go/commit/6d273c5c857526a68514fcf377afdda2c3ed39ae))
+
+
+### Bug Fixes
+
+* add archived_at to Credit schema (parity with Commit) ([03c75a1](https://github.com/Metronome-Industries/metronome-go/commit/03c75a12821320b0b4875724b71b7a2f337260c8))
+* **go:** avoid panic when http.DefaultTransport is wrapped ([ca6088a](https://github.com/Metronome-Industries/metronome-go/commit/ca6088a6af40f737fbeeba55ae7dce34fb0d3bcb))
+
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([d2891c3](https://github.com/Metronome-Industries/metronome-go/commit/d2891c3a7a43519dac173e4d93846e1685adecb2))
+* configure new SDK language ([b805467](https://github.com/Metronome-Industries/metronome-go/commit/b805467d756ab668045a98a8faadc2f6b5b98364))
+* configure new SDK language ([5f5c5e9](https://github.com/Metronome-Industries/metronome-go/commit/5f5c5e9483ef4a43f03fbe6487248f017e4b6c50))
+* configure new SDK language ([21dd6a6](https://github.com/Metronome-Industries/metronome-go/commit/21dd6a6f8a237cc27f7537b0e6dc154eacbbbf21))
+* configure new SDK language ([2fa92c2](https://github.com/Metronome-Industries/metronome-go/commit/2fa92c211c95d76de4967ab238178be946486d8b))
+* **internal:** more robust bootstrap script ([15e8038](https://github.com/Metronome-Industries/metronome-go/commit/15e80382b668998a6b9e4b4308055c1f369185b4))
+* redact api-key headers in debug logs ([30461db](https://github.com/Metronome-Industries/metronome-go/commit/30461db4f112969183edb1898f6aca25602fe8c6))
+
 ## 3.5.0 (2026-04-18)
 
 Full Changelog: [v3.4.0...v3.5.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.4.0...v3.5.0)

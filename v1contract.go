@@ -51,8 +51,8 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 
 // Contracts define a customer's products, pricing, discounts, access duration, and
 // billing configuration. Contracts serve as the central billing agreement for both
-// PLG and Enterprise customers, you can automatically customers access to your
-// products and services directly from your product or CRM.
+// PLG and Enterprise customers. You can automatically grant customers access to
+// your products and services directly from your product or CRM.
 //
 // ### Use this endpoint to:
 //
@@ -429,6 +429,36 @@ func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractLis
 //   - Manual adjustments: Includes all manual ledger entries, even future-dated ones
 func (r *V1ContractService) ListBalancesAutoPaging(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) *pagination.BodyCursorPageAutoPager[V1ContractListBalancesResponseUnion] {
 	return pagination.NewBodyCursorPageAutoPager(r.ListBalances(ctx, body, opts...))
+}
+
+// Retrieve detailed balance for seat-based credits and commits from the contract's
+// subscriptions, broken down by individual seats.
+//
+// ### Use this endpoint to:
+//
+// - Display per-seat balance information in customer dashboards
+// - Filter balance data by subscription or specific seats
+//
+// ### Key response fields:
+//
+// An array of seat balance objects containing:
+//
+// - Seat id
+// - Balance: current total balance across all commits and credits
+//
+// ### Usage guidelines:
+//
+//   - Date filtering: use `covering_date` OR `starting_at`/`ending_before` to filter
+//     balance data by time range
+//   - Set `include_credits_and_commits=true` for detailed commits and credits
+//     breakdown per seat
+//   - Set `include_ledgers=true` for detailed transaction history per commit/credit
+//     per seat
+func (r *V1ContractService) ListSeatBalances(ctx context.Context, body V1ContractListSeatBalancesParams, opts ...option.RequestOption) (res *V1ContractListSeatBalancesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contracts/seatBalances/list"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // For a specific customer and contract, get the rates at a specific point in time.
@@ -886,6 +916,212 @@ func (r *V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseC
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type V1ContractListSeatBalancesResponse struct {
+	Data       []V1ContractListSeatBalancesResponseData     `json:"data" api:"required"`
+	Pagination V1ContractListSeatBalancesResponsePagination `json:"pagination" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Pagination  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseData struct {
+	Balances []V1ContractListSeatBalancesResponseDataBalance `json:"balances" api:"required"`
+	// The unique identifier for the seat
+	SeatID string `json:"seat_id" api:"required"`
+	// Array of commits applicable to this seat with their balances
+	Commits []V1ContractListSeatBalancesResponseDataCommit `json:"commits" api:"nullable"`
+	// Array of credits applicable to this seat with their balances
+	Credits []V1ContractListSeatBalancesResponseDataCredit `json:"credits"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Balances    respjson.Field
+		SeatID      respjson.Field
+		Commits     respjson.Field
+		Credits     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataBalance struct {
+	// The total balance across all commits and credits for this seat, of this credit
+	// type.
+	Balance      float64 `json:"balance" api:"required"`
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	// The total initial balances of all commits and credits for this seat, of this
+	// credit type.
+	StartingBalance float64 `json:"starting_balance" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Balance         respjson.Field
+		CreditTypeID    respjson.Field
+		StartingBalance respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataBalance) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataBalance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataCommit struct {
+	// The commit or credit ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// The current balance for this commit for this specific seat
+	Balance float64 `json:"balance" api:"required"`
+	// The datetime when the commit becomes active
+	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+	// The datetime when the commit expires
+	EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
+	// Transaction history for this commit for this seat (only included if
+	// include_ledgers=true)
+	LedgerEntries []V1ContractListSeatBalancesResponseDataCommitLedgerEntry `json:"ledger_entries"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Balance       respjson.Field
+		StartDate     respjson.Field
+		EndDate       respjson.Field
+		LedgerEntries respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataCommit) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataCommitLedgerEntry struct {
+	// Amount of the ledger entry
+	Amount float64 `json:"amount" api:"required"`
+	// The datetime when the ledger is created
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Commit ledger type
+	//
+	// Any of "PREPAID_COMMIT_SEGMENT_START",
+	// "PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION", "PREPAID_COMMIT_ROLLOVER",
+	// "PREPAID_COMMIT_EXPIRATION", "PREPAID_COMMIT_CANCELED",
+	// "PREPAID_COMMIT_CREDITED", "PREPAID_COMMIT_MANUAL",
+	// "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Timestamp   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataCommitLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCommitLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataCredit struct {
+	// The credit ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// The current balance for this credit for this specific seat
+	Balance float64 `json:"balance" api:"required"`
+	// The datetime when the credit becomes active
+	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+	// The datetime when the credit expires
+	EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
+	// Transaction history for this credit for this seat (only included if
+	// include_ledgers=true)
+	LedgerEntries []V1ContractListSeatBalancesResponseDataCreditLedgerEntry `json:"ledger_entries"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Balance       respjson.Field
+		StartDate     respjson.Field
+		EndDate       respjson.Field
+		LedgerEntries respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataCredit) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponseDataCreditLedgerEntry struct {
+	// Amount of the ledger entry
+	Amount float64 `json:"amount" api:"required"`
+	// The datetime when the ledger is created
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Credit ledger type
+	//
+	// Any of "CREDIT_SEGMENT_START", "CREDIT_AUTOMATED_INVOICE_DEDUCTION",
+	// "CREDIT_EXPIRATION", "CREDIT_CANCELED", "CREDIT_CREDITED", "CREDIT_MANUAL",
+	// "CREDIT_SEAT_BASED_ADJUSTMENT", "CREDIT_ROLLOVER".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Timestamp   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponseDataCreditLedgerEntry) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCreditLedgerEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesResponsePagination struct {
+	// Number of seats available to fetch in the next page
+	SeatsAvailableForNextPage float64 `json:"seats_available_for_next_page" api:"required"`
+	// Number of seats included in this response
+	SeatsIncluded float64 `json:"seats_included" api:"required"`
+	// Token to retrieve the next page of results. Null if no more pages available
+	NextPage string `json:"next_page" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatsAvailableForNextPage respjson.Field
+		SeatsIncluded             respjson.Field
+		NextPage                  respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractListSeatBalancesResponsePagination) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponsePagination) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1ContractGetRateScheduleResponse struct {
 	Data     []V1ContractGetRateScheduleResponseData `json:"data" api:"required"`
 	NextPage string                                  `json:"next_page" api:"nullable"`
@@ -1073,7 +1309,7 @@ type V1ContractNewParams struct {
 	PackageAlias param.Opt[string] `json:"package_alias,omitzero"`
 	// If provided, provisions a customer on a package instead of creating a
 	// traditional contract. When specified, only customer_id, starting_at, package_id,
-	// and uniqueness_key are allowed.
+	// uniqueness_key, transition, and custom_fields are allowed.
 	PackageID param.Opt[string] `json:"package_id,omitzero" format:"uuid"`
 	// Selects the rate card linked to the specified alias as of the contract's start
 	// date.
@@ -1221,8 +1457,6 @@ type V1ContractNewParamsCommit struct {
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
 	// "complimentary" commit with no invoice.
 	InvoiceSchedule V1ContractNewParamsCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
-	// optionally payment gate this commit
-	PaymentGateConfig V1ContractNewParamsCommitPaymentGateConfig `json:"payment_gate_config,omitzero"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
 	RateType string `json:"rate_type,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -1387,105 +1621,6 @@ func (r V1ContractNewParamsCommitInvoiceScheduleScheduleItem) MarshalJSON() (dat
 }
 func (r *V1ContractNewParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// optionally payment gate this commit
-//
-// The property PaymentGateType is required.
-type V1ContractNewParamsCommitPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	//
-	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType string `json:"payment_gate_type,omitzero" api:"required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config,omitzero"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig V1ContractNewParamsCommitPaymentGateConfigStripeConfig `json:"stripe_config,omitzero"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	//
-	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
-	TaxType string `json:"tax_type,omitzero"`
-	paramObj
-}
-
-func (r V1ContractNewParamsCommitPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitPaymentGateConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractNewParamsCommitPaymentGateConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommitPaymentGateConfig](
-		"payment_gate_type", "NONE", "STRIPE", "EXTERNAL",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommitPaymentGateConfig](
-		"tax_type", "NONE", "STRIPE", "ANROK", "PRECALCULATED",
-	)
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// The property TaxAmount is required.
-type V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount" api:"required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Opt[string] `json:"tax_name,omitzero"`
-	paramObj
-}
-
-func (r V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractNewParamsCommitPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-//
-// The property PaymentType is required.
-type V1ContractNewParamsCommitPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	//
-	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,omitzero" api:"required"`
-	// If true, the payment will be made assuming the customer is present (i.e. on
-	// session).
-	//
-	// If false, the payment will be made assuming the customer is not present (i.e.
-	// off session). For cardholders from a country with an e-mandate requirement (e.g.
-	// India), the payment may be declined.
-	//
-	// If left blank, will default to false.
-	OnSessionPayment param.Opt[bool] `json:"on_session_payment,omitzero"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string `json:"invoice_metadata,omitzero"`
-	paramObj
-}
-
-func (r V1ContractNewParamsCommitPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitPaymentGateConfigStripeConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractNewParamsCommitPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommitPaymentGateConfigStripeConfig](
-		"payment_type", "INVOICE", "PAYMENT_INTENT",
-	)
 }
 
 // The properties AccessSchedule, ProductID are required.
@@ -2944,8 +3079,6 @@ type V1ContractAmendParamsCommit struct {
 	// amount. Optional for "PREPAID" commits: if not provided, this will be a
 	// "complimentary" commit with no invoice.
 	InvoiceSchedule V1ContractAmendParamsCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
-	// optionally payment gate this commit
-	PaymentGateConfig V1ContractAmendParamsCommitPaymentGateConfig `json:"payment_gate_config,omitzero"`
 	// Any of "COMMIT_RATE", "LIST_RATE".
 	RateType string `json:"rate_type,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
@@ -3110,105 +3243,6 @@ func (r V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) MarshalJSON() (d
 }
 func (r *V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// optionally payment gate this commit
-//
-// The property PaymentGateType is required.
-type V1ContractAmendParamsCommitPaymentGateConfig struct {
-	// Gate access to the commit balance based on successful collection of payment.
-	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
-	// facilitate payment using your own payment integration. Select NONE if you do not
-	// wish to payment gate the commit balance.
-	//
-	// Any of "NONE", "STRIPE", "EXTERNAL".
-	PaymentGateType string `json:"payment_gate_type,omitzero" api:"required"`
-	// Only applicable if using PRECALCULATED as your tax type.
-	PrecalculatedTaxConfig V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config,omitzero"`
-	// Only applicable if using STRIPE as your payment gate type.
-	StripeConfig V1ContractAmendParamsCommitPaymentGateConfigStripeConfig `json:"stripe_config,omitzero"`
-	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
-	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
-	// will default to NONE.
-	//
-	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
-	TaxType string `json:"tax_type,omitzero"`
-	paramObj
-}
-
-func (r V1ContractAmendParamsCommitPaymentGateConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitPaymentGateConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractAmendParamsCommitPaymentGateConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitPaymentGateConfig](
-		"payment_gate_type", "NONE", "STRIPE", "EXTERNAL",
-	)
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitPaymentGateConfig](
-		"tax_type", "NONE", "STRIPE", "ANROK", "PRECALCULATED",
-	)
-}
-
-// Only applicable if using PRECALCULATED as your tax type.
-//
-// The property TaxAmount is required.
-type V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig struct {
-	// Amount of tax to be applied. This should be in the same currency and
-	// denomination as the commit's invoice schedule
-	TaxAmount float64 `json:"tax_amount" api:"required"`
-	// Name of the tax to be applied. This may be used in an invoice line item
-	// description.
-	TaxName param.Opt[string] `json:"tax_name,omitzero"`
-	paramObj
-}
-
-func (r V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractAmendParamsCommitPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only applicable if using STRIPE as your payment gate type.
-//
-// The property PaymentType is required.
-type V1ContractAmendParamsCommitPaymentGateConfigStripeConfig struct {
-	// If left blank, will default to INVOICE
-	//
-	// Any of "INVOICE", "PAYMENT_INTENT".
-	PaymentType string `json:"payment_type,omitzero" api:"required"`
-	// If true, the payment will be made assuming the customer is present (i.e. on
-	// session).
-	//
-	// If false, the payment will be made assuming the customer is not present (i.e.
-	// off session). For cardholders from a country with an e-mandate requirement (e.g.
-	// India), the payment may be declined.
-	//
-	// If left blank, will default to false.
-	OnSessionPayment param.Opt[bool] `json:"on_session_payment,omitzero"`
-	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
-	// your payment type.
-	InvoiceMetadata map[string]string `json:"invoice_metadata,omitzero"`
-	paramObj
-}
-
-func (r V1ContractAmendParamsCommitPaymentGateConfigStripeConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitPaymentGateConfigStripeConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *V1ContractAmendParamsCommitPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitPaymentGateConfigStripeConfig](
-		"payment_type", "INVOICE", "PAYMENT_INTENT",
-	)
 }
 
 // The properties AccessSchedule, ProductID are required.
@@ -3958,6 +3992,52 @@ func (r V1ContractListBalancesParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V1ContractListBalancesParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractListSeatBalancesParams struct {
+	// The contract ID to retrieve seat balances for
+	ContractID string `json:"contract_id" api:"required" format:"uuid"`
+	// The customer ID to retrieve seat balances for
+	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	// Include only commits or credits with access that cover this specific date
+	// (cannot be used with starting_at or ending_before).
+	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+	// Page token from a previous response to retrieve the next page
+	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Include only commits or credits with access effective on or before this date
+	// (cannot be used with covering_date).
+	EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
+	// Include credits and commits in the response
+	IncludeCreditsAndCommits param.Opt[bool] `json:"include_credits_and_commits,omitzero"`
+	// Include ledger entries for each commit and commit. `include_credits_and_commits`
+	// must be set to `true` for `include_ledgers=true` to apply.
+	IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
+	// Maximum number of seats to return. Range: 1-100. Default: 25. When
+	// `include_credits_and_commits = true`, if the total commits/credits across all
+	// seats exceeds 100, a limit of 100 applies to the total credits and commits.
+	// Seats are included greedily to maximize the number of seats returned. Example:
+	// if seat 1 has 98 commits and seat 2 has 10 commits, both seats will be returned
+	// (total: 108 commits). Each returned seat includes all of its associated credits
+	// and commits.
+	Limit param.Opt[int64] `json:"limit,omitzero"`
+	// Include only commits or credits with access effective on or after this date
+	// (cannot be used with covering_date).
+	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	// Optional filter to only include specific seats.
+	SeatIDs []string `json:"seat_ids,omitzero"`
+	// Optional filter to only include seats from specific subscriptions. If
+	// subscriptions ids are not mapped to SEAT_BASED subscriptions, error will be
+	// returned.
+	SubscriptionIDs []string `json:"subscription_ids,omitzero" format:"uuid"`
+	paramObj
+}
+
+func (r V1ContractListSeatBalancesParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractListSeatBalancesParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractListSeatBalancesParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

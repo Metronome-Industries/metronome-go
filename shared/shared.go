@@ -1490,8 +1490,8 @@ type ContractV2 struct {
 	ScheduledChargesOnUsageInvoices ContractV2ScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     SpendThresholdConfigurationV2             `json:"spend_threshold_configuration"`
 	// List of subscriptions on the contract.
-	Subscriptions      []Subscription `json:"subscriptions"`
-	TotalContractValue float64        `json:"total_contract_value"`
+	Subscriptions      []ContractV2Subscription `json:"subscriptions"`
+	TotalContractValue float64                  `json:"total_contract_value"`
 	// Optional uniqueness key to prevent duplicate contract creations.
 	UniquenessKey string `json:"uniqueness_key"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2388,6 +2388,7 @@ type ContractV2Credit struct {
 	ApplicableContractIDs []string         `json:"applicable_contract_ids" format:"uuid"`
 	ApplicableProductIDs  []string         `json:"applicable_product_ids" format:"uuid"`
 	ApplicableProductTags []string         `json:"applicable_product_tags"`
+	ArchivedAt            time.Time        `json:"archived_at" format:"date-time"`
 	// The current balance of the credit or commit. This balance reflects the amount of
 	// credit or commit that the customer has access to use at this moment - thus,
 	// expired and upcoming credit or commit segments contribute 0 to the balance. The
@@ -2437,6 +2438,7 @@ type ContractV2Credit struct {
 		ApplicableContractIDs   respjson.Field
 		ApplicableProductIDs    respjson.Field
 		ApplicableProductTags   respjson.Field
+		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
 		CreatedAt               respjson.Field
@@ -3452,6 +3454,237 @@ type ContractV2ScheduledChargesOnUsageInvoices string
 const (
 	ContractV2ScheduledChargesOnUsageInvoicesAll ContractV2ScheduledChargesOnUsageInvoices = "ALL"
 )
+
+type ContractV2Subscription struct {
+	// Previous, current, and next billing periods for the subscription.
+	BillingPeriods ContractV2SubscriptionBillingPeriods `json:"billing_periods" api:"required"`
+	// Any of "ADVANCE", "ARREARS".
+	CollectionSchedule string                          `json:"collection_schedule" api:"required"`
+	Proration          ContractV2SubscriptionProration `json:"proration" api:"required"`
+	// Determines how the subscription's quantity is controlled. Defaults to
+	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+	// directly on the subscription. `initial_quantity` must be provided with this
+	// option. Compatible with recurring commits/credits that use POOLED allocation.
+	// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+	// user_123) to increment and decrement a subscription quantity, rather than
+	// directly providing the quantity. You must use a **SEAT_BASED** subscription to
+	// use a linked recurring credit with an allocation per seat. `seat_config` must be
+	// provided with this option.
+	//
+	// Any of "SEAT_BASED", "QUANTITY_ONLY".
+	QuantityManagementMode string `json:"quantity_management_mode" api:"required"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []ContractV2SubscriptionQuantitySchedule `json:"quantity_schedule" api:"required"`
+	StartingAt       time.Time                                `json:"starting_at" api:"required" format:"date-time"`
+	SubscriptionRate ContractV2SubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
+	ID               string                                   `json:"id" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields     map[string]string                `json:"custom_fields"`
+	Description      string                           `json:"description"`
+	EndingBefore     time.Time                        `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                           `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                           `json:"name"`
+	SeatConfig       ContractV2SubscriptionSeatConfig `json:"seat_config"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingPeriods         respjson.Field
+		CollectionSchedule     respjson.Field
+		Proration              respjson.Field
+		QuantityManagementMode respjson.Field
+		QuantitySchedule       respjson.Field
+		StartingAt             respjson.Field
+		SubscriptionRate       respjson.Field
+		ID                     respjson.Field
+		CustomFields           respjson.Field
+		Description            respjson.Field
+		EndingBefore           respjson.Field
+		FiatCreditTypeID       respjson.Field
+		Name                   respjson.Field
+		SeatConfig             respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2Subscription) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2Subscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Previous, current, and next billing periods for the subscription.
+type ContractV2SubscriptionBillingPeriods struct {
+	Current  ContractV2SubscriptionBillingPeriodsCurrent  `json:"current"`
+	Next     ContractV2SubscriptionBillingPeriodsNext     `json:"next"`
+	Previous ContractV2SubscriptionBillingPeriodsPrevious `json:"previous"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Current     respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionBillingPeriods) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionBillingPeriods) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionBillingPeriodsCurrent struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionBillingPeriodsCurrent) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionBillingPeriodsCurrent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionBillingPeriodsNext struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionBillingPeriodsNext) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionBillingPeriodsNext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionBillingPeriodsPrevious struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionBillingPeriodsPrevious) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionBillingPeriodsPrevious) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionProration struct {
+	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
+	InvoiceBehavior string `json:"invoice_behavior" api:"required"`
+	IsProrated      bool   `json:"is_prorated" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceBehavior respjson.Field
+		IsProrated      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionProration) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionProration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionQuantitySchedule struct {
+	Quantity     float64   `json:"quantity" api:"required"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity     respjson.Field
+		StartingAt   respjson.Field
+		EndingBefore respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionQuantitySchedule) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionQuantitySchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionSubscriptionRate struct {
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency string                                        `json:"billing_frequency" api:"required"`
+	Product          ContractV2SubscriptionSubscriptionRateProduct `json:"product" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingFrequency respjson.Field
+		Product          respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionSubscriptionRate) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionSubscriptionRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionSubscriptionRateProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionSubscriptionRateProduct) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionSubscriptionRateProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionSeatConfig struct {
+	// The property name, sent on usage events, that identifies the seat ID associated
+	// with the usage event. For example, the property name might be seat_id or
+	// user_id. The property must be set as a group key on billable metrics and a
+	// presentation/pricing group key on contract products. This allows linked
+	// recurring credits with an allocation per seat to be consumed by only one seat's
+	// usage.
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatGroupKey respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionSeatConfig) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionSeatConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ContractWithoutAmendments struct {
 	Commits                []Commit                                        `json:"commits" api:"required"`

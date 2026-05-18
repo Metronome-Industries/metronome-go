@@ -288,7 +288,7 @@ type V2ContractGetEditHistoryResponseData struct {
 	AddScheduledCharges                     []V2ContractGetEditHistoryResponseDataAddScheduledCharge `json:"add_scheduled_charges"`
 	AddSpendThresholdConfiguration          shared.SpendThresholdConfigurationV2                     `json:"add_spend_threshold_configuration"`
 	// List of subscriptions on the contract.
-	AddSubscriptions        []shared.Subscription                                        `json:"add_subscriptions"`
+	AddSubscriptions        []V2ContractGetEditHistoryResponseDataAddSubscription        `json:"add_subscriptions"`
 	AddUsageFilters         []V2ContractGetEditHistoryResponseDataAddUsageFilter         `json:"add_usage_filters"`
 	ArchiveCommits          []V2ContractGetEditHistoryResponseDataArchiveCommit          `json:"archive_commits"`
 	ArchiveCredits          []V2ContractGetEditHistoryResponseDataArchiveCredit          `json:"archive_credits"`
@@ -1150,6 +1150,255 @@ func (r V2ContractGetEditHistoryResponseDataAddScheduledChargeProduct) RawJSON()
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataAddScheduledChargeProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscription struct {
+	// Previous, current, and next billing periods for the subscription.
+	BillingPeriods V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriods `json:"billing_periods" api:"required"`
+	// Any of "ADVANCE", "ARREARS".
+	CollectionSchedule string                                                       `json:"collection_schedule" api:"required"`
+	Proration          V2ContractGetEditHistoryResponseDataAddSubscriptionProration `json:"proration" api:"required"`
+	// Determines how the subscription's quantity is controlled. Defaults to
+	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+	// directly on the subscription. `initial_quantity` must be provided with this
+	// option. Compatible with recurring commits/credits that use POOLED allocation.
+	// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+	// user_123) to increment and decrement a subscription quantity, rather than
+	// directly providing the quantity. You must use a **SEAT_BASED** subscription to
+	// use a linked recurring credit with an allocation per seat. `seat_config` must be
+	// provided with this option.
+	//
+	// Any of "SEAT_BASED", "QUANTITY_ONLY".
+	QuantityManagementMode string `json:"quantity_management_mode" api:"required"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []V2ContractGetEditHistoryResponseDataAddSubscriptionQuantitySchedule `json:"quantity_schedule" api:"required"`
+	StartingAt       time.Time                                                             `json:"starting_at" api:"required" format:"date-time"`
+	SubscriptionRate V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
+	ID               string                                                                `json:"id" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields     map[string]string                                             `json:"custom_fields"`
+	Description      string                                                        `json:"description"`
+	EndingBefore     time.Time                                                     `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                                                        `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                                                        `json:"name"`
+	SeatConfig       V2ContractGetEditHistoryResponseDataAddSubscriptionSeatConfig `json:"seat_config"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingPeriods         respjson.Field
+		CollectionSchedule     respjson.Field
+		Proration              respjson.Field
+		QuantityManagementMode respjson.Field
+		QuantitySchedule       respjson.Field
+		StartingAt             respjson.Field
+		SubscriptionRate       respjson.Field
+		ID                     respjson.Field
+		CustomFields           respjson.Field
+		Description            respjson.Field
+		EndingBefore           respjson.Field
+		FiatCreditTypeID       respjson.Field
+		Name                   respjson.Field
+		SeatConfig             respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscription) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractGetEditHistoryResponseDataAddSubscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Previous, current, and next billing periods for the subscription.
+type V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriods struct {
+	Current  V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsCurrent  `json:"current"`
+	Next     V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsNext     `json:"next"`
+	Previous V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsPrevious `json:"previous"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Current     respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriods) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriods) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsCurrent struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsCurrent) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsCurrent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsNext struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsNext) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsNext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsPrevious struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsPrevious) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriodsPrevious) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionProration struct {
+	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
+	InvoiceBehavior string `json:"invoice_behavior" api:"required"`
+	IsProrated      bool   `json:"is_prorated" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceBehavior respjson.Field
+		IsProrated      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionProration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionProration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionQuantitySchedule struct {
+	Quantity     float64   `json:"quantity" api:"required"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity     respjson.Field
+		StartingAt   respjson.Field
+		EndingBefore respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionQuantitySchedule) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionQuantitySchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRate struct {
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency string                                                                     `json:"billing_frequency" api:"required"`
+	Product          V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRateProduct `json:"product" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingFrequency respjson.Field
+		Product          respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRate) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRateProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRateProduct) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRateProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataAddSubscriptionSeatConfig struct {
+	// The property name, sent on usage events, that identifies the seat ID associated
+	// with the usage event. For example, the property name might be seat_id or
+	// user_id. The property must be set as a group key on billable metrics and a
+	// presentation/pricing group key on contract products. This allows linked
+	// recurring credits with an allocation per seat to be consumed by only one seat's
+	// usage.
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatGroupKey respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddSubscriptionSeatConfig) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionSeatConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
