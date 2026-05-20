@@ -63,7 +63,6 @@ type V1Service struct {
 	Invoices  V1InvoiceService
 	Contracts V1ContractService
 	Packages  V1PackageService
-	Payments  V1PaymentService
 	// Use these endpoints to configure a billing API key, a webhook secret, or invoice
 	// finalization behavior.
 	Settings V1SettingService
@@ -89,7 +88,6 @@ func NewV1Service(opts ...option.RequestOption) (r V1Service) {
 	r.Invoices = NewV1InvoiceService(opts...)
 	r.Contracts = NewV1ContractService(opts...)
 	r.Packages = NewV1PackageService(opts...)
-	r.Payments = NewV1PaymentService(opts...)
 	r.Settings = NewV1SettingService(opts...)
 	return
 }
