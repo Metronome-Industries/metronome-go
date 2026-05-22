@@ -154,10 +154,9 @@ func (r *V1PackageService) Archive(ctx context.Context, body V1PackageArchivePar
 //
 // ### **Usage guidelines:**
 //
-// Use the **`starting_at`**, **`covering_date`**,
-// and **`include_archived`** parameters to filter the list of returned contracts.
-// For example, to list only currently active contracts,
-// pass **`covering_date`** equal to the current time.
+// Use the **`starting_at`**, **`covering_date`**, and **`include_archived`**
+// parameters to filter the list of returned contracts. For example, to list only
+// currently active contracts, pass **`covering_date`** equal to the current time.
 func (r *V1PackageService) ListContractsOnPackage(ctx context.Context, params V1PackageListContractsOnPackageParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1PackageListContractsOnPackageResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -188,10 +187,9 @@ func (r *V1PackageService) ListContractsOnPackage(ctx context.Context, params V1
 //
 // ### **Usage guidelines:**
 //
-// Use the **`starting_at`**, **`covering_date`**,
-// and **`include_archived`** parameters to filter the list of returned contracts.
-// For example, to list only currently active contracts,
-// pass **`covering_date`** equal to the current time.
+// Use the **`starting_at`**, **`covering_date`**, and **`include_archived`**
+// parameters to filter the list of returned contracts. For example, to list only
+// currently active contracts, pass **`covering_date`** equal to the current time.
 func (r *V1PackageService) ListContractsOnPackageAutoPaging(ctx context.Context, params V1PackageListContractsOnPackageParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1PackageListContractsOnPackageResponse] {
 	return pagination.NewCursorPageAutoPager(r.ListContractsOnPackage(ctx, params, opts...))
 }
@@ -269,6 +267,7 @@ type V1PackageGetResponseData struct {
 	// Any of "ALL".
 	ScheduledChargesOnUsageInvoices string                                 `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     shared.SpendThresholdConfiguration     `json:"spend_threshold_configuration"`
+	SpendTrackers                   []V1PackageGetResponseDataSpendTracker `json:"spend_trackers"`
 	Subscriptions                   []V1PackageGetResponseDataSubscription `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
@@ -299,6 +298,7 @@ type V1PackageGetResponseData struct {
 		RecurringCredits                     respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field
 		SpendThresholdConfiguration          respjson.Field
+		SpendTrackers                        respjson.Field
 		Subscriptions                        respjson.Field
 		UniquenessKey                        respjson.Field
 		ExtraFields                          map[string]respjson.Field
@@ -1437,6 +1437,55 @@ func (r *V1PackageGetResponseDataRecurringCreditSubscriptionConfigApplySeatIncre
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type V1PackageGetResponseDataSpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                                         `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []V1PackageGetResponseDataSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers" api:"required"`
+	CreditTypeID              string                                                         `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency string `json:"reset_frequency" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Alias                     respjson.Field
+		ApplicableSpendSpecifiers respjson.Field
+		CreditTypeID              respjson.Field
+		ResetFrequency            respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1PackageGetResponseDataSpendTracker) RawJSON() string { return r.JSON.raw }
+func (r *V1PackageGetResponseDataSpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1PackageGetResponseDataSpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type" api:"required"`
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Sources     respjson.Field
+		SpendType   respjson.Field
+		Discounted  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1PackageGetResponseDataSpendTrackerApplicableSpendSpecifier) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1PackageGetResponseDataSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1PackageGetResponseDataSubscription struct {
 	// Any of "ADVANCE", "ARREARS".
 	CollectionSchedule string                                               `json:"collection_schedule" api:"required"`
@@ -1649,6 +1698,7 @@ type V1PackageListResponse struct {
 	// Any of "ALL".
 	ScheduledChargesOnUsageInvoices V1PackageListResponseScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     shared.SpendThresholdConfiguration                   `json:"spend_threshold_configuration"`
+	SpendTrackers                   []V1PackageListResponseSpendTracker                  `json:"spend_trackers"`
 	Subscriptions                   []V1PackageListResponseSubscription                  `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
 	// with a previously used uniqueness key, a new record will not be created and the
@@ -1679,6 +1729,7 @@ type V1PackageListResponse struct {
 		RecurringCredits                     respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field
 		SpendThresholdConfiguration          respjson.Field
+		SpendTrackers                        respjson.Field
 		Subscriptions                        respjson.Field
 		UniquenessKey                        respjson.Field
 		ExtraFields                          map[string]respjson.Field
@@ -2854,6 +2905,55 @@ const (
 	V1PackageListResponseScheduledChargesOnUsageInvoicesAll V1PackageListResponseScheduledChargesOnUsageInvoices = "ALL"
 )
 
+type V1PackageListResponseSpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                                      `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []V1PackageListResponseSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers" api:"required"`
+	CreditTypeID              string                                                      `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency string `json:"reset_frequency" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Alias                     respjson.Field
+		ApplicableSpendSpecifiers respjson.Field
+		CreditTypeID              respjson.Field
+		ResetFrequency            respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1PackageListResponseSpendTracker) RawJSON() string { return r.JSON.raw }
+func (r *V1PackageListResponseSpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1PackageListResponseSpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type" api:"required"`
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Sources     respjson.Field
+		SpendType   respjson.Field
+		Discounted  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1PackageListResponseSpendTrackerApplicableSpendSpecifier) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1PackageListResponseSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1PackageListResponseSubscription struct {
 	// Any of "ADVANCE", "ARREARS".
 	CollectionSchedule string                                            `json:"collection_schedule" api:"required"`
@@ -3108,6 +3208,7 @@ type V1PackageNewParams struct {
 	// Any of "ALL".
 	ScheduledChargesOnUsageInvoices V1PackageNewParamsScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices,omitzero"`
 	SpendThresholdConfiguration     shared.SpendThresholdConfigurationParam           `json:"spend_threshold_configuration,omitzero"`
+	SpendTrackers                   []V1PackageNewParamsSpendTracker                  `json:"spend_trackers,omitzero"`
 	Subscriptions                   []V1PackageNewParamsSubscription                  `json:"subscriptions,omitzero"`
 	UsageStatementSchedule          V1PackageNewParamsUsageStatementSchedule          `json:"usage_statement_schedule,omitzero"`
 	paramObj
@@ -4294,6 +4395,62 @@ type V1PackageNewParamsScheduledChargesOnUsageInvoices string
 const (
 	V1PackageNewParamsScheduledChargesOnUsageInvoicesAll V1PackageNewParamsScheduledChargesOnUsageInvoices = "ALL"
 )
+
+// The properties Alias, ApplicableSpendSpecifiers, CreditTypeID, ResetFrequency
+// are required.
+type V1PackageNewParamsSpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                                   `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []V1PackageNewParamsSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers,omitzero" api:"required"`
+	CreditTypeID              string                                                   `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency string `json:"reset_frequency,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1PackageNewParamsSpendTracker) MarshalJSON() (data []byte, err error) {
+	type shadow V1PackageNewParamsSpendTracker
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1PackageNewParamsSpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsSpendTracker](
+		"reset_frequency", "BILLING_PERIOD",
+	)
+}
+
+// The properties Sources, SpendType are required.
+type V1PackageNewParamsSpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources,omitzero" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type,omitzero" api:"required"`
+	// Filter by whether the spend was discounted. Defaults to ANY if omitted.
+	//
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted,omitzero"`
+	paramObj
+}
+
+func (r V1PackageNewParamsSpendTrackerApplicableSpendSpecifier) MarshalJSON() (data []byte, err error) {
+	type shadow V1PackageNewParamsSpendTrackerApplicableSpendSpecifier
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1PackageNewParamsSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsSpendTrackerApplicableSpendSpecifier](
+		"spend_type", "COMMIT_PURCHASE",
+	)
+	apijson.RegisterFieldValidator[V1PackageNewParamsSpendTrackerApplicableSpendSpecifier](
+		"discounted", "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY",
+	)
+}
 
 // The properties CollectionSchedule, Proration, SubscriptionRate are required.
 type V1PackageNewParamsSubscription struct {

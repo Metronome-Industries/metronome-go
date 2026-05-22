@@ -94,6 +94,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: []string{"string"},
 			}},
+			SpendTrackerAttributes: metronome.V1ContractNewParamsCommitSpendTrackerAttributes{
+				CountsAsDiscounted: true,
+			},
 			TemporaryID: metronome.String("temporary_id"),
 		}},
 		Credits: []metronome.V1ContractNewParamsCredit{{
@@ -267,6 +270,10 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			DiscountConfiguration: shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam{
 				PaymentFraction: 0,
+				Cap: shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam{
+					Amount:            0,
+					SpendTrackerAlias: "spend_tracker_alias",
+				},
 			},
 		},
 		ProfessionalServices: []metronome.V1ContractNewParamsProfessionalService{{
@@ -463,8 +470,22 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			ThresholdAmount: 0,
 			DiscountConfiguration: shared.SpendThresholdConfigurationDiscountConfigurationParam{
 				PaymentFraction: 0,
+				Cap: shared.SpendThresholdConfigurationDiscountConfigurationCapParam{
+					Amount:            0,
+					SpendTrackerAlias: "spend_tracker_alias",
+				},
 			},
 		},
+		SpendTrackers: []metronome.V1ContractNewParamsSpendTracker{{
+			Alias: "alias",
+			ApplicableSpendSpecifiers: []metronome.V1ContractNewParamsSpendTrackerApplicableSpendSpecifier{{
+				Sources:    []string{"THRESHOLD_RECHARGE"},
+				SpendType:  "COMMIT_PURCHASE",
+				Discounted: "ANY",
+			}},
+			CreditTypeID:   "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			ResetFrequency: "BILLING_PERIOD",
+		}},
 		Subscriptions: []metronome.V1ContractNewParamsSubscription{{
 			CollectionSchedule: "ADVANCE",
 			Proration: metronome.V1ContractNewParamsSubscriptionProration{
@@ -685,6 +706,9 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: []string{"string"},
 			}},
+			SpendTrackerAttributes: metronome.V1ContractAmendParamsCommitSpendTrackerAttributes{
+				CountsAsDiscounted: true,
+			},
 			TemporaryID: metronome.String("temporary_id"),
 		}},
 		Credits: []metronome.V1ContractAmendParamsCredit{{

@@ -721,6 +721,8 @@ type V1ContractListBalancesResponseUnion struct {
 	RolloverFraction        float64                  `json:"rollover_fraction"`
 	SalesforceOpportunityID string                   `json:"salesforce_opportunity_id"`
 	Specifiers              []shared.CommitSpecifier `json:"specifiers"`
+	// This field is from variant [shared.Commit].
+	SpendTrackerAttributes shared.CommitSpendTrackerAttributes `json:"spend_tracker_attributes"`
 	// This field is a union of [shared.CommitSubscriptionConfig],
 	// [shared.CreditSubscriptionConfig]
 	SubscriptionConfig V1ContractListBalancesResponseUnionSubscriptionConfig `json:"subscription_config"`
@@ -755,6 +757,7 @@ type V1ContractListBalancesResponseUnion struct {
 		RolloverFraction        respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
+		SpendTrackerAttributes  respjson.Field
 		SubscriptionConfig      respjson.Field
 		UniquenessKey           respjson.Field
 		RecurringCreditID       respjson.Field
@@ -1361,6 +1364,9 @@ type V1ContractNewParams struct {
 	// Any of "ALL".
 	ScheduledChargesOnUsageInvoices V1ContractNewParamsScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices,omitzero"`
 	SpendThresholdConfiguration     shared.SpendThresholdConfigurationParam            `json:"spend_threshold_configuration,omitzero"`
+	// Spend trackers to attach to this contract. Aliases must be unique within a
+	// contract.
+	SpendTrackers []V1ContractNewParamsSpendTracker `json:"spend_trackers,omitzero"`
 	// Optional list of
 	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
 	// to add to the contract.
@@ -1464,6 +1470,8 @@ type V1ContractNewParamsCommit struct {
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+	// Optional attributes for spend tracker integration. Immutable after creation.
+	SpendTrackerAttributes V1ContractNewParamsCommitSpendTrackerAttributes `json:"spend_tracker_attributes,omitzero"`
 	paramObj
 }
 
@@ -1620,6 +1628,24 @@ func (r V1ContractNewParamsCommitInvoiceScheduleScheduleItem) MarshalJSON() (dat
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V1ContractNewParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional attributes for spend tracker integration. Immutable after creation.
+//
+// The property CountsAsDiscounted is required.
+type V1ContractNewParamsCommitSpendTrackerAttributes struct {
+	// If true, this commit will be included in spend trackers with discounted set to
+	// DISCOUNTED_ONLY
+	CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsCommitSpendTrackerAttributes) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsCommitSpendTrackerAttributes
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsCommitSpendTrackerAttributes) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2702,6 +2728,62 @@ const (
 	V1ContractNewParamsScheduledChargesOnUsageInvoicesAll V1ContractNewParamsScheduledChargesOnUsageInvoices = "ALL"
 )
 
+// The properties Alias, ApplicableSpendSpecifiers, CreditTypeID, ResetFrequency
+// are required.
+type V1ContractNewParamsSpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                                    `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []V1ContractNewParamsSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers,omitzero" api:"required"`
+	CreditTypeID              string                                                    `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency string `json:"reset_frequency,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsSpendTracker) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsSpendTracker
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsSpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsSpendTracker](
+		"reset_frequency", "BILLING_PERIOD",
+	)
+}
+
+// The properties Sources, SpendType are required.
+type V1ContractNewParamsSpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources,omitzero" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type,omitzero" api:"required"`
+	// Filter by whether the spend was discounted. Defaults to ANY if omitted.
+	//
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsSpendTrackerApplicableSpendSpecifier) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsSpendTrackerApplicableSpendSpecifier
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsSpendTrackerApplicableSpendSpecifier](
+		"spend_type", "COMMIT_PURCHASE",
+	)
+	apijson.RegisterFieldValidator[V1ContractNewParamsSpendTrackerApplicableSpendSpecifier](
+		"discounted", "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY",
+	)
+}
+
 // The properties CollectionSchedule, Proration, SubscriptionRate are required.
 type V1ContractNewParamsSubscription struct {
 	// Any of "ADVANCE", "ARREARS".
@@ -3086,6 +3168,8 @@ type V1ContractAmendParamsCommit struct {
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
 	// be used together with `applicable_product_ids` or `applicable_product_tags`.
 	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+	// Optional attributes for spend tracker integration. Immutable after creation.
+	SpendTrackerAttributes V1ContractAmendParamsCommitSpendTrackerAttributes `json:"spend_tracker_attributes,omitzero"`
 	paramObj
 }
 
@@ -3242,6 +3326,24 @@ func (r V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) MarshalJSON() (d
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional attributes for spend tracker integration. Immutable after creation.
+//
+// The property CountsAsDiscounted is required.
+type V1ContractAmendParamsCommitSpendTrackerAttributes struct {
+	// If true, this commit will be included in spend trackers with discounted set to
+	// DISCOUNTED_ONLY
+	CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
+	paramObj
+}
+
+func (r V1ContractAmendParamsCommitSpendTrackerAttributes) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractAmendParamsCommitSpendTrackerAttributes
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractAmendParamsCommitSpendTrackerAttributes) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

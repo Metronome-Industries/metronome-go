@@ -205,6 +205,8 @@ type Commit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []CommitSpecifier `json:"specifiers"`
+	// Optional attributes controlling how this commit interacts with spend trackers.
+	SpendTrackerAttributes CommitSpendTrackerAttributes `json:"spend_tracker_attributes"`
 	// The subscription configuration for this commit, if it was generated from a
 	// recurring commit with a subscription attached.
 	SubscriptionConfig CommitSubscriptionConfig `json:"subscription_config"`
@@ -242,6 +244,7 @@ type Commit struct {
 		RolloverFraction        respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
+		SpendTrackerAttributes  respjson.Field
 		SubscriptionConfig      respjson.Field
 		UniquenessKey           respjson.Field
 		ExtraFields             map[string]respjson.Field
@@ -798,6 +801,25 @@ func (r *CommitRolledOverFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Optional attributes controlling how this commit interacts with spend trackers.
+type CommitSpendTrackerAttributes struct {
+	// If true, this commit is included in spend trackers with discounted set to
+	// DISCOUNTED_ONLY
+	CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CountsAsDiscounted respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommitSpendTrackerAttributes) RawJSON() string { return r.JSON.raw }
+func (r *CommitSpendTrackerAttributes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The subscription configuration for this commit, if it was generated from a
 // recurring commit with a subscription attached.
 type CommitSubscriptionConfig struct {
@@ -1274,6 +1296,8 @@ type Contract struct {
 	// Any of "ALL".
 	ScheduledChargesOnUsageInvoices ContractScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     SpendThresholdConfiguration             `json:"spend_threshold_configuration"`
+	// Spend trackers attached to this contract.
+	SpendTrackers []ContractSpendTracker `json:"spend_trackers"`
 	// List of subscriptions on the contract.
 	Subscriptions []Subscription `json:"subscriptions"`
 	// Prevents the creation of duplicates. If a request to create a record is made
@@ -1294,6 +1318,7 @@ type Contract struct {
 		PrepaidBalanceThresholdConfiguration respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field
 		SpendThresholdConfiguration          respjson.Field
+		SpendTrackers                        respjson.Field
 		Subscriptions                        respjson.Field
 		UniquenessKey                        respjson.Field
 		ExtraFields                          map[string]respjson.Field
@@ -1430,6 +1455,75 @@ const (
 	ContractScheduledChargesOnUsageInvoicesAll ContractScheduledChargesOnUsageInvoices = "ALL"
 )
 
+type ContractSpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                         `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []ContractSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers" api:"required"`
+	CreditTypeID              string                                         `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency   string                               `json:"reset_frequency" api:"required"`
+	AccumulatedSpend ContractSpendTrackerAccumulatedSpend `json:"accumulated_spend"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Alias                     respjson.Field
+		ApplicableSpendSpecifiers respjson.Field
+		CreditTypeID              respjson.Field
+		ResetFrequency            respjson.Field
+		AccumulatedSpend          respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractSpendTracker) RawJSON() string { return r.JSON.raw }
+func (r *ContractSpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractSpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type" api:"required"`
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Sources     respjson.Field
+		SpendType   respjson.Field
+		Discounted  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractSpendTrackerApplicableSpendSpecifier) RawJSON() string { return r.JSON.raw }
+func (r *ContractSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractSpendTrackerAccumulatedSpend struct {
+	Amount             float64   `json:"amount" api:"required"`
+	PeriodEndingBefore time.Time `json:"period_ending_before" api:"required" format:"date-time"`
+	PeriodStartingAt   time.Time `json:"period_starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount             respjson.Field
+		PeriodEndingBefore respjson.Field
+		PeriodStartingAt   respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractSpendTrackerAccumulatedSpend) RawJSON() string { return r.JSON.raw }
+func (r *ContractSpendTrackerAccumulatedSpend) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ContractV2 struct {
 	ID                     string                           `json:"id" api:"required" format:"uuid"`
 	Commits                []ContractV2Commit               `json:"commits" api:"required"`
@@ -1489,6 +1583,8 @@ type ContractV2 struct {
 	// Any of "ALL".
 	ScheduledChargesOnUsageInvoices ContractV2ScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     SpendThresholdConfigurationV2             `json:"spend_threshold_configuration"`
+	// Spend trackers attached to this contract.
+	SpendTrackers []ContractV2SpendTracker `json:"spend_trackers"`
 	// List of subscriptions on the contract.
 	Subscriptions      []ContractV2Subscription `json:"subscriptions"`
 	TotalContractValue float64                  `json:"total_contract_value"`
@@ -1529,6 +1625,7 @@ type ContractV2 struct {
 		SalesforceOpportunityID              respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field
 		SpendThresholdConfiguration          respjson.Field
+		SpendTrackers                        respjson.Field
 		Subscriptions                        respjson.Field
 		TotalContractValue                   respjson.Field
 		UniquenessKey                        respjson.Field
@@ -1601,6 +1698,8 @@ type ContractV2Commit struct {
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown.
 	Specifiers []CommitSpecifier `json:"specifiers"`
+	// Optional attributes controlling how this commit interacts with spend trackers.
+	SpendTrackerAttributes ContractV2CommitSpendTrackerAttributes `json:"spend_tracker_attributes"`
 	// Attach a subscription to the recurring commit/credit.
 	SubscriptionConfig RecurringCommitSubscriptionConfig `json:"subscription_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1631,6 +1730,7 @@ type ContractV2Commit struct {
 		RolloverFraction        respjson.Field
 		SalesforceOpportunityID respjson.Field
 		Specifiers              respjson.Field
+		SpendTrackerAttributes  respjson.Field
 		SubscriptionConfig      respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
@@ -2177,6 +2277,25 @@ type ContractV2CommitRolledOverFrom struct {
 // Returns the unmodified JSON received from the API
 func (r ContractV2CommitRolledOverFrom) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2CommitRolledOverFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional attributes controlling how this commit interacts with spend trackers.
+type ContractV2CommitSpendTrackerAttributes struct {
+	// If true, this commit is included in spend trackers with discounted set to
+	// DISCOUNTED_ONLY
+	CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CountsAsDiscounted respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2CommitSpendTrackerAttributes) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2CommitSpendTrackerAttributes) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3455,6 +3574,75 @@ const (
 	ContractV2ScheduledChargesOnUsageInvoicesAll ContractV2ScheduledChargesOnUsageInvoices = "ALL"
 )
 
+type ContractV2SpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                           `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []ContractV2SpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers" api:"required"`
+	CreditTypeID              string                                           `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency   string                                 `json:"reset_frequency" api:"required"`
+	AccumulatedSpend ContractV2SpendTrackerAccumulatedSpend `json:"accumulated_spend"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Alias                     respjson.Field
+		ApplicableSpendSpecifiers respjson.Field
+		CreditTypeID              respjson.Field
+		ResetFrequency            respjson.Field
+		AccumulatedSpend          respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SpendTracker) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type" api:"required"`
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Sources     respjson.Field
+		SpendType   respjson.Field
+		Discounted  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SpendTrackerApplicableSpendSpecifier) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SpendTrackerAccumulatedSpend struct {
+	Amount             float64   `json:"amount" api:"required"`
+	PeriodEndingBefore time.Time `json:"period_ending_before" api:"required" format:"date-time"`
+	PeriodStartingAt   time.Time `json:"period_starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount             respjson.Field
+		PeriodEndingBefore respjson.Field
+		PeriodStartingAt   respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SpendTrackerAccumulatedSpend) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SpendTrackerAccumulatedSpend) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ContractV2Subscription struct {
 	// Previous, current, and next billing periods for the subscription.
 	BillingPeriods ContractV2SubscriptionBillingPeriods `json:"billing_periods" api:"required"`
@@ -3725,6 +3913,8 @@ type ContractWithoutAmendments struct {
 	// Any of "ALL".
 	ScheduledChargesOnUsageInvoices ContractWithoutAmendmentsScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices"`
 	SpendThresholdConfiguration     SpendThresholdConfiguration                              `json:"spend_threshold_configuration"`
+	// Spend trackers attached to this contract.
+	SpendTrackers []ContractWithoutAmendmentsSpendTracker `json:"spend_trackers"`
 	// This field's availability is dependent on your client's configuration.
 	TotalContractValue float64                              `json:"total_contract_value"`
 	UsageFilter        ContractWithoutAmendmentsUsageFilter `json:"usage_filter"`
@@ -3754,6 +3944,7 @@ type ContractWithoutAmendments struct {
 		SalesforceOpportunityID              respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field
 		SpendThresholdConfiguration          respjson.Field
+		SpendTrackers                        respjson.Field
 		TotalContractValue                   respjson.Field
 		UsageFilter                          respjson.Field
 		ExtraFields                          map[string]respjson.Field
@@ -4205,6 +4396,77 @@ type ContractWithoutAmendmentsScheduledChargesOnUsageInvoices string
 const (
 	ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll ContractWithoutAmendmentsScheduledChargesOnUsageInvoices = "ALL"
 )
+
+type ContractWithoutAmendmentsSpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                                          `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []ContractWithoutAmendmentsSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers" api:"required"`
+	CreditTypeID              string                                                          `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency   string                                                `json:"reset_frequency" api:"required"`
+	AccumulatedSpend ContractWithoutAmendmentsSpendTrackerAccumulatedSpend `json:"accumulated_spend"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Alias                     respjson.Field
+		ApplicableSpendSpecifiers respjson.Field
+		CreditTypeID              respjson.Field
+		ResetFrequency            respjson.Field
+		AccumulatedSpend          respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractWithoutAmendmentsSpendTracker) RawJSON() string { return r.JSON.raw }
+func (r *ContractWithoutAmendmentsSpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractWithoutAmendmentsSpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type" api:"required"`
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Sources     respjson.Field
+		SpendType   respjson.Field
+		Discounted  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractWithoutAmendmentsSpendTrackerApplicableSpendSpecifier) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractWithoutAmendmentsSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractWithoutAmendmentsSpendTrackerAccumulatedSpend struct {
+	Amount             float64   `json:"amount" api:"required"`
+	PeriodEndingBefore time.Time `json:"period_ending_before" api:"required" format:"date-time"`
+	PeriodStartingAt   time.Time `json:"period_starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount             respjson.Field
+		PeriodEndingBefore respjson.Field
+		PeriodStartingAt   respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractWithoutAmendmentsSpendTrackerAccumulatedSpend) RawJSON() string { return r.JSON.raw }
+func (r *ContractWithoutAmendmentsSpendTrackerAccumulatedSpend) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ContractWithoutAmendmentsUsageFilter struct {
 	Current BaseUsageFilter                              `json:"current" api:"required"`
@@ -5722,9 +5984,13 @@ type PrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
 	// discount. For example, 0.85 means the customer pays 85% of the original amount
 	// (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// If provided, the discount stops applying once the spend tracker has accumulated
+	// this much spend in the billing period.
+	Cap PrepaidBalanceThresholdConfigurationDiscountConfigurationCap `json:"cap"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PaymentFraction respjson.Field
+		Cap             respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -5735,6 +6001,30 @@ func (r PrepaidBalanceThresholdConfigurationDiscountConfiguration) RawJSON() str
 	return r.JSON.raw
 }
 func (r *PrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+type PrepaidBalanceThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationDiscountConfigurationCap) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5798,6 +6088,9 @@ type PrepaidBalanceThresholdConfigurationDiscountConfigurationParam struct {
 	// discount. For example, 0.85 means the customer pays 85% of the original amount
 	// (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// If provided, the discount stops applying once the spend tracker has accumulated
+	// this much spend in the billing period.
+	Cap PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam `json:"cap,omitzero"`
 	paramObj
 }
 
@@ -5806,6 +6099,26 @@ func (r PrepaidBalanceThresholdConfigurationDiscountConfigurationParam) MarshalJ
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// The properties Amount, SpendTrackerAlias are required.
+type PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5893,9 +6206,13 @@ type PrepaidBalanceThresholdConfigurationV2DiscountConfiguration struct {
 	// discount. For example, 0.85 means the customer pays 85% of the original amount
 	// (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// If provided, the discount stops applying once the spend tracker has accumulated
+	// this much spend in the billing period.
+	Cap PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap `json:"cap"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PaymentFraction respjson.Field
+		Cap             respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -5906,6 +6223,30 @@ func (r PrepaidBalanceThresholdConfigurationV2DiscountConfiguration) RawJSON() s
 	return r.JSON.raw
 }
 func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5971,6 +6312,9 @@ type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam struct {
 	// discount. For example, 0.85 means the customer pays 85% of the original amount
 	// (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// If provided, the discount stops applying once the spend tracker has accumulated
+	// this much spend in the billing period.
+	Cap PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam `json:"cap,omitzero"`
 	paramObj
 }
 
@@ -5979,6 +6323,26 @@ func (r PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam) Marsha
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// The properties Amount, SpendTrackerAlias are required.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6372,9 +6736,13 @@ type SpendThresholdConfigurationDiscountConfiguration struct {
 	// discount. For example, 0.85 means the customer pays 85% of the original amount
 	// (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// If provided, the discount stops applying once the spend tracker has accumulated
+	// this much spend in the billing period.
+	Cap SpendThresholdConfigurationDiscountConfigurationCap `json:"cap"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PaymentFraction respjson.Field
+		Cap             respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -6383,6 +6751,28 @@ type SpendThresholdConfigurationDiscountConfiguration struct {
 // Returns the unmodified JSON received from the API
 func (r SpendThresholdConfigurationDiscountConfiguration) RawJSON() string { return r.JSON.raw }
 func (r *SpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+type SpendThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendThresholdConfigurationDiscountConfigurationCap) RawJSON() string { return r.JSON.raw }
+func (r *SpendThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6416,6 +6806,9 @@ type SpendThresholdConfigurationDiscountConfigurationParam struct {
 	// discount. For example, 0.85 means the customer pays 85% of the original amount
 	// (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// If provided, the discount stops applying once the spend tracker has accumulated
+	// this much spend in the billing period.
+	Cap SpendThresholdConfigurationDiscountConfigurationCapParam `json:"cap,omitzero"`
 	paramObj
 }
 
@@ -6424,6 +6817,26 @@ func (r SpendThresholdConfigurationDiscountConfigurationParam) MarshalJSON() (da
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SpendThresholdConfigurationDiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// The properties Amount, SpendTrackerAlias are required.
+type SpendThresholdConfigurationDiscountConfigurationCapParam struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	paramObj
+}
+
+func (r SpendThresholdConfigurationDiscountConfigurationCapParam) MarshalJSON() (data []byte, err error) {
+	type shadow SpendThresholdConfigurationDiscountConfigurationCapParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SpendThresholdConfigurationDiscountConfigurationCapParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6471,9 +6884,13 @@ type SpendThresholdConfigurationV2DiscountConfiguration struct {
 	// discount. For example, 0.85 means the customer pays 85% of the original amount
 	// (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// If provided, the discount stops applying once the spend tracker has accumulated
+	// this much spend in the billing period.
+	Cap SpendThresholdConfigurationV2DiscountConfigurationCap `json:"cap"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PaymentFraction respjson.Field
+		Cap             respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -6482,6 +6899,28 @@ type SpendThresholdConfigurationV2DiscountConfiguration struct {
 // Returns the unmodified JSON received from the API
 func (r SpendThresholdConfigurationV2DiscountConfiguration) RawJSON() string { return r.JSON.raw }
 func (r *SpendThresholdConfigurationV2DiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+type SpendThresholdConfigurationV2DiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendThresholdConfigurationV2DiscountConfigurationCap) RawJSON() string { return r.JSON.raw }
+func (r *SpendThresholdConfigurationV2DiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6515,6 +6954,9 @@ type SpendThresholdConfigurationV2DiscountConfigurationParam struct {
 	// discount. For example, 0.85 means the customer pays 85% of the original amount
 	// (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"required"`
+	// If provided, the discount stops applying once the spend tracker has accumulated
+	// this much spend in the billing period.
+	Cap SpendThresholdConfigurationV2DiscountConfigurationCapParam `json:"cap,omitzero"`
 	paramObj
 }
 
@@ -6523,6 +6965,26 @@ func (r SpendThresholdConfigurationV2DiscountConfigurationParam) MarshalJSON() (
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SpendThresholdConfigurationV2DiscountConfigurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// The properties Amount, SpendTrackerAlias are required.
+type SpendThresholdConfigurationV2DiscountConfigurationCapParam struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	paramObj
+}
+
+func (r SpendThresholdConfigurationV2DiscountConfigurationCapParam) MarshalJSON() (data []byte, err error) {
+	type shadow SpendThresholdConfigurationV2DiscountConfigurationCapParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SpendThresholdConfigurationV2DiscountConfigurationCapParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
