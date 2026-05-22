@@ -2093,12 +2093,15 @@ func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfig
 }
 
 type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap `json:"cap" api:"nullable"`
 	// The fraction of the original amount that the customer pays after applying the
 	// discount. Set to null to remove the discount fraction. For example, 0.85 means
 	// the customer pays 85% of the original amount (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Cap             respjson.Field
 		PaymentFraction respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
@@ -2110,6 +2113,29 @@ func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigu
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2389,12 +2415,15 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration) 
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration struct {
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfigurationCap `json:"cap" api:"nullable"`
 	// The fraction of the original amount that the customer pays after applying the
 	// discount. Set to null to remove the discount fraction. For example, 0.85 means
 	// the customer pays 85% of the original amount (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Cap             respjson.Field
 		PaymentFraction respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
@@ -2406,6 +2435,29 @@ func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDis
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfigurationCap) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2668,6 +2720,9 @@ type V2ContractEditParams struct {
 	AddRevenueSystemConfigurationUpdate V2ContractEditParamsAddRevenueSystemConfigurationUpdate `json:"add_revenue_system_configuration_update,omitzero"`
 	AddScheduledCharges                 []V2ContractEditParamsAddScheduledCharge                `json:"add_scheduled_charges,omitzero"`
 	AddSpendThresholdConfiguration      shared.SpendThresholdConfigurationV2Param               `json:"add_spend_threshold_configuration,omitzero"`
+	// Spend trackers to add to this contract. Aliases must be unique within a
+	// contract.
+	AddSpendTrackers []V2ContractEditParamsAddSpendTracker `json:"add_spend_trackers,omitzero"`
 	// Optional list of
 	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
 	// to add to the contract.
@@ -2678,6 +2733,8 @@ type V2ContractEditParams struct {
 	ArchiveCredits []V2ContractEditParamsArchiveCredit `json:"archive_credits,omitzero"`
 	// IDs of scheduled charges to archive
 	ArchiveScheduledCharges []V2ContractEditParamsArchiveScheduledCharge `json:"archive_scheduled_charges,omitzero"`
+	// Aliases of spend trackers to archive.
+	ArchiveSpendTrackers []string `json:"archive_spend_trackers,omitzero"`
 	// IDs of overrides to remove
 	RemoveOverrides                            []V2ContractEditParamsRemoveOverride                           `json:"remove_overrides,omitzero"`
 	UpdateCommits                              []V2ContractEditParamsUpdateCommit                             `json:"update_commits,omitzero"`
@@ -2833,6 +2890,8 @@ type V2ContractEditParamsAddCommit struct {
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
 	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+	// Optional attributes for spend tracker integration. Immutable after creation.
+	SpendTrackerAttributes V2ContractEditParamsAddCommitSpendTrackerAttributes `json:"spend_tracker_attributes,omitzero"`
 	paramObj
 }
 
@@ -3088,6 +3147,24 @@ func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddCommitPaymentGateConfigStripeConfig](
 		"payment_type", "INVOICE", "PAYMENT_INTENT",
 	)
+}
+
+// Optional attributes for spend tracker integration. Immutable after creation.
+//
+// The property CountsAsDiscounted is required.
+type V2ContractEditParamsAddCommitSpendTrackerAttributes struct {
+	// If true, this commit will be included in spend trackers with discounted set to
+	// DISCOUNTED_ONLY
+	CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddCommitSpendTrackerAttributes) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddCommitSpendTrackerAttributes
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddCommitSpendTrackerAttributes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccessSchedule, ProductID are required.
@@ -4097,6 +4174,62 @@ func (r *V2ContractEditParamsAddScheduledChargeScheduleScheduleItem) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Alias, ApplicableSpendSpecifiers, CreditTypeID, ResetFrequency
+// are required.
+type V2ContractEditParamsAddSpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                                        `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers,omitzero" api:"required"`
+	CreditTypeID              string                                                        `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency string `json:"reset_frequency,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddSpendTracker) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddSpendTracker
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddSpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddSpendTracker](
+		"reset_frequency", "BILLING_PERIOD",
+	)
+}
+
+// The properties Sources, SpendType are required.
+type V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources,omitzero" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type,omitzero" api:"required"`
+	// Filter by whether the spend was discounted. Defaults to ANY if omitted.
+	//
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted,omitzero"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier](
+		"spend_type", "COMMIT_PURCHASE",
+	)
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier](
+		"discounted", "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY",
+	)
+}
+
 // The properties CollectionSchedule, Proration, SubscriptionRate are required.
 type V2ContractEditParamsAddSubscription struct {
 	// Any of "ADVANCE", "ARREARS".
@@ -4619,6 +4752,8 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfi
 	// discount. Set to null to remove the discount fraction. For example, 0.85 means
 	// the customer pays 85% of the original amount (a 15% discount).
 	PaymentFraction param.Opt[float64] `json:"payment_fraction,omitzero"`
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap `json:"cap,omitzero"`
 	paramObj
 }
 
@@ -4627,6 +4762,25 @@ func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountCo
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+//
+// The properties Amount, SpendTrackerAlias are required.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4834,6 +4988,8 @@ type V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration 
 	// discount. Set to null to remove the discount fraction. For example, 0.85 means
 	// the customer pays 85% of the original amount (a 15% discount).
 	PaymentFraction param.Opt[float64] `json:"payment_fraction,omitzero"`
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap `json:"cap,omitzero"`
 	paramObj
 }
 
@@ -4842,6 +4998,25 @@ func (r V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurati
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+//
+// The properties Amount, SpendTrackerAlias are required.
+type V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

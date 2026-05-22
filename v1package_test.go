@@ -218,6 +218,10 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			DiscountConfiguration: shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam{
 				PaymentFraction: 0,
+				Cap: shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam{
+					Amount:            0,
+					SpendTrackerAlias: "spend_tracker_alias",
+				},
 			},
 		},
 		RateCardAlias: metronome.String("rate_card_alias"),
@@ -365,8 +369,22 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 			ThresholdAmount: 0,
 			DiscountConfiguration: shared.SpendThresholdConfigurationDiscountConfigurationParam{
 				PaymentFraction: 0,
+				Cap: shared.SpendThresholdConfigurationDiscountConfigurationCapParam{
+					Amount:            0,
+					SpendTrackerAlias: "spend_tracker_alias",
+				},
 			},
 		},
+		SpendTrackers: []metronome.V1PackageNewParamsSpendTracker{{
+			Alias: "alias",
+			ApplicableSpendSpecifiers: []metronome.V1PackageNewParamsSpendTrackerApplicableSpendSpecifier{{
+				Sources:    []string{"THRESHOLD_RECHARGE"},
+				SpendType:  "COMMIT_PURCHASE",
+				Discounted: "ANY",
+			}},
+			CreditTypeID:   "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			ResetFrequency: "BILLING_PERIOD",
+		}},
 		Subscriptions: []metronome.V1PackageNewParamsSubscription{{
 			CollectionSchedule: "ADVANCE",
 			Proration: metronome.V1PackageNewParamsSubscriptionProration{
