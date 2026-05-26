@@ -923,6 +923,15 @@ type PrepaidBalanceThresholdConfigurationDiscountConfiguration = shared.PrepaidB
 type PrepaidBalanceThresholdConfigurationDiscountConfigurationCap = shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationCap
 
 // This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter
+
+// This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationParam = shared.PrepaidBalanceThresholdConfigurationParam
 
 // This is an alias to an internal type.
@@ -936,6 +945,15 @@ type PrepaidBalanceThresholdConfigurationDiscountConfigurationParam = shared.Pre
 //
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam = shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2 = shared.PrepaidBalanceThresholdConfigurationV2
@@ -953,6 +971,15 @@ type PrepaidBalanceThresholdConfigurationV2DiscountConfiguration = shared.Prepai
 type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap
 
 // This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExclude = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExclude
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilter = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilter
+
+// This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2Param = shared.PrepaidBalanceThresholdConfigurationV2Param
 
 // This is an alias to an internal type.
@@ -966,6 +993,15 @@ type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam = shared.P
 //
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam
 
 // This is an alias to an internal type.
 type PropertyFilter = shared.PropertyFilter
