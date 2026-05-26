@@ -275,6 +275,15 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 					SpendTrackerAlias: "spend_tracker_alias",
 				},
 			},
+			ThresholdBalanceSpecifiers: []shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam{{
+				Exclude: []shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam{{
+					CustomFieldFilters: []shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam{{
+						Entity: "Commit",
+						Key:    "key",
+						Value:  "value",
+					}},
+				}},
+			}},
 		},
 		ProfessionalServices: []metronome.V1ContractNewParamsProfessionalService{{
 			MaxAmount: 0,

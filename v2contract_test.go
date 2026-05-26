@@ -331,6 +331,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					SpendTrackerAlias: "spend_tracker_alias",
 				},
 			},
+			ThresholdBalanceSpecifiers: []shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam{{
+				Exclude: []shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam{{
+					CustomFieldFilters: []shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam{{
+						Entity: "Commit",
+						Key:    "key",
+						Value:  "value",
+					}},
+				}},
+			}},
 		},
 		AddProfessionalServices: []metronome.V2ContractEditParamsAddProfessionalService{{
 			MaxAmount: 0,
@@ -721,6 +730,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			},
 			RechargeToAmount: metronome.Float(0),
 			ThresholdAmount:  metronome.Float(0),
+			ThresholdBalanceSpecifiers: []metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier{{
+				Exclude: []metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude{{
+					CustomFieldFilters: []metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter{{
+						Entity: "Commit",
+						Key:    "key",
+						Value:  "value",
+					}},
+				}},
+			}},
 		},
 		UpdateRecurringCommits: []metronome.V2ContractEditParamsUpdateRecurringCommit{{
 			RecurringCommitID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",

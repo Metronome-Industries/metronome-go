@@ -5916,19 +5916,21 @@ type PrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID    string                                                    `json:"custom_credit_type_id" format:"uuid"`
-	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
+	CustomCreditTypeID         string                                                          `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration      PrepaidBalanceThresholdConfigurationDiscountConfiguration       `json:"discount_configuration"`
+	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit                respjson.Field
-		IsEnabled             respjson.Field
-		PaymentGateConfig     respjson.Field
-		RechargeToAmount      respjson.Field
-		ThresholdAmount       respjson.Field
-		CustomCreditTypeID    respjson.Field
-		DiscountConfiguration respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
+		Commit                     respjson.Field
+		IsEnabled                  respjson.Field
+		PaymentGateConfig          respjson.Field
+		RechargeToAmount           respjson.Field
+		ThresholdAmount            respjson.Field
+		CustomCreditTypeID         respjson.Field
+		DiscountConfiguration      respjson.Field
+		ThresholdBalanceSpecifiers respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
 }
 
@@ -6028,6 +6030,67 @@ func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationCap) Unmarshal
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier struct {
+	Exclude []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude `json:"exclude" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Exclude     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude struct {
+	// If provided, balances with all the custom fields will not be considered when
+	// evaluating threshold billing
+	CustomFieldFilters []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter `json:"custom_field_filters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomFieldFilters respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter struct {
+	// Any of "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entity      respjson.Field
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, RechargeToAmount,
 // ThresholdAmount are required.
 type PrepaidBalanceThresholdConfigurationParam struct {
@@ -6044,8 +6107,9 @@ type PrepaidBalanceThresholdConfigurationParam struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID    param.Opt[string]                                              `json:"custom_credit_type_id,omitzero" format:"uuid"`
-	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfigurationParam `json:"discount_configuration,omitzero"`
+	CustomCreditTypeID         param.Opt[string]                                                    `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration      PrepaidBalanceThresholdConfigurationDiscountConfigurationParam       `json:"discount_configuration,omitzero"`
+	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam `json:"threshold_balance_specifiers,omitzero"`
 	paramObj
 }
 
@@ -6122,6 +6186,59 @@ func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam) Unma
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Exclude is required.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam struct {
+	Exclude []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam `json:"exclude,omitzero" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property CustomFieldFilters is required.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam struct {
+	// If provided, balances with all the custom fields will not be considered when
+	// evaluating threshold billing
+	CustomFieldFilters []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam `json:"custom_field_filters,omitzero" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Entity, Key, Value are required.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam struct {
+	// Any of "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam](
+		"entity", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
+}
+
 type PrepaidBalanceThresholdConfigurationV2 struct {
 	Commit PrepaidBalanceThresholdConfigurationV2Commit `json:"commit" api:"required"`
 	// When set to false, the contract will not be evaluated against the
@@ -6136,19 +6253,21 @@ type PrepaidBalanceThresholdConfigurationV2 struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID    string                                                      `json:"custom_credit_type_id" format:"uuid"`
-	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration"`
+	CustomCreditTypeID         string                                                            `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration      PrepaidBalanceThresholdConfigurationV2DiscountConfiguration       `json:"discount_configuration"`
+	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier `json:"threshold_balance_specifiers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit                respjson.Field
-		IsEnabled             respjson.Field
-		PaymentGateConfig     respjson.Field
-		RechargeToAmount      respjson.Field
-		ThresholdAmount       respjson.Field
-		CustomCreditTypeID    respjson.Field
-		DiscountConfiguration respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
+		Commit                     respjson.Field
+		IsEnabled                  respjson.Field
+		PaymentGateConfig          respjson.Field
+		RechargeToAmount           respjson.Field
+		ThresholdAmount            respjson.Field
+		CustomCreditTypeID         respjson.Field
+		DiscountConfiguration      respjson.Field
+		ThresholdBalanceSpecifiers respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
 }
 
@@ -6250,6 +6369,65 @@ func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap) Unmarsh
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier struct {
+	Exclude []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExclude `json:"exclude" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Exclude     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExclude struct {
+	CustomFieldFilters []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilter `json:"custom_field_filters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomFieldFilters respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExclude) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilter struct {
+	// Any of "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entity      respjson.Field
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Commit, IsEnabled, PaymentGateConfig, RechargeToAmount,
 // ThresholdAmount are required.
 type PrepaidBalanceThresholdConfigurationV2Param struct {
@@ -6266,8 +6444,9 @@ type PrepaidBalanceThresholdConfigurationV2Param struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID    param.Opt[string]                                                `json:"custom_credit_type_id,omitzero" format:"uuid"`
-	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam `json:"discount_configuration,omitzero"`
+	CustomCreditTypeID         param.Opt[string]                                                      `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration      PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam       `json:"discount_configuration,omitzero"`
+	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam `json:"threshold_balance_specifiers,omitzero"`
 	paramObj
 }
 
@@ -6344,6 +6523,57 @@ func (r PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam) Mar
 }
 func (r *PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Exclude is required.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam struct {
+	Exclude []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam `json:"exclude,omitzero" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property CustomFieldFilters is required.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam struct {
+	CustomFieldFilters []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam `json:"custom_field_filters,omitzero" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Entity, Key, Value are required.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam struct {
+	// Any of "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam](
+		"entity", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
 }
 
 type PropertyFilter struct {
