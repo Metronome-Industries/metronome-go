@@ -211,7 +211,7 @@ func (r *V2ContractListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type V2ContractEditResponse struct {
-	Data shared.ID `json:"data" api:"required"`
+	Data V2ContractEditResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -223,6 +223,2409 @@ type V2ContractEditResponse struct {
 // Returns the unmodified JSON received from the API
 func (r V2ContractEditResponse) RawJSON() string { return r.JSON.raw }
 func (r *V2ContractEditResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseData struct {
+	ID   string                         `json:"id" api:"required" format:"uuid"`
+	Edit V2ContractEditResponseDataEdit `json:"edit"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Edit        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEdit struct {
+	ID                                      string                                             `json:"id" api:"required" format:"uuid"`
+	AddCommits                              []V2ContractEditResponseDataEditAddCommit          `json:"add_commits"`
+	AddCredits                              []V2ContractEditResponseDataEditAddCredit          `json:"add_credits"`
+	AddDiscounts                            []shared.Discount                                  `json:"add_discounts"`
+	AddOverrides                            []V2ContractEditResponseDataEditAddOverride        `json:"add_overrides"`
+	AddPrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfigurationV2      `json:"add_prepaid_balance_threshold_configuration"`
+	AddProServices                          []shared.ProService                                `json:"add_pro_services"`
+	AddRecurringCommits                     []V2ContractEditResponseDataEditAddRecurringCommit `json:"add_recurring_commits"`
+	AddRecurringCredits                     []V2ContractEditResponseDataEditAddRecurringCredit `json:"add_recurring_credits"`
+	AddResellerRoyalties                    []V2ContractEditResponseDataEditAddResellerRoyalty `json:"add_reseller_royalties"`
+	AddScheduledCharges                     []V2ContractEditResponseDataEditAddScheduledCharge `json:"add_scheduled_charges"`
+	AddSpendThresholdConfiguration          shared.SpendThresholdConfigurationV2               `json:"add_spend_threshold_configuration"`
+	// List of subscriptions on the contract.
+	AddSubscriptions        []V2ContractEditResponseDataEditAddSubscription        `json:"add_subscriptions"`
+	AddUsageFilters         []V2ContractEditResponseDataEditAddUsageFilter         `json:"add_usage_filters"`
+	ArchiveCommits          []V2ContractEditResponseDataEditArchiveCommit          `json:"archive_commits"`
+	ArchiveCredits          []V2ContractEditResponseDataEditArchiveCredit          `json:"archive_credits"`
+	ArchiveScheduledCharges []V2ContractEditResponseDataEditArchiveScheduledCharge `json:"archive_scheduled_charges"`
+	RemoveOverrides         []V2ContractEditResponseDataEditRemoveOverride         `json:"remove_overrides"`
+	Timestamp               time.Time                                              `json:"timestamp" format:"date-time"`
+	// Prevents the creation of duplicates. If a request to create a record is made
+	// with a previously used uniqueness key, a new record will not be created and the
+	// request will fail with a 409 error.
+	UniquenessKey         string                                       `json:"uniqueness_key"`
+	UpdateCommits         []V2ContractEditResponseDataEditUpdateCommit `json:"update_commits"`
+	UpdateContractEndDate time.Time                                    `json:"update_contract_end_date" format:"date-time"`
+	// Value to update the contract name to. If not provided, the contract name will
+	// remain unchanged.
+	UpdateContractName                         string                                                                   `json:"update_contract_name" api:"nullable"`
+	UpdateCredits                              []V2ContractEditResponseDataEditUpdateCredit                             `json:"update_credits"`
+	UpdateDiscounts                            []V2ContractEditResponseDataEditUpdateDiscount                           `json:"update_discounts"`
+	UpdatePrepaidBalanceThresholdConfiguration V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfiguration `json:"update_prepaid_balance_threshold_configuration"`
+	UpdateRecurringCommits                     []V2ContractEditResponseDataEditUpdateRecurringCommit                    `json:"update_recurring_commits"`
+	UpdateRecurringCredits                     []V2ContractEditResponseDataEditUpdateRecurringCredit                    `json:"update_recurring_credits"`
+	UpdateRefundInvoices                       []V2ContractEditResponseDataEditUpdateRefundInvoice                      `json:"update_refund_invoices"`
+	UpdateScheduledCharges                     []V2ContractEditResponseDataEditUpdateScheduledCharge                    `json:"update_scheduled_charges"`
+	UpdateSpendThresholdConfiguration          V2ContractEditResponseDataEditUpdateSpendThresholdConfiguration          `json:"update_spend_threshold_configuration"`
+	// Optional list of subscriptions to update.
+	UpdateSubscriptions []V2ContractEditResponseDataEditUpdateSubscription `json:"update_subscriptions"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                                         respjson.Field
+		AddCommits                                 respjson.Field
+		AddCredits                                 respjson.Field
+		AddDiscounts                               respjson.Field
+		AddOverrides                               respjson.Field
+		AddPrepaidBalanceThresholdConfiguration    respjson.Field
+		AddProServices                             respjson.Field
+		AddRecurringCommits                        respjson.Field
+		AddRecurringCredits                        respjson.Field
+		AddResellerRoyalties                       respjson.Field
+		AddScheduledCharges                        respjson.Field
+		AddSpendThresholdConfiguration             respjson.Field
+		AddSubscriptions                           respjson.Field
+		AddUsageFilters                            respjson.Field
+		ArchiveCommits                             respjson.Field
+		ArchiveCredits                             respjson.Field
+		ArchiveScheduledCharges                    respjson.Field
+		RemoveOverrides                            respjson.Field
+		Timestamp                                  respjson.Field
+		UniquenessKey                              respjson.Field
+		UpdateCommits                              respjson.Field
+		UpdateContractEndDate                      respjson.Field
+		UpdateContractName                         respjson.Field
+		UpdateCredits                              respjson.Field
+		UpdateDiscounts                            respjson.Field
+		UpdatePrepaidBalanceThresholdConfiguration respjson.Field
+		UpdateRecurringCommits                     respjson.Field
+		UpdateRecurringCredits                     respjson.Field
+		UpdateRefundInvoices                       respjson.Field
+		UpdateScheduledCharges                     respjson.Field
+		UpdateSpendThresholdConfiguration          respjson.Field
+		UpdateSubscriptions                        respjson.Field
+		ExtraFields                                map[string]respjson.Field
+		raw                                        string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEdit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEdit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddCommit struct {
+	ID      string                                         `json:"id" api:"required" format:"uuid"`
+	Product V2ContractEditResponseDataEditAddCommitProduct `json:"product" api:"required"`
+	// Any of "PREPAID", "POSTPAID".
+	Type string `json:"type" api:"required"`
+	// The schedule that the customer will gain access to the credits purposed with
+	// this commit.
+	AccessSchedule        shared.ScheduleDuration `json:"access_schedule"`
+	ApplicableProductIDs  []string                `json:"applicable_product_ids" format:"uuid"`
+	ApplicableProductTags []string                `json:"applicable_product_tags"`
+	Description           string                  `json:"description"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+	// The schedule that the customer will be invoiced for this commit.
+	InvoiceSchedule V2ContractEditResponseDataEditAddCommitInvoiceSchedule `json:"invoice_schedule"`
+	Name            string                                                 `json:"name"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// If multiple credits or commits are applicable, the one with the lower priority
+	// will apply first.
+	Priority float64 `json:"priority"`
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType         string  `json:"rate_type"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// This field's availability is dependent on your client's configuration.
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
+	Specifiers []shared.CommitSpecifierInput `json:"specifiers"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		Product                 respjson.Field
+		Type                    respjson.Field
+		AccessSchedule          respjson.Field
+		ApplicableProductIDs    respjson.Field
+		ApplicableProductTags   respjson.Field
+		Description             respjson.Field
+		HierarchyConfiguration  respjson.Field
+		InvoiceSchedule         respjson.Field
+		Name                    respjson.Field
+		NetsuiteSalesOrderID    respjson.Field
+		Priority                respjson.Field
+		RateType                respjson.Field
+		RolloverFraction        respjson.Field
+		SalesforceOpportunityID respjson.Field
+		Specifiers              respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCommit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddCommitProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCommitProduct) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddCommitProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The schedule that the customer will be invoiced for this commit.
+type V2ContractEditResponseDataEditAddCommitInvoiceSchedule struct {
+	CreditType shared.CreditTypeData `json:"credit_type"`
+	// If true, this schedule will not generate an invoice.
+	DoNotInvoice  bool                                                                 `json:"do_not_invoice"`
+	ScheduleItems []V2ContractEditResponseDataEditAddCommitInvoiceScheduleScheduleItem `json:"schedule_items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreditType    respjson.Field
+		DoNotInvoice  respjson.Field
+		ScheduleItems respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCommitInvoiceSchedule) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddCommitInvoiceSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddCommitInvoiceScheduleScheduleItem struct {
+	ID        string    `json:"id" api:"required" format:"uuid"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	Amount    float64   `json:"amount"`
+	InvoiceID string    `json:"invoice_id" api:"nullable" format:"uuid"`
+	Quantity  float64   `json:"quantity"`
+	UnitPrice float64   `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Timestamp   respjson.Field
+		Amount      respjson.Field
+		InvoiceID   respjson.Field
+		Quantity    respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCommitInvoiceScheduleScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddCredit struct {
+	ID      string                                         `json:"id" api:"required" format:"uuid"`
+	Product V2ContractEditResponseDataEditAddCreditProduct `json:"product" api:"required"`
+	// Any of "CREDIT".
+	Type string `json:"type" api:"required"`
+	// The schedule that the customer will gain access to the credits.
+	AccessSchedule        shared.ScheduleDuration `json:"access_schedule"`
+	ApplicableProductIDs  []string                `json:"applicable_product_ids" format:"uuid"`
+	ApplicableProductTags []string                `json:"applicable_product_tags"`
+	Description           string                  `json:"description"`
+	// Optional configuration for recurring credit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+	Name                   string                              `json:"name"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// If multiple credits or commits are applicable, the one with the lower priority
+	// will apply first.
+	Priority float64 `json:"priority"`
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType         string  `json:"rate_type"`
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// This field's availability is dependent on your client's configuration.
+	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
+	Specifiers []shared.CommitSpecifierInput `json:"specifiers"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		Product                 respjson.Field
+		Type                    respjson.Field
+		AccessSchedule          respjson.Field
+		ApplicableProductIDs    respjson.Field
+		ApplicableProductTags   respjson.Field
+		Description             respjson.Field
+		HierarchyConfiguration  respjson.Field
+		Name                    respjson.Field
+		NetsuiteSalesOrderID    respjson.Field
+		Priority                respjson.Field
+		RateType                respjson.Field
+		RolloverFraction        respjson.Field
+		SalesforceOpportunityID respjson.Field
+		Specifiers              respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCredit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddCreditProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCreditProduct) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddCreditProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddOverride struct {
+	ID                    string                                                       `json:"id" api:"required" format:"uuid"`
+	CreatedAt             time.Time                                                    `json:"created_at" api:"required" format:"date-time"`
+	StartingAt            time.Time                                                    `json:"starting_at" api:"required" format:"date-time"`
+	ApplicableProductTags []string                                                     `json:"applicable_product_tags"`
+	EndingBefore          time.Time                                                    `json:"ending_before" format:"date-time"`
+	Entitled              bool                                                         `json:"entitled"`
+	IsCommitSpecific      bool                                                         `json:"is_commit_specific"`
+	Multiplier            float64                                                      `json:"multiplier"`
+	OverrideSpecifiers    []V2ContractEditResponseDataEditAddOverrideOverrideSpecifier `json:"override_specifiers"`
+	OverrideTiers         []shared.OverrideTier                                        `json:"override_tiers"`
+	OverwriteRate         V2ContractEditResponseDataEditAddOverrideOverwriteRate       `json:"overwrite_rate"`
+	Priority              float64                                                      `json:"priority"`
+	Product               V2ContractEditResponseDataEditAddOverrideProduct             `json:"product"`
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	Target string `json:"target"`
+	// Any of "OVERWRITE", "MULTIPLIER", "TIERED".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		CreatedAt             respjson.Field
+		StartingAt            respjson.Field
+		ApplicableProductTags respjson.Field
+		EndingBefore          respjson.Field
+		Entitled              respjson.Field
+		IsCommitSpecific      respjson.Field
+		Multiplier            respjson.Field
+		OverrideSpecifiers    respjson.Field
+		OverrideTiers         respjson.Field
+		OverwriteRate         respjson.Field
+		Priority              respjson.Field
+		Product               respjson.Field
+		Target                respjson.Field
+		Type                  respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddOverride) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddOverride) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddOverrideOverrideSpecifier struct {
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency        string            `json:"billing_frequency"`
+	CommitIDs               []string          `json:"commit_ids"`
+	PresentationGroupValues map[string]string `json:"presentation_group_values"`
+	PricingGroupValues      map[string]string `json:"pricing_group_values"`
+	ProductID               string            `json:"product_id" format:"uuid"`
+	ProductTags             []string          `json:"product_tags"`
+	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingFrequency        respjson.Field
+		CommitIDs               respjson.Field
+		PresentationGroupValues respjson.Field
+		PricingGroupValues      respjson.Field
+		ProductID               respjson.Field
+		ProductTags             respjson.Field
+		RecurringCommitIDs      respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddOverrideOverrideSpecifier) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddOverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddOverrideOverwriteRate struct {
+	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+	// "CUSTOM".
+	RateType   string                `json:"rate_type" api:"required"`
+	CreditType shared.CreditTypeData `json:"credit_type"`
+	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+	// processors.
+	CustomRate map[string]any `json:"custom_rate"`
+	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+	// set to true.
+	IsProrated bool `json:"is_prorated"`
+	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+	Price float64 `json:"price"`
+	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+	Quantity float64 `json:"quantity"`
+	// Only set for TIERED rate_type.
+	Tiers []shared.Tier `json:"tiers"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RateType    respjson.Field
+		CreditType  respjson.Field
+		CustomRate  respjson.Field
+		IsProrated  respjson.Field
+		Price       respjson.Field
+		Quantity    respjson.Field
+		Tiers       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddOverrideOverwriteRate) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddOverrideOverwriteRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddOverrideProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddOverrideProduct) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddOverrideProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddRecurringCommit struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// The amount of commit to grant.
+	AccessAmount V2ContractEditResponseDataEditAddRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The amount of time the created commits will be valid for
+	CommitDuration V2ContractEditResponseDataEditAddRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
+	// Will be passed down to the individual commits
+	Priority float64                                                 `json:"priority" api:"required"`
+	Product  V2ContractEditResponseDataEditAddRecurringCommitProduct `json:"product" api:"required"`
+	// Whether the created commits will use the commit rate or list rate
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type" api:"required"`
+	// Determines the start time for the first commit
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// Will be passed down to the individual commits
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Will be passed down to the individual commits
+	ApplicableProductTags []string                                                 `json:"applicable_product_tags"`
+	Contract              V2ContractEditResponseDataEditAddRecurringCommitContract `json:"contract"`
+	// Will be passed down to the individual commits
+	Description string `json:"description"`
+	// Determines when the contract will stop creating recurring commits. Optional
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// Optional configuration for recurring credit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+	// The amount the customer should be billed for the commit. Not required.
+	InvoiceAmount V2ContractEditResponseDataEditAddRecurringCommitInvoiceAmount `json:"invoice_amount"`
+	// Displayed on invoices. Will be passed through to the individual commits
+	Name string `json:"name"`
+	// Will be passed down to the individual commits
+	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// Determines whether the first and last commit will be prorated. If not provided,
+	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	//
+	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
+	Proration string `json:"proration"`
+	// The frequency at which the recurring commits will be created. If not provided: -
+	// The commits will be created on the usage invoice frequency. If provided: - The
+	// period defined in the duration will correspond to this frequency. - Commits will
+	// be created aligned with the recurring commit's starting_at rather than the usage
+	// invoice dates.
+	//
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	RecurrenceFrequency string `json:"recurrence_frequency"`
+	// Will be passed down to the individual commits. This controls how much of an
+	// individual unexpired commit will roll over upon contract transition. Must be
+	// between 0 and 1.
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []shared.CommitSpecifier `json:"specifiers"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig shared.RecurringCommitSubscriptionConfig `json:"subscription_config"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		AccessAmount           respjson.Field
+		CommitDuration         respjson.Field
+		Priority               respjson.Field
+		Product                respjson.Field
+		RateType               respjson.Field
+		StartingAt             respjson.Field
+		ApplicableProductIDs   respjson.Field
+		ApplicableProductTags  respjson.Field
+		Contract               respjson.Field
+		Description            respjson.Field
+		EndingBefore           respjson.Field
+		HierarchyConfiguration respjson.Field
+		InvoiceAmount          respjson.Field
+		Name                   respjson.Field
+		NetsuiteSalesOrderID   respjson.Field
+		Proration              respjson.Field
+		RecurrenceFrequency    respjson.Field
+		RolloverFraction       respjson.Field
+		Specifiers             respjson.Field
+		SubscriptionConfig     respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCommit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddRecurringCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The amount of commit to grant.
+type V2ContractEditResponseDataEditAddRecurringCommitAccessAmount struct {
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
+	Quantity     float64 `json:"quantity"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreditTypeID respjson.Field
+		UnitPrice    respjson.Field
+		Quantity     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCommitAccessAmount) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddRecurringCommitAccessAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The amount of time the created commits will be valid for
+type V2ContractEditResponseDataEditAddRecurringCommitCommitDuration struct {
+	Value float64 `json:"value" api:"required"`
+	// Any of "PERIODS".
+	Unit string `json:"unit"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Value       respjson.Field
+		Unit        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCommitCommitDuration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddRecurringCommitCommitDuration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddRecurringCommitProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCommitProduct) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddRecurringCommitProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddRecurringCommitContract struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCommitContract) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddRecurringCommitContract) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The amount the customer should be billed for the commit. Not required.
+type V2ContractEditResponseDataEditAddRecurringCommitInvoiceAmount struct {
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	Quantity     float64 `json:"quantity" api:"required"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreditTypeID respjson.Field
+		Quantity     respjson.Field
+		UnitPrice    respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCommitInvoiceAmount) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddRecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddRecurringCredit struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// The amount of commit to grant.
+	AccessAmount V2ContractEditResponseDataEditAddRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The amount of time the created commits will be valid for
+	CommitDuration V2ContractEditResponseDataEditAddRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
+	// Will be passed down to the individual commits
+	Priority float64                                                 `json:"priority" api:"required"`
+	Product  V2ContractEditResponseDataEditAddRecurringCreditProduct `json:"product" api:"required"`
+	// Whether the created commits will use the commit rate or list rate
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type" api:"required"`
+	// Determines the start time for the first commit
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// Will be passed down to the individual commits
+	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+	// Will be passed down to the individual commits
+	ApplicableProductTags []string                                                 `json:"applicable_product_tags"`
+	Contract              V2ContractEditResponseDataEditAddRecurringCreditContract `json:"contract"`
+	// Will be passed down to the individual commits
+	Description string `json:"description"`
+	// Determines when the contract will stop creating recurring commits. Optional
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// Optional configuration for recurring credit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+	// Displayed on invoices. Will be passed through to the individual commits
+	Name string `json:"name"`
+	// Will be passed down to the individual commits
+	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// Determines whether the first and last commit will be prorated. If not provided,
+	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+	//
+	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
+	Proration string `json:"proration"`
+	// The frequency at which the recurring commits will be created. If not provided: -
+	// The commits will be created on the usage invoice frequency. If provided: - The
+	// period defined in the duration will correspond to this frequency. - Commits will
+	// be created aligned with the recurring commit's starting_at rather than the usage
+	// invoice dates.
+	//
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	RecurrenceFrequency string `json:"recurrence_frequency"`
+	// Will be passed down to the individual commits. This controls how much of an
+	// individual unexpired commit will roll over upon contract transition. Must be
+	// between 0 and 1.
+	RolloverFraction float64 `json:"rollover_fraction"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown.
+	Specifiers []shared.CommitSpecifier `json:"specifiers"`
+	// Attach a subscription to the recurring commit/credit.
+	SubscriptionConfig shared.RecurringCommitSubscriptionConfig `json:"subscription_config"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		AccessAmount           respjson.Field
+		CommitDuration         respjson.Field
+		Priority               respjson.Field
+		Product                respjson.Field
+		RateType               respjson.Field
+		StartingAt             respjson.Field
+		ApplicableProductIDs   respjson.Field
+		ApplicableProductTags  respjson.Field
+		Contract               respjson.Field
+		Description            respjson.Field
+		EndingBefore           respjson.Field
+		HierarchyConfiguration respjson.Field
+		Name                   respjson.Field
+		NetsuiteSalesOrderID   respjson.Field
+		Proration              respjson.Field
+		RecurrenceFrequency    respjson.Field
+		RolloverFraction       respjson.Field
+		Specifiers             respjson.Field
+		SubscriptionConfig     respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCredit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddRecurringCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The amount of commit to grant.
+type V2ContractEditResponseDataEditAddRecurringCreditAccessAmount struct {
+	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	UnitPrice    float64 `json:"unit_price" api:"required"`
+	Quantity     float64 `json:"quantity"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreditTypeID respjson.Field
+		UnitPrice    respjson.Field
+		Quantity     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCreditAccessAmount) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddRecurringCreditAccessAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The amount of time the created commits will be valid for
+type V2ContractEditResponseDataEditAddRecurringCreditCommitDuration struct {
+	Value float64 `json:"value" api:"required"`
+	// Any of "PERIODS".
+	Unit string `json:"unit"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Value       respjson.Field
+		Unit        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCreditCommitDuration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddRecurringCreditCommitDuration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddRecurringCreditProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCreditProduct) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddRecurringCreditProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddRecurringCreditContract struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddRecurringCreditContract) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddRecurringCreditContract) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddResellerRoyalty struct {
+	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
+	ResellerType          string    `json:"reseller_type" api:"required"`
+	ApplicableProductIDs  []string  `json:"applicable_product_ids"`
+	ApplicableProductTags []string  `json:"applicable_product_tags"`
+	AwsAccountNumber      string    `json:"aws_account_number"`
+	AwsOfferID            string    `json:"aws_offer_id"`
+	AwsPayerReferenceID   string    `json:"aws_payer_reference_id"`
+	EndingBefore          time.Time `json:"ending_before" api:"nullable" format:"date-time"`
+	Fraction              float64   `json:"fraction"`
+	GcpAccountID          string    `json:"gcp_account_id"`
+	GcpOfferID            string    `json:"gcp_offer_id"`
+	NetsuiteResellerID    string    `json:"netsuite_reseller_id"`
+	ResellerContractValue float64   `json:"reseller_contract_value"`
+	StartingAt            time.Time `json:"starting_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ResellerType          respjson.Field
+		ApplicableProductIDs  respjson.Field
+		ApplicableProductTags respjson.Field
+		AwsAccountNumber      respjson.Field
+		AwsOfferID            respjson.Field
+		AwsPayerReferenceID   respjson.Field
+		EndingBefore          respjson.Field
+		Fraction              respjson.Field
+		GcpAccountID          respjson.Field
+		GcpOfferID            respjson.Field
+		NetsuiteResellerID    respjson.Field
+		ResellerContractValue respjson.Field
+		StartingAt            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddResellerRoyalty) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddResellerRoyalty) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddScheduledCharge struct {
+	ID       string                                                  `json:"id" api:"required" format:"uuid"`
+	Product  V2ContractEditResponseDataEditAddScheduledChargeProduct `json:"product" api:"required"`
+	Schedule shared.SchedulePointInTime                              `json:"schedule" api:"required"`
+	// displayed on invoices
+	Name string `json:"name"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                   respjson.Field
+		Product              respjson.Field
+		Schedule             respjson.Field
+		Name                 respjson.Field
+		NetsuiteSalesOrderID respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddScheduledCharge) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddScheduledCharge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddScheduledChargeProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddScheduledChargeProduct) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddScheduledChargeProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscription struct {
+	// Previous, current, and next billing periods for the subscription.
+	BillingPeriods V2ContractEditResponseDataEditAddSubscriptionBillingPeriods `json:"billing_periods" api:"required"`
+	// Any of "ADVANCE", "ARREARS".
+	CollectionSchedule string                                                 `json:"collection_schedule" api:"required"`
+	Proration          V2ContractEditResponseDataEditAddSubscriptionProration `json:"proration" api:"required"`
+	// Determines how the subscription's quantity is controlled. Defaults to
+	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+	// directly on the subscription. `initial_quantity` must be provided with this
+	// option. Compatible with recurring commits/credits that use POOLED allocation.
+	// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+	// user_123) to increment and decrement a subscription quantity, rather than
+	// directly providing the quantity. You must use a **SEAT_BASED** subscription to
+	// use a linked recurring credit with an allocation per seat. `seat_config` must be
+	// provided with this option.
+	//
+	// Any of "SEAT_BASED", "QUANTITY_ONLY".
+	QuantityManagementMode string `json:"quantity_management_mode" api:"required"`
+	// List of quantity schedule items for the subscription. Only includes the current
+	// quantity and future quantity changes.
+	QuantitySchedule []V2ContractEditResponseDataEditAddSubscriptionQuantitySchedule `json:"quantity_schedule" api:"required"`
+	StartingAt       time.Time                                                       `json:"starting_at" api:"required" format:"date-time"`
+	SubscriptionRate V2ContractEditResponseDataEditAddSubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
+	ID               string                                                          `json:"id" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields     map[string]string                                       `json:"custom_fields"`
+	Description      string                                                  `json:"description"`
+	EndingBefore     time.Time                                               `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string                                                  `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string                                                  `json:"name"`
+	SeatConfig       V2ContractEditResponseDataEditAddSubscriptionSeatConfig `json:"seat_config"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingPeriods         respjson.Field
+		CollectionSchedule     respjson.Field
+		Proration              respjson.Field
+		QuantityManagementMode respjson.Field
+		QuantitySchedule       respjson.Field
+		StartingAt             respjson.Field
+		SubscriptionRate       respjson.Field
+		ID                     respjson.Field
+		CustomFields           respjson.Field
+		Description            respjson.Field
+		EndingBefore           respjson.Field
+		FiatCreditTypeID       respjson.Field
+		Name                   respjson.Field
+		SeatConfig             respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscription) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddSubscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Previous, current, and next billing periods for the subscription.
+type V2ContractEditResponseDataEditAddSubscriptionBillingPeriods struct {
+	Current  V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsCurrent  `json:"current"`
+	Next     V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsNext     `json:"next"`
+	Previous V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsPrevious `json:"previous"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Current     respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionBillingPeriods) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddSubscriptionBillingPeriods) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsCurrent struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsCurrent) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsCurrent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsNext struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsNext) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsNext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsPrevious struct {
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsPrevious) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddSubscriptionBillingPeriodsPrevious) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscriptionProration struct {
+	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
+	InvoiceBehavior string `json:"invoice_behavior" api:"required"`
+	IsProrated      bool   `json:"is_prorated" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceBehavior respjson.Field
+		IsProrated      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionProration) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddSubscriptionProration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscriptionQuantitySchedule struct {
+	Quantity     float64   `json:"quantity" api:"required"`
+	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity     respjson.Field
+		StartingAt   respjson.Field
+		EndingBefore respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionQuantitySchedule) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddSubscriptionQuantitySchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscriptionSubscriptionRate struct {
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	BillingFrequency string                                                               `json:"billing_frequency" api:"required"`
+	Product          V2ContractEditResponseDataEditAddSubscriptionSubscriptionRateProduct `json:"product" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingFrequency respjson.Field
+		Product          respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionSubscriptionRate) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddSubscriptionSubscriptionRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscriptionSubscriptionRateProduct struct {
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionSubscriptionRateProduct) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddSubscriptionSubscriptionRateProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddSubscriptionSeatConfig struct {
+	// The property name, sent on usage events, that identifies the seat ID associated
+	// with the usage event. For example, the property name might be seat_id or
+	// user_id. The property must be set as a group key on billable metrics and a
+	// presentation/pricing group key on contract products. This allows linked
+	// recurring credits with an allocation per seat to be consumed by only one seat's
+	// usage.
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatGroupKey respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddSubscriptionSeatConfig) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddSubscriptionSeatConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditAddUsageFilter struct {
+	GroupKey    string   `json:"group_key" api:"required"`
+	GroupValues []string `json:"group_values" api:"required"`
+	// This will match contract starting_at value if usage filter is active from the
+	// beginning of the contract.
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// This will match contract ending_before value if usage filter is active until the
+	// end of the contract. It will be undefined if the contract is open-ended.
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		GroupKey     respjson.Field
+		GroupValues  respjson.Field
+		StartingAt   respjson.Field
+		EndingBefore respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddUsageFilter) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddUsageFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditArchiveCommit struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditArchiveCommit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditArchiveCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditArchiveCredit struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditArchiveCredit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditArchiveCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditArchiveScheduledCharge struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditArchiveScheduledCharge) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditArchiveScheduledCharge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditRemoveOverride struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditRemoveOverride) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditRemoveOverride) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommit struct {
+	ID             string                                                   `json:"id" api:"required" format:"uuid"`
+	AccessSchedule V2ContractEditResponseDataEditUpdateCommitAccessSchedule `json:"access_schedule"`
+	// Which products the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" api:"nullable" format:"uuid"`
+	// Which tags the commit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the commit applies to
+	// all products.
+	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
+	Description           string   `json:"description"`
+	// Optional configuration for commit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfiguration                       `json:"hierarchy_configuration"`
+	InvoiceSchedule        V2ContractEditResponseDataEditUpdateCommitInvoiceSchedule `json:"invoice_schedule"`
+	Name                   string                                                    `json:"name"`
+	NetsuiteSalesOrderID   string                                                    `json:"netsuite_sales_order_id" api:"nullable"`
+	// If multiple commits are applicable, the one with the lower priority will apply
+	// first.
+	Priority  float64 `json:"priority" api:"nullable"`
+	ProductID string  `json:"product_id" format:"uuid"`
+	// If set, the commit's rate type was updated to the specified value.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType         string  `json:"rate_type"`
+	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
+	Specifiers []shared.CommitSpecifierInput `json:"specifiers" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		AccessSchedule         respjson.Field
+		ApplicableProductIDs   respjson.Field
+		ApplicableProductTags  respjson.Field
+		Description            respjson.Field
+		HierarchyConfiguration respjson.Field
+		InvoiceSchedule        respjson.Field
+		Name                   respjson.Field
+		NetsuiteSalesOrderID   respjson.Field
+		Priority               respjson.Field
+		ProductID              respjson.Field
+		RateType               respjson.Field
+		RolloverFraction       respjson.Field
+		Specifiers             respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommitAccessSchedule struct {
+	AddScheduleItems    []V2ContractEditResponseDataEditUpdateCommitAccessScheduleAddScheduleItem    `json:"add_schedule_items"`
+	RemoveScheduleItems []V2ContractEditResponseDataEditUpdateCommitAccessScheduleRemoveScheduleItem `json:"remove_schedule_items"`
+	UpdateScheduleItems []V2ContractEditResponseDataEditUpdateCommitAccessScheduleUpdateScheduleItem `json:"update_schedule_items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddScheduleItems    respjson.Field
+		RemoveScheduleItems respjson.Field
+		UpdateScheduleItems respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommitAccessSchedule) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateCommitAccessSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommitAccessScheduleAddScheduleItem struct {
+	Amount float64 `json:"amount" api:"required"`
+	// RFC 3339 timestamp (exclusive)
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	// RFC 3339 timestamp (inclusive)
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount       respjson.Field
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommitAccessScheduleAddScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCommitAccessScheduleAddScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommitAccessScheduleRemoveScheduleItem struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommitAccessScheduleRemoveScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCommitAccessScheduleRemoveScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommitAccessScheduleUpdateScheduleItem struct {
+	ID     string  `json:"id" api:"required" format:"uuid"`
+	Amount float64 `json:"amount"`
+	// RFC 3339 timestamp (exclusive)
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// RFC 3339 timestamp (inclusive)
+	StartingAt time.Time `json:"starting_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Amount       respjson.Field
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommitAccessScheduleUpdateScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCommitAccessScheduleUpdateScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommitInvoiceSchedule struct {
+	AddScheduleItems    []V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleAddScheduleItem    `json:"add_schedule_items"`
+	RemoveScheduleItems []V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleRemoveScheduleItem `json:"remove_schedule_items"`
+	UpdateScheduleItems []V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleUpdateScheduleItem `json:"update_schedule_items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddScheduleItems    respjson.Field
+		RemoveScheduleItems respjson.Field
+		UpdateScheduleItems respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommitInvoiceSchedule) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCommitInvoiceSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleAddScheduleItem struct {
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	Amount    float64   `json:"amount"`
+	Quantity  float64   `json:"quantity"`
+	UnitPrice float64   `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Timestamp   respjson.Field
+		Amount      respjson.Field
+		Quantity    respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleAddScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleAddScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleRemoveScheduleItem struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleRemoveScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleRemoveScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleUpdateScheduleItem struct {
+	ID        string    `json:"id" api:"required" format:"uuid"`
+	Amount    float64   `json:"amount"`
+	Quantity  float64   `json:"quantity"`
+	Timestamp time.Time `json:"timestamp" format:"date-time"`
+	UnitPrice float64   `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Amount      respjson.Field
+		Quantity    respjson.Field
+		Timestamp   respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleUpdateScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCommitInvoiceScheduleUpdateScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCredit struct {
+	ID             string                                                   `json:"id" api:"required" format:"uuid"`
+	AccessSchedule V2ContractEditResponseDataEditUpdateCreditAccessSchedule `json:"access_schedule"`
+	// Which products the credit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the credit applies to
+	// all products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" api:"nullable" format:"uuid"`
+	// Which tags the credit applies to. If applicable_product_ids,
+	// applicable_product_tags or specifiers are not provided, the credit applies to
+	// all products.
+	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
+	Description           string   `json:"description"`
+	// Optional configuration for credit hierarchy access control
+	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+	Name                   string                              `json:"name"`
+	NetsuiteSalesOrderID   string                              `json:"netsuite_sales_order_id" api:"nullable"`
+	// If multiple credits are applicable, the one with the lower priority will apply
+	// first.
+	Priority  float64 `json:"priority" api:"nullable"`
+	ProductID string  `json:"product_id" format:"uuid"`
+	// If set, the credit's rate type was updated to the specified value.
+	//
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType         string  `json:"rate_type"`
+	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
+	Specifiers []shared.CommitSpecifierInput `json:"specifiers" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		AccessSchedule         respjson.Field
+		ApplicableProductIDs   respjson.Field
+		ApplicableProductTags  respjson.Field
+		Description            respjson.Field
+		HierarchyConfiguration respjson.Field
+		Name                   respjson.Field
+		NetsuiteSalesOrderID   respjson.Field
+		Priority               respjson.Field
+		ProductID              respjson.Field
+		RateType               respjson.Field
+		RolloverFraction       respjson.Field
+		Specifiers             respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCredit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCreditAccessSchedule struct {
+	AddScheduleItems    []V2ContractEditResponseDataEditUpdateCreditAccessScheduleAddScheduleItem    `json:"add_schedule_items"`
+	RemoveScheduleItems []V2ContractEditResponseDataEditUpdateCreditAccessScheduleRemoveScheduleItem `json:"remove_schedule_items"`
+	UpdateScheduleItems []V2ContractEditResponseDataEditUpdateCreditAccessScheduleUpdateScheduleItem `json:"update_schedule_items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddScheduleItems    respjson.Field
+		RemoveScheduleItems respjson.Field
+		UpdateScheduleItems respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCreditAccessSchedule) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateCreditAccessSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCreditAccessScheduleAddScheduleItem struct {
+	Amount float64 `json:"amount" api:"required"`
+	// RFC 3339 timestamp (exclusive)
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	// RFC 3339 timestamp (inclusive)
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount       respjson.Field
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCreditAccessScheduleAddScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCreditAccessScheduleAddScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCreditAccessScheduleRemoveScheduleItem struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCreditAccessScheduleRemoveScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCreditAccessScheduleRemoveScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateCreditAccessScheduleUpdateScheduleItem struct {
+	ID     string  `json:"id" api:"required" format:"uuid"`
+	Amount float64 `json:"amount"`
+	// RFC 3339 timestamp (exclusive)
+	EndingBefore time.Time `json:"ending_before" format:"date-time"`
+	// RFC 3339 timestamp (inclusive)
+	StartingAt time.Time `json:"starting_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Amount       respjson.Field
+		EndingBefore respjson.Field
+		StartingAt   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateCreditAccessScheduleUpdateScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateCreditAccessScheduleUpdateScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateDiscount struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields         map[string]string `json:"custom_fields"`
+	Name                 string            `json:"name"`
+	NetsuiteSalesOrderID string            `json:"netsuite_sales_order_id"`
+	// Must provide either schedule_items or recurring_schedule.
+	Schedule V2ContractEditResponseDataEditUpdateDiscountSchedule `json:"schedule"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                   respjson.Field
+		CustomFields         respjson.Field
+		Name                 respjson.Field
+		NetsuiteSalesOrderID respjson.Field
+		Schedule             respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateDiscount) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Must provide either schedule_items or recurring_schedule.
+type V2ContractEditResponseDataEditUpdateDiscountSchedule struct {
+	// Defaults to USD (cents) if not passed.
+	CreditTypeID string `json:"credit_type_id" format:"uuid"`
+	// This field is only applicable to commit invoice schedules. If true, this
+	// schedule will not generate an invoice.
+	DoNotInvoice bool `json:"do_not_invoice"`
+	// Enter the unit price and quantity for the charge or instead only send the
+	// amount. If amount is sent, the unit price is assumed to be the amount and
+	// quantity is inferred to be 1.
+	RecurringSchedule V2ContractEditResponseDataEditUpdateDiscountScheduleRecurringSchedule `json:"recurring_schedule"`
+	// Either provide amount or provide both unit_price and quantity.
+	ScheduleItems []V2ContractEditResponseDataEditUpdateDiscountScheduleScheduleItem `json:"schedule_items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreditTypeID      respjson.Field
+		DoNotInvoice      respjson.Field
+		RecurringSchedule respjson.Field
+		ScheduleItems     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateDiscountSchedule) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateDiscountSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enter the unit price and quantity for the charge or instead only send the
+// amount. If amount is sent, the unit price is assumed to be the amount and
+// quantity is inferred to be 1.
+type V2ContractEditResponseDataEditUpdateDiscountScheduleRecurringSchedule struct {
+	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
+	AmountDistribution string `json:"amount_distribution" api:"required"`
+	// RFC 3339 timestamp (exclusive).
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
+	Frequency string `json:"frequency" api:"required"`
+	// RFC 3339 timestamp (inclusive).
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// Amount for the charge. Can be provided instead of unit_price and quantity. If
+	// amount is sent, the unit_price is assumed to be the amount and quantity is
+	// inferred to be 1.
+	Amount float64 `json:"amount"`
+	// Quantity for the charge. Will be multiplied by unit_price to determine the
+	// amount and must be specified with unit_price. If specified amount cannot be
+	// provided.
+	Quantity float64 `json:"quantity"`
+	// Unit price for the charge. Will be multiplied by quantity to determine the
+	// amount and must be specified with quantity. If specified amount cannot be
+	// provided.
+	UnitPrice float64 `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AmountDistribution respjson.Field
+		EndingBefore       respjson.Field
+		Frequency          respjson.Field
+		StartingAt         respjson.Field
+		Amount             respjson.Field
+		Quantity           respjson.Field
+		UnitPrice          respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateDiscountScheduleRecurringSchedule) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateDiscountScheduleRecurringSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateDiscountScheduleScheduleItem struct {
+	// timestamp of the scheduled event
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	// Amount for the charge. Can be provided instead of unit_price and quantity. If
+	// amount is sent, the unit_price is assumed to be the amount and quantity is
+	// inferred to be 1.
+	Amount float64 `json:"amount"`
+	// Quantity for the charge. Will be multiplied by unit_price to determine the
+	// amount and must be specified with unit_price. If specified amount cannot be
+	// provided.
+	Quantity float64 `json:"quantity"`
+	// Unit price for the charge. Will be multiplied by quantity to determine the
+	// amount and must be specified with quantity. If specified amount cannot be
+	// provided.
+	UnitPrice float64 `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Timestamp   respjson.Field
+		Amount      respjson.Field
+		Quantity    respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateDiscountScheduleScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateDiscountScheduleScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfiguration struct {
+	Commit V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommit `json:"commit"`
+	// If provided, the threshold, recharge-to amount, and the resulting threshold
+	// commit amount will be in terms of this credit type instead of the fiat currency.
+	CustomCreditTypeID    string                                                                                        `json:"custom_credit_type_id" api:"nullable" format:"uuid"`
+	DiscountConfiguration V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         bool                       `json:"is_enabled"`
+	PaymentGateConfig shared.PaymentGateConfigV2 `json:"payment_gate_config"`
+	// Specify the amount the balance should be recharged to.
+	RechargeToAmount float64 `json:"recharge_to_amount"`
+	// Specify the threshold amount for the contract. Each time the contract's balance
+	// lowers to this amount, a threshold charge will be initiated.
+	ThresholdAmount            float64                                                                                             `json:"threshold_amount"`
+	ThresholdBalanceSpecifiers []V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Commit                     respjson.Field
+		CustomCreditTypeID         respjson.Field
+		DiscountConfiguration      respjson.Field
+		IsEnabled                  respjson.Field
+		PaymentGateConfig          respjson.Field
+		RechargeToAmount           respjson.Field
+		ThresholdAmount            respjson.Field
+		ThresholdBalanceSpecifiers respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommit struct {
+	// Which products the threshold commit applies to. If both applicable_product_ids
+	// and applicable_product_tags are not provided, the commit applies to all
+	// products.
+	ApplicableProductIDs []string `json:"applicable_product_ids" api:"nullable" format:"uuid"`
+	// Which tags the threshold commit applies to. If both applicable_product_ids and
+	// applicable_product_tags are not provided, the commit applies to all products.
+	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
+	// List of filters that determine what kind of customer usage draws down a commit
+	// or credit. A customer's usage needs to meet the condition of at least one of the
+	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+	// be used together with `applicable_product_ids` or `applicable_product_tags`.
+	// Instead, to target usage by product or product tag, pass those values in the
+	// body of `specifiers`.
+	Specifiers []shared.CommitSpecifierInput `json:"specifiers" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ApplicableProductIDs  respjson.Field
+		ApplicableProductTags respjson.Field
+		Specifiers            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+	shared.UpdateBaseThresholdCommit
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommit) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap `json:"cap" api:"nullable"`
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. Set to null to remove the discount fraction. For example, 0.85 means
+	// the customer pays 85% of the original amount (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cap             respjson.Field
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier struct {
+	Exclude []V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude `json:"exclude" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Exclude     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude struct {
+	CustomFieldFilters []V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter `json:"custom_field_filters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomFieldFilters respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter struct {
+	// Any of "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entity      respjson.Field
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateRecurringCommit struct {
+	ID            string                                                           `json:"id" api:"required" format:"uuid"`
+	AccessAmount  V2ContractEditResponseDataEditUpdateRecurringCommitAccessAmount  `json:"access_amount"`
+	EndingBefore  time.Time                                                        `json:"ending_before" format:"date-time"`
+	InvoiceAmount V2ContractEditResponseDataEditUpdateRecurringCommitInvoiceAmount `json:"invoice_amount"`
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType string `json:"rate_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		AccessAmount  respjson.Field
+		EndingBefore  respjson.Field
+		InvoiceAmount respjson.Field
+		RateType      respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateRecurringCommit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateRecurringCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateRecurringCommitAccessAmount struct {
+	Quantity  float64 `json:"quantity"`
+	UnitPrice float64 `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity    respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateRecurringCommitAccessAmount) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateRecurringCommitAccessAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateRecurringCommitInvoiceAmount struct {
+	Quantity  float64 `json:"quantity"`
+	UnitPrice float64 `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity    respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateRecurringCommitInvoiceAmount) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateRecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateRecurringCredit struct {
+	ID           string                                                          `json:"id" api:"required" format:"uuid"`
+	AccessAmount V2ContractEditResponseDataEditUpdateRecurringCreditAccessAmount `json:"access_amount"`
+	EndingBefore time.Time                                                       `json:"ending_before" format:"date-time"`
+	// Any of "LIST_RATE", "COMMIT_RATE".
+	RateType string `json:"rate_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		AccessAmount respjson.Field
+		EndingBefore respjson.Field
+		RateType     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateRecurringCredit) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateRecurringCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateRecurringCreditAccessAmount struct {
+	Quantity  float64 `json:"quantity"`
+	UnitPrice float64 `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity    respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateRecurringCreditAccessAmount) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateRecurringCreditAccessAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateRefundInvoice struct {
+	Date      time.Time `json:"date" api:"required" format:"date-time"`
+	InvoiceID string    `json:"invoice_id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Date        respjson.Field
+		InvoiceID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateRefundInvoice) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateRefundInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateScheduledCharge struct {
+	ID                   string                                                             `json:"id" api:"required" format:"uuid"`
+	InvoiceSchedule      V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceSchedule `json:"invoice_schedule"`
+	Name                 string                                                             `json:"name"`
+	NetsuiteSalesOrderID string                                                             `json:"netsuite_sales_order_id" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                   respjson.Field
+		InvoiceSchedule      respjson.Field
+		Name                 respjson.Field
+		NetsuiteSalesOrderID respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateScheduledCharge) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateScheduledCharge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceSchedule struct {
+	AddScheduleItems    []V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleAddScheduleItem    `json:"add_schedule_items"`
+	RemoveScheduleItems []V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleRemoveScheduleItem `json:"remove_schedule_items"`
+	UpdateScheduleItems []V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleUpdateScheduleItem `json:"update_schedule_items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddScheduleItems    respjson.Field
+		RemoveScheduleItems respjson.Field
+		UpdateScheduleItems respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceSchedule) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleAddScheduleItem struct {
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+	Amount    float64   `json:"amount"`
+	Quantity  float64   `json:"quantity"`
+	UnitPrice float64   `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Timestamp   respjson.Field
+		Amount      respjson.Field
+		Quantity    respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleAddScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleAddScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleRemoveScheduleItem struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleRemoveScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleRemoveScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleUpdateScheduleItem struct {
+	ID        string    `json:"id" api:"required" format:"uuid"`
+	Amount    float64   `json:"amount"`
+	Quantity  float64   `json:"quantity"`
+	Timestamp time.Time `json:"timestamp" format:"date-time"`
+	UnitPrice float64   `json:"unit_price"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Amount      respjson.Field
+		Quantity    respjson.Field
+		Timestamp   respjson.Field
+		UnitPrice   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleUpdateScheduleItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateScheduledChargeInvoiceScheduleUpdateScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateSpendThresholdConfiguration struct {
+	Commit                shared.UpdateBaseThresholdCommit                                                     `json:"commit"`
+	DiscountConfiguration V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscountConfiguration `json:"discount_configuration" api:"nullable"`
+	// When set to false, the contract will not be evaluated against the
+	// threshold_amount. Toggling to true will result an immediate evaluation,
+	// regardless of prior state.
+	IsEnabled         bool                       `json:"is_enabled"`
+	PaymentGateConfig shared.PaymentGateConfigV2 `json:"payment_gate_config"`
+	// Specify the threshold amount for the contract. Each time the contract's usage
+	// hits this amount, a threshold charge will be initiated.
+	ThresholdAmount float64 `json:"threshold_amount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Commit                respjson.Field
+		DiscountConfiguration respjson.Field
+		IsEnabled             respjson.Field
+		PaymentGateConfig     respjson.Field
+		ThresholdAmount       respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSpendThresholdConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSpendThresholdConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscountConfiguration struct {
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscountConfigurationCap `json:"cap" api:"nullable"`
+	// The fraction of the original amount that the customer pays after applying the
+	// discount. Set to null to remove the discount fraction. For example, 0.85 means
+	// the customer pays 85% of the original amount (a 15% discount).
+	PaymentFraction float64 `json:"payment_fraction" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cap             respjson.Field
+		PaymentFraction respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscountConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+type V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscountConfigurationCap) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateSubscription struct {
+	ID              string                                                           `json:"id" api:"required" format:"uuid"`
+	EndingBefore    time.Time                                                        `json:"ending_before" format:"date-time"`
+	QuantityUpdates []V2ContractEditResponseDataEditUpdateSubscriptionQuantityUpdate `json:"quantity_updates"`
+	// Manage subscription seats for subscriptions in SEAT_BASED mode.
+	SeatUpdates V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdates `json:"seat_updates"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		EndingBefore    respjson.Field
+		QuantityUpdates respjson.Field
+		SeatUpdates     respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSubscription) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditUpdateSubscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateSubscriptionQuantityUpdate struct {
+	StartingAt    time.Time `json:"starting_at" api:"required" format:"date-time"`
+	Quantity      float64   `json:"quantity"`
+	QuantityDelta float64   `json:"quantity_delta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		StartingAt    respjson.Field
+		Quantity      respjson.Field
+		QuantityDelta respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSubscriptionQuantityUpdate) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSubscriptionQuantityUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Manage subscription seats for subscriptions in SEAT_BASED mode.
+type V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdates struct {
+	// Adds seat IDs to the subscription. If there are unassigned seats, the new seat
+	// IDs will fill these unassigned seats and not increase the total subscription
+	// quantity. Otherwise, if there are more new seat IDs than unassigned seats, the
+	// total subscription quantity will increase.
+	AddSeatIDs []V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesAddSeatID `json:"add_seat_ids"`
+	// Adds unassigned seats to the subscription. This will increase the total
+	// subscription quantity.
+	AddUnassignedSeats []V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesAddUnassignedSeat `json:"add_unassigned_seats"`
+	// Removes seat IDs from the subscription, if possible. If a seat ID is removed,
+	// the total subscription quantity will decrease. Otherwise, if the seat ID is not
+	// found on the subscription, this is a no-op.
+	RemoveSeatIDs []V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesRemoveSeatID `json:"remove_seat_ids"`
+	// Removes unassigned seats from the subscription. This will decrease the total
+	// subscription quantity if there are are unassigned seats.
+	RemoveUnassignedSeats []V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat `json:"remove_unassigned_seats"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddSeatIDs            respjson.Field
+		AddUnassignedSeats    respjson.Field
+		RemoveSeatIDs         respjson.Field
+		RemoveUnassignedSeats respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdates) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdates) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesAddSeatID struct {
+	SeatIDs []string `json:"seat_ids" api:"required"`
+	// Assigned seats will be added/removed starting at this date.
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatIDs     respjson.Field
+		StartingAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesAddSeatID) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesAddSeatID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesAddUnassignedSeat struct {
+	// The number of unassigned seats on the subscription will increase/decrease by
+	// this delta. Must be greater than 0.
+	Quantity float64 `json:"quantity" api:"required"`
+	// Unassigned seats will be updated starting at this date.
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity    respjson.Field
+		StartingAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesAddUnassignedSeat) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesAddUnassignedSeat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesRemoveSeatID struct {
+	SeatIDs []string `json:"seat_ids" api:"required"`
+	// Assigned seats will be added/removed starting at this date.
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SeatIDs     respjson.Field
+		StartingAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesRemoveSeatID) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesRemoveSeatID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat struct {
+	// The number of unassigned seats on the subscription will increase/decrease by
+	// this delta. Must be greater than 0.
+	Quantity float64 `json:"quantity" api:"required"`
+	// Unassigned seats will be updated starting at this date.
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Quantity    respjson.Field
+		StartingAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdatesRemoveUnassignedSeat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2035,18 +4438,20 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	RechargeToAmount float64 `json:"recharge_to_amount"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount float64 `json:"threshold_amount"`
+	ThresholdAmount            float64                                                                                                   `json:"threshold_amount"`
+	ThresholdBalanceSpecifiers []V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Commit                respjson.Field
-		CustomCreditTypeID    respjson.Field
-		DiscountConfiguration respjson.Field
-		IsEnabled             respjson.Field
-		PaymentGateConfig     respjson.Field
-		RechargeToAmount      respjson.Field
-		ThresholdAmount       respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
+		Commit                     respjson.Field
+		CustomCreditTypeID         respjson.Field
+		DiscountConfiguration      respjson.Field
+		IsEnabled                  respjson.Field
+		PaymentGateConfig          respjson.Field
+		RechargeToAmount           respjson.Field
+		ThresholdAmount            respjson.Field
+		ThresholdBalanceSpecifiers respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
 }
 
@@ -2093,12 +4498,15 @@ func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfig
 }
 
 type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap `json:"cap" api:"nullable"`
 	// The fraction of the original amount that the customer pays after applying the
 	// discount. Set to null to remove the discount fraction. For example, 0.85 means
 	// the customer pays 85% of the original amount (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Cap             respjson.Field
 		PaymentFraction respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
@@ -2110,6 +4518,88 @@ func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigu
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier struct {
+	Exclude []V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude `json:"exclude" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Exclude     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude struct {
+	CustomFieldFilters []V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter `json:"custom_field_filters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomFieldFilters respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter struct {
+	// Any of "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entity      respjson.Field
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2389,12 +4879,15 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfiguration) 
 }
 
 type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration struct {
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfigurationCap `json:"cap" api:"nullable"`
 	// The fraction of the original amount that the customer pays after applying the
 	// discount. Set to null to remove the discount fraction. For example, 0.85 means
 	// the customer pays 85% of the original amount (a 15% discount).
 	PaymentFraction float64 `json:"payment_fraction" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Cap             respjson.Field
 		PaymentFraction respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
@@ -2406,6 +4899,29 @@ func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDis
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+type V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount            respjson.Field
+		SpendTrackerAlias respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfigurationCap) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2668,6 +5184,9 @@ type V2ContractEditParams struct {
 	AddRevenueSystemConfigurationUpdate V2ContractEditParamsAddRevenueSystemConfigurationUpdate `json:"add_revenue_system_configuration_update,omitzero"`
 	AddScheduledCharges                 []V2ContractEditParamsAddScheduledCharge                `json:"add_scheduled_charges,omitzero"`
 	AddSpendThresholdConfiguration      shared.SpendThresholdConfigurationV2Param               `json:"add_spend_threshold_configuration,omitzero"`
+	// Spend trackers to add to this contract. Aliases must be unique within a
+	// contract.
+	AddSpendTrackers []V2ContractEditParamsAddSpendTracker `json:"add_spend_trackers,omitzero"`
 	// Optional list of
 	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
 	// to add to the contract.
@@ -2678,6 +5197,8 @@ type V2ContractEditParams struct {
 	ArchiveCredits []V2ContractEditParamsArchiveCredit `json:"archive_credits,omitzero"`
 	// IDs of scheduled charges to archive
 	ArchiveScheduledCharges []V2ContractEditParamsArchiveScheduledCharge `json:"archive_scheduled_charges,omitzero"`
+	// Aliases of spend trackers to archive.
+	ArchiveSpendTrackers []string `json:"archive_spend_trackers,omitzero"`
 	// IDs of overrides to remove
 	RemoveOverrides                            []V2ContractEditParamsRemoveOverride                           `json:"remove_overrides,omitzero"`
 	UpdateCommits                              []V2ContractEditParamsUpdateCommit                             `json:"update_commits,omitzero"`
@@ -2833,6 +5354,8 @@ type V2ContractEditParamsAddCommit struct {
 	// Instead, to target usage by product or product tag, pass those values in the
 	// body of `specifiers`.
 	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+	// Optional attributes for spend tracker integration. Immutable after creation.
+	SpendTrackerAttributes V2ContractEditParamsAddCommitSpendTrackerAttributes `json:"spend_tracker_attributes,omitzero"`
 	paramObj
 }
 
@@ -3088,6 +5611,24 @@ func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddCommitPaymentGateConfigStripeConfig](
 		"payment_type", "INVOICE", "PAYMENT_INTENT",
 	)
+}
+
+// Optional attributes for spend tracker integration. Immutable after creation.
+//
+// The property CountsAsDiscounted is required.
+type V2ContractEditParamsAddCommitSpendTrackerAttributes struct {
+	// If true, this commit will be included in spend trackers with discounted set to
+	// DISCOUNTED_ONLY
+	CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddCommitSpendTrackerAttributes) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddCommitSpendTrackerAttributes
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddCommitSpendTrackerAttributes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccessSchedule, ProductID are required.
@@ -4097,6 +6638,62 @@ func (r *V2ContractEditParamsAddScheduledChargeScheduleScheduleItem) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Alias, ApplicableSpendSpecifiers, CreditTypeID, ResetFrequency
+// are required.
+type V2ContractEditParamsAddSpendTracker struct {
+	// Human-readable identifier, unique per contract.
+	Alias                     string                                                        `json:"alias" api:"required"`
+	ApplicableSpendSpecifiers []V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers,omitzero" api:"required"`
+	CreditTypeID              string                                                        `json:"credit_type_id" api:"required" format:"uuid"`
+	// Any of "BILLING_PERIOD".
+	ResetFrequency string `json:"reset_frequency,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddSpendTracker) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddSpendTracker
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddSpendTracker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddSpendTracker](
+		"reset_frequency", "BILLING_PERIOD",
+	)
+}
+
+// The properties Sources, SpendType are required.
+type V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier struct {
+	// Any of "THRESHOLD_RECHARGE", "MANUAL".
+	Sources []string `json:"sources,omitzero" api:"required"`
+	// Any of "COMMIT_PURCHASE".
+	SpendType string `json:"spend_type,omitzero" api:"required"`
+	// Filter by whether the spend was discounted. Defaults to ANY if omitted.
+	//
+	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+	Discounted string `json:"discounted,omitzero"`
+	paramObj
+}
+
+func (r V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier](
+		"spend_type", "COMMIT_PURCHASE",
+	)
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier](
+		"discounted", "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY",
+	)
+}
+
 // The properties CollectionSchedule, Proration, SubscriptionRate are required.
 type V2ContractEditParamsAddSubscription struct {
 	// Any of "ADVANCE", "ARREARS".
@@ -4573,10 +7170,11 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	RechargeToAmount param.Opt[float64] `json:"recharge_to_amount,omitzero"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount       param.Opt[float64]                                                                  `json:"threshold_amount,omitzero"`
-	DiscountConfiguration V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
-	Commit                V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit                `json:"commit,omitzero"`
-	PaymentGateConfig     shared.PaymentGateConfigV2Param                                                     `json:"payment_gate_config,omitzero"`
+	ThresholdAmount            param.Opt[float64]                                                                        `json:"threshold_amount,omitzero"`
+	DiscountConfiguration      V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration       `json:"discount_configuration,omitzero"`
+	ThresholdBalanceSpecifiers []V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers,omitzero"`
+	Commit                     V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit                      `json:"commit,omitzero"`
+	PaymentGateConfig          shared.PaymentGateConfigV2Param                                                           `json:"payment_gate_config,omitzero"`
 	paramObj
 }
 
@@ -4619,6 +7217,8 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfi
 	// discount. Set to null to remove the discount fraction. For example, 0.85 means
 	// the customer pays 85% of the original amount (a 15% discount).
 	PaymentFraction param.Opt[float64] `json:"payment_fraction,omitzero"`
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap `json:"cap,omitzero"`
 	paramObj
 }
 
@@ -4628,6 +7228,76 @@ func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountCo
 }
 func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+//
+// The properties Amount, SpendTrackerAlias are required.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Exclude is required.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier struct {
+	Exclude []V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude `json:"exclude,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property CustomFieldFilters is required.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude struct {
+	CustomFieldFilters []V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter `json:"custom_field_filters,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Entity, Key, Value are required.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter struct {
+	// Any of "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter](
+		"entity", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
 }
 
 // The property RecurringCommitID is required.
@@ -4834,6 +7504,8 @@ type V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration 
 	// discount. Set to null to remove the discount fraction. For example, 0.85 means
 	// the customer pays 85% of the original amount (a 15% discount).
 	PaymentFraction param.Opt[float64] `json:"payment_fraction,omitzero"`
+	// Update the discount cap. Set to null to remove an existing cap.
+	Cap V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap `json:"cap,omitzero"`
 	paramObj
 }
 
@@ -4842,6 +7514,25 @@ func (r V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurati
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Update the discount cap. Set to null to remove an existing cap.
+//
+// The properties Amount, SpendTrackerAlias are required.
+type V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap struct {
+	// Accumulated spend ceiling above which the discount stops applying.
+	Amount float64 `json:"amount" api:"required"`
+	// Alias of the spend tracker this cap is measured against.
+	SpendTrackerAlias string `json:"spend_tracker_alias" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -111,6 +111,11 @@ const CommitRateTypeListRate = shared.CommitRateTypeListRate
 // This is an alias to an internal type.
 type CommitRolledOverFrom = shared.CommitRolledOverFrom
 
+// Optional attributes controlling how this commit interacts with spend trackers.
+//
+// This is an alias to an internal type.
+type CommitSpendTrackerAttributes = shared.CommitSpendTrackerAttributes
+
 // The subscription configuration for this commit, if it was generated from a
 // recurring commit with a subscription attached.
 //
@@ -219,6 +224,15 @@ type ContractScheduledChargesOnUsageInvoices = shared.ContractScheduledChargesOn
 const ContractScheduledChargesOnUsageInvoicesAll = shared.ContractScheduledChargesOnUsageInvoicesAll
 
 // This is an alias to an internal type.
+type ContractSpendTracker = shared.ContractSpendTracker
+
+// This is an alias to an internal type.
+type ContractSpendTrackerApplicableSpendSpecifier = shared.ContractSpendTrackerApplicableSpendSpecifier
+
+// This is an alias to an internal type.
+type ContractSpendTrackerAccumulatedSpend = shared.ContractSpendTrackerAccumulatedSpend
+
+// This is an alias to an internal type.
 type ContractV2 = shared.ContractV2
 
 // This is an alias to an internal type.
@@ -282,6 +296,11 @@ type ContractV2CommitLedgerPostpaidCommitExpirationLedgerEntry = shared.Contract
 
 // This is an alias to an internal type.
 type ContractV2CommitRolledOverFrom = shared.ContractV2CommitRolledOverFrom
+
+// Optional attributes controlling how this commit interacts with spend trackers.
+//
+// This is an alias to an internal type.
+type ContractV2CommitSpendTrackerAttributes = shared.ContractV2CommitSpendTrackerAttributes
 
 // This is an alias to an internal type.
 type ContractV2Override = shared.ContractV2Override
@@ -453,6 +472,15 @@ type ContractV2ScheduledChargesOnUsageInvoices = shared.ContractV2ScheduledCharg
 const ContractV2ScheduledChargesOnUsageInvoicesAll = shared.ContractV2ScheduledChargesOnUsageInvoicesAll
 
 // This is an alias to an internal type.
+type ContractV2SpendTracker = shared.ContractV2SpendTracker
+
+// This is an alias to an internal type.
+type ContractV2SpendTrackerApplicableSpendSpecifier = shared.ContractV2SpendTrackerApplicableSpendSpecifier
+
+// This is an alias to an internal type.
+type ContractV2SpendTrackerAccumulatedSpend = shared.ContractV2SpendTrackerAccumulatedSpend
+
+// This is an alias to an internal type.
 type ContractV2Subscription = shared.ContractV2Subscription
 
 // Previous, current, and next billing periods for the subscription.
@@ -550,6 +578,15 @@ type ContractWithoutAmendmentsScheduledChargesOnUsageInvoices = shared.ContractW
 
 // Equals "ALL"
 const ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll = shared.ContractWithoutAmendmentsScheduledChargesOnUsageInvoicesAll
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendTracker = shared.ContractWithoutAmendmentsSpendTracker
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendTrackerApplicableSpendSpecifier = shared.ContractWithoutAmendmentsSpendTrackerApplicableSpendSpecifier
+
+// This is an alias to an internal type.
+type ContractWithoutAmendmentsSpendTrackerAccumulatedSpend = shared.ContractWithoutAmendmentsSpendTrackerAccumulatedSpend
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsUsageFilter = shared.ContractWithoutAmendmentsUsageFilter
@@ -879,6 +916,21 @@ type PrepaidBalanceThresholdConfigurationCommit = shared.PrepaidBalanceThreshold
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationDiscountConfiguration = shared.PrepaidBalanceThresholdConfigurationDiscountConfiguration
 
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationDiscountConfigurationCap = shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationCap
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter
+
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationParam = shared.PrepaidBalanceThresholdConfigurationParam
 
@@ -887,6 +939,21 @@ type PrepaidBalanceThresholdConfigurationCommitParam = shared.PrepaidBalanceThre
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationDiscountConfigurationParam = shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam = shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam = shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2 = shared.PrepaidBalanceThresholdConfigurationV2
@@ -897,6 +964,21 @@ type PrepaidBalanceThresholdConfigurationV2Commit = shared.PrepaidBalanceThresho
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2DiscountConfiguration = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfiguration
 
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCap
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExclude = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExclude
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilter = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilter
+
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2Param = shared.PrepaidBalanceThresholdConfigurationV2Param
 
@@ -905,6 +987,21 @@ type PrepaidBalanceThresholdConfigurationV2CommitParam = shared.PrepaidBalanceTh
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam
+
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam = shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam
 
 // This is an alias to an internal type.
 type PropertyFilter = shared.PropertyFilter
@@ -978,11 +1075,23 @@ type SpendThresholdConfiguration = shared.SpendThresholdConfiguration
 // This is an alias to an internal type.
 type SpendThresholdConfigurationDiscountConfiguration = shared.SpendThresholdConfigurationDiscountConfiguration
 
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// This is an alias to an internal type.
+type SpendThresholdConfigurationDiscountConfigurationCap = shared.SpendThresholdConfigurationDiscountConfigurationCap
+
 // This is an alias to an internal type.
 type SpendThresholdConfigurationParam = shared.SpendThresholdConfigurationParam
 
 // This is an alias to an internal type.
 type SpendThresholdConfigurationDiscountConfigurationParam = shared.SpendThresholdConfigurationDiscountConfigurationParam
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// This is an alias to an internal type.
+type SpendThresholdConfigurationDiscountConfigurationCapParam = shared.SpendThresholdConfigurationDiscountConfigurationCapParam
 
 // This is an alias to an internal type.
 type SpendThresholdConfigurationV2 = shared.SpendThresholdConfigurationV2
@@ -990,11 +1099,23 @@ type SpendThresholdConfigurationV2 = shared.SpendThresholdConfigurationV2
 // This is an alias to an internal type.
 type SpendThresholdConfigurationV2DiscountConfiguration = shared.SpendThresholdConfigurationV2DiscountConfiguration
 
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// This is an alias to an internal type.
+type SpendThresholdConfigurationV2DiscountConfigurationCap = shared.SpendThresholdConfigurationV2DiscountConfigurationCap
+
 // This is an alias to an internal type.
 type SpendThresholdConfigurationV2Param = shared.SpendThresholdConfigurationV2Param
 
 // This is an alias to an internal type.
 type SpendThresholdConfigurationV2DiscountConfigurationParam = shared.SpendThresholdConfigurationV2DiscountConfigurationParam
+
+// If provided, the discount stops applying once the spend tracker has accumulated
+// this much spend in the billing period.
+//
+// This is an alias to an internal type.
+type SpendThresholdConfigurationV2DiscountConfigurationCapParam = shared.SpendThresholdConfigurationV2DiscountConfigurationCapParam
 
 // This is an alias to an internal type.
 type Subscription = shared.Subscription

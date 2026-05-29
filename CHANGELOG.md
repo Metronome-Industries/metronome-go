@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.7.0 (2026-05-29)
+
+Full Changelog: [v3.6.0...v3.7.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.6.0...v3.7.0)
+
+### Features
+
+* [LAUNCH-2814] editContract returns full edit in the response ([b85073f](https://github.com/Metronome-Industries/metronome-go/commit/b85073f19b5eefc0753076424c62a68d7f5a6710))
+* [orch-1860] remove all deprecated `/payments/*` endpoints from API ([d457444](https://github.com/Metronome-Industries/metronome-go/commit/d457444a74d0511509178b31f0fc9c3c166d7d2a))
+* create contract returns contract data ([60746bd](https://github.com/Metronome-Industries/metronome-go/commit/60746bd5ae437b9281bae9817350f14fcbbb214b))
+* nikku-orch-1723-update-create-contract ([6d956ad](https://github.com/Metronome-Industries/metronome-go/commit/6d956ad12928dcf8502085c302eb5d8a608d517d))
+
+
+### Chores
+
+* (internal) Add threshold balance specifier to contract create & edit, package create and both contract and package retrievals ([c24ebac](https://github.com/Metronome-Industries/metronome-go/commit/c24ebac6b402705e6017dfbbee9ef7ebe7677635))
+
 ## 3.6.0 (2026-05-18)
 
 Full Changelog: [v3.5.0...v3.6.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.5.0...v3.6.0)

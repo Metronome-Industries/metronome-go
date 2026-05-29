@@ -171,6 +171,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				ProductTags: []string{"string"},
 			}},
+			SpendTrackerAttributes: metronome.V2ContractEditParamsAddCommitSpendTrackerAttributes{
+				CountsAsDiscounted: true,
+			},
 			TemporaryID: metronome.String("temporary_id"),
 		}},
 		AddCredits: []metronome.V2ContractEditParamsAddCredit{{
@@ -323,7 +326,20 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			DiscountConfiguration: shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam{
 				PaymentFraction: 0,
+				Cap: shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationCapParam{
+					Amount:            0,
+					SpendTrackerAlias: "spend_tracker_alias",
+				},
 			},
+			ThresholdBalanceSpecifiers: []shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam{{
+				Exclude: []shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeParam{{
+					CustomFieldFilters: []shared.PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierExcludeCustomFieldFilterParam{{
+						Entity: "Commit",
+						Key:    "key",
+						Value:  "value",
+					}},
+				}},
+			}},
 		},
 		AddProfessionalServices: []metronome.V2ContractEditParamsAddProfessionalService{{
 			MaxAmount: 0,
@@ -520,8 +536,22 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			ThresholdAmount: 0,
 			DiscountConfiguration: shared.SpendThresholdConfigurationV2DiscountConfigurationParam{
 				PaymentFraction: 0,
+				Cap: shared.SpendThresholdConfigurationV2DiscountConfigurationCapParam{
+					Amount:            0,
+					SpendTrackerAlias: "spend_tracker_alias",
+				},
 			},
 		},
+		AddSpendTrackers: []metronome.V2ContractEditParamsAddSpendTracker{{
+			Alias: "alias",
+			ApplicableSpendSpecifiers: []metronome.V2ContractEditParamsAddSpendTrackerApplicableSpendSpecifier{{
+				Sources:    []string{"THRESHOLD_RECHARGE"},
+				SpendType:  "COMMIT_PURCHASE",
+				Discounted: "ANY",
+			}},
+			CreditTypeID:   "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			ResetFrequency: "BILLING_PERIOD",
+		}},
 		AddSubscriptions: []metronome.V2ContractEditParamsAddSubscription{{
 			CollectionSchedule: "ADVANCE",
 			Proration: metronome.V2ContractEditParamsAddSubscriptionProration{
@@ -558,6 +588,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		ArchiveScheduledCharges: []metronome.V2ContractEditParamsArchiveScheduledCharge{{
 			ID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		}},
+		ArchiveSpendTrackers: []string{"string"},
 		RemoveOverrides: []metronome.V2ContractEditParamsRemoveOverride{{
 			ID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		}},
@@ -676,6 +707,10 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			},
 			CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			DiscountConfiguration: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration{
+				Cap: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfigurationCap{
+					Amount:            0,
+					SpendTrackerAlias: "spend_tracker_alias",
+				},
 				PaymentFraction: metronome.Float(0),
 			},
 			IsEnabled: metronome.Bool(true),
@@ -695,6 +730,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			},
 			RechargeToAmount: metronome.Float(0),
 			ThresholdAmount:  metronome.Float(0),
+			ThresholdBalanceSpecifiers: []metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier{{
+				Exclude: []metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude{{
+					CustomFieldFilters: []metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilter{{
+						Entity: "Commit",
+						Key:    "key",
+						Value:  "value",
+					}},
+				}},
+			}},
 		},
 		UpdateRecurringCommits: []metronome.V2ContractEditParamsUpdateRecurringCommit{{
 			RecurringCommitID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -748,6 +792,10 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				ProductID:   metronome.String("product_id"),
 			},
 			DiscountConfiguration: metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfiguration{
+				Cap: metronome.V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurationCap{
+					Amount:            0,
+					SpendTrackerAlias: "spend_tracker_alias",
+				},
 				PaymentFraction: metronome.Float(0),
 			},
 			IsEnabled: metronome.Bool(true),
