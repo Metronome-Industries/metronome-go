@@ -822,6 +822,8 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration"`
+	// Rounding configuration for prorated recurring commit amounts.
+	ProrationRounding V1ContractNewResponseDataContractRecurringCommitProrationRounding `json:"proration_rounding" api:"nullable"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
@@ -859,6 +861,7 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Proration              respjson.Field
+		ProrationRounding      respjson.Field
 		RecurrenceFrequency    respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
@@ -976,6 +979,77 @@ func (r *V1ContractNewResponseDataContractRecurringCommitInvoiceAmount) Unmarsha
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Rounding configuration for prorated recurring commit amounts.
+type V1ContractNewResponseDataContractRecurringCommitProrationRounding struct {
+	Access  V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess  `json:"access"`
+	Invoice V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice `json:"invoice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Access      respjson.Field
+		Invoice     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRounding) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1ContractNewResponseDataContractRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
@@ -1011,6 +1085,8 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration"`
+	// Rounding configuration for prorated recurring credit amounts.
+	ProrationRounding V1ContractNewResponseDataContractRecurringCreditProrationRounding `json:"proration_rounding" api:"nullable"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
@@ -1047,6 +1123,7 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Proration              respjson.Field
+		ProrationRounding      respjson.Field
 		RecurrenceFrequency    respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
@@ -1138,6 +1215,50 @@ type V1ContractNewResponseDataContractRecurringCreditContract struct {
 // Returns the unmodified JSON received from the API
 func (r V1ContractNewResponseDataContractRecurringCreditContract) RawJSON() string { return r.JSON.raw }
 func (r *V1ContractNewResponseDataContractRecurringCreditContract) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Rounding configuration for prorated recurring credit amounts.
+type V1ContractNewResponseDataContractRecurringCreditProrationRounding struct {
+	Access V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess `json:"access"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Access      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCreditProrationRounding) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCreditProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2761,6 +2882,8 @@ type V1ContractNewParamsRecurringCommit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration,omitzero"`
+	// Optional rounding configuration for prorated recurring commit amounts.
+	ProrationRounding V1ContractNewParamsRecurringCommitProrationRounding `json:"proration_rounding,omitzero"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
@@ -2867,6 +2990,73 @@ func (r *V1ContractNewParamsRecurringCommitInvoiceAmount) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Optional rounding configuration for prorated recurring commit amounts.
+type V1ContractNewParamsRecurringCommitProrationRounding struct {
+	Access  V1ContractNewParamsRecurringCommitProrationRoundingAccess  `json:"access,omitzero"`
+	Invoice V1ContractNewParamsRecurringCommitProrationRoundingInvoice `json:"invoice,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCommitProrationRounding) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCommitProrationRounding
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCommitProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties DecimalPlaces, RoundingMethod are required.
+type V1ContractNewParamsRecurringCommitProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCommitProrationRoundingAccess) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCommitProrationRoundingAccess
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitProrationRoundingAccess](
+		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
+	)
+}
+
+// The properties DecimalPlaces, RoundingMethod are required.
+type V1ContractNewParamsRecurringCommitProrationRoundingInvoice struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCommitProrationRoundingInvoice) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCommitProrationRoundingInvoice
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitProrationRoundingInvoice](
+		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
+	)
+}
+
 // Attach a subscription to the recurring commit/credit.
 //
 // The properties ApplySeatIncreaseConfig, SubscriptionID are required.
@@ -2951,6 +3141,8 @@ type V1ContractNewParamsRecurringCredit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration,omitzero"`
+	// Optional rounding configuration for prorated recurring credit amounts.
+	ProrationRounding V1ContractNewParamsRecurringCreditProrationRounding `json:"proration_rounding,omitzero"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
@@ -3036,6 +3228,46 @@ func (r *V1ContractNewParamsRecurringCreditCommitDuration) UnmarshalJSON(data []
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditCommitDuration](
 		"unit", "PERIODS",
+	)
+}
+
+// Optional rounding configuration for prorated recurring credit amounts.
+type V1ContractNewParamsRecurringCreditProrationRounding struct {
+	Access V1ContractNewParamsRecurringCreditProrationRoundingAccess `json:"access,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCreditProrationRounding) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCreditProrationRounding
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCreditProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties DecimalPlaces, RoundingMethod are required.
+type V1ContractNewParamsRecurringCreditProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCreditProrationRoundingAccess) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCreditProrationRoundingAccess
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditProrationRoundingAccess](
+		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
 	)
 }
 
@@ -3388,7 +3620,8 @@ type V1ContractNewParamsSubscription struct {
 	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
 	// A temporary ID used to reference the subscription in recurring commit/credit
 	// subscription configs created within the same payload.
-	TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+	TemporaryID        param.Opt[string]                                 `json:"temporary_id,omitzero"`
+	BillingCycleConfig V1ContractNewParamsSubscriptionBillingCycleConfig `json:"billing_cycle_config,omitzero"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields,omitzero"`
 	// Determines how the subscription's quantity is controlled. Defaults to
@@ -3434,7 +3667,8 @@ type V1ContractNewParamsSubscriptionProration struct {
 	// in-arrears at the end of the period.
 	//
 	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
-	InvoiceBehavior string `json:"invoice_behavior,omitzero"`
+	InvoiceBehavior string                                           `json:"invoice_behavior,omitzero"`
+	Rounding        V1ContractNewParamsSubscriptionProrationRounding `json:"rounding,omitzero"`
 	paramObj
 }
 
@@ -3449,6 +3683,32 @@ func (r *V1ContractNewParamsSubscriptionProration) UnmarshalJSON(data []byte) er
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionProration](
 		"invoice_behavior", "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE",
+	)
+}
+
+// The properties DecimalPlaces, RoundingMethod are required.
+type V1ContractNewParamsSubscriptionProrationRounding struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsSubscriptionProrationRounding) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsSubscriptionProrationRounding
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsSubscriptionProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionProrationRounding](
+		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
 	)
 }
 
@@ -3475,6 +3735,32 @@ func (r *V1ContractNewParamsSubscriptionSubscriptionRate) UnmarshalJSON(data []b
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionSubscriptionRate](
 		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+	)
+}
+
+type V1ContractNewParamsSubscriptionBillingCycleConfig struct {
+	// The date to anchor the billing cycle to. If omitted, defaults to the contract's
+	// usage invoice billing cycle anchor date.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
+	// Controls whether this subscription consolidates onto usage invoices or gets its
+	// own scheduled invoice. Defaults to ON_USAGE_INVOICE if omitted.
+	//
+	// Any of "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE".
+	InvoicePlacement string `json:"invoice_placement,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsSubscriptionBillingCycleConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsSubscriptionBillingCycleConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsSubscriptionBillingCycleConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionBillingCycleConfig](
+		"invoice_placement", "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE",
 	)
 }
 
