@@ -330,9 +330,19 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Proration:            "NONE",
-			RateType:             "COMMIT_RATE",
-			RecurrenceFrequency:  "MONTHLY",
-			RolloverFraction:     metronome.Float(0),
+			ProrationRounding: metronome.V1ContractNewParamsRecurringCommitProrationRounding{
+				Access: metronome.V1ContractNewParamsRecurringCommitProrationRoundingAccess{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+				Invoice: metronome.V1ContractNewParamsRecurringCommitProrationRoundingInvoice{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+			},
+			RateType:            "COMMIT_RATE",
+			RecurrenceFrequency: "MONTHLY",
+			RolloverFraction:    metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -379,9 +389,15 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Proration:            "NONE",
-			RateType:             "COMMIT_RATE",
-			RecurrenceFrequency:  "MONTHLY",
-			RolloverFraction:     metronome.Float(0),
+			ProrationRounding: metronome.V1ContractNewParamsRecurringCreditProrationRounding{
+				Access: metronome.V1ContractNewParamsRecurringCreditProrationRoundingAccess{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+			},
+			RateType:            "COMMIT_RATE",
+			RecurrenceFrequency: "MONTHLY",
+			RolloverFraction:    metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -500,10 +516,18 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Proration: metronome.V1ContractNewParamsSubscriptionProration{
 				InvoiceBehavior: "BILL_IMMEDIATELY",
 				IsProrated:      metronome.Bool(true),
+				Rounding: metronome.V1ContractNewParamsSubscriptionProrationRounding{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
 			},
 			SubscriptionRate: metronome.V1ContractNewParamsSubscriptionSubscriptionRate{
 				BillingFrequency: "MONTHLY",
 				ProductID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			},
+			BillingCycleConfig: metronome.V1ContractNewParamsSubscriptionBillingCycleConfig{
+				AnchorDate:       metronome.Time(time.Now()),
+				InvoicePlacement: "ON_SCHEDULED_INVOICE",
 			},
 			CustomFields: map[string]string{
 				"foo": "string",
