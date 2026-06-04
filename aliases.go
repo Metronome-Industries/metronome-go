@@ -434,17 +434,6 @@ type ContractV2RecurringCommitContract = shared.ContractV2RecurringCommitContrac
 // This is an alias to an internal type.
 type ContractV2RecurringCommitInvoiceAmount = shared.ContractV2RecurringCommitInvoiceAmount
 
-// Rounding configuration for prorated recurring commit amounts.
-//
-// This is an alias to an internal type.
-type ContractV2RecurringCommitProrationRounding = shared.ContractV2RecurringCommitProrationRounding
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitProrationRoundingAccess = shared.ContractV2RecurringCommitProrationRoundingAccess
-
-// This is an alias to an internal type.
-type ContractV2RecurringCommitProrationRoundingInvoice = shared.ContractV2RecurringCommitProrationRoundingInvoice
-
 // This is an alias to an internal type.
 type ContractV2RecurringCredit = shared.ContractV2RecurringCredit
 
@@ -463,14 +452,6 @@ type ContractV2RecurringCreditProduct = shared.ContractV2RecurringCreditProduct
 
 // This is an alias to an internal type.
 type ContractV2RecurringCreditContract = shared.ContractV2RecurringCreditContract
-
-// Rounding configuration for prorated recurring credit amounts.
-//
-// This is an alias to an internal type.
-type ContractV2RecurringCreditProrationRounding = shared.ContractV2RecurringCreditProrationRounding
-
-// This is an alias to an internal type.
-type ContractV2RecurringCreditProrationRoundingAccess = shared.ContractV2RecurringCreditProrationRoundingAccess
 
 // This is an alias to an internal type.
 type ContractV2ResellerRoyalty = shared.ContractV2ResellerRoyalty
@@ -520,9 +501,6 @@ type ContractV2SubscriptionBillingPeriodsPrevious = shared.ContractV2Subscriptio
 type ContractV2SubscriptionProration = shared.ContractV2SubscriptionProration
 
 // This is an alias to an internal type.
-type ContractV2SubscriptionProrationRounding = shared.ContractV2SubscriptionProrationRounding
-
-// This is an alias to an internal type.
 type ContractV2SubscriptionQuantitySchedule = shared.ContractV2SubscriptionQuantitySchedule
 
 // This is an alias to an internal type.
@@ -530,9 +508,6 @@ type ContractV2SubscriptionSubscriptionRate = shared.ContractV2SubscriptionSubsc
 
 // This is an alias to an internal type.
 type ContractV2SubscriptionSubscriptionRateProduct = shared.ContractV2SubscriptionSubscriptionRateProduct
-
-// This is an alias to an internal type.
-type ContractV2SubscriptionBillingCycleConfig = shared.ContractV2SubscriptionBillingCycleConfig
 
 // This is an alias to an internal type.
 type ContractV2SubscriptionSeatConfig = shared.ContractV2SubscriptionSeatConfig
@@ -570,17 +545,6 @@ type ContractWithoutAmendmentsRecurringCommitContract = shared.ContractWithoutAm
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCommitInvoiceAmount = shared.ContractWithoutAmendmentsRecurringCommitInvoiceAmount
 
-// Rounding configuration for prorated recurring commit amounts.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitProrationRounding = shared.ContractWithoutAmendmentsRecurringCommitProrationRounding
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitProrationRoundingAccess = shared.ContractWithoutAmendmentsRecurringCommitProrationRoundingAccess
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCommitProrationRoundingInvoice = shared.ContractWithoutAmendmentsRecurringCommitProrationRoundingInvoice
-
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCredit = shared.ContractWithoutAmendmentsRecurringCredit
 
@@ -599,14 +563,6 @@ type ContractWithoutAmendmentsRecurringCreditProduct = shared.ContractWithoutAme
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsRecurringCreditContract = shared.ContractWithoutAmendmentsRecurringCreditContract
-
-// Rounding configuration for prorated recurring credit amounts.
-//
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditProrationRounding = shared.ContractWithoutAmendmentsRecurringCreditProrationRounding
-
-// This is an alias to an internal type.
-type ContractWithoutAmendmentsRecurringCreditProrationRoundingAccess = shared.ContractWithoutAmendmentsRecurringCreditProrationRoundingAccess
 
 // This is an alias to an internal type.
 type ContractWithoutAmendmentsResellerRoyalty = shared.ContractWithoutAmendmentsResellerRoyalty
@@ -1190,9 +1146,6 @@ const SubscriptionCollectionScheduleArrears = shared.SubscriptionCollectionSched
 // This is an alias to an internal type.
 type SubscriptionProration = shared.SubscriptionProration
 
-// This is an alias to an internal type.
-type SubscriptionProrationRounding = shared.SubscriptionProrationRounding
-
 // Determines how the subscription's quantity is controlled. Defaults to
 // QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
 // directly on the subscription. `initial_quantity` must be provided with this
@@ -1220,9 +1173,6 @@ type SubscriptionSubscriptionRate = shared.SubscriptionSubscriptionRate
 
 // This is an alias to an internal type.
 type SubscriptionSubscriptionRateProduct = shared.SubscriptionSubscriptionRateProduct
-
-// This is an alias to an internal type.
-type SubscriptionBillingCycleConfig = shared.SubscriptionBillingCycleConfig
 
 // This is an alias to an internal type.
 type SubscriptionSeatConfig = shared.SubscriptionSeatConfig
