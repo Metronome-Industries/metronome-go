@@ -263,18 +263,8 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 				Quantity:     0,
 				UnitPrice:    0,
 			},
-			Name:      metronome.String("x"),
-			Proration: "NONE",
-			ProrationRounding: metronome.V1PackageNewParamsRecurringCommitProrationRounding{
-				Access: metronome.V1PackageNewParamsRecurringCommitProrationRoundingAccess{
-					DecimalPlaces:  -5,
-					RoundingMethod: "HALF_UP",
-				},
-				Invoice: metronome.V1PackageNewParamsRecurringCommitProrationRoundingInvoice{
-					DecimalPlaces:  -5,
-					RoundingMethod: "HALF_UP",
-				},
-			},
+			Name:                metronome.String("x"),
+			Proration:           "NONE",
 			RateType:            "COMMIT_RATE",
 			RecurrenceFrequency: "MONTHLY",
 			RolloverFraction:    metronome.Float(0),
@@ -320,14 +310,8 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 				Unit:  "DAYS",
 				Value: 0,
 			},
-			Name:      metronome.String("x"),
-			Proration: "NONE",
-			ProrationRounding: metronome.V1PackageNewParamsRecurringCreditProrationRounding{
-				Access: metronome.V1PackageNewParamsRecurringCreditProrationRoundingAccess{
-					DecimalPlaces:  -5,
-					RoundingMethod: "HALF_UP",
-				},
-			},
+			Name:                metronome.String("x"),
+			Proration:           "NONE",
 			RateType:            "COMMIT_RATE",
 			RecurrenceFrequency: "MONTHLY",
 			RolloverFraction:    metronome.Float(0),
@@ -415,17 +399,10 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 			Proration: metronome.V1PackageNewParamsSubscriptionProration{
 				InvoiceBehavior: "BILL_IMMEDIATELY",
 				IsProrated:      metronome.Bool(true),
-				Rounding: metronome.V1PackageNewParamsSubscriptionProrationRounding{
-					DecimalPlaces:  -5,
-					RoundingMethod: "HALF_UP",
-				},
 			},
 			SubscriptionRate: metronome.V1PackageNewParamsSubscriptionSubscriptionRate{
 				BillingFrequency: "MONTHLY",
 				ProductID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			},
-			BillingCycleConfig: metronome.V1PackageNewParamsSubscriptionBillingCycleConfig{
-				InvoicePlacement: "ON_SCHEDULED_INVOICE",
 			},
 			CustomFields: map[string]string{
 				"foo": "string",
