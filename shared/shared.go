@@ -2346,6 +2346,7 @@ func (r *ContractV2Override) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2OverrideOverrideSpecifier struct {
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
@@ -2356,6 +2357,7 @@ type ContractV2OverrideOverrideSpecifier struct {
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AnyCommitOrCreditIDs    respjson.Field
 		BillingFrequency        respjson.Field
 		CommitIDs               respjson.Field
 		PresentationGroupValues respjson.Field
@@ -5653,6 +5655,7 @@ func (r *Override) UnmarshalJSON(data []byte) error {
 }
 
 type OverrideOverrideSpecifier struct {
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
@@ -5663,6 +5666,7 @@ type OverrideOverrideSpecifier struct {
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AnyCommitOrCreditIDs    respjson.Field
 		BillingFrequency        respjson.Field
 		CommitIDs               respjson.Field
 		PresentationGroupValues respjson.Field

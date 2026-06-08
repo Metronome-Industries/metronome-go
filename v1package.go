@@ -579,6 +579,7 @@ func (r *V1PackageGetResponseDataOverride) UnmarshalJSON(data []byte) error {
 }
 
 type V1PackageGetResponseDataOverrideOverrideSpecifier struct {
+	AnyCommitOrCreditTemplateIDs []string `json:"any_commit_or_credit_template_ids"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency           string            `json:"billing_frequency"`
 	CommitTemplateIDs          []string          `json:"commit_template_ids"`
@@ -589,15 +590,16 @@ type V1PackageGetResponseDataOverrideOverrideSpecifier struct {
 	RecurringCommitTemplateIDs []string          `json:"recurring_commit_template_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BillingFrequency           respjson.Field
-		CommitTemplateIDs          respjson.Field
-		PresentationGroupValues    respjson.Field
-		PricingGroupValues         respjson.Field
-		ProductID                  respjson.Field
-		ProductTags                respjson.Field
-		RecurringCommitTemplateIDs respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
+		AnyCommitOrCreditTemplateIDs respjson.Field
+		BillingFrequency             respjson.Field
+		CommitTemplateIDs            respjson.Field
+		PresentationGroupValues      respjson.Field
+		PricingGroupValues           respjson.Field
+		ProductID                    respjson.Field
+		ProductTags                  respjson.Field
+		RecurringCommitTemplateIDs   respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
 	} `json:"-"`
 }
 
@@ -2169,6 +2171,7 @@ func (r *V1PackageListResponseOverride) UnmarshalJSON(data []byte) error {
 }
 
 type V1PackageListResponseOverrideOverrideSpecifier struct {
+	AnyCommitOrCreditTemplateIDs []string `json:"any_commit_or_credit_template_ids"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency           string            `json:"billing_frequency"`
 	CommitTemplateIDs          []string          `json:"commit_template_ids"`
@@ -2179,15 +2182,16 @@ type V1PackageListResponseOverrideOverrideSpecifier struct {
 	RecurringCommitTemplateIDs []string          `json:"recurring_commit_template_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BillingFrequency           respjson.Field
-		CommitTemplateIDs          respjson.Field
-		PresentationGroupValues    respjson.Field
-		PricingGroupValues         respjson.Field
-		ProductID                  respjson.Field
-		ProductTags                respjson.Field
-		RecurringCommitTemplateIDs respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
+		AnyCommitOrCreditTemplateIDs respjson.Field
+		BillingFrequency             respjson.Field
+		CommitTemplateIDs            respjson.Field
+		PresentationGroupValues      respjson.Field
+		PricingGroupValues           respjson.Field
+		ProductID                    respjson.Field
+		ProductTags                  respjson.Field
+		RecurringCommitTemplateIDs   respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
 	} `json:"-"`
 }
 
@@ -4022,6 +4026,12 @@ func init() {
 type V1PackageNewParamsOverrideOverrideSpecifier struct {
 	// If provided, the override will only apply to the product with the specified ID.
 	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Can only be used for commit specific overrides. Must be used in conjunction with
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. Must be used instead of both `commit_ids` and
+	// `recurring_commit_ids` If provided, the override will apply to any specified
+	// commit, credit, recurring commit or recurring credit IDs.
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with

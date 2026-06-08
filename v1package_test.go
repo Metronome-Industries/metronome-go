@@ -132,8 +132,9 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 		NetPaymentTermsDays:              metronome.Float(0),
 		ContractOverrides: []metronome.V1PackageNewParamsOverride{{
 			OverrideSpecifiers: []metronome.V1PackageNewParamsOverrideOverrideSpecifier{{
-				BillingFrequency: "MONTHLY",
-				CommitIDs:        []string{"string"},
+				AnyCommitOrCreditIDs: []string{"string"},
+				BillingFrequency:     "MONTHLY",
+				CommitIDs:            []string{"string"},
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
 				},
