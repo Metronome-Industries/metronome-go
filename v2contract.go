@@ -582,6 +582,7 @@ func (r *V2ContractEditResponseDataEditAddOverride) UnmarshalJSON(data []byte) e
 }
 
 type V2ContractEditResponseDataEditAddOverrideOverrideSpecifier struct {
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
@@ -592,6 +593,7 @@ type V2ContractEditResponseDataEditAddOverrideOverrideSpecifier struct {
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AnyCommitOrCreditIDs    respjson.Field
 		BillingFrequency        respjson.Field
 		CommitIDs               respjson.Field
 		PresentationGroupValues respjson.Field
@@ -3306,6 +3308,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddOverride) UnmarshalJSON(data []b
 }
 
 type V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier struct {
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
@@ -3316,6 +3319,7 @@ type V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier struct {
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AnyCommitOrCreditIDs    respjson.Field
 		BillingFrequency        respjson.Field
 		CommitIDs               respjson.Field
 		PresentationGroupValues respjson.Field
@@ -6478,6 +6482,12 @@ func init() {
 type V2ContractEditParamsAddOverrideOverrideSpecifier struct {
 	// If provided, the override will only apply to the product with the specified ID.
 	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Can only be used for commit specific overrides. Must be used in conjunction with
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. Must be used instead of both `commit_ids` and
+	// `recurring_commit_ids` If provided, the override will apply to any specified
+	// commit, credit, recurring commit or recurring credit IDs.
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// If provided, the override will only apply to the specified commits. Can only be

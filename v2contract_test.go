@@ -250,8 +250,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.Bool(true),
 			Multiplier:            metronome.Float(2),
 			OverrideSpecifiers: []metronome.V2ContractEditParamsAddOverrideOverrideSpecifier{{
-				BillingFrequency: "MONTHLY",
-				CommitIDs:        []string{"string"},
+				AnyCommitOrCreditIDs: []string{"string"},
+				BillingFrequency:     "MONTHLY",
+				CommitIDs:            []string{"string"},
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
 				},
