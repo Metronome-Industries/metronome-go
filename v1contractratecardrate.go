@@ -80,6 +80,10 @@ func (r *V1ContractRateCardRateService) ListAutoPaging(ctx context.Context, para
 }
 
 // Add a new rate
+//
+// This endpoint is heavily rate limited. For adding multiple rates, using the
+// [addRates](https://docs.metronome.com/api-reference/rate-cards/add-rates)
+// endpoint is strongly encouraged.
 func (r *V1ContractRateCardRateService) Add(ctx context.Context, body V1ContractRateCardRateAddParams, opts ...option.RequestOption) (res *V1ContractRateCardRateAddResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contract-pricing/rate-cards/addRate"
