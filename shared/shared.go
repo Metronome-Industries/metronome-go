@@ -174,6 +174,8 @@ type Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CommitContract `json:"contract"`
+	// The actor who created this commit.
+	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -229,6 +231,7 @@ type Commit struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -1668,6 +1671,8 @@ type ContractV2Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64                  `json:"balance"`
 	Contract ContractV2CommitContract `json:"contract"`
+	// The actor who created this commit.
+	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -1715,6 +1720,7 @@ type ContractV2Commit struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -2525,6 +2531,8 @@ type ContractV2Credit struct {
 	//   - Recurring credits: latter of credit service period date and parent credit
 	//     start date
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// The actor who created this credit.
+	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -2563,6 +2571,7 @@ type ContractV2Credit struct {
 		Balance                 respjson.Field
 		Contract                respjson.Field
 		CreatedAt               respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -4808,6 +4817,8 @@ type Credit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CreditContract `json:"contract"`
+	// The actor who created this credit.
+	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -4853,6 +4864,7 @@ type Credit struct {
 		ApplicableProductTags   respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
