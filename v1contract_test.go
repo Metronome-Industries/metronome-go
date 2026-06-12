@@ -1135,6 +1135,7 @@ func TestV1ContractListSeatBalancesWithOptionalParams(t *testing.T) {
 		IncludeLedgers:           metronome.Bool(true),
 		Limit:                    metronome.Int(25),
 		SeatIDs:                  []string{"string"},
+		SkipMissingSeatIDs:       metronome.Bool(true),
 		StartingAt:               metronome.Time(time.Now()),
 		SubscriptionIDs:          []string{"8deed800-1b7a-495d-a207-6c52bac54dc9"},
 	})
