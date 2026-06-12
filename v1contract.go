@@ -5116,6 +5116,9 @@ type V1ContractListSeatBalancesParams struct {
 	// (total: 108 commits). Each returned seat includes all of its associated credits
 	// and commits.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
+	// When true, any seat_ids not found in contract subscriptions will be silently
+	// omitted from the response instead of returning a 400 error.
+	SkipMissingSeatIDs param.Opt[bool] `json:"skip_missing_seat_ids,omitzero"`
 	// Include only commits or credits with access effective on or after this date
 	// (cannot be used with covering_date).
 	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
