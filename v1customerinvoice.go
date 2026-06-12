@@ -1206,6 +1206,9 @@ type V1CustomerInvoiceListParams struct {
 	StartingOn param.Opt[time.Time] `query:"starting_on,omitzero" format:"date-time" json:"-"`
 	// Invoice status, e.g. DRAFT, FINALIZED, or VOID
 	Status param.Opt[string] `query:"status,omitzero" json:"-"`
+	// Indicates that this API request was triggered by a webhook notification with the
+	// provided ID.
+	WebhookNotificationID param.Opt[string] `query:"webhook_notification_id,omitzero" json:"-"`
 	// Invoice sort order by issued_at, e.g. date_asc or date_desc. Defaults to
 	// date_asc.
 	//

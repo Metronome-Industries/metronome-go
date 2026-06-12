@@ -57,17 +57,18 @@ func TestV1CustomerInvoiceListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Customers.Invoices.List(context.TODO(), metronome.V1CustomerInvoiceListParams{
-		CustomerID:           "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
-		ContractID:           metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		CreditTypeID:         metronome.String("credit_type_id"),
-		EndingBefore:         metronome.Time(time.Now()),
-		Limit:                metronome.Int(1),
-		NextPage:             metronome.String("next_page"),
-		SkipZeroQtyLineItems: metronome.Bool(true),
-		Sort:                 metronome.V1CustomerInvoiceListParamsSortDateAsc,
-		StartingOn:           metronome.Time(time.Now()),
-		Status:               metronome.String("status"),
-		Type:                 metronome.V1CustomerInvoiceListParamsTypeUsage,
+		CustomerID:            "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		ContractID:            metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		CreditTypeID:          metronome.String("credit_type_id"),
+		EndingBefore:          metronome.Time(time.Now()),
+		Limit:                 metronome.Int(1),
+		NextPage:              metronome.String("next_page"),
+		SkipZeroQtyLineItems:  metronome.Bool(true),
+		Sort:                  metronome.V1CustomerInvoiceListParamsSortDateAsc,
+		StartingOn:            metronome.Time(time.Now()),
+		Status:                metronome.String("status"),
+		Type:                  metronome.V1CustomerInvoiceListParamsTypeUsage,
+		WebhookNotificationID: metronome.String("webhook_notification_id"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
