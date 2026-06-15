@@ -2745,9 +2745,10 @@ type V1ContractNewParamsOverride struct {
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	Entitled     param.Opt[bool]      `json:"entitled,omitzero"`
 	// Indicates whether the override should only apply to commits. Defaults to
-	// `false`. If `true`, you can specify relevant commits in `override_specifiers` by
-	// passing `commit_ids`. if you do not specify `commit_ids`, then the override will
-	// apply when consuming any prepaid or postpaid commit.
+	// `false`. If `true` you can specify relevant commits in `override_specifiers` by
+	// passing `commit_ids`, `recurring_commit_ids`, or `any_commit_or_credit_ids`. If
+	// you do not specify any of these fields, the override will apply when consuming
+	// any prepaid commit, postpaid commit, or credit
 	IsCommitSpecific param.Opt[bool] `json:"is_commit_specific,omitzero"`
 	// Required for MULTIPLIER type. Must be >=0.
 	Multiplier param.Opt[float64] `json:"multiplier,omitzero"`
@@ -4518,9 +4519,10 @@ type V1ContractAmendParamsOverride struct {
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	Entitled     param.Opt[bool]      `json:"entitled,omitzero"`
 	// Indicates whether the override should only apply to commits. Defaults to
-	// `false`. If `true`, you can specify relevant commits in `override_specifiers` by
-	// passing `commit_ids`. if you do not specify `commit_ids`, then the override will
-	// apply when consuming any prepaid or postpaid commit.
+	// `false`. If `true` you can specify relevant commits in `override_specifiers` by
+	// passing `commit_ids`, `recurring_commit_ids`, or `any_commit_or_credit_ids`. If
+	// you do not specify any of these fields, the override will apply when consuming
+	// any prepaid commit, postpaid commit, or credit
 	IsCommitSpecific param.Opt[bool] `json:"is_commit_specific,omitzero"`
 	// Required for MULTIPLIER type. Must be >=0.
 	Multiplier param.Opt[float64] `json:"multiplier,omitzero"`
