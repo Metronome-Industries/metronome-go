@@ -78,11 +78,11 @@ func NewV1CustomerAlertService(opts ...option.RequestOption) (r V1CustomerAlertS
 //   - `null` - Notification has been archived
 //   - `triggered_by`: Additional context about what caused the notification to
 //     trigger (when applicable)
+//   - `updated_at`: Timestamp of when the `customer_status` was last updated
 //   - alert: Complete threshold notification configuration including:
 //   - Notification ID, name, and type
 //   - Current threshold values and credit type information
 //   - Notification status (enabled, disabled, or archived)
-//   - Last update timestamp
 //   - Any applied filters (credit grant types, custom fields, group values)
 //
 // ### Usage guidelines:
@@ -278,7 +278,7 @@ type CustomerAlertAlert struct {
 	// "low_remaining_contract_credit_and_commit_balance_reached",
 	// "low_remaining_seat_balance_reached", "invoice_total_reached".
 	Type string `json:"type" api:"required"`
-	// Timestamp for when the threshold notification was last updated
+	// Timestamp for when the threshold notification's customer status was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// An array of strings, representing a way to filter the credit grant this
 	// threshold notification applies to, by looking at the credit_grant_type field on
