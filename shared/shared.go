@@ -174,7 +174,8 @@ type Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CommitContract `json:"contract"`
-	// The actor who created this commit.
+	// The actor who created this commit. Omitted for system-generated commits such as
+	// recurring commits, rollover commits, and threshold commits.
 	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
@@ -1671,7 +1672,8 @@ type ContractV2Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64                  `json:"balance"`
 	Contract ContractV2CommitContract `json:"contract"`
-	// The actor who created this commit.
+	// The actor who created this commit. Omitted for system-generated commits such as
+	// recurring commits, rollover commits, and threshold commits.
 	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
@@ -2531,7 +2533,8 @@ type ContractV2Credit struct {
 	//   - Recurring credits: latter of credit service period date and parent credit
 	//     start date
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// The actor who created this credit.
+	// The actor who created this credit. Omitted for system-generated credits such as
+	// recurring credits.
 	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
@@ -4817,7 +4820,8 @@ type Credit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CreditContract `json:"contract"`
-	// The actor who created this credit.
+	// The actor who created this credit. Omitted for system-generated credits such as
+	// recurring credits.
 	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
