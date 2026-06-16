@@ -1012,7 +1012,7 @@ type V1PackageGetResponseDataRecurringCommit struct {
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -1327,7 +1327,7 @@ type V1PackageGetResponseDataRecurringCredit struct {
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -2636,7 +2636,7 @@ type V1PackageListResponseRecurringCommit struct {
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -2949,7 +2949,7 @@ type V1PackageListResponseRecurringCredit struct {
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -4226,7 +4226,7 @@ type V1PackageNewParamsRecurringCommit struct {
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -4254,7 +4254,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCommit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -4533,7 +4533,7 @@ type V1PackageNewParamsRecurringCredit struct {
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -4561,7 +4561,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCredit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
