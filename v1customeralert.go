@@ -280,6 +280,10 @@ type CustomerAlertAlert struct {
 	Type string `json:"type" api:"required"`
 	// Timestamp for when the threshold notification's customer status was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// Present for `low_remaining_contract_credit_and_commit_balance_reached`
+	// notifications. The filters that define the balances that are considered when
+	// evaluating the alert.
+	AlertSpecifiers []CustomerAlertAlertAlertSpecifier `json:"alert_specifiers"`
 	// An array of strings, representing a way to filter the credit grant this
 	// threshold notification applies to, by looking at the credit_grant_type field on
 	// the credit grant. This field is only defined for CreditPercentage and
@@ -313,6 +317,7 @@ type CustomerAlertAlert struct {
 		Threshold              respjson.Field
 		Type                   respjson.Field
 		UpdatedAt              respjson.Field
+		AlertSpecifiers        respjson.Field
 		CreditGrantTypeFilters respjson.Field
 		CreditType             respjson.Field
 		CustomFieldFilters     respjson.Field
@@ -329,6 +334,88 @@ type CustomerAlertAlert struct {
 // Returns the unmodified JSON received from the API
 func (r CustomerAlertAlert) RawJSON() string { return r.JSON.raw }
 func (r *CustomerAlertAlert) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CustomerAlertAlertAlertSpecifier struct {
+	// A list of custom field filters for notification types that support advanced
+	// filtering
+	CustomFieldFilters []CustomerAlertAlertAlertSpecifierCustomFieldFilter `json:"custom_field_filters"`
+	// If provided, the specifier will not apply to balances that matches the inclusion
+	// criteria and any of the excluding values.
+	Exclude []CustomerAlertAlertAlertSpecifierExclude `json:"exclude"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomFieldFilters respjson.Field
+		Exclude            respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlertAlertSpecifier) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlertAlertSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CustomerAlertAlertAlertSpecifierCustomFieldFilter struct {
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entity      respjson.Field
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlertAlertSpecifierCustomFieldFilter) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlertAlertSpecifierCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CustomerAlertAlertAlertSpecifierExclude struct {
+	// A list of custom field filters for notification types that support advanced
+	// filtering
+	CustomFieldFilters []CustomerAlertAlertAlertSpecifierExcludeCustomFieldFilter `json:"custom_field_filters"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomFieldFilters respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlertAlertSpecifierExclude) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlertAlertSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CustomerAlertAlertAlertSpecifierExcludeCustomFieldFilter struct {
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entity      respjson.Field
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomerAlertAlertAlertSpecifierExcludeCustomFieldFilter) RawJSON() string { return r.JSON.raw }
+func (r *CustomerAlertAlertAlertSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -444,6 +531,9 @@ type V1CustomerAlertGetParams struct {
 	AlertID string `json:"alert_id" api:"required" format:"uuid"`
 	// The Metronome ID of the customer
 	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+	// Can be used with only `low_remaining_contract_credit_and_commit_balance_reached`
+	// notifications. Used to filter the alert by the custom field key-value pair.
+	AlertSpecifiers []V1CustomerAlertGetParamsAlertSpecifier `json:"alert_specifiers,omitzero"`
 	// Only present for `spend_threshold_reached` notifications. Retrieve the
 	// notification for a specific group key-value pair.
 	GroupValues []V1CustomerAlertGetParamsGroupValue `json:"group_values,omitzero"`
@@ -464,6 +554,86 @@ func (r V1CustomerAlertGetParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *V1CustomerAlertGetParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property CustomFieldFilters is required.
+type V1CustomerAlertGetParamsAlertSpecifier struct {
+	// A list of custom field filters for notification types that support advanced
+	// filtering
+	CustomFieldFilters []V1CustomerAlertGetParamsAlertSpecifierCustomFieldFilter `json:"custom_field_filters,omitzero" api:"required"`
+	// If provided, the specifier will not apply to balances that matches the inclusion
+	// criteria and any of the excluding values.
+	Exclude []V1CustomerAlertGetParamsAlertSpecifierExclude `json:"exclude,omitzero"`
+	paramObj
+}
+
+func (r V1CustomerAlertGetParamsAlertSpecifier) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerAlertGetParamsAlertSpecifier
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertGetParamsAlertSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Entity, Key, Value are required.
+type V1CustomerAlertGetParamsAlertSpecifierCustomFieldFilter struct {
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r V1CustomerAlertGetParamsAlertSpecifierCustomFieldFilter) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerAlertGetParamsAlertSpecifierCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertGetParamsAlertSpecifierCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerAlertGetParamsAlertSpecifierCustomFieldFilter](
+		"entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
+}
+
+type V1CustomerAlertGetParamsAlertSpecifierExclude struct {
+	// A list of custom field filters for notification types that support advanced
+	// filtering
+	CustomFieldFilters []V1CustomerAlertGetParamsAlertSpecifierExcludeCustomFieldFilter `json:"custom_field_filters,omitzero"`
+	paramObj
+}
+
+func (r V1CustomerAlertGetParamsAlertSpecifierExclude) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerAlertGetParamsAlertSpecifierExclude
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertGetParamsAlertSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Entity, Key, Value are required.
+type V1CustomerAlertGetParamsAlertSpecifierExcludeCustomFieldFilter struct {
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r V1CustomerAlertGetParamsAlertSpecifierExcludeCustomFieldFilter) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerAlertGetParamsAlertSpecifierExcludeCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerAlertGetParamsAlertSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerAlertGetParamsAlertSpecifierExcludeCustomFieldFilter](
+		"entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
 }
 
 // Scopes threshold notification evaluation to a specific presentation group key on

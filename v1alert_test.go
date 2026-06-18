@@ -26,9 +26,23 @@ func TestV1AlertNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.V1.Alerts.New(context.TODO(), metronome.V1AlertNewParams{
-		AlertType:              metronome.V1AlertNewParamsAlertTypeSpendThresholdReached,
-		Name:                   "$100 spend threshold reached",
-		Threshold:              10000,
+		AlertType: metronome.V1AlertNewParamsAlertTypeSpendThresholdReached,
+		Name:      "$100 spend threshold reached",
+		Threshold: 10000,
+		AlertSpecifiers: []metronome.V1AlertNewParamsAlertSpecifier{{
+			CustomFieldFilters: []metronome.V1AlertNewParamsAlertSpecifierCustomFieldFilter{{
+				Entity: "Contract",
+				Key:    "key",
+				Value:  metronome.String("value"),
+			}},
+			Exclude: []metronome.V1AlertNewParamsAlertSpecifierExclude{{
+				CustomFieldFilters: []metronome.V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter{{
+					Entity: "Contract",
+					Key:    "key",
+					Value:  "value",
+				}},
+			}},
+		}},
 		BillableMetricID:       metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		CreditGrantTypeFilters: []string{"enterprise"},
 		CreditTypeID:           metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
