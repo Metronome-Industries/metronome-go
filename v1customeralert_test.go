@@ -28,6 +28,20 @@ func TestV1CustomerAlertGetWithOptionalParams(t *testing.T) {
 	_, err := client.V1.Customers.Alerts.Get(context.TODO(), metronome.V1CustomerAlertGetParams{
 		AlertID:    "8deed800-1b7a-495d-a207-6c52bac54dc9",
 		CustomerID: "9b85c1c1-5238-4f2a-a409-61412905e1e1",
+		AlertSpecifiers: []metronome.V1CustomerAlertGetParamsAlertSpecifier{{
+			CustomFieldFilters: []metronome.V1CustomerAlertGetParamsAlertSpecifierCustomFieldFilter{{
+				Entity: "Contract",
+				Key:    "key",
+				Value:  "value",
+			}},
+			Exclude: []metronome.V1CustomerAlertGetParamsAlertSpecifierExclude{{
+				CustomFieldFilters: []metronome.V1CustomerAlertGetParamsAlertSpecifierExcludeCustomFieldFilter{{
+					Entity: "Contract",
+					Key:    "key",
+					Value:  "value",
+				}},
+			}},
+		}},
 		GroupValues: []metronome.V1CustomerAlertGetParamsGroupValue{{
 			Key:   "key",
 			Value: "value",
