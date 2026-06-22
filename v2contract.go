@@ -2152,7 +2152,9 @@ type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfiguration st
 	RechargeToAmount float64 `json:"recharge_to_amount"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount            float64                                                                                             `json:"threshold_amount"`
+	ThresholdAmount float64 `json:"threshold_amount"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4902,7 +4904,9 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	RechargeToAmount float64 `json:"recharge_to_amount"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount            float64                                                                                                   `json:"threshold_amount"`
+	ThresholdAmount float64 `json:"threshold_amount"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -7919,8 +7923,10 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfiguration struct {
 	RechargeToAmount param.Opt[float64] `json:"recharge_to_amount,omitzero"`
 	// Specify the threshold amount for the contract. Each time the contract's balance
 	// lowers to this amount, a threshold charge will be initiated.
-	ThresholdAmount            param.Opt[float64]                                                                        `json:"threshold_amount,omitzero"`
-	DiscountConfiguration      V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration       `json:"discount_configuration,omitzero"`
+	ThresholdAmount       param.Opt[float64]                                                                  `json:"threshold_amount,omitzero"`
+	DiscountConfiguration V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration,omitzero"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers,omitzero"`
 	Commit                     V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit                      `json:"commit,omitzero"`
 	PaymentGateConfig          shared.PaymentGateConfigV2Param                                                           `json:"payment_gate_config,omitzero"`
