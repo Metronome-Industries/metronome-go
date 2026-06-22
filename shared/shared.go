@@ -6214,8 +6214,10 @@ type PrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID         string                                                          `json:"custom_credit_type_id" format:"uuid"`
-	DiscountConfiguration      PrepaidBalanceThresholdConfigurationDiscountConfiguration       `json:"discount_configuration"`
+	CustomCreditTypeID    string                                                    `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6329,6 +6331,8 @@ func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationCap) Unmarshal
 }
 
 type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier struct {
+	// If any of the exclude specifier is met, the balance is not considered when
+	// evaluating threshold billing
 	Exclude []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude `json:"exclude" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6405,8 +6409,10 @@ type PrepaidBalanceThresholdConfigurationParam struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID         param.Opt[string]                                                    `json:"custom_credit_type_id,omitzero" format:"uuid"`
-	DiscountConfiguration      PrepaidBalanceThresholdConfigurationDiscountConfigurationParam       `json:"discount_configuration,omitzero"`
+	CustomCreditTypeID    param.Opt[string]                                              `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfigurationParam `json:"discount_configuration,omitzero"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam `json:"threshold_balance_specifiers,omitzero"`
 	paramObj
 }
@@ -6486,6 +6492,8 @@ func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam) Unma
 
 // The property Exclude is required.
 type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam struct {
+	// If any of the exclude specifier is met, the balance is not considered when
+	// evaluating threshold billing
 	Exclude []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam `json:"exclude,omitzero" api:"required"`
 	paramObj
 }
@@ -6551,8 +6559,10 @@ type PrepaidBalanceThresholdConfigurationV2 struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID         string                                                            `json:"custom_credit_type_id" format:"uuid"`
-	DiscountConfiguration      PrepaidBalanceThresholdConfigurationV2DiscountConfiguration       `json:"discount_configuration"`
+	CustomCreditTypeID    string                                                      `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier `json:"threshold_balance_specifiers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6742,8 +6752,10 @@ type PrepaidBalanceThresholdConfigurationV2Param struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID         param.Opt[string]                                                      `json:"custom_credit_type_id,omitzero" format:"uuid"`
-	DiscountConfiguration      PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam       `json:"discount_configuration,omitzero"`
+	CustomCreditTypeID    param.Opt[string]                                                `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam `json:"discount_configuration,omitzero"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam `json:"threshold_balance_specifiers,omitzero"`
 	paramObj
 }
