@@ -174,7 +174,7 @@ type V1DashboardGetEmbeddableURLParamsColorOverride struct {
 	// "Primary_medium", "Primary_light", "UsageLine_0", "UsageLine_1", "UsageLine_2",
 	// "UsageLine_3", "UsageLine_4", "UsageLine_5", "UsageLine_6", "UsageLine_7",
 	// "UsageLine_8", "UsageLine_9", "Primary_green", "Primary_red", "Progress_bar",
-	// "Progress_bar_background".
+	// "Progress_bar_background", "Action", "Action_hover".
 	Name string `json:"name,omitzero"`
 	paramObj
 }
@@ -189,7 +189,7 @@ func (r *V1DashboardGetEmbeddableURLParamsColorOverride) UnmarshalJSON(data []by
 
 func init() {
 	apijson.RegisterFieldValidator[V1DashboardGetEmbeddableURLParamsColorOverride](
-		"name", "Gray_dark", "Gray_medium", "Gray_light", "Gray_extralight", "White", "Primary_medium", "Primary_light", "UsageLine_0", "UsageLine_1", "UsageLine_2", "UsageLine_3", "UsageLine_4", "UsageLine_5", "UsageLine_6", "UsageLine_7", "UsageLine_8", "UsageLine_9", "Primary_green", "Primary_red", "Progress_bar", "Progress_bar_background",
+		"name", "Gray_dark", "Gray_medium", "Gray_light", "Gray_extralight", "White", "Primary_medium", "Primary_light", "UsageLine_0", "UsageLine_1", "UsageLine_2", "UsageLine_3", "UsageLine_4", "UsageLine_5", "UsageLine_6", "UsageLine_7", "UsageLine_8", "UsageLine_9", "Primary_green", "Primary_red", "Progress_bar", "Progress_bar_background", "Action", "Action_hover",
 	)
 }
 
