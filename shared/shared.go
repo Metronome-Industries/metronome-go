@@ -174,6 +174,9 @@ type Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CommitContract `json:"contract"`
+	// The actor who created this commit. Omitted for system-generated commits such as
+	// recurring commits, rollover commits, and threshold commits.
+	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -229,6 +232,7 @@ type Commit struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -1668,6 +1672,9 @@ type ContractV2Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64                  `json:"balance"`
 	Contract ContractV2CommitContract `json:"contract"`
+	// The actor who created this commit. Omitted for system-generated commits such as
+	// recurring commits, rollover commits, and threshold commits.
+	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -1715,6 +1722,7 @@ type ContractV2Commit struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -2346,6 +2354,7 @@ func (r *ContractV2Override) UnmarshalJSON(data []byte) error {
 }
 
 type ContractV2OverrideOverrideSpecifier struct {
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
@@ -2356,6 +2365,7 @@ type ContractV2OverrideOverrideSpecifier struct {
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AnyCommitOrCreditIDs    respjson.Field
 		BillingFrequency        respjson.Field
 		CommitIDs               respjson.Field
 		PresentationGroupValues respjson.Field
@@ -2523,6 +2533,9 @@ type ContractV2Credit struct {
 	//   - Recurring credits: latter of credit service period date and parent credit
 	//     start date
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// The actor who created this credit. Omitted for system-generated credits such as
+	// recurring credits.
+	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -2561,6 +2574,7 @@ type ContractV2Credit struct {
 		Balance                 respjson.Field
 		Contract                respjson.Field
 		CreatedAt               respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -3194,13 +3208,15 @@ type ContractV2RecurringCommit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration"`
+	// Rounding configuration for prorated recurring commit amounts.
+	ProrationRounding ContractV2RecurringCommitProrationRounding `json:"proration_rounding" api:"nullable"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -3231,6 +3247,7 @@ type ContractV2RecurringCommit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Proration              respjson.Field
+		ProrationRounding      respjson.Field
 		RecurrenceFrequency    respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
@@ -3342,6 +3359,69 @@ func (r *ContractV2RecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Rounding configuration for prorated recurring commit amounts.
+type ContractV2RecurringCommitProrationRounding struct {
+	Access  ContractV2RecurringCommitProrationRoundingAccess  `json:"access"`
+	Invoice ContractV2RecurringCommitProrationRoundingInvoice `json:"invoice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Access      respjson.Field
+		Invoice     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2RecurringCommitProrationRounding) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2RecurringCommitProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2RecurringCommitProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2RecurringCommitProrationRoundingAccess) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2RecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2RecurringCommitProrationRoundingInvoice struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2RecurringCommitProrationRoundingInvoice) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2RecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ContractV2RecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
@@ -3377,13 +3457,15 @@ type ContractV2RecurringCredit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration"`
+	// Rounding configuration for prorated recurring credit amounts.
+	ProrationRounding ContractV2RecurringCreditProrationRounding `json:"proration_rounding" api:"nullable"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -3413,6 +3495,7 @@ type ContractV2RecurringCredit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Proration              respjson.Field
+		ProrationRounding      respjson.Field
 		RecurrenceFrequency    respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
@@ -3500,6 +3583,45 @@ type ContractV2RecurringCreditContract struct {
 // Returns the unmodified JSON received from the API
 func (r ContractV2RecurringCreditContract) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2RecurringCreditContract) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Rounding configuration for prorated recurring credit amounts.
+type ContractV2RecurringCreditProrationRounding struct {
+	Access ContractV2RecurringCreditProrationRoundingAccess `json:"access"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Access      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2RecurringCreditProrationRounding) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2RecurringCreditProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2RecurringCreditProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2RecurringCreditProrationRoundingAccess) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2RecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3663,10 +3785,11 @@ type ContractV2Subscription struct {
 	QuantityManagementMode string `json:"quantity_management_mode" api:"required"`
 	// List of quantity schedule items for the subscription. Only includes the current
 	// quantity and future quantity changes.
-	QuantitySchedule []ContractV2SubscriptionQuantitySchedule `json:"quantity_schedule" api:"required"`
-	StartingAt       time.Time                                `json:"starting_at" api:"required" format:"date-time"`
-	SubscriptionRate ContractV2SubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
-	ID               string                                   `json:"id" format:"uuid"`
+	QuantitySchedule   []ContractV2SubscriptionQuantitySchedule `json:"quantity_schedule" api:"required"`
+	StartingAt         time.Time                                `json:"starting_at" api:"required" format:"date-time"`
+	SubscriptionRate   ContractV2SubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
+	ID                 string                                   `json:"id" format:"uuid"`
+	BillingCycleConfig ContractV2SubscriptionBillingCycleConfig `json:"billing_cycle_config"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string                `json:"custom_fields"`
 	Description      string                           `json:"description"`
@@ -3684,6 +3807,7 @@ type ContractV2Subscription struct {
 		StartingAt             respjson.Field
 		SubscriptionRate       respjson.Field
 		ID                     respjson.Field
+		BillingCycleConfig     respjson.Field
 		CustomFields           respjson.Field
 		Description            respjson.Field
 		EndingBefore           respjson.Field
@@ -3778,12 +3902,14 @@ func (r *ContractV2SubscriptionBillingPeriodsPrevious) UnmarshalJSON(data []byte
 
 type ContractV2SubscriptionProration struct {
 	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
-	InvoiceBehavior string `json:"invoice_behavior" api:"required"`
-	IsProrated      bool   `json:"is_prorated" api:"required"`
+	InvoiceBehavior string                                  `json:"invoice_behavior" api:"required"`
+	IsProrated      bool                                    `json:"is_prorated" api:"required"`
+	Rounding        ContractV2SubscriptionProrationRounding `json:"rounding"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InvoiceBehavior respjson.Field
 		IsProrated      respjson.Field
+		Rounding        respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -3792,6 +3918,28 @@ type ContractV2SubscriptionProration struct {
 // Returns the unmodified JSON received from the API
 func (r ContractV2SubscriptionProration) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2SubscriptionProration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionProrationRounding struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionProrationRounding) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionProrationRounding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3849,6 +3997,29 @@ type ContractV2SubscriptionSubscriptionRateProduct struct {
 // Returns the unmodified JSON received from the API
 func (r ContractV2SubscriptionSubscriptionRateProduct) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2SubscriptionSubscriptionRateProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2SubscriptionBillingCycleConfig struct {
+	// The date this subscription's billing cycle is anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
+	// Controls whether this subscription consolidates onto usage invoices or gets its
+	// own scheduled invoice.
+	//
+	// Any of "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE".
+	InvoicePlacement string `json:"invoice_placement" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AnchorDate       respjson.Field
+		InvoicePlacement respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2SubscriptionBillingCycleConfig) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2SubscriptionBillingCycleConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4036,13 +4207,15 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration"`
+	// Rounding configuration for prorated recurring commit amounts.
+	ProrationRounding ContractWithoutAmendmentsRecurringCommitProrationRounding `json:"proration_rounding" api:"nullable"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -4073,6 +4246,7 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Proration              respjson.Field
+		ProrationRounding      respjson.Field
 		RecurrenceFrequency    respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
@@ -4184,6 +4358,77 @@ func (r *ContractWithoutAmendmentsRecurringCommitInvoiceAmount) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Rounding configuration for prorated recurring commit amounts.
+type ContractWithoutAmendmentsRecurringCommitProrationRounding struct {
+	Access  ContractWithoutAmendmentsRecurringCommitProrationRoundingAccess  `json:"access"`
+	Invoice ContractWithoutAmendmentsRecurringCommitProrationRoundingInvoice `json:"invoice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Access      respjson.Field
+		Invoice     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractWithoutAmendmentsRecurringCommitProrationRounding) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractWithoutAmendmentsRecurringCommitProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractWithoutAmendmentsRecurringCommitProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractWithoutAmendmentsRecurringCommitProrationRoundingAccess) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractWithoutAmendmentsRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractWithoutAmendmentsRecurringCommitProrationRoundingInvoice struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractWithoutAmendmentsRecurringCommitProrationRoundingInvoice) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractWithoutAmendmentsRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ContractWithoutAmendmentsRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
@@ -4219,13 +4464,15 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration"`
+	// Rounding configuration for prorated recurring credit amounts.
+	ProrationRounding ContractWithoutAmendmentsRecurringCreditProrationRounding `json:"proration_rounding" api:"nullable"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -4255,6 +4502,7 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Proration              respjson.Field
+		ProrationRounding      respjson.Field
 		RecurrenceFrequency    respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
@@ -4342,6 +4590,50 @@ type ContractWithoutAmendmentsRecurringCreditContract struct {
 // Returns the unmodified JSON received from the API
 func (r ContractWithoutAmendmentsRecurringCreditContract) RawJSON() string { return r.JSON.raw }
 func (r *ContractWithoutAmendmentsRecurringCreditContract) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Rounding configuration for prorated recurring credit amounts.
+type ContractWithoutAmendmentsRecurringCreditProrationRounding struct {
+	Access ContractWithoutAmendmentsRecurringCreditProrationRoundingAccess `json:"access"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Access      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractWithoutAmendmentsRecurringCreditProrationRounding) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractWithoutAmendmentsRecurringCreditProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractWithoutAmendmentsRecurringCreditProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractWithoutAmendmentsRecurringCreditProrationRoundingAccess) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractWithoutAmendmentsRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4528,6 +4820,9 @@ type Credit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CreditContract `json:"contract"`
+	// The actor who created this credit. Omitted for system-generated credits such as
+	// recurring credits.
+	CreatedBy string `json:"created_by"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields"`
 	Description  string            `json:"description"`
@@ -4573,6 +4868,7 @@ type Credit struct {
 		ApplicableProductTags   respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -5375,6 +5671,7 @@ func (r *Override) UnmarshalJSON(data []byte) error {
 }
 
 type OverrideOverrideSpecifier struct {
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
@@ -5385,6 +5682,7 @@ type OverrideOverrideSpecifier struct {
 	RecurringCommitIDs      []string          `json:"recurring_commit_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AnyCommitOrCreditIDs    respjson.Field
 		BillingFrequency        respjson.Field
 		CommitIDs               respjson.Field
 		PresentationGroupValues respjson.Field
@@ -5916,8 +6214,10 @@ type PrepaidBalanceThresholdConfiguration struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID         string                                                          `json:"custom_credit_type_id" format:"uuid"`
-	DiscountConfiguration      PrepaidBalanceThresholdConfigurationDiscountConfiguration       `json:"discount_configuration"`
+	CustomCreditTypeID    string                                                    `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfiguration `json:"discount_configuration"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier `json:"threshold_balance_specifiers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6031,6 +6331,8 @@ func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationCap) Unmarshal
 }
 
 type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifier struct {
+	// If any of the exclude specifier is met, the balance is not considered when
+	// evaluating threshold billing
 	Exclude []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExclude `json:"exclude" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6107,8 +6409,10 @@ type PrepaidBalanceThresholdConfigurationParam struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID         param.Opt[string]                                                    `json:"custom_credit_type_id,omitzero" format:"uuid"`
-	DiscountConfiguration      PrepaidBalanceThresholdConfigurationDiscountConfigurationParam       `json:"discount_configuration,omitzero"`
+	CustomCreditTypeID    param.Opt[string]                                              `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationDiscountConfigurationParam `json:"discount_configuration,omitzero"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam `json:"threshold_balance_specifiers,omitzero"`
 	paramObj
 }
@@ -6188,6 +6492,8 @@ func (r *PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam) Unma
 
 // The property Exclude is required.
 type PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam struct {
+	// If any of the exclude specifier is met, the balance is not considered when
+	// evaluating threshold billing
 	Exclude []PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam `json:"exclude,omitzero" api:"required"`
 	paramObj
 }
@@ -6253,8 +6559,10 @@ type PrepaidBalanceThresholdConfigurationV2 struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID         string                                                            `json:"custom_credit_type_id" format:"uuid"`
-	DiscountConfiguration      PrepaidBalanceThresholdConfigurationV2DiscountConfiguration       `json:"discount_configuration"`
+	CustomCreditTypeID    string                                                      `json:"custom_credit_type_id" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfiguration `json:"discount_configuration"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifier `json:"threshold_balance_specifiers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6444,8 +6752,10 @@ type PrepaidBalanceThresholdConfigurationV2Param struct {
 	ThresholdAmount float64 `json:"threshold_amount" api:"required"`
 	// If provided, the threshold, recharge-to amount, and the resulting threshold
 	// commit amount will be in terms of this credit type instead of the fiat currency.
-	CustomCreditTypeID         param.Opt[string]                                                      `json:"custom_credit_type_id,omitzero" format:"uuid"`
-	DiscountConfiguration      PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam       `json:"discount_configuration,omitzero"`
+	CustomCreditTypeID    param.Opt[string]                                                `json:"custom_credit_type_id,omitzero" format:"uuid"`
+	DiscountConfiguration PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam `json:"discount_configuration,omitzero"`
+	// Determines which balances are excluded from remaining balance calculation for
+	// threshold billing.
 	ThresholdBalanceSpecifiers []PrepaidBalanceThresholdConfigurationV2ThresholdBalanceSpecifierParam `json:"threshold_balance_specifiers,omitzero"`
 	paramObj
 }
@@ -7238,10 +7548,11 @@ type Subscription struct {
 	QuantityManagementMode SubscriptionQuantityManagementMode `json:"quantity_management_mode" api:"required"`
 	// List of quantity schedule items for the subscription. Only includes the current
 	// quantity and future quantity changes.
-	QuantitySchedule []SubscriptionQuantitySchedule `json:"quantity_schedule" api:"required"`
-	StartingAt       time.Time                      `json:"starting_at" api:"required" format:"date-time"`
-	SubscriptionRate SubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
-	ID               string                         `json:"id" format:"uuid"`
+	QuantitySchedule   []SubscriptionQuantitySchedule `json:"quantity_schedule" api:"required"`
+	StartingAt         time.Time                      `json:"starting_at" api:"required" format:"date-time"`
+	SubscriptionRate   SubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
+	ID                 string                         `json:"id" format:"uuid"`
+	BillingCycleConfig SubscriptionBillingCycleConfig `json:"billing_cycle_config"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string      `json:"custom_fields"`
 	Description      string                 `json:"description"`
@@ -7259,6 +7570,7 @@ type Subscription struct {
 		StartingAt             respjson.Field
 		SubscriptionRate       respjson.Field
 		ID                     respjson.Field
+		BillingCycleConfig     respjson.Field
 		CustomFields           respjson.Field
 		Description            respjson.Field
 		EndingBefore           respjson.Field
@@ -7360,12 +7672,14 @@ const (
 
 type SubscriptionProration struct {
 	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
-	InvoiceBehavior string `json:"invoice_behavior" api:"required"`
-	IsProrated      bool   `json:"is_prorated" api:"required"`
+	InvoiceBehavior string                        `json:"invoice_behavior" api:"required"`
+	IsProrated      bool                          `json:"is_prorated" api:"required"`
+	Rounding        SubscriptionProrationRounding `json:"rounding"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InvoiceBehavior respjson.Field
 		IsProrated      respjson.Field
+		Rounding        respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -7374,6 +7688,29 @@ type SubscriptionProration struct {
 // Returns the unmodified JSON received from the API
 func (r SubscriptionProration) RawJSON() string { return r.JSON.raw }
 func (r *SubscriptionProration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SubscriptionProrationRounding struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubscriptionProrationRounding) RawJSON() string { return r.JSON.raw }
+func (r *SubscriptionProrationRounding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7447,6 +7784,29 @@ type SubscriptionSubscriptionRateProduct struct {
 // Returns the unmodified JSON received from the API
 func (r SubscriptionSubscriptionRateProduct) RawJSON() string { return r.JSON.raw }
 func (r *SubscriptionSubscriptionRateProduct) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SubscriptionBillingCycleConfig struct {
+	// The date this subscription's billing cycle is anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
+	// Controls whether this subscription consolidates onto usage invoices or gets its
+	// own scheduled invoice.
+	//
+	// Any of "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE".
+	InvoicePlacement string `json:"invoice_placement" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AnchorDate       respjson.Field
+		InvoicePlacement respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubscriptionBillingCycleConfig) RawJSON() string { return r.JSON.raw }
+func (r *SubscriptionBillingCycleConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

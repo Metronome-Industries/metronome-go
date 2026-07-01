@@ -60,8 +60,13 @@ func NewV1DashboardService(opts ...option.RequestOption) (r V1DashboardService) 
 //
 // - Dashboard types: Choose from `invoices`, `usage`, or `commits_and_credits`
 // - Customization options:
-//   - `dashboard_options`: Configure whether you want invoices to show zero usage
-//     line items
+//   - `dashboard_options`: Configure dashboard behavior. For the invoices
+//     dashboard, supported keys include: `show_zero_usage_line_items`
+//     ("true"/"false"), `hide_voided_invoices` ("true"/"false"), `contract_id`
+//     (UUID, filters invoices by contract), `invoice_type` ("USAGE" or
+//     "SCHEDULED", filters by invoice type), `invoice_status_filter` ("VOID",
+//     "FINALIZED", "DRAFT", "FINALIZED_AND_DRAFT", or "ALL"), and
+//     `billable_status_filter` ("BILLABLE", "UNBILLABLE", or "ALL")
 //   - `color_overrides`: Match your brand's color palette
 //   - `bm_group_key_overrides`: Customize how dimensions are displayed (for the
 //     usage embeddable dashboard)
@@ -169,7 +174,7 @@ type V1DashboardGetEmbeddableURLParamsColorOverride struct {
 	// "Primary_medium", "Primary_light", "UsageLine_0", "UsageLine_1", "UsageLine_2",
 	// "UsageLine_3", "UsageLine_4", "UsageLine_5", "UsageLine_6", "UsageLine_7",
 	// "UsageLine_8", "UsageLine_9", "Primary_green", "Primary_red", "Progress_bar",
-	// "Progress_bar_background".
+	// "Progress_bar_background", "Action", "Action_hover".
 	Name string `json:"name,omitzero"`
 	paramObj
 }
@@ -184,7 +189,7 @@ func (r *V1DashboardGetEmbeddableURLParamsColorOverride) UnmarshalJSON(data []by
 
 func init() {
 	apijson.RegisterFieldValidator[V1DashboardGetEmbeddableURLParamsColorOverride](
-		"name", "Gray_dark", "Gray_medium", "Gray_light", "Gray_extralight", "White", "Primary_medium", "Primary_light", "UsageLine_0", "UsageLine_1", "UsageLine_2", "UsageLine_3", "UsageLine_4", "UsageLine_5", "UsageLine_6", "UsageLine_7", "UsageLine_8", "UsageLine_9", "Primary_green", "Primary_red", "Progress_bar", "Progress_bar_background",
+		"name", "Gray_dark", "Gray_medium", "Gray_light", "Gray_extralight", "White", "Primary_medium", "Primary_light", "UsageLine_0", "UsageLine_1", "UsageLine_2", "UsageLine_3", "UsageLine_4", "UsageLine_5", "UsageLine_6", "UsageLine_7", "UsageLine_8", "UsageLine_9", "Primary_green", "Primary_red", "Progress_bar", "Progress_bar_background", "Action", "Action_hover",
 	)
 }
 

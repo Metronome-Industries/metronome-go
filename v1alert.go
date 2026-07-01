@@ -201,6 +201,10 @@ type V1AlertNewParams struct {
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
 	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
+	// Can be used with only `low_remaining_contract_credit_and_commit_balance_reached`
+	// notifications. Defines the balances that are considered when evaluating the
+	// alert.
+	AlertSpecifiers []V1AlertNewParamsAlertSpecifier `json:"alert_specifiers,omitzero"`
 	// An array of strings, representing a way to filter the credit grant this
 	// threshold notification applies to, by looking at the credit_grant_type field on
 	// the credit grant. This field is only defined for CreditPercentage and
@@ -249,6 +253,85 @@ const (
 	V1AlertNewParamsAlertTypeInvoiceTotalReached                               V1AlertNewParamsAlertType = "invoice_total_reached"
 	V1AlertNewParamsAlertTypeLowRemainingSeatBalanceReached                    V1AlertNewParamsAlertType = "low_remaining_seat_balance_reached"
 )
+
+type V1AlertNewParamsAlertSpecifier struct {
+	// A list of custom field filters for notification types that support advanced
+	// filtering
+	CustomFieldFilters []V1AlertNewParamsAlertSpecifierCustomFieldFilter `json:"custom_field_filters,omitzero"`
+	// If provided, the specifier will not apply to balances that matches the inclusion
+	// criteria and any of the excluding values.
+	Exclude []V1AlertNewParamsAlertSpecifierExclude `json:"exclude,omitzero"`
+	paramObj
+}
+
+func (r V1AlertNewParamsAlertSpecifier) MarshalJSON() (data []byte, err error) {
+	type shadow V1AlertNewParamsAlertSpecifier
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertNewParamsAlertSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Entity, Key are required.
+type V1AlertNewParamsAlertSpecifierCustomFieldFilter struct {
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string            `json:"entity,omitzero" api:"required"`
+	Key    string            `json:"key" api:"required"`
+	Value  param.Opt[string] `json:"value,omitzero"`
+	paramObj
+}
+
+func (r V1AlertNewParamsAlertSpecifierCustomFieldFilter) MarshalJSON() (data []byte, err error) {
+	type shadow V1AlertNewParamsAlertSpecifierCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertNewParamsAlertSpecifierCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1AlertNewParamsAlertSpecifierCustomFieldFilter](
+		"entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
+}
+
+type V1AlertNewParamsAlertSpecifierExclude struct {
+	// A list of custom field filters for notification types that support advanced
+	// filtering
+	CustomFieldFilters []V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter `json:"custom_field_filters,omitzero"`
+	paramObj
+}
+
+func (r V1AlertNewParamsAlertSpecifierExclude) MarshalJSON() (data []byte, err error) {
+	type shadow V1AlertNewParamsAlertSpecifierExclude
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertNewParamsAlertSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Entity, Key, Value are required.
+type V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter struct {
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter) MarshalJSON() (data []byte, err error) {
+	type shadow V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter](
+		"entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
+}
 
 // The properties Entity, Key, Value are required.
 type V1AlertNewParamsCustomFieldFilter struct {

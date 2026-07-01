@@ -192,8 +192,9 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.Bool(true),
 			Multiplier:            metronome.Float(0),
 			OverrideSpecifiers: []metronome.V1ContractNewParamsOverrideOverrideSpecifier{{
-				BillingFrequency: "MONTHLY",
-				CommitIDs:        []string{"string"},
+				AnyCommitOrCreditIDs: []string{"string"},
+				BillingFrequency:     "MONTHLY",
+				CommitIDs:            []string{"string"},
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
 				},
@@ -330,9 +331,19 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Proration:            "NONE",
-			RateType:             "COMMIT_RATE",
-			RecurrenceFrequency:  "MONTHLY",
-			RolloverFraction:     metronome.Float(0),
+			ProrationRounding: metronome.V1ContractNewParamsRecurringCommitProrationRounding{
+				Access: metronome.V1ContractNewParamsRecurringCommitProrationRoundingAccess{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+				Invoice: metronome.V1ContractNewParamsRecurringCommitProrationRoundingInvoice{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+			},
+			RateType:            "COMMIT_RATE",
+			RecurrenceFrequency: "MONTHLY",
+			RolloverFraction:    metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -379,9 +390,15 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Proration:            "NONE",
-			RateType:             "COMMIT_RATE",
-			RecurrenceFrequency:  "MONTHLY",
-			RolloverFraction:     metronome.Float(0),
+			ProrationRounding: metronome.V1ContractNewParamsRecurringCreditProrationRounding{
+				Access: metronome.V1ContractNewParamsRecurringCreditProrationRoundingAccess{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+			},
+			RateType:            "COMMIT_RATE",
+			RecurrenceFrequency: "MONTHLY",
+			RolloverFraction:    metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -500,10 +517,18 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Proration: metronome.V1ContractNewParamsSubscriptionProration{
 				InvoiceBehavior: "BILL_IMMEDIATELY",
 				IsProrated:      metronome.Bool(true),
+				Rounding: metronome.V1ContractNewParamsSubscriptionProrationRounding{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
 			},
 			SubscriptionRate: metronome.V1ContractNewParamsSubscriptionSubscriptionRate{
 				BillingFrequency: "MONTHLY",
 				ProductID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			},
+			BillingCycleConfig: metronome.V1ContractNewParamsSubscriptionBillingCycleConfig{
+				AnchorDate:       metronome.Time(time.Now()),
+				InvoicePlacement: "ON_SCHEDULED_INVOICE",
 			},
 			CustomFields: map[string]string{
 				"foo": "string",
@@ -798,8 +823,9 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.Bool(true),
 			Multiplier:            metronome.Float(0),
 			OverrideSpecifiers: []metronome.V1ContractAmendParamsOverrideOverrideSpecifier{{
-				BillingFrequency: "MONTHLY",
-				CommitIDs:        []string{"string"},
+				AnyCommitOrCreditIDs: []string{"string"},
+				BillingFrequency:     "MONTHLY",
+				CommitIDs:            []string{"string"},
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
 				},
@@ -1021,6 +1047,37 @@ func TestV1ContractGetNetBalanceWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestV1ContractGetSubscriptionSeatsHistoryWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := metronome.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.V1.Contracts.GetSubscriptionSeatsHistory(context.TODO(), metronome.V1ContractGetSubscriptionSeatsHistoryParams{
+		ContractID:     "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		CustomerID:     "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		SubscriptionID: "1a824d53-bde6-4d82-96d7-6347ff227d5c",
+		CoveringDate:   metronome.Time(time.Now()),
+		Cursor:         metronome.String("cursor"),
+		EndingBefore:   metronome.Time(time.Now()),
+		Limit:          metronome.Int(10),
+		StartingAt:     metronome.Time(time.Now()),
+	})
+	if err != nil {
+		var apierr *metronome.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestV1ContractListBalancesWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -1078,6 +1135,7 @@ func TestV1ContractListSeatBalancesWithOptionalParams(t *testing.T) {
 		IncludeLedgers:           metronome.Bool(true),
 		Limit:                    metronome.Int(25),
 		SeatIDs:                  []string{"string"},
+		SkipMissingSeatIDs:       metronome.Bool(true),
 		StartingAt:               metronome.Time(time.Now()),
 		SubscriptionIDs:          []string{"8deed800-1b7a-495d-a207-6c52bac54dc9"},
 	})

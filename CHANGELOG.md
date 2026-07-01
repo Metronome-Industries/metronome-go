@@ -1,5 +1,37 @@
 # Changelog
 
+## 3.8.0 (2026-06-26)
+
+Full Changelog: [v3.7.0...v3.8.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.7.0...v3.8.0)
+
+### Features
+
+* [🪿] Remove `allow-subscriptions-custom-billing-anchor` feature flag ([352e2a6](https://github.com/Metronome-Industries/metronome-go/commit/352e2a6234ab8d1f952c8c0976991b56892b9d51))
+* Add `Action` and `Action_hover` theme color options to embeddable dashboard ([2bff626](https://github.com/Metronome-Industries/metronome-go/commit/2bff626d90bd66bd789bb768dd3afd2c0a088a2d))
+* Add alert specifiers to  for `low_remaining_contract_credit_and_commit_balance_reached` threshold notification creation payload ([c6f5910](https://github.com/Metronome-Industries/metronome-go/commit/c6f5910c92d08b307a3036445fbc5d750d03d1b9))
+* Add any_commit_and_credit_ids to override specifier fields ([d92c3c7](https://github.com/Metronome-Industries/metronome-go/commit/d92c3c7650dc845a4ac0b472dbbe91d08efb47eb))
+* add getSubscriptionSeatsHistory to Node SDK ([f0fffda](https://github.com/Metronome-Industries/metronome-go/commit/f0fffda1542b531f9cc422f8faab2fe492b5737c))
+* Add notification_metadata to four API endpoints (Anthropic-only) ([3ee2286](https://github.com/Metronome-Industries/metronome-go/commit/3ee228629e950adeaff648b12b4bff5f419bfa8c))
+* added created by to commits ([bce361b](https://github.com/Metronome-Industries/metronome-go/commit/bce361b6ff40611c366575a545a61057026a7f2c))
+* **CONN-980:** add contract_id, invoice_type, show_unbillable_invoices to embeddable dashboard API ([3fe2fcb](https://github.com/Metronome-Industries/metronome-go/commit/3fe2fcb487e7f1b90f59863700e5265449e3fe24))
+* createdBy description specifies excluding system created commits ([8f520e1](https://github.com/Metronome-Industries/metronome-go/commit/8f520e12c7ec2c2e2ca60f5af5ce9274ce401f75))
+* daily recurrence frequency for recurring commits ([8161b0f](https://github.com/Metronome-Industries/metronome-go/commit/8161b0fa5845caa52d7b25a29c0b2b0115e62294))
+* Docs: Update v1.yml ([a28b38e](https://github.com/Metronome-Industries/metronome-go/commit/a28b38e0ed37fbef90e2b20c2cf6d5bbc21c247a))
+* Revert "[pgs] Remove `allow-subscriptions-custom-billing-anchor` and proration rounding feature flags" ([ba198f2](https://github.com/Metronome-Industries/metronome-go/commit/ba198f2d3db8a618ab88f8497abb0d1f1eb69c3d))
+* Revert "Revert "[pgs] Remove `allow-subscriptions-custom-billing-anchor` and proration rounding feature flags"" ([7242ab1](https://github.com/Metronome-Industries/metronome-go/commit/7242ab122bf749da15711d26ffb0efccbbef5506))
+* skip seat IDs from balances ([c22d8f4](https://github.com/Metronome-Industries/metronome-go/commit/c22d8f4d1a7031ddcc0a2deff86f4f098b1c8310))
+* Update copy ([b659f05](https://github.com/Metronome-Industries/metronome-go/commit/b659f0587a3b982e9e7e0bcb6ec9ef101600dff9))
+
+
+### Chores
+
+* (internal) Add description for threshold balance specifiers fields ([601507c](https://github.com/Metronome-Industries/metronome-go/commit/601507c8440210f179e03e2382737adea93d49cb))
+
+
+### Documentation
+
+* add RPS limit and batch recommendation to addRate endpoint ([3f94488](https://github.com/Metronome-Industries/metronome-go/commit/3f94488bc916d84094e76e3d421a623acf211905))
+
 ## 3.7.0 (2026-05-29)
 
 Full Changelog: [v3.6.0...v3.7.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.6.0...v3.7.0)

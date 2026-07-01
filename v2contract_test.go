@@ -250,8 +250,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			IsCommitSpecific:      metronome.Bool(true),
 			Multiplier:            metronome.Float(2),
 			OverrideSpecifiers: []metronome.V2ContractEditParamsAddOverrideOverrideSpecifier{{
-				BillingFrequency: "MONTHLY",
-				CommitIDs:        []string{"string"},
+				AnyCommitOrCreditIDs: []string{"string"},
+				BillingFrequency:     "MONTHLY",
+				CommitIDs:            []string{"string"},
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
 				},
@@ -384,9 +385,19 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Proration:            "NONE",
-			RateType:             "COMMIT_RATE",
-			RecurrenceFrequency:  "MONTHLY",
-			RolloverFraction:     metronome.Float(0),
+			ProrationRounding: metronome.V2ContractEditParamsAddRecurringCommitProrationRounding{
+				Access: metronome.V2ContractEditParamsAddRecurringCommitProrationRoundingAccess{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+				Invoice: metronome.V2ContractEditParamsAddRecurringCommitProrationRoundingInvoice{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+			},
+			RateType:            "COMMIT_RATE",
+			RecurrenceFrequency: "MONTHLY",
+			RolloverFraction:    metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -433,9 +444,15 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Name:                 metronome.String("x"),
 			NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
 			Proration:            "NONE",
-			RateType:             "COMMIT_RATE",
-			RecurrenceFrequency:  "MONTHLY",
-			RolloverFraction:     metronome.Float(0),
+			ProrationRounding: metronome.V2ContractEditParamsAddRecurringCreditProrationRounding{
+				Access: metronome.V2ContractEditParamsAddRecurringCreditProrationRoundingAccess{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+			},
+			RateType:            "COMMIT_RATE",
+			RecurrenceFrequency: "MONTHLY",
+			RolloverFraction:    metronome.Float(0),
 			Specifiers: []shared.CommitSpecifierInputParam{{
 				PresentationGroupValues: map[string]string{
 					"foo": "string",
@@ -557,10 +574,18 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 			Proration: metronome.V2ContractEditParamsAddSubscriptionProration{
 				InvoiceBehavior: "BILL_IMMEDIATELY",
 				IsProrated:      metronome.Bool(true),
+				Rounding: metronome.V2ContractEditParamsAddSubscriptionProrationRounding{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
 			},
 			SubscriptionRate: metronome.V2ContractEditParamsAddSubscriptionSubscriptionRate{
 				BillingFrequency: "MONTHLY",
 				ProductID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			},
+			BillingCycleConfig: metronome.V2ContractEditParamsAddSubscriptionBillingCycleConfig{
+				AnchorDate:       metronome.Time(time.Now()),
+				InvoicePlacement: "ON_SCHEDULED_INVOICE",
 			},
 			CustomFields: map[string]string{
 				"foo": "string",
@@ -751,6 +776,16 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				Quantity:  metronome.Float(0),
 				UnitPrice: metronome.Float(0),
 			},
+			ProrationRounding: metronome.V2ContractEditParamsUpdateRecurringCommitProrationRounding{
+				Access: metronome.V2ContractEditParamsUpdateRecurringCommitProrationRoundingAccess{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+				Invoice: metronome.V2ContractEditParamsUpdateRecurringCommitProrationRoundingInvoice{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+			},
 			RateType: "LIST_RATE",
 		}},
 		UpdateRecurringCredits: []metronome.V2ContractEditParamsUpdateRecurringCredit{{
@@ -760,7 +795,13 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				UnitPrice: metronome.Float(0),
 			},
 			EndingBefore: metronome.Time(time.Now()),
-			RateType:     "LIST_RATE",
+			ProrationRounding: metronome.V2ContractEditParamsUpdateRecurringCreditProrationRounding{
+				Access: metronome.V2ContractEditParamsUpdateRecurringCreditProrationRoundingAccess{
+					DecimalPlaces:  -5,
+					RoundingMethod: "HALF_UP",
+				},
+			},
+			RateType: "LIST_RATE",
 		}},
 		UpdateScheduledCharges: []metronome.V2ContractEditParamsUpdateScheduledCharge{{
 			ScheduledChargeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -818,6 +859,10 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		UpdateSubscriptions: []metronome.V2ContractEditParamsUpdateSubscription{{
 			SubscriptionID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			EndingBefore:   metronome.Time(time.Now()),
+			ProrationRounding: metronome.V2ContractEditParamsUpdateSubscriptionProrationRounding{
+				DecimalPlaces:  -5,
+				RoundingMethod: "HALF_UP",
+			},
 			QuantityManagementModeUpdate: metronome.V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdate{
 				QuantityManagementMode: "SEAT_BASED",
 				SeatConfig: metronome.V2ContractEditParamsUpdateSubscriptionQuantityManagementModeUpdateSeatConfig{

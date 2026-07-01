@@ -336,6 +336,39 @@ func (r *V1ContractService) GetNetBalance(ctx context.Context, body V1ContractGe
 	return res, err
 }
 
+// Get the history of subscription seats schedule over time for a given
+// `subscription_id`. This endpoint provides information about seat assignments and
+// total quantities for different time periods, allowing you to track how seat
+// assignments have changed over time.
+//
+// ### Use this endpoint to:
+//
+//   - Track changes to seat assignments over time
+//   - Get seat schedule for a specific date using the `covering_date` parameter
+//   - Get seat schedule history with optional date range filtering using
+//     `starting_at` and `ending_before`
+//
+// ### Key response fields:
+//
+//   - data: array of seat schedule entries with time periods, quantity, and
+//     assignments
+//   - next_page: cursor for pagination to retrieve additional results
+//
+// ### Usage guidelines:
+//
+//   - Use `covering_date` to get the active seats for a specific point in time.
+//     `covering_date` cannot be used with `starting_at` or `ending_before`.
+//   - Use `starting_at` and `ending_before` to filter results by time range.
+//     `starting_at` and `ending_before` cannot be used with `covering_date`.
+//   - Maximum limit is 10 seat schedule entries per request
+//   - Results are ordered by `starting_at` timestamp
+func (r *V1ContractService) GetSubscriptionSeatsHistory(ctx context.Context, body V1ContractGetSubscriptionSeatsHistoryParams, opts ...option.RequestOption) (res *V1ContractGetSubscriptionSeatsHistoryResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contracts/getSubscriptionSeatsHistory"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Retrieve a comprehensive view of all available balances (commits and credits)
 // for a customer. This endpoint provides real-time visibility into prepaid funds,
 // postpaid commitments, promotional credits, and other balance types that can
@@ -822,13 +855,15 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration"`
+	// Rounding configuration for prorated recurring commit amounts.
+	ProrationRounding V1ContractNewResponseDataContractRecurringCommitProrationRounding `json:"proration_rounding" api:"nullable"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -859,6 +894,7 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Proration              respjson.Field
+		ProrationRounding      respjson.Field
 		RecurrenceFrequency    respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
@@ -976,6 +1012,77 @@ func (r *V1ContractNewResponseDataContractRecurringCommitInvoiceAmount) Unmarsha
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Rounding configuration for prorated recurring commit amounts.
+type V1ContractNewResponseDataContractRecurringCommitProrationRounding struct {
+	Access  V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess  `json:"access"`
+	Invoice V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice `json:"invoice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Access      respjson.Field
+		Invoice     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRounding) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1ContractNewResponseDataContractRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
@@ -1011,13 +1118,15 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration"`
+	// Rounding configuration for prorated recurring credit amounts.
+	ProrationRounding V1ContractNewResponseDataContractRecurringCreditProrationRounding `json:"proration_rounding" api:"nullable"`
 	// The frequency at which the recurring commits will be created. If not provided: -
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -1047,6 +1156,7 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 		Name                   respjson.Field
 		NetsuiteSalesOrderID   respjson.Field
 		Proration              respjson.Field
+		ProrationRounding      respjson.Field
 		RecurrenceFrequency    respjson.Field
 		RolloverFraction       respjson.Field
 		Specifiers             respjson.Field
@@ -1138,6 +1248,50 @@ type V1ContractNewResponseDataContractRecurringCreditContract struct {
 // Returns the unmodified JSON received from the API
 func (r V1ContractNewResponseDataContractRecurringCreditContract) RawJSON() string { return r.JSON.raw }
 func (r *V1ContractNewResponseDataContractRecurringCreditContract) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Rounding configuration for prorated recurring credit amounts.
+type V1ContractNewResponseDataContractRecurringCreditProrationRounding struct {
+	Access V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess `json:"access"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Access      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCreditProrationRounding) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCreditProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1259,6 +1413,51 @@ func (r *V1ContractGetNetBalanceResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type V1ContractGetSubscriptionSeatsHistoryResponse struct {
+	Data []V1ContractGetSubscriptionSeatsHistoryResponseData `json:"data" api:"required"`
+	// Cursor for the next page of results
+	NextPage string `json:"next_page" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		NextPage    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractGetSubscriptionSeatsHistoryResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionSeatsHistoryResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1ContractGetSubscriptionSeatsHistoryResponseData struct {
+	// Array of seat IDs that are assigned in this period
+	AssignedSeatIDs []string `json:"assigned_seat_ids" api:"required"`
+	// The end time of this seat schedule period (null if ongoing)
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	// The start time of this seat schedule period
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// Total number of assigned and unassigned seats in this period
+	TotalQuantity int64 `json:"total_quantity" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AssignedSeatIDs respjson.Field
+		EndingBefore    respjson.Field
+		StartingAt      respjson.Field
+		TotalQuantity   respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractGetSubscriptionSeatsHistoryResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionSeatsHistoryResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // V1ContractListBalancesResponseUnion contains all possible properties and values
 // from [shared.Commit], [shared.Credit].
 //
@@ -1282,6 +1481,7 @@ type V1ContractListBalancesResponseUnion struct {
 	Balance    float64   `json:"balance"`
 	// This field is a union of [shared.CommitContract], [shared.CreditContract]
 	Contract     V1ContractListBalancesResponseUnionContract `json:"contract"`
+	CreatedBy    string                                      `json:"created_by"`
 	CustomFields string                                      `json:"custom_fields"`
 	Description  string                                      `json:"description"`
 	// This field is from variant [shared.Commit].
@@ -1327,6 +1527,7 @@ type V1ContractListBalancesResponseUnion struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
 		HierarchyConfiguration  respjson.Field
@@ -2544,9 +2745,10 @@ type V1ContractNewParamsOverride struct {
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	Entitled     param.Opt[bool]      `json:"entitled,omitzero"`
 	// Indicates whether the override should only apply to commits. Defaults to
-	// `false`. If `true`, you can specify relevant commits in `override_specifiers` by
-	// passing `commit_ids`. if you do not specify `commit_ids`, then the override will
-	// apply when consuming any prepaid or postpaid commit.
+	// `false`. If `true` you can specify relevant commits in `override_specifiers` by
+	// passing `commit_ids`, `recurring_commit_ids`, or `any_commit_or_credit_ids`. If
+	// you do not specify any of these fields, the override will apply when consuming
+	// any prepaid commit, postpaid commit, or credit
 	IsCommitSpecific param.Opt[bool] `json:"is_commit_specific,omitzero"`
 	// Required for MULTIPLIER type. Must be >=0.
 	Multiplier param.Opt[float64] `json:"multiplier,omitzero"`
@@ -2601,6 +2803,12 @@ func init() {
 type V1ContractNewParamsOverrideOverrideSpecifier struct {
 	// If provided, the override will only apply to the product with the specified ID.
 	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Can only be used for commit specific overrides. Must be used in conjunction with
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. Must be used instead of both `commit_ids` and
+	// `recurring_commit_ids` If provided, the override will apply to any specified
+	// commit, credit, recurring commit or recurring credit IDs.
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
@@ -2761,6 +2969,8 @@ type V1ContractNewParamsRecurringCommit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration,omitzero"`
+	// Optional rounding configuration for prorated recurring commit amounts.
+	ProrationRounding V1ContractNewParamsRecurringCommitProrationRounding `json:"proration_rounding,omitzero"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
@@ -2771,7 +2981,7 @@ type V1ContractNewParamsRecurringCommit struct {
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -2799,7 +3009,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -2865,6 +3075,73 @@ func (r V1ContractNewParamsRecurringCommitInvoiceAmount) MarshalJSON() (data []b
 }
 func (r *V1ContractNewParamsRecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional rounding configuration for prorated recurring commit amounts.
+type V1ContractNewParamsRecurringCommitProrationRounding struct {
+	Access  V1ContractNewParamsRecurringCommitProrationRoundingAccess  `json:"access,omitzero"`
+	Invoice V1ContractNewParamsRecurringCommitProrationRoundingInvoice `json:"invoice,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCommitProrationRounding) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCommitProrationRounding
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCommitProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties DecimalPlaces, RoundingMethod are required.
+type V1ContractNewParamsRecurringCommitProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCommitProrationRoundingAccess) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCommitProrationRoundingAccess
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitProrationRoundingAccess](
+		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
+	)
+}
+
+// The properties DecimalPlaces, RoundingMethod are required.
+type V1ContractNewParamsRecurringCommitProrationRoundingInvoice struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCommitProrationRoundingInvoice) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCommitProrationRoundingInvoice
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitProrationRoundingInvoice](
+		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
+	)
 }
 
 // Attach a subscription to the recurring commit/credit.
@@ -2951,6 +3228,8 @@ type V1ContractNewParamsRecurringCredit struct {
 	//
 	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
 	Proration string `json:"proration,omitzero"`
+	// Optional rounding configuration for prorated recurring credit amounts.
+	ProrationRounding V1ContractNewParamsRecurringCreditProrationRounding `json:"proration_rounding,omitzero"`
 	// Whether the created commits will use the commit rate or list rate
 	//
 	// Any of "COMMIT_RATE", "LIST_RATE".
@@ -2961,7 +3240,7 @@ type V1ContractNewParamsRecurringCredit struct {
 	// be created aligned with the recurring commit's starting_at rather than the usage
 	// invoice dates.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -2989,7 +3268,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCredit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -3036,6 +3315,46 @@ func (r *V1ContractNewParamsRecurringCreditCommitDuration) UnmarshalJSON(data []
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditCommitDuration](
 		"unit", "PERIODS",
+	)
+}
+
+// Optional rounding configuration for prorated recurring credit amounts.
+type V1ContractNewParamsRecurringCreditProrationRounding struct {
+	Access V1ContractNewParamsRecurringCreditProrationRoundingAccess `json:"access,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCreditProrationRounding) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCreditProrationRounding
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCreditProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties DecimalPlaces, RoundingMethod are required.
+type V1ContractNewParamsRecurringCreditProrationRoundingAccess struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsRecurringCreditProrationRoundingAccess) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsRecurringCreditProrationRoundingAccess
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditProrationRoundingAccess](
+		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
 	)
 }
 
@@ -3388,7 +3707,8 @@ type V1ContractNewParamsSubscription struct {
 	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
 	// A temporary ID used to reference the subscription in recurring commit/credit
 	// subscription configs created within the same payload.
-	TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+	TemporaryID        param.Opt[string]                                 `json:"temporary_id,omitzero"`
+	BillingCycleConfig V1ContractNewParamsSubscriptionBillingCycleConfig `json:"billing_cycle_config,omitzero"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields map[string]string `json:"custom_fields,omitzero"`
 	// Determines how the subscription's quantity is controlled. Defaults to
@@ -3434,7 +3754,8 @@ type V1ContractNewParamsSubscriptionProration struct {
 	// in-arrears at the end of the period.
 	//
 	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
-	InvoiceBehavior string `json:"invoice_behavior,omitzero"`
+	InvoiceBehavior string                                           `json:"invoice_behavior,omitzero"`
+	Rounding        V1ContractNewParamsSubscriptionProrationRounding `json:"rounding,omitzero"`
 	paramObj
 }
 
@@ -3449,6 +3770,32 @@ func (r *V1ContractNewParamsSubscriptionProration) UnmarshalJSON(data []byte) er
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionProration](
 		"invoice_behavior", "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE",
+	)
+}
+
+// The properties DecimalPlaces, RoundingMethod are required.
+type V1ContractNewParamsSubscriptionProrationRounding struct {
+	// Number of decimal places to round to. Applied directly to the stored monetary
+	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+	// dollar).
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "HALF_UP", "FLOOR", "CEILING".
+	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r V1ContractNewParamsSubscriptionProrationRounding) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsSubscriptionProrationRounding
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsSubscriptionProrationRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionProrationRounding](
+		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
 	)
 }
 
@@ -3475,6 +3822,32 @@ func (r *V1ContractNewParamsSubscriptionSubscriptionRate) UnmarshalJSON(data []b
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionSubscriptionRate](
 		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+	)
+}
+
+type V1ContractNewParamsSubscriptionBillingCycleConfig struct {
+	// The date to anchor the billing cycle to. If omitted, defaults to the contract's
+	// usage invoice billing cycle anchor date.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
+	// Controls whether this subscription consolidates onto usage invoices or gets its
+	// own scheduled invoice. Defaults to ON_USAGE_INVOICE if omitted.
+	//
+	// Any of "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE".
+	InvoicePlacement string `json:"invoice_placement,omitzero"`
+	paramObj
+}
+
+func (r V1ContractNewParamsSubscriptionBillingCycleConfig) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsSubscriptionBillingCycleConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsSubscriptionBillingCycleConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionBillingCycleConfig](
+		"invoice_placement", "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE",
 	)
 }
 
@@ -4146,9 +4519,10 @@ type V1ContractAmendParamsOverride struct {
 	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
 	Entitled     param.Opt[bool]      `json:"entitled,omitzero"`
 	// Indicates whether the override should only apply to commits. Defaults to
-	// `false`. If `true`, you can specify relevant commits in `override_specifiers` by
-	// passing `commit_ids`. if you do not specify `commit_ids`, then the override will
-	// apply when consuming any prepaid or postpaid commit.
+	// `false`. If `true` you can specify relevant commits in `override_specifiers` by
+	// passing `commit_ids`, `recurring_commit_ids`, or `any_commit_or_credit_ids`. If
+	// you do not specify any of these fields, the override will apply when consuming
+	// any prepaid commit, postpaid commit, or credit
 	IsCommitSpecific param.Opt[bool] `json:"is_commit_specific,omitzero"`
 	// Required for MULTIPLIER type. Must be >=0.
 	Multiplier param.Opt[float64] `json:"multiplier,omitzero"`
@@ -4203,6 +4577,12 @@ func init() {
 type V1ContractAmendParamsOverrideOverrideSpecifier struct {
 	// If provided, the override will only apply to the product with the specified ID.
 	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Can only be used for commit specific overrides. Must be used in conjunction with
+	// one of `product_id`, `product_tags`, `pricing_group_values`, or
+	// `presentation_group_values`. Must be used instead of both `commit_ids` and
+	// `recurring_commit_ids` If provided, the override will apply to any specified
+	// commit, credit, recurring commit or recurring credit IDs.
+	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
@@ -4646,6 +5026,38 @@ const (
 	V1ContractGetNetBalanceParamsInvoiceInclusionModeFinalizedAndDraft V1ContractGetNetBalanceParamsInvoiceInclusionMode = "FINALIZED_AND_DRAFT"
 )
 
+type V1ContractGetSubscriptionSeatsHistoryParams struct {
+	ContractID     string `json:"contract_id" api:"required" format:"uuid"`
+	CustomerID     string `json:"customer_id" api:"required" format:"uuid"`
+	SubscriptionID string `json:"subscription_id" api:"required" format:"uuid"`
+	// Get the seats history segment for the covering date. Cannot be used with
+	// `starting_at` or `ending_before`.
+	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+	// Cursor for pagination. Use the value from the `next_page` field of the previous
+	// response to retrieve the next page of results.
+	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Include seats history segments that are active at or before this timestamp. Use
+	// with `starting_at` to get a specific time range. If not set, there's no upper
+	// bound.
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	// Maximum number of seat schedule entries to return. Defaults to 10. Required
+	// range: 1 <= x <= 10.
+	Limit param.Opt[int64] `json:"limit,omitzero"`
+	// Include seats history segments that are active at or after this timestamp. Use
+	// with `ending_before` to get a specific time range. If not set, there's no lower
+	// bound.
+	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	paramObj
+}
+
+func (r V1ContractGetSubscriptionSeatsHistoryParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractGetSubscriptionSeatsHistoryParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractGetSubscriptionSeatsHistoryParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1ContractListBalancesParams struct {
 	CustomerID string            `json:"customer_id" api:"required" format:"uuid"`
 	ID         param.Opt[string] `json:"id,omitzero" format:"uuid"`
@@ -4708,6 +5120,9 @@ type V1ContractListSeatBalancesParams struct {
 	// (total: 108 commits). Each returned seat includes all of its associated credits
 	// and commits.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
+	// When true, any seat_ids not found in contract subscriptions will be silently
+	// omitted from the response instead of returning a 400 error.
+	SkipMissingSeatIDs param.Opt[bool] `json:"skip_missing_seat_ids,omitzero"`
 	// Include only commits or credits with access effective on or after this date
 	// (cannot be used with covering_date).
 	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
