@@ -206,8 +206,6 @@ type ContractAmendment = shared.ContractAmendment
 // This is an alias to an internal type.
 type ContractAmendmentResellerRoyalty = shared.ContractAmendmentResellerRoyalty
 
-// The billing provider configuration associated with a contract.
-//
 // This is an alias to an internal type.
 type ContractCustomerBillingProviderConfiguration = shared.ContractCustomerBillingProviderConfiguration
 
@@ -324,6 +322,12 @@ type ContractV2UsageFilter = shared.ContractV2UsageFilter
 type ContractV2UsageStatementSchedule = shared.ContractV2UsageStatementSchedule
 
 // This is an alias to an internal type.
+type ContractV2BillingProviderConfigurationSchedule = shared.ContractV2BillingProviderConfigurationSchedule
+
+// This is an alias to an internal type.
+type ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration = shared.ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration
+
+// This is an alias to an internal type.
 type ContractV2Credit = shared.ContractV2Credit
 
 // This is an alias to an internal type.
@@ -362,8 +366,6 @@ type ContractV2CreditLedgerCreditRolloverLedgerEntry = shared.ContractV2CreditLe
 // This is an alias to an internal type.
 type ContractV2CreditRolledOverFrom = shared.ContractV2CreditRolledOverFrom
 
-// This field's availability is dependent on your client's configuration.
-//
 // This is an alias to an internal type.
 type ContractV2CustomerBillingProviderConfiguration = shared.ContractV2CustomerBillingProviderConfiguration
 
@@ -477,6 +479,12 @@ type ContractV2ResellerRoyalty = shared.ContractV2ResellerRoyalty
 
 // This is an alias to an internal type.
 type ContractV2ResellerRoyaltySegment = shared.ContractV2ResellerRoyaltySegment
+
+// This is an alias to an internal type.
+type ContractV2RevenueSystemConfigurationSchedule = shared.ContractV2RevenueSystemConfigurationSchedule
+
+// This is an alias to an internal type.
+type ContractV2RevenueSystemConfigurationScheduleRevenueSystemConfiguration = shared.ContractV2RevenueSystemConfigurationScheduleRevenueSystemConfiguration
 
 // Determines which scheduled and commit charges to consolidate onto the Contract's
 // usage invoice. The charge's `timestamp` must match the usage invoice's
