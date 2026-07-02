@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.9.0 (2026-07-02)
+
+Full Changelog: [v3.8.0...v3.9.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.8.0...v3.9.0)
+
+### Features
+
+* [ORCH-1875] add billing config schedule to api ([f18b9e3](https://github.com/Metronome-Industries/metronome-go/commit/f18b9e3d43c027114e5b39a1c3907a9479c955ab))
+
 ## 3.8.0 (2026-06-26)
 
 Full Changelog: [v3.7.0...v3.8.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.7.0...v3.8.0)
