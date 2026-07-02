@@ -5868,7 +5868,7 @@ func init() {
 type V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule struct {
 	// When the billing provider update will take effect.
 	//
-	// Any of "START_OF_CURRENT_PERIOD".
+	// Any of "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD".
 	EffectiveAt string `json:"effective_at,omitzero" api:"required"`
 	paramObj
 }
@@ -5883,7 +5883,7 @@ func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule) Unma
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule](
-		"effective_at", "START_OF_CURRENT_PERIOD",
+		"effective_at", "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD",
 	)
 }
 
@@ -7199,7 +7199,7 @@ func init() {
 type V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule struct {
 	// When the revenue system configuration update will take effect.
 	//
-	// Any of "START_OF_CURRENT_PERIOD".
+	// Any of "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD".
 	EffectiveAt string `json:"effective_at,omitzero" api:"required"`
 	paramObj
 }
@@ -7214,7 +7214,7 @@ func (r *V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule) Unmars
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddRevenueSystemConfigurationUpdateSchedule](
-		"effective_at", "START_OF_CURRENT_PERIOD",
+		"effective_at", "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD",
 	)
 }
 
