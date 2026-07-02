@@ -1285,8 +1285,7 @@ type Contract struct {
 	// the contract is not archived.
 	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields"`
-	// The billing provider configuration associated with a contract.
+	CustomFields                         map[string]string                            `json:"custom_fields"`
 	CustomerBillingProviderConfiguration ContractCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	// ID of the package this contract was created from, if applicable.
 	PackageID                            string                               `json:"package_id" format:"uuid"`
@@ -1418,27 +1417,41 @@ func (r *ContractAmendmentResellerRoyalty) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The billing provider configuration associated with a contract.
 type ContractCustomerBillingProviderConfiguration struct {
+	// ID of this configuration; can be provided as the
+	// billing_provider_configuration_id when creating a contract.
+	ID         string    `json:"id" api:"required" format:"uuid"`
 	ArchivedAt time.Time `json:"archived_at" api:"required" format:"date-time"`
+	// The billing provider set for this configuration.
+	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider" api:"required"`
-	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
-	DeliveryMethod string `json:"delivery_method" api:"required"`
-	ID             string `json:"id" format:"uuid"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
-	Configuration map[string]any `json:"configuration"`
+	Configuration map[string]any `json:"configuration" api:"required"`
+	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	// The method to use for delivering invoices to this customer.
+	//
+	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+	DeliveryMethod string `json:"delivery_method" api:"required"`
+	// Configuration for the delivery method. The structure of this object is specific
+	// to the delivery method.
+	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
+	// ID of the delivery method to use for this customer.
+	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ArchivedAt      respjson.Field
-		BillingProvider respjson.Field
-		DeliveryMethod  respjson.Field
-		ID              respjson.Field
-		Configuration   respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		ID                          respjson.Field
+		ArchivedAt                  respjson.Field
+		BillingProvider             respjson.Field
+		Configuration               respjson.Field
+		CustomerID                  respjson.Field
+		DeliveryMethod              respjson.Field
+		DeliveryMethodConfiguration respjson.Field
+		DeliveryMethodID            respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
 	} `json:"-"`
 }
 
@@ -1541,10 +1554,12 @@ type ContractV2 struct {
 	UsageFilter            []ContractV2UsageFilter          `json:"usage_filter" api:"required"`
 	UsageStatementSchedule ContractV2UsageStatementSchedule `json:"usage_statement_schedule" api:"required"`
 	ArchivedAt             time.Time                        `json:"archived_at" format:"date-time"`
-	Credits                []ContractV2Credit               `json:"credits"`
+	// The schedule of billing provider configuration changes on the contract, ordered
+	// by effective_at ascending.
+	BillingProviderConfigurationSchedule []ContractV2BillingProviderConfigurationSchedule `json:"billing_provider_configuration_schedule"`
+	Credits                              []ContractV2Credit                               `json:"credits"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields"`
-	// This field's availability is dependent on your client's configuration.
+	CustomFields                         map[string]string                              `json:"custom_fields"`
 	CustomerBillingProviderConfiguration ContractV2CustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	// This field's availability is dependent on your client's configuration.
 	Discounts    []Discount `json:"discounts"`
@@ -1576,6 +1591,9 @@ type ContractV2 struct {
 	RecurringCredits     []ContractV2RecurringCredit `json:"recurring_credits"`
 	// This field's availability is dependent on your client's configuration.
 	ResellerRoyalties []ContractV2ResellerRoyalty `json:"reseller_royalties"`
+	// The schedule of revenue system configuration changes on the contract, ordered by
+	// effective_at ascending.
+	RevenueSystemConfigurationSchedule []ContractV2RevenueSystemConfigurationSchedule `json:"revenue_system_configuration_schedule"`
 	// This field's availability is dependent on your client's configuration.
 	SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
 	// Determines which scheduled and commit charges to consolidate onto the Contract's
@@ -1608,6 +1626,7 @@ type ContractV2 struct {
 		UsageFilter                          respjson.Field
 		UsageStatementSchedule               respjson.Field
 		ArchivedAt                           respjson.Field
+		BillingProviderConfigurationSchedule respjson.Field
 		Credits                              respjson.Field
 		CustomFields                         respjson.Field
 		CustomerBillingProviderConfiguration respjson.Field
@@ -1626,6 +1645,7 @@ type ContractV2 struct {
 		RecurringCommits                     respjson.Field
 		RecurringCredits                     respjson.Field
 		ResellerRoyalties                    respjson.Field
+		RevenueSystemConfigurationSchedule   respjson.Field
 		SalesforceOpportunityID              respjson.Field
 		ScheduledChargesOnUsageInvoices      respjson.Field
 		SpendThresholdConfiguration          respjson.Field
@@ -2507,6 +2527,75 @@ func (r *ContractV2UsageStatementSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ContractV2BillingProviderConfigurationSchedule struct {
+	BillingProviderConfiguration ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration `json:"billing_provider_configuration" api:"required"`
+	// The date this billing provider configuration became or becomes active.
+	EffectiveAt time.Time `json:"effective_at" api:"required" format:"date-time"`
+	// The date this billing provider configuration is superseded by the next entry.
+	// Null for the last entry in the schedule.
+	EffectiveUntil time.Time `json:"effective_until" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingProviderConfiguration respjson.Field
+		EffectiveAt                  respjson.Field
+		EffectiveUntil               respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2BillingProviderConfigurationSchedule) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2BillingProviderConfigurationSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration struct {
+	// ID of this configuration; can be provided as the
+	// billing_provider_configuration_id when creating a contract.
+	ID         string    `json:"id" api:"required" format:"uuid"`
+	ArchivedAt time.Time `json:"archived_at" api:"required" format:"date-time"`
+	// The billing provider set for this configuration.
+	//
+	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
+	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
+	BillingProvider string `json:"billing_provider" api:"required"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider.
+	Configuration map[string]any `json:"configuration" api:"required"`
+	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	// The method to use for delivering invoices to this customer.
+	//
+	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+	DeliveryMethod string `json:"delivery_method" api:"required"`
+	// Configuration for the delivery method. The structure of this object is specific
+	// to the delivery method.
+	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
+	// ID of the delivery method to use for this customer.
+	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                          respjson.Field
+		ArchivedAt                  respjson.Field
+		BillingProvider             respjson.Field
+		Configuration               respjson.Field
+		CustomerID                  respjson.Field
+		DeliveryMethod              respjson.Field
+		DeliveryMethodConfiguration respjson.Field
+		DeliveryMethodID            respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ContractV2Credit struct {
 	ID      string                  `json:"id" api:"required" format:"uuid"`
 	Product ContractV2CreditProduct `json:"product" api:"required"`
@@ -2934,22 +3023,41 @@ func (r *ContractV2CreditRolledOverFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// This field's availability is dependent on your client's configuration.
 type ContractV2CustomerBillingProviderConfiguration struct {
-	// ID of Customer's billing provider configuration.
-	ID string `json:"id" api:"required" format:"uuid"`
+	// ID of this configuration; can be provided as the
+	// billing_provider_configuration_id when creating a contract.
+	ID         string    `json:"id" api:"required" format:"uuid"`
+	ArchivedAt time.Time `json:"archived_at" api:"required" format:"date-time"`
+	// The billing provider set for this configuration.
+	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
 	BillingProvider string `json:"billing_provider" api:"required"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider.
+	Configuration map[string]any `json:"configuration" api:"required"`
+	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	// The method to use for delivering invoices to this customer.
+	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
 	DeliveryMethod string `json:"delivery_method" api:"required"`
+	// Configuration for the delivery method. The structure of this object is specific
+	// to the delivery method.
+	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
+	// ID of the delivery method to use for this customer.
+	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              respjson.Field
-		BillingProvider respjson.Field
-		DeliveryMethod  respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		ID                          respjson.Field
+		ArchivedAt                  respjson.Field
+		BillingProvider             respjson.Field
+		Configuration               respjson.Field
+		CustomerID                  respjson.Field
+		DeliveryMethod              respjson.Field
+		DeliveryMethodConfiguration respjson.Field
+		DeliveryMethodID            respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
 	} `json:"-"`
 }
 
@@ -3682,6 +3790,73 @@ type ContractV2ResellerRoyaltySegment struct {
 // Returns the unmodified JSON received from the API
 func (r ContractV2ResellerRoyaltySegment) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2ResellerRoyaltySegment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2RevenueSystemConfigurationSchedule struct {
+	// The date this revenue system configuration became or becomes active.
+	EffectiveAt                time.Time                                                              `json:"effective_at" api:"required" format:"date-time"`
+	RevenueSystemConfiguration ContractV2RevenueSystemConfigurationScheduleRevenueSystemConfiguration `json:"revenue_system_configuration" api:"required"`
+	// The date this revenue system configuration is superseded by the next entry. Null
+	// for the last entry in the schedule.
+	EffectiveUntil time.Time `json:"effective_until" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EffectiveAt                respjson.Field
+		RevenueSystemConfiguration respjson.Field
+		EffectiveUntil             respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2RevenueSystemConfigurationSchedule) RawJSON() string { return r.JSON.raw }
+func (r *ContractV2RevenueSystemConfigurationSchedule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ContractV2RevenueSystemConfigurationScheduleRevenueSystemConfiguration struct {
+	// ID of the revenue system configuration.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Configuration for the revenue system. The structure of this object is specific
+	// to the provider.
+	Configuration map[string]any `json:"configuration" api:"required"`
+	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	// ID of the delivery method used for this customer configuration.
+	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
+	// The revenue system provider (e.g. netsuite).
+	//
+	// Any of "netsuite".
+	Provider   string    `json:"provider" api:"required"`
+	ArchivedAt time.Time `json:"archived_at" api:"nullable" format:"date-time"`
+	// The method to use for delivering data to the revenue system.
+	//
+	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+	DeliveryMethod string `json:"delivery_method"`
+	// Configuration for the delivery method. The structure of this object is specific
+	// to the delivery method.
+	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                          respjson.Field
+		Configuration               respjson.Field
+		CustomerID                  respjson.Field
+		DeliveryMethodID            respjson.Field
+		Provider                    respjson.Field
+		ArchivedAt                  respjson.Field
+		DeliveryMethod              respjson.Field
+		DeliveryMethodConfiguration respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2RevenueSystemConfigurationScheduleRevenueSystemConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2RevenueSystemConfigurationScheduleRevenueSystemConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -623,8 +623,7 @@ type V1ContractNewResponseDataContract struct {
 	UsageStatementSchedule V1ContractNewResponseDataContractUsageStatementSchedule `json:"usage_statement_schedule" api:"required"`
 	Credits                []shared.Credit                                         `json:"credits"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields"`
-	// The billing provider configuration associated with the contract.
+	CustomFields                         map[string]string                                                     `json:"custom_fields"`
 	CustomerBillingProviderConfiguration V1ContractNewResponseDataContractCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
 	EndingBefore                         time.Time                                                             `json:"ending_before" format:"date-time"`
 	// Indicates whether there are more items than the limit for this endpoint. Use the
@@ -766,21 +765,41 @@ func (r *V1ContractNewResponseDataContractUsageStatementSchedule) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The billing provider configuration associated with the contract.
 type V1ContractNewResponseDataContractCustomerBillingProviderConfiguration struct {
-	ID string `json:"id" format:"uuid"`
+	// ID of this configuration; can be provided as the
+	// billing_provider_configuration_id when creating a contract.
+	ID         string    `json:"id" api:"required" format:"uuid"`
+	ArchivedAt time.Time `json:"archived_at" api:"required" format:"date-time"`
+	// The billing provider set for this configuration.
+	//
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string `json:"billing_provider"`
+	BillingProvider string `json:"billing_provider" api:"required"`
+	// Configuration for the billing provider. The structure of this object is specific
+	// to the billing provider.
+	Configuration map[string]any `json:"configuration" api:"required"`
+	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	// The method to use for delivering invoices to this customer.
+	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
-	DeliveryMethod string `json:"delivery_method"`
+	DeliveryMethod string `json:"delivery_method" api:"required"`
+	// Configuration for the delivery method. The structure of this object is specific
+	// to the delivery method.
+	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
+	// ID of the delivery method to use for this customer.
+	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              respjson.Field
-		BillingProvider respjson.Field
-		DeliveryMethod  respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		ID                          respjson.Field
+		ArchivedAt                  respjson.Field
+		BillingProvider             respjson.Field
+		Configuration               respjson.Field
+		CustomerID                  respjson.Field
+		DeliveryMethod              respjson.Field
+		DeliveryMethodConfiguration respjson.Field
+		DeliveryMethodID            respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
 	} `json:"-"`
 }
 
