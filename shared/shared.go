@@ -3322,7 +3322,8 @@ type ContractV2RecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -3571,7 +3572,8 @@ type ContractV2RecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -4388,7 +4390,8 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -4645,7 +4648,8 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
