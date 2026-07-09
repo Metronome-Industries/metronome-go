@@ -2463,7 +2463,7 @@ func (r *ContractV2OverrideProduct) UnmarshalJSON(data []byte) error {
 type ContractV2Transition struct {
 	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
 	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
-	// Any of "SUPERSEDE", "RENEWAL".
+	// Any of "RENEWAL".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4309,7 +4309,7 @@ func (r *ContractWithoutAmendments) UnmarshalJSON(data []byte) error {
 type ContractWithoutAmendmentsTransition struct {
 	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
 	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
-	// Any of "SUPERSEDE", "RENEWAL".
+	// Any of "RENEWAL".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

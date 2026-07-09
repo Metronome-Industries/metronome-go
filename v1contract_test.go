@@ -549,7 +549,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		TotalContractValue: metronome.Float(0),
 		Transition: metronome.V1ContractNewParamsTransition{
 			FromContractID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			Type:           "SUPERSEDE",
+			Type:           "RENEWAL",
 			FutureInvoiceBehavior: metronome.V1ContractNewParamsTransitionFutureInvoiceBehavior{
 				Trueup: "REMOVE",
 			},
