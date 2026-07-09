@@ -705,7 +705,7 @@ func (r *V1ContractNewResponseDataContract) UnmarshalJSON(data []byte) error {
 type V1ContractNewResponseDataContractTransition struct {
 	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
 	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
-	// Any of "SUPERSEDE", "RENEWAL".
+	// Any of "RENEWAL".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3903,7 +3903,7 @@ type V1ContractNewParamsTransition struct {
 	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
 	// This field's available values may vary based on your client's configuration.
 	//
-	// Any of "SUPERSEDE", "RENEWAL".
+	// Any of "RENEWAL".
 	Type                  string                                             `json:"type,omitzero" api:"required"`
 	FutureInvoiceBehavior V1ContractNewParamsTransitionFutureInvoiceBehavior `json:"future_invoice_behavior,omitzero"`
 	paramObj
@@ -3919,7 +3919,7 @@ func (r *V1ContractNewParamsTransition) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsTransition](
-		"type", "SUPERSEDE", "RENEWAL",
+		"type", "RENEWAL",
 	)
 }
 
