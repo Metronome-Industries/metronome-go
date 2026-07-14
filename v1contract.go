@@ -705,7 +705,7 @@ func (r *V1ContractNewResponseDataContract) UnmarshalJSON(data []byte) error {
 type V1ContractNewResponseDataContractTransition struct {
 	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
 	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
-	// Any of "SUPERSEDE", "RENEWAL".
+	// Any of "RENEWAL".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -880,7 +880,8 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -1143,7 +1144,8 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -2998,7 +3000,8 @@ type V1ContractNewParamsRecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
@@ -3257,7 +3260,8 @@ type V1ContractNewParamsRecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
@@ -3899,7 +3903,7 @@ type V1ContractNewParamsTransition struct {
 	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
 	// This field's available values may vary based on your client's configuration.
 	//
-	// Any of "SUPERSEDE", "RENEWAL".
+	// Any of "RENEWAL".
 	Type                  string                                             `json:"type,omitzero" api:"required"`
 	FutureInvoiceBehavior V1ContractNewParamsTransitionFutureInvoiceBehavior `json:"future_invoice_behavior,omitzero"`
 	paramObj
@@ -3915,7 +3919,7 @@ func (r *V1ContractNewParamsTransition) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractNewParamsTransition](
-		"type", "SUPERSEDE", "RENEWAL",
+		"type", "RENEWAL",
 	)
 }
 
