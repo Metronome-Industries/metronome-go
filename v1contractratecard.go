@@ -101,24 +101,19 @@ func (r *V1ContractRateCardService) Get(ctx context.Context, body V1ContractRate
 	return res, err
 }
 
-// Update the metadata properties of an existing rate card, including its name,
-// description, and aliases. This endpoint is designed for managing rate card
-// identity and reference aliases rather than modifying pricing rates.
-//
-// Modifies the descriptive properties and alias configuration of a rate card
-// without affecting the underlying pricing rates or schedules. This allows you to
-// update how a rate card is identified and referenced throughout your system.
+// Update a rate card's name, description, aliases, and credit type conversion
+// rates. This endpoint does not affect underlying pricing rates or schedules.
 //
 // ### Use this endpoint to:
 //
-//   - Rate card renaming: Update display names or descriptions for organizational
+//   - Rename rate cards: Update display names or descriptions for organizational
 //     clarity
-//   - Alias management: Add, modify, or schedule alias transitions for seamless rate
-//     card migrations
-//   - Documentation updates: Keep rate card descriptions current with business
+//   - Manage aliases: Add, modify, or schedule alias transitions for seamless and
+//     code-free rate card migrations
+//   - Update documentation: Keep rate card descriptions current with business
 //     context
-//   - Self-serve provisioning setup: Configure aliases to enable code-free rate card
-//     transitions
+//   - Configure custom pricing units: Add credit type conversions to enable rates
+//     with different pricing units
 //
 // #### Active contract impact:
 //
@@ -557,6 +552,9 @@ type V1ContractRateCardUpdateParams struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Used only in UI/API. It is not exposed to end customers.
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Add credit type conversions for using custom pricing units in rates. Existing
+	// conversions cannot be modified.
+	AddCreditTypeConversions []V1ContractRateCardUpdateParamsAddCreditTypeConversion `json:"add_credit_type_conversions,omitzero"`
 	// Reference this alias when creating a contract. If the same alias is assigned to
 	// multiple rate cards, it will reference the rate card to which it was most
 	// recently assigned. It is not exposed to end customers.
@@ -569,6 +567,21 @@ func (r V1ContractRateCardUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *V1ContractRateCardUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties CustomCreditTypeID, FiatPerCustomCredit are required.
+type V1ContractRateCardUpdateParamsAddCreditTypeConversion struct {
+	CustomCreditTypeID  string  `json:"custom_credit_type_id" api:"required" format:"uuid"`
+	FiatPerCustomCredit float64 `json:"fiat_per_custom_credit" api:"required"`
+	paramObj
+}
+
+func (r V1ContractRateCardUpdateParamsAddCreditTypeConversion) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractRateCardUpdateParamsAddCreditTypeConversion
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractRateCardUpdateParamsAddCreditTypeConversion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
