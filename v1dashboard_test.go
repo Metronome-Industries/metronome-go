@@ -29,11 +29,10 @@ func TestV1DashboardGetEmbeddableURLWithOptionalParams(t *testing.T) {
 		CustomerID: "4db51251-61de-4bfe-b9ce-495e244f3491",
 		Dashboard:  metronome.V1DashboardGetEmbeddableURLParamsDashboardInvoices,
 		BmGroupKeyOverrides: []metronome.V1DashboardGetEmbeddableURLParamsBmGroupKeyOverride{{
-			GroupKeyName: "tenant_id",
-			DisplayName:  metronome.String("Org ID"),
+			GroupKeyName: "group_key_name",
+			DisplayName:  metronome.String("display_name"),
 			ValueDisplayNames: map[string]any{
-				"48ecb18f358f": "bar",
-				"e358f3ce242d": "bar",
+				"foo": "bar",
 			},
 		}},
 		ColorOverrides: []metronome.V1DashboardGetEmbeddableURLParamsColorOverride{{
@@ -44,8 +43,8 @@ func TestV1DashboardGetEmbeddableURLWithOptionalParams(t *testing.T) {
 			Key:   "show_zero_usage_line_items",
 			Value: "false",
 		}, {
-			Key:   "hide_voided_invoices",
-			Value: "true",
+			Key:   "invoice_status_filter",
+			Value: "FINALIZED",
 		}},
 	})
 	if err != nil {
