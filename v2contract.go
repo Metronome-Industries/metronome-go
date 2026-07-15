@@ -8628,6 +8628,10 @@ type V2ContractEditCommitParams struct {
 	// Updated name for the commit
 	Name      param.Opt[string] `json:"name,omitzero"`
 	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Which contracts the customer-level commit applies to. If set to null, the commit
+	// applies to all of the customer's contracts. This field cannot be edited for
+	// POSTPAID commits or contract-level commits.
+	ApplicableContractIDs []string `json:"applicable_contract_ids,omitzero" format:"uuid"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
@@ -8813,6 +8817,10 @@ type V2ContractEditCreditParams struct {
 	// Updated name for the credit
 	Name      param.Opt[string] `json:"name,omitzero"`
 	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Which contracts the customer-level credit applies to. If set to null, the credit
+	// applies to all of the customer's contracts. This field cannot be set on a
+	// contract-level credit.
+	ApplicableContractIDs []string `json:"applicable_contract_ids,omitzero" format:"uuid"`
 	// Which products the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
