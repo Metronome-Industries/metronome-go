@@ -93,6 +93,10 @@ func TestV1ContractRateCardUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.V1.Contracts.RateCards.Update(context.TODO(), metronome.V1ContractRateCardUpdateParams{
 		RateCardID: "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+		AddCreditTypeConversions: []metronome.V1ContractRateCardUpdateParamsAddCreditTypeConversion{{
+			CustomCreditTypeID:  "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			FiatPerCustomCredit: 0,
+		}},
 		Aliases: []metronome.V1ContractRateCardUpdateParamsAlias{{
 			Name:         "name",
 			EndingBefore: metronome.Time(time.Now()),
