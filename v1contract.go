@@ -1501,10 +1501,12 @@ type V1ContractListBalancesResponseUnion struct {
 	ArchivedAt time.Time `json:"archived_at"`
 	Balance    float64   `json:"balance"`
 	// This field is a union of [shared.CommitContract], [shared.CreditContract]
-	Contract     V1ContractListBalancesResponseUnionContract `json:"contract"`
-	CreatedBy    string                                      `json:"created_by"`
-	CustomFields string                                      `json:"custom_fields"`
-	Description  string                                      `json:"description"`
+	Contract V1ContractListBalancesResponseUnionContract `json:"contract"`
+	// This field is from variant [shared.Commit].
+	CostBasis    float64 `json:"cost_basis"`
+	CreatedBy    string  `json:"created_by"`
+	CustomFields string  `json:"custom_fields"`
+	Description  string  `json:"description"`
 	// This field is from variant [shared.Commit].
 	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
 	// This field is from variant [shared.Commit].
@@ -1548,6 +1550,7 @@ type V1ContractListBalancesResponseUnion struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CostBasis               respjson.Field
 		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field

@@ -174,6 +174,8 @@ type Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CommitContract `json:"contract"`
+	// The ratio of the amount paid for the commit to the amount of credit granted.
+	CostBasis float64 `json:"cost_basis"`
 	// The actor who created this commit. Omitted for system-generated commits such as
 	// recurring commits, rollover commits, and threshold commits.
 	CreatedBy string `json:"created_by"`
@@ -232,6 +234,7 @@ type Commit struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CostBasis               respjson.Field
 		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
@@ -1692,6 +1695,8 @@ type ContractV2Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64                  `json:"balance"`
 	Contract ContractV2CommitContract `json:"contract"`
+	// The ratio of the amount paid for the commit to the amount of credit granted.
+	CostBasis float64 `json:"cost_basis"`
 	// The actor who created this commit. Omitted for system-generated commits such as
 	// recurring commits, rollover commits, and threshold commits.
 	CreatedBy string `json:"created_by"`
@@ -1742,6 +1747,7 @@ type ContractV2Commit struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CostBasis               respjson.Field
 		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
