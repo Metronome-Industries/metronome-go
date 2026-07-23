@@ -174,6 +174,8 @@ type Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CommitContract `json:"contract"`
+	// The ratio of the amount paid for the commit to the amount of credit granted.
+	CostBasis float64 `json:"cost_basis"`
 	// The actor who created this commit. Omitted for system-generated commits such as
 	// recurring commits, rollover commits, and threshold commits.
 	CreatedBy string `json:"created_by"`
@@ -232,6 +234,7 @@ type Commit struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CostBasis               respjson.Field
 		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
@@ -1692,6 +1695,8 @@ type ContractV2Commit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64                  `json:"balance"`
 	Contract ContractV2CommitContract `json:"contract"`
+	// The ratio of the amount paid for the commit to the amount of credit granted.
+	CostBasis float64 `json:"cost_basis"`
 	// The actor who created this commit. Omitted for system-generated commits such as
 	// recurring commits, rollover commits, and threshold commits.
 	CreatedBy string `json:"created_by"`
@@ -1742,6 +1747,7 @@ type ContractV2Commit struct {
 		ArchivedAt              respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CostBasis               respjson.Field
 		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
@@ -2463,7 +2469,7 @@ func (r *ContractV2OverrideProduct) UnmarshalJSON(data []byte) error {
 type ContractV2Transition struct {
 	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
 	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
-	// Any of "SUPERSEDE", "RENEWAL".
+	// Any of "RENEWAL".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3322,7 +3328,8 @@ type ContractV2RecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -3571,7 +3578,8 @@ type ContractV2RecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -4307,7 +4315,7 @@ func (r *ContractWithoutAmendments) UnmarshalJSON(data []byte) error {
 type ContractWithoutAmendmentsTransition struct {
 	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
 	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
-	// Any of "SUPERSEDE", "RENEWAL".
+	// Any of "RENEWAL".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4388,7 +4396,8 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -4645,7 +4654,8 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`

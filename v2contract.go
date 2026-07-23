@@ -713,7 +713,8 @@ type V2ContractEditResponseDataEditAddRecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -974,7 +975,8 @@ type V2ContractEditResponseDataEditAddRecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -3443,7 +3445,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -3708,7 +3711,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
@@ -6662,7 +6666,8 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
@@ -6921,7 +6926,8 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// The commits will be created on the usage invoice frequency. If provided: - The
 	// period defined in the duration will correspond to this frequency. - Commits will
 	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates.
+	// invoice dates. - Daily recurring commits have a limit of one per contract, and
+	// are unable to be created with seat-based subscriptions
 	//
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
@@ -8622,6 +8628,10 @@ type V2ContractEditCommitParams struct {
 	// Updated name for the commit
 	Name      param.Opt[string] `json:"name,omitzero"`
 	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Which contracts the customer-level commit applies to. If set to null, the commit
+	// applies to all of the customer's contracts. This field cannot be edited for
+	// POSTPAID commits or contract-level commits.
+	ApplicableContractIDs []string `json:"applicable_contract_ids,omitzero" format:"uuid"`
 	// Which products the commit applies to. If applicable_product_ids,
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
@@ -8807,6 +8817,10 @@ type V2ContractEditCreditParams struct {
 	// Updated name for the credit
 	Name      param.Opt[string] `json:"name,omitzero"`
 	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+	// Which contracts the customer-level credit applies to. If set to null, the credit
+	// applies to all of the customer's contracts. This field cannot be set on a
+	// contract-level credit.
+	ApplicableContractIDs []string `json:"applicable_contract_ids,omitzero" format:"uuid"`
 	// Which products the credit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the credit applies to all products.
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
