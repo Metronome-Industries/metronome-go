@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.10.1 (2026-07-23)
+
+Full Changelog: [v3.10.0...v3.10.1](https://github.com/Metronome-Industries/metronome-go/compare/v3.10.0...v3.10.1)
+
 ## 3.10.0 (2026-07-23)
 
 Full Changelog: [v3.9.0...v3.10.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.9.0...v3.10.0)

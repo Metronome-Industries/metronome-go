@@ -39,7 +39,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Metronome-Industries/metronome-go@v3.10.0'
+go get -u 'github.com/Metronome-Industries/metronome-go@v3.10.1'
 ```
 
 <!-- x-release-please-end -->
