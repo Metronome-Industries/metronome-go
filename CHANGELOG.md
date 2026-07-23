@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.10.0 (2026-07-23)
+
+Full Changelog: [v3.9.0...v3.10.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.9.0...v3.10.0)
+
+### Features
+
+* Add add_credit_type_conversions field to update_rate_card ([00ff945](https://github.com/Metronome-Industries/metronome-go/commit/00ff945aefac33f5abf58844b6a83c0a979ffceb))
+* Add cost_basis to commits ([e3b6dd5](https://github.com/Metronome-Industries/metronome-go/commit/e3b6dd579eae7b0d86bed3b999e1297839411891))
+* Add daily recurring commit description to docs ([6cc110f](https://github.com/Metronome-Industries/metronome-go/commit/6cc110f10d2f0695eb0db61796821fd50134fe3a))
+* add stlc SDK generation workflow to api repo ([e787bae](https://github.com/Metronome-Industries/metronome-go/commit/e787bae74bf3786478218a4901326190cba64a17))
+* Docs: embeddable dashboard doc updates ([d56b618](https://github.com/Metronome-Industries/metronome-go/commit/d56b61800b57a3883ef7cfcab7586056843685fe))
+* Kmd/remove supersede from contract transition ([688932f](https://github.com/Metronome-Industries/metronome-go/commit/688932f06be936c9f01a9a998422cc390b5ab3ad))
+* Plumb applicable_contract_ids in edit customer commit ([ede109b](https://github.com/Metronome-Industries/metronome-go/commit/ede109be6580a391e5e013accd6c6a9a5730f266))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([1186df6](https://github.com/Metronome-Industries/metronome-go/commit/1186df69d0c4a8c2f7462b3e816832d136b302c0))
+
+
+### Bug Fixes
+
+* remove webhook config that overwrites custom code ([075b088](https://github.com/Metronome-Industries/metronome-go/commit/075b088ab6bd8bbb6e12e28aa612c23851e4c3df))
+
+
+### Chores
+
+* update tracking files for promote workflow ([b50104f](https://github.com/Metronome-Industries/metronome-go/commit/b50104fc8c8454623229e6f17b6584533d027481))
+
 ## 3.9.0 (2026-07-02)
 
 Full Changelog: [v3.8.0...v3.9.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.8.0...v3.9.0)
