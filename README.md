@@ -2,14 +2,16 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v3"><img src="https://pkg.go.dev/badge/github.com/Metronome-Industries/metronome-go/v3.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v3"><img src="https://pkg.go.dev/badge/github.com/Metronome-Industries/metronome-go.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
 The Metronome Go library provides convenient access to the [Metronome REST API](https://docs.metronome.com)
 from applications written in Go.
 
-It is generated with [Stainless](https://www.stainless.com/).
+> [!WARNING]
+> The 1.0.0 version of this package introduces a new design with significant breaking changes.
+> Please refer to the [migration guide](./MIGRATION.md) for more information on how to update your code.
 
 ## MCP Server
 
@@ -19,10 +21,6 @@ Use the Metronome MCP Server to enable AI assistants to interact with this API, 
 [![Install in VS Code](https://img.shields.io/badge/_-Add_to_VS_Code-blue?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZmlsbD0iI0VFRSIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzAuMjM1IDM5Ljg4NGEyLjQ5MSAyLjQ5MSAwIDAgMS0xLjc4MS0uNzNMMTIuNyAyNC43OGwtMy40NiAyLjYyNC0zLjQwNiAyLjU4MmExLjY2NSAxLjY2NSAwIDAgMS0xLjA4Mi4zMzggMS42NjQgMS42NjQgMCAwIDEtMS4wNDYtLjQzMWwtMi4yLTJhMS42NjYgMS42NjYgMCAwIDEgMC0yLjQ2M0w3LjQ1OCAyMCA0LjY3IDE3LjQ1MyAxLjUwNyAxNC41N2ExLjY2NSAxLjY2NSAwIDAgMSAwLTIuNDYzbDIuMi0yYTEuNjY1IDEuNjY1IDAgMCAxIDIuMTMtLjA5N2w2Ljg2MyA1LjIwOUwyOC40NTIuODQ0YTIuNDg4IDIuNDg4IDAgMCAxIDEuODQxLS43MjljLjM1MS4wMDkuNjk5LjA5MSAxLjAxOS4yNDVsOC4yMzYgMy45NjFhMi41IDIuNSAwIDAgMSAxLjQxNSAyLjI1M3YuMDk5LS4wNDVWMzMuMzd2LS4wNDUuMDk1YTIuNTAxIDIuNTAxIDAgMCAxLTEuNDE2IDIuMjU3bC04LjIzNSAzLjk2MWEyLjQ5MiAyLjQ5MiAwIDAgMS0xLjA3Ny4yNDZabS43MTYtMjguOTQ3LTExLjk0OCA5LjA2MiAxMS45NTIgOS4wNjUtLjAwNC0xOC4xMjdaIi8+PC9zdmc+)](https://vscode.stainless.com/mcp/%7B%22name%22%3A%22%40metronome%2Fmcp%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40metronome%2Fmcp%22%5D%2C%22env%22%3A%7B%22METRONOME_BEARER_TOKEN%22%3A%22My%20Bearer%20Token%22%2C%22METRONOME_WEBHOOK_SECRET%22%3A%22My%20Webhook%20Secret%22%7D%7D)
 
 > Note: You may need to set environment variables in your MCP client.
-
-> [!WARNING]
-> The latest version of this package uses a new design with significant breaking changes.
-> Please refer to the [migration guide](./MIGRATION.md) for more information on how to update your code.
 
 ## Installation
 
@@ -41,7 +39,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Metronome-Industries/metronome-go/v3@v3.9.0'
+go get -u 'github.com/Metronome-Industries/metronome-go@v3.9.0'
 ```
 
 <!-- x-release-please-end -->
@@ -299,7 +297,7 @@ client.V1.Contracts.New(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/v3/option).
+See the [full list of request options](https://pkg.go.dev/github.com/Metronome-Industries/metronome-go/option).
 
 ### Pagination
 
