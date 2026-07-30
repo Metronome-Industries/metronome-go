@@ -1,9 +1,9 @@
 package apijson_test
 
 import (
-	"encoding/json"
 	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"encoding/json"
 	"testing"
 )
 

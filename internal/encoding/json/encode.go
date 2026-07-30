@@ -14,13 +14,13 @@
 package json
 
 import (
+	"github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json/sentinel"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json/shims"
 	"bytes"
 	"cmp"
 	"encoding"
 	"encoding/base64"
 	"fmt"
-	"github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json/sentinel"
-	"github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json/shims"
 	"math"
 	"reflect"
 	"slices"

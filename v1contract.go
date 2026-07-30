@@ -3,21 +3,21 @@
 package metronome
 
 import (
-	"context"
-	"encoding/json"
-	"net/http"
-	"net/url"
-	"slices"
-	"time"
+  "context"
+  "encoding/json"
+  "net/http"
+  "net/url"
+  "slices"
+  "time"
 
-	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
-	"github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
-	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
-	"github.com/Metronome-Industries/metronome-go/v3/option"
-	"github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
-	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
-	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
-	"github.com/Metronome-Industries/metronome-go/v3/shared"
+  "github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+  "github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
+  "github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+  "github.com/Metronome-Industries/metronome-go/v3/option"
+  "github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
+  "github.com/Metronome-Industries/metronome-go/v3/packages/param"
+  "github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+  "github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // V1ContractService contains methods and other services that help with interacting
@@ -27,26 +27,26 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1ContractService] method instead.
 type V1ContractService struct {
-	Options []option.RequestOption
-	// Products are the items that customers purchase.
-	Products V1ContractProductService
-	// Rate cards are used to define default pricing for products.
-	RateCards V1ContractRateCardService
-	// Named schedules are used for storing custom data that can change over time.
-	// Named schedules are often used in custom pricing logic.
-	NamedSchedules V1ContractNamedScheduleService
+Options []option.RequestOption
+// Products are the items that customers purchase.
+Products V1ContractProductService
+// Rate cards are used to define default pricing for products.
+RateCards V1ContractRateCardService
+// Named schedules are used for storing custom data that can change over time.
+// Named schedules are often used in custom pricing logic.
+NamedSchedules V1ContractNamedScheduleService
 }
 
 // NewV1ContractService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
 func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
-	r = V1ContractService{}
-	r.Options = opts
-	r.Products = NewV1ContractProductService(opts...)
-	r.RateCards = NewV1ContractRateCardService(opts...)
-	r.NamedSchedules = NewV1ContractNamedScheduleService(opts...)
-	return
+  r = V1ContractService{}
+  r.Options = opts
+  r.Products = NewV1ContractProductService(opts...)
+  r.RateCards = NewV1ContractRateCardService(opts...)
+  r.NamedSchedules = NewV1ContractNamedScheduleService(opts...)
+  return
 }
 
 // Contracts define a customer's products, pricing, discounts, access duration, and
@@ -56,21 +56,21 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 //
 // ### Use this endpoint to:
 //
-//   - PLG onboarding: Automatically provision new self-serve customers with
-//     contracts when they sign up.
-//   - Enterprise sales: Push negotiated contracts from Salesforce with custom
-//     pricing and commitments
-//   - Promotional pricing: Implement time-limited discounts and free trials through
-//     overrides
+// - PLG onboarding: Automatically provision new self-serve customers with
+//   contracts when they sign up.
+// - Enterprise sales: Push negotiated contracts from Salesforce with custom
+//   pricing and commitments
+// - Promotional pricing: Implement time-limited discounts and free trials through
+//   overrides
 //
 // ### Key components:
 //
 // #### Contract Term and Billing Schedule
 //
-//   - Set contract duration using `starting_at` and `ending_before` fields. PLG
-//     contracts typically use perpetual agreements (no end date), while Enterprise
-//     contracts have fixed end dates which can be edited over time in the case of
-//     co-term upsells.
+// - Set contract duration using `starting_at` and `ending_before` fields. PLG
+//   contracts typically use perpetual agreements (no end date), while Enterprise
+//   contracts have fixed end dates which can be edited over time in the case of
+//   co-term upsells.
 //
 // #### Rate Card
 //
@@ -93,10 +93,10 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 // specific products, product families, or complex usage scenarios. Overrides
 // enable two key capabilities:
 //
-//   - Discounts: Apply percentage discounts, fixed rate reductions, or
-//     quantity-based pricing tiers
-//   - Entitlements: Provide special pricing or access to specific products for
-//     negotiated deals
+// - Discounts: Apply percentage discounts, fixed rate reductions, or
+//   quantity-based pricing tiers
+// - Entitlements: Provide special pricing or access to specific products for
+//   negotiated deals
 //
 // Read more about
 // [Contract Overrides](https://docs.metronome.com/manage-product-access/add-contract-override/).
@@ -133,12 +133,12 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 // on your rate card and you can select which subscription is applicable to add to
 // each contract. When you add a subscription to a contract you need to:
 //
-//   - Define whether the subscription is paid for in-advance or in-arrears
-//     (`collection_schedule`)
-//   - Define the proration behavior (`proration`)
-//   - Specify an initial quantity (`initial_quantity`)
-//   - Define which subscription rate on the rate card should be used
-//     (`subscription_rate`)
+// - Define whether the subscription is paid for in-advance or in-arrears
+//   (`collection_schedule`)
+// - Define the proration behavior (`proration`)
+// - Specify an initial quantity (`initial_quantity`)
+// - Define which subscription rate on the rate card should be used
+//   (`subscription_rate`)
 //
 // Read more about
 // [Subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/).
@@ -164,28 +164,28 @@ func NewV1ContractService(opts ...option.RequestOption) (r V1ContractService) {
 //
 // ### Usage guidelines:
 //
-//   - You can always
-//     [Edit Contracts](https://docs.metronome.com/manage-product-access/edit-contract/)
-//     after it has been created, using the `editContract` endpoint. Metronome keeps
-//     track of all edits, both in the audit log and over the `getEditHistory`
-//     endpoint.
-//   - Customers in Metronome can have multiple concurrent contracts at one time. Use
-//     `usage_filters` to route the correct usage to each contract.
-//     [Read more about usage filters](https://docs.metronome.com/manage-product-access/provision-customer/#create-a-usage-filter).
+// - You can always
+//   [Edit Contracts](https://docs.metronome.com/manage-product-access/edit-contract/)
+//   after it has been created, using the `editContract` endpoint. Metronome keeps
+//   track of all edits, both in the audit log and over the `getEditHistory`
+//   endpoint.
+// - Customers in Metronome can have multiple concurrent contracts at one time. Use
+//   `usage_filters` to route the correct usage to each contract.
+//   [Read more about usage filters](https://docs.metronome.com/manage-product-access/provision-customer/#create-a-usage-filter).
 func (r *V1ContractService) New(ctx context.Context, body V1ContractNewParams, opts ...option.RequestOption) (res *V1ContractNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/create"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/create"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // This is the v1 endpoint to get a contract. New clients should implement using
 // the v2 endpoint.
 func (r *V1ContractService) Get(ctx context.Context, body V1ContractGetParams, opts ...option.RequestOption) (res *V1ContractGetResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/get"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/get"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // Retrieves all contracts for a specific customer, including pricing, terms,
@@ -196,10 +196,10 @@ func (r *V1ContractService) Get(ctx context.Context, body V1ContractGetParams, o
 // ⚠️ Note: This is the legacy v1 endpoint - new integrations should use the v2
 // endpoint for enhanced features.
 func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams, opts ...option.RequestOption) (res *V1ContractListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/list"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // Manually adjust the available balance on a commit or credit. This entry is
@@ -208,11 +208,11 @@ func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams,
 //
 // ### Use this endpoint to:
 //
-//   - Address incorrect usage burn-down caused by malformed usage or invalid config
-//   - Decrease available balance to account for outages where usage may have not
-//     been tracked or sent to Metronome
-//   - Issue credits to customers in the form of increased balance on existing commit
-//     or credit
+// - Address incorrect usage burn-down caused by malformed usage or invalid config
+// - Decrease available balance to account for outages where usage may have not
+//   been tracked or sent to Metronome
+// - Issue credits to customers in the form of increased balance on existing commit
+//   or credit
 //
 // ### Usage guidelines:
 //
@@ -221,11 +221,11 @@ func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams,
 // upstream of the commit, whether that is via contract editing, rate editing, or
 // other actions that cause an invoice to be recalculated.
 func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1ContractAddManualBalanceEntryParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := "v1/contracts/addManualBalanceLedgerEntry"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return err
+  opts = slices.Concat(r.Options, opts)
+  opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+  path := "v1/contracts/addManualBalanceLedgerEntry"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+  return err
 }
 
 // Amendments will be replaced by Contract editing. New clients should implement
@@ -234,10 +234,10 @@ func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1Co
 // reach out to your Metronome representative for more details. Once contract
 // editing is enabled, access to this endpoint will be removed.
 func (r *V1ContractService) Amend(ctx context.Context, body V1ContractAmendParams, opts ...option.RequestOption) (res *V1ContractAmendResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/amend"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/amend"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // Permanently end and archive a contract along with all its terms. Any draft
@@ -261,10 +261,10 @@ func (r *V1ContractService) Amend(ctx context.Context, body V1ContractAmendParam
 // the `include_archived` parameter to `true` or in the Metronome UI when the "Show
 // archived" option is enabled.
 func (r *V1ContractService) Archive(ctx context.Context, body V1ContractArchiveParams, opts ...option.RequestOption) (res *V1ContractArchiveResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/archive"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/archive"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // Create historical usage invoices for past billing periods on specific contracts.
@@ -273,10 +273,10 @@ func (r *V1ContractService) Archive(ctx context.Context, body V1ContractArchiveP
 // before creation. Ideal for billing migrations or correcting past billing
 // periods.
 func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1ContractNewHistoricalInvoicesParams, opts ...option.RequestOption) (res *V1ContractNewHistoricalInvoicesResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/createHistoricalInvoices"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/createHistoricalInvoices"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // Retrieve the combined current balance across any grouping of credits and commits
@@ -288,10 +288,10 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 //
 // ### Key response fields:
 //
-//   - `balance`: The combined net balance available to use at this moment across all
-//     matching commits and credits
-//   - `credit_type_id`: The credit type (fiat or custom pricing unit) the balance is
-//     denominated in
+// - `balance`: The combined net balance available to use at this moment across all
+//   matching commits and credits
+// - `credit_type_id`: The credit type (fiat or custom pricing unit) the balance is
+//   denominated in
 //
 // ### Filtering options:
 //
@@ -300,13 +300,13 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 // — if a commit or credit matches any filter, it's included in the net balance.
 // Within a single filter object, all specified conditions are AND'd together.
 //
-//   - **Balance types**: Include any combination of `PREPAID_COMMIT`,
-//     `POSTPAID_COMMIT`, and `CREDIT` (e.g., `["PREPAID_COMMIT", "CREDIT"]` to
-//     exclude postpaid commits). If not specified, all balance types are included.
-//   - **Specific IDs**: Target exact commit or credit IDs for precise balance
-//     queries
-//   - **Custom fields**: Filter by custom field key-value pairs; when multiple pairs
-//     are provided, commits must match all of them
+// - **Balance types**: Include any combination of `PREPAID_COMMIT`,
+//   `POSTPAID_COMMIT`, and `CREDIT` (e.g., `["PREPAID_COMMIT", "CREDIT"]` to
+//   exclude postpaid commits). If not specified, all balance types are included.
+// - **Specific IDs**: Target exact commit or credit IDs for precise balance
+//   queries
+// - **Custom fields**: Filter by custom field key-value pairs; when multiple pairs
+//   are provided, commits must match all of them
 //
 // **Example**: To get the balance of all free-trial credits OR all
 // signup-promotion commits, you'd pass two filter objects — one filtering for
@@ -315,25 +315,25 @@ func (r *V1ContractService) NewHistoricalInvoices(ctx context.Context, body V1Co
 //
 // ### Usage guidelines:
 //
-//   - **Balance ledger details**: Use the
-//     [listBalances](https://docs.metronome.com/api-reference/credits-and-commits/list-balances)
-//     endpoint instead to understand detailed ledger drawdowns for each individual
-//     balance
-//   - **Draft invoice handling**: Use `invoice_inclusion_mode` to control whether
-//     pending draft invoice deductions are included (`FINALIZED_AND_DRAFT`, the
-//     default) or excluded (`FINALIZED`) from the balance calculation
-//   - **Account hierarchies**: When querying a child customer, shared commits from
-//     parent contracts are not included — query the parent customer directly to see
-//     shared commit balances
-//   - **Negative balances**: Manual ledger entries can cause negative segment
-//     balances; these are treated as zero when calculating the net balance
-//   - **Credit types**: If `credit_type_id` is not specified, the balance defaults
-//     to USD (cents)
+// - **Balance ledger details**: Use the
+//   [listBalances](https://docs.metronome.com/api-reference/credits-and-commits/list-balances)
+//   endpoint instead to understand detailed ledger drawdowns for each individual
+//   balance
+// - **Draft invoice handling**: Use `invoice_inclusion_mode` to control whether
+//   pending draft invoice deductions are included (`FINALIZED_AND_DRAFT`, the
+//   default) or excluded (`FINALIZED`) from the balance calculation
+// - **Account hierarchies**: When querying a child customer, shared commits from
+//   parent contracts are not included — query the parent customer directly to see
+//   shared commit balances
+// - **Negative balances**: Manual ledger entries can cause negative segment
+//   balances; these are treated as zero when calculating the net balance
+// - **Credit types**: If `credit_type_id` is not specified, the balance defaults
+//   to USD (cents)
 func (r *V1ContractService) GetNetBalance(ctx context.Context, body V1ContractGetNetBalanceParams, opts ...option.RequestOption) (res *V1ContractGetNetBalanceResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/customerBalances/getNetBalance"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/customerBalances/getNetBalance"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // Get the history of subscription seats schedule over time for a given
@@ -343,30 +343,30 @@ func (r *V1ContractService) GetNetBalance(ctx context.Context, body V1ContractGe
 //
 // ### Use this endpoint to:
 //
-//   - Track changes to seat assignments over time
-//   - Get seat schedule for a specific date using the `covering_date` parameter
-//   - Get seat schedule history with optional date range filtering using
-//     `starting_at` and `ending_before`
+// - Track changes to seat assignments over time
+// - Get seat schedule for a specific date using the `covering_date` parameter
+// - Get seat schedule history with optional date range filtering using
+//   `starting_at` and `ending_before`
 //
 // ### Key response fields:
 //
-//   - data: array of seat schedule entries with time periods, quantity, and
-//     assignments
-//   - next_page: cursor for pagination to retrieve additional results
+// - data: array of seat schedule entries with time periods, quantity, and
+//   assignments
+// - next_page: cursor for pagination to retrieve additional results
 //
 // ### Usage guidelines:
 //
-//   - Use `covering_date` to get the active seats for a specific point in time.
-//     `covering_date` cannot be used with `starting_at` or `ending_before`.
-//   - Use `starting_at` and `ending_before` to filter results by time range.
-//     `starting_at` and `ending_before` cannot be used with `covering_date`.
-//   - Maximum limit is 10 seat schedule entries per request
-//   - Results are ordered by `starting_at` timestamp
+// - Use `covering_date` to get the active seats for a specific point in time.
+//   `covering_date` cannot be used with `starting_at` or `ending_before`.
+// - Use `starting_at` and `ending_before` to filter results by time range.
+//   `starting_at` and `ending_before` cannot be used with `covering_date`.
+// - Maximum limit is 10 seat schedule entries per request
+// - Results are ordered by `starting_at` timestamp
 func (r *V1ContractService) GetSubscriptionSeatsHistory(ctx context.Context, body V1ContractGetSubscriptionSeatsHistoryParams, opts ...option.RequestOption) (res *V1ContractGetSubscriptionSeatsHistoryResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/getSubscriptionSeatsHistory"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/getSubscriptionSeatsHistory"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // Retrieve a comprehensive view of all available balances (commits and credits)
@@ -385,42 +385,42 @@ func (r *V1ContractService) GetSubscriptionSeatsHistory(ctx context.Context, bod
 //
 // An array of balance objects (all credits and commits) containing:
 //
-//   - Balance details: Current available amount for each commit or credit
-//   - Metadata: Product associations, priorities, applicable date ranges
-//   - Optional ledger entries: Detailed transaction history (if
-//     `include_ledgers=true`)
-//   - Balance calculations: Including pending transactions and future-dated entries
-//   - Custom fields: Any additional metadata attached to balances
+// - Balance details: Current available amount for each commit or credit
+// - Metadata: Product associations, priorities, applicable date ranges
+// - Optional ledger entries: Detailed transaction history (if
+//   `include_ledgers=true`)
+// - Balance calculations: Including pending transactions and future-dated entries
+// - Custom fields: Any additional metadata attached to balances
 //
 // ### Usage guidelines:
 //
-//   - Use the
-//     [getNetBalance](https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer)
-//     endpoint to retrieve a single combined current balance
-//   - Date filtering: Use `effective_before` to include only balances with access
-//     before a specific date (exclusive)
-//   - Set `include_balance=true` for calculated balance amounts on each commit or
-//     credit
-//   - Set `include_ledgers=true` for full transaction history
-//   - Set `include_contract_balances = true` to see contract level balances
-//   - Balance logic: Reflects currently accessible amounts, excluding expired/future
-//     segments
-//   - Manual adjustments: Includes all manual ledger entries, even future-dated ones
+// - Use the
+//   [getNetBalance](https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer)
+//   endpoint to retrieve a single combined current balance
+// - Date filtering: Use `effective_before` to include only balances with access
+//   before a specific date (exclusive)
+// - Set `include_balance=true` for calculated balance amounts on each commit or
+//   credit
+// - Set `include_ledgers=true` for full transaction history
+// - Set `include_contract_balances = true` to see contract level balances
+// - Balance logic: Reflects currently accessible amounts, excluding expired/future
+//   segments
+// - Manual adjustments: Includes all manual ledger entries, even future-dated ones
 func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) (res *pagination.BodyCursorPage[V1ContractListBalancesResponseUnion], err error) {
-	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "v1/contracts/customerBalances/list"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, body, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
+  var raw *http.Response
+  opts = slices.Concat(r.Options, opts)
+  opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+  path := "v1/contracts/customerBalances/list"
+  cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, body, &res, opts...)
+  if err != nil {
+    return nil, err
+  }
+  err = cfg.Execute()
+  if err != nil {
+    return nil, err
+  }
+  res.SetPageConfig(cfg, raw)
+  return res, nil
 }
 
 // Retrieve a comprehensive view of all available balances (commits and credits)
@@ -439,29 +439,29 @@ func (r *V1ContractService) ListBalances(ctx context.Context, body V1ContractLis
 //
 // An array of balance objects (all credits and commits) containing:
 //
-//   - Balance details: Current available amount for each commit or credit
-//   - Metadata: Product associations, priorities, applicable date ranges
-//   - Optional ledger entries: Detailed transaction history (if
-//     `include_ledgers=true`)
-//   - Balance calculations: Including pending transactions and future-dated entries
-//   - Custom fields: Any additional metadata attached to balances
+// - Balance details: Current available amount for each commit or credit
+// - Metadata: Product associations, priorities, applicable date ranges
+// - Optional ledger entries: Detailed transaction history (if
+//   `include_ledgers=true`)
+// - Balance calculations: Including pending transactions and future-dated entries
+// - Custom fields: Any additional metadata attached to balances
 //
 // ### Usage guidelines:
 //
-//   - Use the
-//     [getNetBalance](https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer)
-//     endpoint to retrieve a single combined current balance
-//   - Date filtering: Use `effective_before` to include only balances with access
-//     before a specific date (exclusive)
-//   - Set `include_balance=true` for calculated balance amounts on each commit or
-//     credit
-//   - Set `include_ledgers=true` for full transaction history
-//   - Set `include_contract_balances = true` to see contract level balances
-//   - Balance logic: Reflects currently accessible amounts, excluding expired/future
-//     segments
-//   - Manual adjustments: Includes all manual ledger entries, even future-dated ones
-func (r *V1ContractService) ListBalancesAutoPaging(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) *pagination.BodyCursorPageAutoPager[V1ContractListBalancesResponseUnion] {
-	return pagination.NewBodyCursorPageAutoPager(r.ListBalances(ctx, body, opts...))
+// - Use the
+//   [getNetBalance](https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer)
+//   endpoint to retrieve a single combined current balance
+// - Date filtering: Use `effective_before` to include only balances with access
+//   before a specific date (exclusive)
+// - Set `include_balance=true` for calculated balance amounts on each commit or
+//   credit
+// - Set `include_ledgers=true` for full transaction history
+// - Set `include_contract_balances = true` to see contract level balances
+// - Balance logic: Reflects currently accessible amounts, excluding expired/future
+//   segments
+// - Manual adjustments: Includes all manual ledger entries, even future-dated ones
+func (r *V1ContractService) ListBalancesAutoPaging(ctx context.Context, body V1ContractListBalancesParams, opts ...option.RequestOption) (*pagination.BodyCursorPageAutoPager[V1ContractListBalancesResponseUnion]) {
+  return pagination.NewBodyCursorPageAutoPager(r.ListBalances(ctx, body, opts...))
 }
 
 // Retrieve detailed balance for seat-based credits and commits from the contract's
@@ -481,17 +481,17 @@ func (r *V1ContractService) ListBalancesAutoPaging(ctx context.Context, body V1C
 //
 // ### Usage guidelines:
 //
-//   - Date filtering: use `covering_date` OR `starting_at`/`ending_before` to filter
-//     balance data by time range
-//   - Set `include_credits_and_commits=true` for detailed commits and credits
-//     breakdown per seat
-//   - Set `include_ledgers=true` for detailed transaction history per commit/credit
-//     per seat
+// - Date filtering: use `covering_date` OR `starting_at`/`ending_before` to filter
+//   balance data by time range
+// - Set `include_credits_and_commits=true` for detailed commits and credits
+//   breakdown per seat
+// - Set `include_ledgers=true` for detailed transaction history per commit/credit
+//   per seat
 func (r *V1ContractService) ListSeatBalances(ctx context.Context, body V1ContractListSeatBalancesParams, opts ...option.RequestOption) (res *V1ContractListSeatBalancesResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/seatBalances/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/seatBalances/list"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // For a specific customer and contract, get the rates at a specific point in time.
@@ -502,10 +502,10 @@ func (r *V1ContractService) ListSeatBalances(ctx context.Context, body V1Contrac
 // paying, inclusive of any negotiated discounts or promotions, use this endpoint.
 // This endpoint only returns rates that are entitled.
 func (r *V1ContractService) GetRateSchedule(ctx context.Context, params V1ContractGetRateScheduleParams, opts ...option.RequestOption) (res *V1ContractGetRateScheduleResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/getContractRateSchedule"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/getContractRateSchedule"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+  return res, err
 }
 
 // Get the history of subscription quantities and prices over time for a given
@@ -519,19 +519,19 @@ func (r *V1ContractService) GetRateSchedule(ctx context.Context, params V1Contra
 // increment or decrement the quantity on a subscription at any point in the past
 // or future.
 func (r *V1ContractService) GetSubscriptionQuantityHistory(ctx context.Context, body V1ContractGetSubscriptionQuantityHistoryParams, opts ...option.RequestOption) (res *V1ContractGetSubscriptionQuantityHistoryResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/getSubscriptionQuantityHistory"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/getSubscriptionQuantityHistory"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // Create a new scheduled invoice for Professional Services terms on a contract.
 // This endpoint's availability is dependent on your client's configuration.
 func (r *V1ContractService) ScheduleProServicesInvoice(ctx context.Context, body V1ContractScheduleProServicesInvoiceParams, opts ...option.RequestOption) (res *V1ContractScheduleProServicesInvoiceResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/scheduleProServicesInvoice"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/scheduleProServicesInvoice"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 // If a customer has multiple contracts with overlapping rates, the usage filter
@@ -544,20 +544,20 @@ func (r *V1ContractService) ScheduleProServicesInvoice(ctx context.Context, body
 //
 // ### Use this endpoint to:
 //
-//   - Support enterprise contracting scenarios where multiple contracts are
-//     associated to the same customer with the same rates.
-//   - Update the usage filter associated with the contract over time.
+// - Support enterprise contracting scenarios where multiple contracts are
+//   associated to the same customer with the same rates.
+// - Update the usage filter associated with the contract over time.
 //
 // ### Usage guidelines:
 //
 // To use usage filters, the `group_key` must be defined on the billable metrics
 // underlying the rate card on the contracts.
 func (r *V1ContractService) SetUsageFilter(ctx context.Context, body V1ContractSetUsageFilterParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := "v1/contracts/setUsageFilter"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return err
+  opts = slices.Concat(r.Options, opts)
+  opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+  path := "v1/contracts/setUsageFilter"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+  return err
 }
 
 // Update or add an end date to a contract. Ending a contract early will impact
@@ -567,916 +567,894 @@ func (r *V1ContractService) SetUsageFilter(ctx context.Context, body V1ContractS
 // be extended. Use this if a contract's end date has changed or if a perpetual
 // contract ends.
 func (r *V1ContractService) UpdateEndDate(ctx context.Context, body V1ContractUpdateEndDateParams, opts ...option.RequestOption) (res *V1ContractUpdateEndDateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "v1/contracts/updateEndDate"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+  opts = slices.Concat(r.Options, opts)
+  path := "v1/contracts/updateEndDate"
+  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+  return res, err
 }
 
 type V1ContractNewResponse struct {
-	Data V1ContractNewResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data V1ContractNewResponseData `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseData struct {
-	ID string `json:"id" api:"required" format:"uuid"`
-	// The created contract.
-	Contract V1ContractNewResponseDataContract `json:"contract"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Contract    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+ID string `json:"id" api:"required" format:"uuid"`
+// The created contract.
+Contract V1ContractNewResponseDataContract `json:"contract"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              Contract respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseData) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseData) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The created contract.
 type V1ContractNewResponseDataContract struct {
-	ID                     string                                                  `json:"id" api:"required" format:"uuid"`
-	Commits                []shared.Commit                                         `json:"commits" api:"required"`
-	CreatedAt              time.Time                                               `json:"created_at" api:"required" format:"date-time"`
-	CreatedBy              string                                                  `json:"created_by" api:"required"`
-	CustomerID             string                                                  `json:"customer_id" api:"required" format:"uuid"`
-	Overrides              []shared.Override                                       `json:"overrides" api:"required"`
-	ScheduledCharges       []shared.ScheduledCharge                                `json:"scheduled_charges" api:"required"`
-	StartingAt             time.Time                                               `json:"starting_at" api:"required" format:"date-time"`
-	Transitions            []V1ContractNewResponseDataContractTransition           `json:"transitions" api:"required"`
-	UsageFilter            []V1ContractNewResponseDataContractUsageFilter          `json:"usage_filter" api:"required"`
-	UsageStatementSchedule V1ContractNewResponseDataContractUsageStatementSchedule `json:"usage_statement_schedule" api:"required"`
-	Credits                []shared.Credit                                         `json:"credits"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields                         map[string]string                                                     `json:"custom_fields"`
-	CustomerBillingProviderConfiguration V1ContractNewResponseDataContractCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
-	EndingBefore                         time.Time                                                             `json:"ending_before" format:"date-time"`
-	// Indicates whether there are more items than the limit for this endpoint. Use the
-	// respective list endpoints to get the full lists.
-	HasMore V1ContractNewResponseDataContractHasMore `json:"has_more"`
-	// Either a **parent** configuration with a list of children or a **child**
-	// configuration with a single parent.
-	HierarchyConfiguration shared.HierarchyConfigurationUnion `json:"hierarchy_configuration"`
-	// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
-	// prices automatically. EXPLICIT prioritization requires specifying priorities for
-	// each multiplier; the one with the lowest priority value will be prioritized
-	// first.
-	//
-	// Any of "LOWEST_MULTIPLIER", "EXPLICIT".
-	MultiplierOverridePrioritization string  `json:"multiplier_override_prioritization"`
-	Name                             string  `json:"name"`
-	NetPaymentTermsDays              float64 `json:"net_payment_terms_days"`
-	// ID of the package this contract was created from, if applicable.
-	PackageID                            string                                             `json:"package_id" format:"uuid"`
-	PrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfiguration        `json:"prepaid_balance_threshold_configuration"`
-	RateCardID                           string                                             `json:"rate_card_id" format:"uuid"`
-	RecurringCommits                     []V1ContractNewResponseDataContractRecurringCommit `json:"recurring_commits"`
-	RecurringCredits                     []V1ContractNewResponseDataContractRecurringCredit `json:"recurring_credits"`
-	// Determines which scheduled and commit charges to consolidate onto the Contract's
-	// usage invoice. The charge's `timestamp` must match the usage invoice's
-	// `ending_before` date for consolidation to occur. This field cannot be modified
-	// after a Contract has been created. If this field is omitted, charges will appear
-	// on a separate invoice from usage charges.
-	//
-	// Any of "ALL".
-	ScheduledChargesOnUsageInvoices string                             `json:"scheduled_charges_on_usage_invoices"`
-	SpendThresholdConfiguration     shared.SpendThresholdConfiguration `json:"spend_threshold_configuration"`
-	// List of subscriptions on the contract.
-	Subscriptions []shared.Subscription `json:"subscriptions"`
-	// Optional uniqueness key to prevent duplicate contract creations.
-	UniquenessKey string `json:"uniqueness_key"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                                   respjson.Field
-		Commits                              respjson.Field
-		CreatedAt                            respjson.Field
-		CreatedBy                            respjson.Field
-		CustomerID                           respjson.Field
-		Overrides                            respjson.Field
-		ScheduledCharges                     respjson.Field
-		StartingAt                           respjson.Field
-		Transitions                          respjson.Field
-		UsageFilter                          respjson.Field
-		UsageStatementSchedule               respjson.Field
-		Credits                              respjson.Field
-		CustomFields                         respjson.Field
-		CustomerBillingProviderConfiguration respjson.Field
-		EndingBefore                         respjson.Field
-		HasMore                              respjson.Field
-		HierarchyConfiguration               respjson.Field
-		MultiplierOverridePrioritization     respjson.Field
-		Name                                 respjson.Field
-		NetPaymentTermsDays                  respjson.Field
-		PackageID                            respjson.Field
-		PrepaidBalanceThresholdConfiguration respjson.Field
-		RateCardID                           respjson.Field
-		RecurringCommits                     respjson.Field
-		RecurringCredits                     respjson.Field
-		ScheduledChargesOnUsageInvoices      respjson.Field
-		SpendThresholdConfiguration          respjson.Field
-		Subscriptions                        respjson.Field
-		UniquenessKey                        respjson.Field
-		ExtraFields                          map[string]respjson.Field
-		raw                                  string
-	} `json:"-"`
+ID string `json:"id" api:"required" format:"uuid"`
+Commits []shared.Commit `json:"commits" api:"required"`
+CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+CreatedBy string `json:"created_by" api:"required"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+Overrides []shared.Override `json:"overrides" api:"required"`
+ScheduledCharges []shared.ScheduledCharge `json:"scheduled_charges" api:"required"`
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+Transitions []V1ContractNewResponseDataContractTransition `json:"transitions" api:"required"`
+UsageFilter []V1ContractNewResponseDataContractUsageFilter `json:"usage_filter" api:"required"`
+UsageStatementSchedule V1ContractNewResponseDataContractUsageStatementSchedule `json:"usage_statement_schedule" api:"required"`
+Credits []shared.Credit `json:"credits"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields"`
+CustomerBillingProviderConfiguration V1ContractNewResponseDataContractCustomerBillingProviderConfiguration `json:"customer_billing_provider_configuration"`
+EndingBefore time.Time `json:"ending_before" format:"date-time"`
+// Indicates whether there are more items than the limit for this endpoint. Use the
+// respective list endpoints to get the full lists.
+HasMore V1ContractNewResponseDataContractHasMore `json:"has_more"`
+// Either a **parent** configuration with a list of children or a **child**
+// configuration with a single parent.
+HierarchyConfiguration shared.HierarchyConfigurationUnion `json:"hierarchy_configuration"`
+// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
+// prices automatically. EXPLICIT prioritization requires specifying priorities for
+// each multiplier; the one with the lowest priority value will be prioritized
+// first.
+//
+// Any of "LOWEST_MULTIPLIER", "EXPLICIT".
+MultiplierOverridePrioritization string `json:"multiplier_override_prioritization"`
+Name string `json:"name"`
+NetPaymentTermsDays float64 `json:"net_payment_terms_days"`
+// ID of the package this contract was created from, if applicable.
+PackageID string `json:"package_id" format:"uuid"`
+PrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfiguration `json:"prepaid_balance_threshold_configuration"`
+RateCardID string `json:"rate_card_id" format:"uuid"`
+RecurringCommits []V1ContractNewResponseDataContractRecurringCommit `json:"recurring_commits"`
+RecurringCredits []V1ContractNewResponseDataContractRecurringCredit `json:"recurring_credits"`
+// Determines which scheduled and commit charges to consolidate onto the Contract's
+// usage invoice. The charge's `timestamp` must match the usage invoice's
+// `ending_before` date for consolidation to occur. This field cannot be modified
+// after a Contract has been created. If this field is omitted, charges will appear
+// on a separate invoice from usage charges.
+//
+// Any of "ALL".
+ScheduledChargesOnUsageInvoices string `json:"scheduled_charges_on_usage_invoices"`
+SpendThresholdConfiguration shared.SpendThresholdConfiguration `json:"spend_threshold_configuration"`
+// List of subscriptions on the contract.
+Subscriptions []shared.Subscription `json:"subscriptions"`
+// Optional uniqueness key to prevent duplicate contract creations.
+UniquenessKey string `json:"uniqueness_key"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              Commits respjson.Field
+              CreatedAt respjson.Field
+              CreatedBy respjson.Field
+              CustomerID respjson.Field
+              Overrides respjson.Field
+              ScheduledCharges respjson.Field
+              StartingAt respjson.Field
+              Transitions respjson.Field
+              UsageFilter respjson.Field
+              UsageStatementSchedule respjson.Field
+              Credits respjson.Field
+              CustomFields respjson.Field
+              CustomerBillingProviderConfiguration respjson.Field
+              EndingBefore respjson.Field
+              HasMore respjson.Field
+              HierarchyConfiguration respjson.Field
+              MultiplierOverridePrioritization respjson.Field
+              Name respjson.Field
+              NetPaymentTermsDays respjson.Field
+              PackageID respjson.Field
+              PrepaidBalanceThresholdConfiguration respjson.Field
+              RateCardID respjson.Field
+              RecurringCommits respjson.Field
+              RecurringCredits respjson.Field
+              ScheduledChargesOnUsageInvoices respjson.Field
+              SpendThresholdConfiguration respjson.Field
+              Subscriptions respjson.Field
+              UniquenessKey respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContract) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContract) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContract) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContract) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractTransition struct {
-	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
-	ToContractID   string `json:"to_contract_id" api:"required" format:"uuid"`
-	// Any of "RENEWAL".
-	Type string `json:"type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FromContractID respjson.Field
-		ToContractID   respjson.Field
-		Type           respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
+FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
+ToContractID string `json:"to_contract_id" api:"required" format:"uuid"`
+// Any of "RENEWAL".
+Type string `json:"type" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              FromContractID respjson.Field
+              ToContractID respjson.Field
+              Type respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractTransition) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractTransition) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractTransition) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractTransition) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractUsageFilter struct {
-	GroupKey     string    `json:"group_key" api:"required"`
-	GroupValues  []string  `json:"group_values" api:"required"`
-	StartingAt   time.Time `json:"starting_at" api:"required" format:"date-time"`
-	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		GroupKey     respjson.Field
-		GroupValues  respjson.Field
-		StartingAt   respjson.Field
-		EndingBefore respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
+GroupKey string `json:"group_key" api:"required"`
+GroupValues []string `json:"group_values" api:"required"`
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+EndingBefore time.Time `json:"ending_before" format:"date-time"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              GroupKey respjson.Field
+              GroupValues respjson.Field
+              StartingAt respjson.Field
+              EndingBefore respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractUsageFilter) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractUsageFilter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractUsageFilter) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractUsageFilter) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractUsageStatementSchedule struct {
-	// Contract usage statements follow a selected cadence based on this date.
-	BillingAnchorDate time.Time `json:"billing_anchor_date" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	Frequency string `json:"frequency" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BillingAnchorDate respjson.Field
-		Frequency         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
+// Contract usage statements follow a selected cadence based on this date.
+BillingAnchorDate time.Time `json:"billing_anchor_date" api:"required" format:"date-time"`
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+Frequency string `json:"frequency" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              BillingAnchorDate respjson.Field
+              Frequency respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractUsageStatementSchedule) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractUsageStatementSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractUsageStatementSchedule) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractUsageStatementSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractCustomerBillingProviderConfiguration struct {
-	// ID of this configuration; can be provided as the
-	// billing_provider_configuration_id when creating a contract.
-	ID         string    `json:"id" api:"required" format:"uuid"`
-	ArchivedAt time.Time `json:"archived_at" api:"required" format:"date-time"`
-	// The billing provider set for this configuration.
-	//
-	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
-	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProvider string `json:"billing_provider" api:"required"`
-	// Configuration for the billing provider. The structure of this object is specific
-	// to the billing provider.
-	Configuration map[string]any `json:"configuration" api:"required"`
-	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
-	// The method to use for delivering invoices to this customer.
-	//
-	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
-	DeliveryMethod string `json:"delivery_method" api:"required"`
-	// Configuration for the delivery method. The structure of this object is specific
-	// to the delivery method.
-	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
-	// ID of the delivery method to use for this customer.
-	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                          respjson.Field
-		ArchivedAt                  respjson.Field
-		BillingProvider             respjson.Field
-		Configuration               respjson.Field
-		CustomerID                  respjson.Field
-		DeliveryMethod              respjson.Field
-		DeliveryMethodConfiguration respjson.Field
-		DeliveryMethodID            respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
-	} `json:"-"`
+// ID of this configuration; can be provided as the
+// billing_provider_configuration_id when creating a contract.
+ID string `json:"id" api:"required" format:"uuid"`
+ArchivedAt time.Time `json:"archived_at" api:"required" format:"date-time"`
+// The billing provider set for this configuration.
+//
+// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
+// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
+BillingProvider string `json:"billing_provider" api:"required"`
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+Configuration map[string]any `json:"configuration" api:"required"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// The method to use for delivering invoices to this customer.
+//
+// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+DeliveryMethod string `json:"delivery_method" api:"required"`
+// Configuration for the delivery method. The structure of this object is specific
+// to the delivery method.
+DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
+// ID of the delivery method to use for this customer.
+DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              ArchivedAt respjson.Field
+              BillingProvider respjson.Field
+              Configuration respjson.Field
+              CustomerID respjson.Field
+              DeliveryMethod respjson.Field
+              DeliveryMethodConfiguration respjson.Field
+              DeliveryMethodID respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Indicates whether there are more items than the limit for this endpoint. Use the
 // respective list endpoints to get the full lists.
 type V1ContractNewResponseDataContractHasMore struct {
-	// Whether there are more commits on this contract than the limit for this
-	// endpoint. Use the /contracts/customerCommits/list endpoint to get the full list
-	// of commits.
-	Commits bool `json:"commits" api:"required"`
-	// Whether there are more credits on this contract than the limit for this
-	// endpoint. Use the /contracts/customerCredits/list endpoint to get the full list
-	// of credits.
-	Credits bool `json:"credits" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Commits     respjson.Field
-		Credits     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+// Whether there are more commits on this contract than the limit for this
+// endpoint. Use the /contracts/customerCommits/list endpoint to get the full list
+// of commits.
+Commits bool `json:"commits" api:"required"`
+// Whether there are more credits on this contract than the limit for this
+// endpoint. Use the /contracts/customerCredits/list endpoint to get the full list
+// of credits.
+Credits bool `json:"credits" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Commits respjson.Field
+              Credits respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractHasMore) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractHasMore) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractHasMore) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractHasMore) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCommit struct {
-	ID string `json:"id" api:"required" format:"uuid"`
-	// The amount of commit to grant.
-	AccessAmount V1ContractNewResponseDataContractRecurringCommitAccessAmount `json:"access_amount" api:"required"`
-	// The amount of time the created commits will be valid for
-	CommitDuration V1ContractNewResponseDataContractRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
-	// Will be passed down to the individual commits
-	Priority float64                                                 `json:"priority" api:"required"`
-	Product  V1ContractNewResponseDataContractRecurringCommitProduct `json:"product" api:"required"`
-	// Whether the created commits will use the commit rate or list rate
-	//
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type" api:"required"`
-	// Determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Will be passed down to the individual commits
-	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Will be passed down to the individual commits
-	ApplicableProductTags []string                                                 `json:"applicable_product_tags"`
-	Contract              V1ContractNewResponseDataContractRecurringCommitContract `json:"contract"`
-	// Will be passed down to the individual commits
-	Description string `json:"description"`
-	// Determines when the contract will stop creating recurring commits. Optional
-	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
-	// The amount the customer should be billed for the commit. Not required.
-	InvoiceAmount V1ContractNewResponseDataContractRecurringCommitInvoiceAmount `json:"invoice_amount"`
-	// Displayed on invoices. Will be passed through to the individual commits
-	Name string `json:"name"`
-	// Will be passed down to the individual commits
-	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
-	// Determines whether the first and last commit will be prorated. If not provided,
-	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
-	//
-	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
-	Proration string `json:"proration"`
-	// Rounding configuration for prorated recurring commit amounts.
-	ProrationRounding V1ContractNewResponseDataContractRecurringCommitProrationRounding `json:"proration_rounding" api:"nullable"`
-	// The frequency at which the recurring commits will be created. If not provided: -
-	// The commits will be created on the usage invoice frequency. If provided: - The
-	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates. - Daily recurring commits have a limit of one per contract, and
-	// are unable to be created with seat-based subscriptions
-	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
-	RecurrenceFrequency string `json:"recurrence_frequency"`
-	// Will be passed down to the individual commits. This controls how much of an
-	// individual unexpired commit will roll over upon contract transition. Must be
-	// between 0 and 1.
-	RolloverFraction float64 `json:"rollover_fraction"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []shared.CommitSpecifier `json:"specifiers"`
-	// Attach a subscription to the recurring commit/credit.
-	SubscriptionConfig shared.RecurringCommitSubscriptionConfig `json:"subscription_config"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                     respjson.Field
-		AccessAmount           respjson.Field
-		CommitDuration         respjson.Field
-		Priority               respjson.Field
-		Product                respjson.Field
-		RateType               respjson.Field
-		StartingAt             respjson.Field
-		ApplicableProductIDs   respjson.Field
-		ApplicableProductTags  respjson.Field
-		Contract               respjson.Field
-		Description            respjson.Field
-		EndingBefore           respjson.Field
-		HierarchyConfiguration respjson.Field
-		InvoiceAmount          respjson.Field
-		Name                   respjson.Field
-		NetsuiteSalesOrderID   respjson.Field
-		Proration              respjson.Field
-		ProrationRounding      respjson.Field
-		RecurrenceFrequency    respjson.Field
-		RolloverFraction       respjson.Field
-		Specifiers             respjson.Field
-		SubscriptionConfig     respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
+ID string `json:"id" api:"required" format:"uuid"`
+// The amount of commit to grant.
+AccessAmount V1ContractNewResponseDataContractRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+// The amount of time the created commits will be valid for
+CommitDuration V1ContractNewResponseDataContractRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
+// Will be passed down to the individual commits
+Priority float64 `json:"priority" api:"required"`
+Product V1ContractNewResponseDataContractRecurringCommitProduct `json:"product" api:"required"`
+// Whether the created commits will use the commit rate or list rate
+//
+// Any of "COMMIT_RATE", "LIST_RATE".
+RateType string `json:"rate_type" api:"required"`
+// Determines the start time for the first commit
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Will be passed down to the individual commits
+ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+// Will be passed down to the individual commits
+ApplicableProductTags []string `json:"applicable_product_tags"`
+Contract V1ContractNewResponseDataContractRecurringCommitContract `json:"contract"`
+// Will be passed down to the individual commits
+Description string `json:"description"`
+// Determines when the contract will stop creating recurring commits. Optional
+EndingBefore time.Time `json:"ending_before" format:"date-time"`
+// Optional configuration for recurring commit/credit hierarchy access control
+HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+// The amount the customer should be billed for the commit. Not required.
+InvoiceAmount V1ContractNewResponseDataContractRecurringCommitInvoiceAmount `json:"invoice_amount"`
+// Displayed on invoices. Will be passed through to the individual commits
+Name string `json:"name"`
+// Will be passed down to the individual commits
+NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+// Determines whether the first and last commit will be prorated. If not provided,
+// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+//
+// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
+Proration string `json:"proration"`
+// Rounding configuration for prorated recurring commit amounts.
+ProrationRounding V1ContractNewResponseDataContractRecurringCommitProrationRounding `json:"proration_rounding" api:"nullable"`
+// The frequency at which the recurring commits will be created. If not provided: -
+// The commits will be created on the usage invoice frequency. If provided: - The
+// period defined in the duration will correspond to this frequency. - Commits will
+// be created aligned with the recurring commit's starting_at rather than the usage
+// invoice dates. - Daily recurring commits have a limit of one per contract, and
+// are unable to be created with seat-based subscriptions
+//
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+RecurrenceFrequency string `json:"recurrence_frequency"`
+// Will be passed down to the individual commits. This controls how much of an
+// individual unexpired commit will roll over upon contract transition. Must be
+// between 0 and 1.
+RolloverFraction float64 `json:"rollover_fraction"`
+// List of filters that determine what kind of customer usage draws down a commit
+// or credit. A customer's usage needs to meet the condition of at least one of the
+// specifiers to contribute to a commit's or credit's drawdown.
+Specifiers []shared.CommitSpecifier `json:"specifiers"`
+// Attach a subscription to the recurring commit/credit.
+SubscriptionConfig shared.RecurringCommitSubscriptionConfig `json:"subscription_config"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              AccessAmount respjson.Field
+              CommitDuration respjson.Field
+              Priority respjson.Field
+              Product respjson.Field
+              RateType respjson.Field
+              StartingAt respjson.Field
+              ApplicableProductIDs respjson.Field
+              ApplicableProductTags respjson.Field
+              Contract respjson.Field
+              Description respjson.Field
+              EndingBefore respjson.Field
+              HierarchyConfiguration respjson.Field
+              InvoiceAmount respjson.Field
+              Name respjson.Field
+              NetsuiteSalesOrderID respjson.Field
+              Proration respjson.Field
+              ProrationRounding respjson.Field
+              RecurrenceFrequency respjson.Field
+              RolloverFraction respjson.Field
+              Specifiers respjson.Field
+              SubscriptionConfig respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommit) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractRecurringCommit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommit) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The amount of commit to grant.
 type V1ContractNewResponseDataContractRecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreditTypeID respjson.Field
-		UnitPrice    respjson.Field
-		Quantity     respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+UnitPrice float64 `json:"unit_price" api:"required"`
+Quantity float64 `json:"quantity"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              CreditTypeID respjson.Field
+              UnitPrice respjson.Field
+              Quantity respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommitAccessAmount) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCommitAccessAmount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommitAccessAmount) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommitAccessAmount) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The amount of time the created commits will be valid for
 type V1ContractNewResponseDataContractRecurringCommitCommitDuration struct {
-	Value float64 `json:"value" api:"required"`
-	// Any of "PERIODS".
-	Unit string `json:"unit"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Value       respjson.Field
-		Unit        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Value float64 `json:"value" api:"required"`
+// Any of "PERIODS".
+Unit string `json:"unit"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Value respjson.Field
+              Unit respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommitCommitDuration) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCommitCommitDuration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommitCommitDuration) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommitCommitDuration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCommitProduct struct {
-	ID   string `json:"id" api:"required" format:"uuid"`
-	Name string `json:"name" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+ID string `json:"id" api:"required" format:"uuid"`
+Name string `json:"name" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              Name respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommitProduct) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractRecurringCommitProduct) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommitProduct) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommitProduct) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCommitContract struct {
-	ID string `json:"id" api:"required" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+ID string `json:"id" api:"required" format:"uuid"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommitContract) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractRecurringCommitContract) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommitContract) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommitContract) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The amount the customer should be billed for the commit. Not required.
 type V1ContractNewResponseDataContractRecurringCommitInvoiceAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	Quantity     float64 `json:"quantity" api:"required"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreditTypeID respjson.Field
-		Quantity     respjson.Field
-		UnitPrice    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+Quantity float64 `json:"quantity" api:"required"`
+UnitPrice float64 `json:"unit_price" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              CreditTypeID respjson.Field
+              Quantity respjson.Field
+              UnitPrice respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommitInvoiceAmount) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommitInvoiceAmount) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Rounding configuration for prorated recurring commit amounts.
 type V1ContractNewResponseDataContractRecurringCommitProrationRounding struct {
-	Access  V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess  `json:"access"`
-	Invoice V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice `json:"invoice"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Access      respjson.Field
-		Invoice     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Access V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess `json:"access"`
+Invoice V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice `json:"invoice"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Access respjson.Field
+              Invoice respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommitProrationRounding) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCommitProrationRounding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRounding) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRounding) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess struct {
-	// Number of decimal places to round to. Applied directly to the stored monetary
-	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
-	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
-	// dollar).
-	DecimalPlaces float64 `json:"decimal_places" api:"required"`
-	// Any of "HALF_UP", "FLOOR", "CEILING".
-	RoundingMethod string `json:"rounding_method" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DecimalPlaces  respjson.Field
-		RoundingMethod respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
+// Number of decimal places to round to. Applied directly to the stored monetary
+// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+// dollar).
+DecimalPlaces float64 `json:"decimal_places" api:"required"`
+// Any of "HALF_UP", "FLOOR", "CEILING".
+RoundingMethod string `json:"rounding_method" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              DecimalPlaces respjson.Field
+              RoundingMethod respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice struct {
-	// Number of decimal places to round to. Applied directly to the stored monetary
-	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
-	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
-	// dollar).
-	DecimalPlaces float64 `json:"decimal_places" api:"required"`
-	// Any of "HALF_UP", "FLOOR", "CEILING".
-	RoundingMethod string `json:"rounding_method" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DecimalPlaces  respjson.Field
-		RoundingMethod respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
+// Number of decimal places to round to. Applied directly to the stored monetary
+// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+// dollar).
+DecimalPlaces float64 `json:"decimal_places" api:"required"`
+// Any of "HALF_UP", "FLOOR", "CEILING".
+RoundingMethod string `json:"rounding_method" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              DecimalPlaces respjson.Field
+              RoundingMethod respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCredit struct {
-	ID string `json:"id" api:"required" format:"uuid"`
-	// The amount of commit to grant.
-	AccessAmount V1ContractNewResponseDataContractRecurringCreditAccessAmount `json:"access_amount" api:"required"`
-	// The amount of time the created commits will be valid for
-	CommitDuration V1ContractNewResponseDataContractRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
-	// Will be passed down to the individual commits
-	Priority float64                                                 `json:"priority" api:"required"`
-	Product  V1ContractNewResponseDataContractRecurringCreditProduct `json:"product" api:"required"`
-	// Whether the created commits will use the commit rate or list rate
-	//
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type" api:"required"`
-	// Determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Will be passed down to the individual commits
-	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
-	// Will be passed down to the individual commits
-	ApplicableProductTags []string                                                 `json:"applicable_product_tags"`
-	Contract              V1ContractNewResponseDataContractRecurringCreditContract `json:"contract"`
-	// Will be passed down to the individual commits
-	Description string `json:"description"`
-	// Determines when the contract will stop creating recurring commits. Optional
-	EndingBefore time.Time `json:"ending_before" format:"date-time"`
-	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
-	// Displayed on invoices. Will be passed through to the individual commits
-	Name string `json:"name"`
-	// Will be passed down to the individual commits
-	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
-	// Determines whether the first and last commit will be prorated. If not provided,
-	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
-	//
-	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
-	Proration string `json:"proration"`
-	// Rounding configuration for prorated recurring credit amounts.
-	ProrationRounding V1ContractNewResponseDataContractRecurringCreditProrationRounding `json:"proration_rounding" api:"nullable"`
-	// The frequency at which the recurring commits will be created. If not provided: -
-	// The commits will be created on the usage invoice frequency. If provided: - The
-	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates. - Daily recurring commits have a limit of one per contract, and
-	// are unable to be created with seat-based subscriptions
-	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
-	RecurrenceFrequency string `json:"recurrence_frequency"`
-	// Will be passed down to the individual commits. This controls how much of an
-	// individual unexpired commit will roll over upon contract transition. Must be
-	// between 0 and 1.
-	RolloverFraction float64 `json:"rollover_fraction"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown.
-	Specifiers []shared.CommitSpecifier `json:"specifiers"`
-	// Attach a subscription to the recurring commit/credit.
-	SubscriptionConfig shared.RecurringCommitSubscriptionConfig `json:"subscription_config"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                     respjson.Field
-		AccessAmount           respjson.Field
-		CommitDuration         respjson.Field
-		Priority               respjson.Field
-		Product                respjson.Field
-		RateType               respjson.Field
-		StartingAt             respjson.Field
-		ApplicableProductIDs   respjson.Field
-		ApplicableProductTags  respjson.Field
-		Contract               respjson.Field
-		Description            respjson.Field
-		EndingBefore           respjson.Field
-		HierarchyConfiguration respjson.Field
-		Name                   respjson.Field
-		NetsuiteSalesOrderID   respjson.Field
-		Proration              respjson.Field
-		ProrationRounding      respjson.Field
-		RecurrenceFrequency    respjson.Field
-		RolloverFraction       respjson.Field
-		Specifiers             respjson.Field
-		SubscriptionConfig     respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
+ID string `json:"id" api:"required" format:"uuid"`
+// The amount of commit to grant.
+AccessAmount V1ContractNewResponseDataContractRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+// The amount of time the created commits will be valid for
+CommitDuration V1ContractNewResponseDataContractRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
+// Will be passed down to the individual commits
+Priority float64 `json:"priority" api:"required"`
+Product V1ContractNewResponseDataContractRecurringCreditProduct `json:"product" api:"required"`
+// Whether the created commits will use the commit rate or list rate
+//
+// Any of "COMMIT_RATE", "LIST_RATE".
+RateType string `json:"rate_type" api:"required"`
+// Determines the start time for the first commit
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Will be passed down to the individual commits
+ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
+// Will be passed down to the individual commits
+ApplicableProductTags []string `json:"applicable_product_tags"`
+Contract V1ContractNewResponseDataContractRecurringCreditContract `json:"contract"`
+// Will be passed down to the individual commits
+Description string `json:"description"`
+// Determines when the contract will stop creating recurring commits. Optional
+EndingBefore time.Time `json:"ending_before" format:"date-time"`
+// Optional configuration for recurring commit/credit hierarchy access control
+HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+// Displayed on invoices. Will be passed through to the individual commits
+Name string `json:"name"`
+// Will be passed down to the individual commits
+NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+// Determines whether the first and last commit will be prorated. If not provided,
+// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+//
+// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
+Proration string `json:"proration"`
+// Rounding configuration for prorated recurring credit amounts.
+ProrationRounding V1ContractNewResponseDataContractRecurringCreditProrationRounding `json:"proration_rounding" api:"nullable"`
+// The frequency at which the recurring commits will be created. If not provided: -
+// The commits will be created on the usage invoice frequency. If provided: - The
+// period defined in the duration will correspond to this frequency. - Commits will
+// be created aligned with the recurring commit's starting_at rather than the usage
+// invoice dates. - Daily recurring commits have a limit of one per contract, and
+// are unable to be created with seat-based subscriptions
+//
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+RecurrenceFrequency string `json:"recurrence_frequency"`
+// Will be passed down to the individual commits. This controls how much of an
+// individual unexpired commit will roll over upon contract transition. Must be
+// between 0 and 1.
+RolloverFraction float64 `json:"rollover_fraction"`
+// List of filters that determine what kind of customer usage draws down a commit
+// or credit. A customer's usage needs to meet the condition of at least one of the
+// specifiers to contribute to a commit's or credit's drawdown.
+Specifiers []shared.CommitSpecifier `json:"specifiers"`
+// Attach a subscription to the recurring commit/credit.
+SubscriptionConfig shared.RecurringCommitSubscriptionConfig `json:"subscription_config"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              AccessAmount respjson.Field
+              CommitDuration respjson.Field
+              Priority respjson.Field
+              Product respjson.Field
+              RateType respjson.Field
+              StartingAt respjson.Field
+              ApplicableProductIDs respjson.Field
+              ApplicableProductTags respjson.Field
+              Contract respjson.Field
+              Description respjson.Field
+              EndingBefore respjson.Field
+              HierarchyConfiguration respjson.Field
+              Name respjson.Field
+              NetsuiteSalesOrderID respjson.Field
+              Proration respjson.Field
+              ProrationRounding respjson.Field
+              RecurrenceFrequency respjson.Field
+              RolloverFraction respjson.Field
+              Specifiers respjson.Field
+              SubscriptionConfig respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCredit) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractRecurringCredit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCredit) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCredit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The amount of commit to grant.
 type V1ContractNewResponseDataContractRecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreditTypeID respjson.Field
-		UnitPrice    respjson.Field
-		Quantity     respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+UnitPrice float64 `json:"unit_price" api:"required"`
+Quantity float64 `json:"quantity"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              CreditTypeID respjson.Field
+              UnitPrice respjson.Field
+              Quantity respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCreditAccessAmount) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCreditAccessAmount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCreditAccessAmount) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCreditAccessAmount) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The amount of time the created commits will be valid for
 type V1ContractNewResponseDataContractRecurringCreditCommitDuration struct {
-	Value float64 `json:"value" api:"required"`
-	// Any of "PERIODS".
-	Unit string `json:"unit"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Value       respjson.Field
-		Unit        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Value float64 `json:"value" api:"required"`
+// Any of "PERIODS".
+Unit string `json:"unit"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Value respjson.Field
+              Unit respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCreditCommitDuration) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCreditCommitDuration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCreditCommitDuration) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCreditCommitDuration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCreditProduct struct {
-	ID   string `json:"id" api:"required" format:"uuid"`
-	Name string `json:"name" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+ID string `json:"id" api:"required" format:"uuid"`
+Name string `json:"name" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              Name respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCreditProduct) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractRecurringCreditProduct) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCreditProduct) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCreditProduct) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCreditContract struct {
-	ID string `json:"id" api:"required" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+ID string `json:"id" api:"required" format:"uuid"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCreditContract) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewResponseDataContractRecurringCreditContract) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCreditContract) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCreditContract) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Rounding configuration for prorated recurring credit amounts.
 type V1ContractNewResponseDataContractRecurringCreditProrationRounding struct {
-	Access V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess `json:"access"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Access      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Access V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess `json:"access"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Access respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCreditProrationRounding) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCreditProrationRounding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCreditProrationRounding) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCreditProrationRounding) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess struct {
-	// Number of decimal places to round to. Applied directly to the stored monetary
-	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
-	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
-	// dollar).
-	DecimalPlaces float64 `json:"decimal_places" api:"required"`
-	// Any of "HALF_UP", "FLOOR", "CEILING".
-	RoundingMethod string `json:"rounding_method" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DecimalPlaces  respjson.Field
-		RoundingMethod respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
+// Number of decimal places to round to. Applied directly to the stored monetary
+// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+// dollar).
+DecimalPlaces float64 `json:"decimal_places" api:"required"`
+// Any of "HALF_UP", "FLOOR", "CEILING".
+RoundingMethod string `json:"rounding_method" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              DecimalPlaces respjson.Field
+              RoundingMethod respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewResponseDataContractRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetResponse struct {
-	Data shared.Contract `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data shared.Contract `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListResponse struct {
-	Data []shared.Contract `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data []shared.Contract `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractAmendResponse struct {
-	Data shared.ID `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data shared.ID `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractAmendResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractAmendResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractAmendResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractAmendResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractArchiveResponse struct {
-	Data shared.ID `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data shared.ID `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractArchiveResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractArchiveResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractArchiveResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractArchiveResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewHistoricalInvoicesResponse struct {
-	Data []Invoice `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data []Invoice `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractNewHistoricalInvoicesResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractNewHistoricalInvoicesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractNewHistoricalInvoicesResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractNewHistoricalInvoicesResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetNetBalanceResponse struct {
-	Data V1ContractGetNetBalanceResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data V1ContractGetNetBalanceResponseData `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetNetBalanceResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetNetBalanceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetNetBalanceResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetNetBalanceResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetNetBalanceResponseData struct {
-	// The combined net balance that the customer has access to use at this moment
-	// across all pertinent commits and credits.
-	Balance float64 `json:"balance" api:"required"`
-	// The ID of the credit type (can be fiat or a custom pricing unit) that the
-	// balance is for.
-	CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Balance      respjson.Field
-		CreditTypeID respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
+// The combined net balance that the customer has access to use at this moment
+// across all pertinent commits and credits.
+Balance float64 `json:"balance" api:"required"`
+// The ID of the credit type (can be fiat or a custom pricing unit) that the
+// balance is for.
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Balance respjson.Field
+              CreditTypeID respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetNetBalanceResponseData) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetNetBalanceResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetNetBalanceResponseData) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetNetBalanceResponseData) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetSubscriptionSeatsHistoryResponse struct {
-	Data []V1ContractGetSubscriptionSeatsHistoryResponseData `json:"data" api:"required"`
-	// Cursor for the next page of results
-	NextPage string `json:"next_page" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		NextPage    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data []V1ContractGetSubscriptionSeatsHistoryResponseData `json:"data" api:"required"`
+// Cursor for the next page of results
+NextPage string `json:"next_page" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              NextPage respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetSubscriptionSeatsHistoryResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetSubscriptionSeatsHistoryResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetSubscriptionSeatsHistoryResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionSeatsHistoryResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetSubscriptionSeatsHistoryResponseData struct {
-	// Array of seat IDs that are assigned in this period
-	AssignedSeatIDs []string `json:"assigned_seat_ids" api:"required"`
-	// The end time of this seat schedule period (null if ongoing)
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// The start time of this seat schedule period
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Total number of assigned and unassigned seats in this period
-	TotalQuantity int64 `json:"total_quantity" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AssignedSeatIDs respjson.Field
-		EndingBefore    respjson.Field
-		StartingAt      respjson.Field
-		TotalQuantity   respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
+// Array of seat IDs that are assigned in this period
+AssignedSeatIDs []string `json:"assigned_seat_ids" api:"required"`
+// The end time of this seat schedule period (null if ongoing)
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// The start time of this seat schedule period
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Total number of assigned and unassigned seats in this period
+TotalQuantity int64 `json:"total_quantity" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              AssignedSeatIDs respjson.Field
+              EndingBefore respjson.Field
+              StartingAt respjson.Field
+              TotalQuantity respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetSubscriptionSeatsHistoryResponseData) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetSubscriptionSeatsHistoryResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetSubscriptionSeatsHistoryResponseData) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionSeatsHistoryResponseData) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // V1ContractListBalancesResponseUnion contains all possible properties and values
@@ -1484,112 +1462,110 @@ func (r *V1ContractGetSubscriptionSeatsHistoryResponseData) UnmarshalJSON(data [
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type V1ContractListBalancesResponseUnion struct {
-	ID string `json:"id"`
-	// This field is from variant [shared.Commit].
-	CreatedAt time.Time `json:"created_at"`
-	// This field is a union of [shared.CommitProduct], [shared.CreditProduct]
-	Product V1ContractListBalancesResponseUnionProduct `json:"product"`
-	Type    string                                     `json:"type"`
-	// This field is from variant [shared.Commit].
-	AccessSchedule shared.ScheduleDuration `json:"access_schedule"`
-	// This field is from variant [shared.Commit].
-	Amount                float64  `json:"amount"`
-	ApplicableContractIDs []string `json:"applicable_contract_ids"`
-	ApplicableProductIDs  []string `json:"applicable_product_ids"`
-	ApplicableProductTags []string `json:"applicable_product_tags"`
-	// This field is from variant [shared.Commit].
-	ArchivedAt time.Time `json:"archived_at"`
-	Balance    float64   `json:"balance"`
-	// This field is a union of [shared.CommitContract], [shared.CreditContract]
-	Contract V1ContractListBalancesResponseUnionContract `json:"contract"`
-	// This field is from variant [shared.Commit].
-	CostBasis    float64 `json:"cost_basis"`
-	CreatedBy    string  `json:"created_by"`
-	CustomFields string  `json:"custom_fields"`
-	Description  string  `json:"description"`
-	// This field is from variant [shared.Commit].
-	HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
-	// This field is from variant [shared.Commit].
-	InvoiceContract shared.CommitInvoiceContract `json:"invoice_contract"`
-	// This field is from variant [shared.Commit].
-	InvoiceSchedule shared.SchedulePointInTime `json:"invoice_schedule"`
-	// This field is a union of [[]shared.CommitLedgerUnion],
-	// [[]shared.CreditLedgerUnion]
-	Ledger               V1ContractListBalancesResponseUnionLedger `json:"ledger"`
-	Name                 string                                    `json:"name"`
-	NetsuiteSalesOrderID string                                    `json:"netsuite_sales_order_id"`
-	Priority             float64                                   `json:"priority"`
-	RateType             string                                    `json:"rate_type"`
-	// This field is from variant [shared.Commit].
-	RecurringCommitID string `json:"recurring_commit_id"`
-	// This field is a union of [shared.CommitRolledOverFrom],
-	// [shared.CreditRolledOverFrom]
-	RolledOverFrom V1ContractListBalancesResponseUnionRolledOverFrom `json:"rolled_over_from"`
-	// This field is from variant [shared.Commit].
-	RolloverFraction        float64                  `json:"rollover_fraction"`
-	SalesforceOpportunityID string                   `json:"salesforce_opportunity_id"`
-	Specifiers              []shared.CommitSpecifier `json:"specifiers"`
-	// This field is from variant [shared.Commit].
-	SpendTrackerAttributes shared.CommitSpendTrackerAttributes `json:"spend_tracker_attributes"`
-	// This field is a union of [shared.CommitSubscriptionConfig],
-	// [shared.CreditSubscriptionConfig]
-	SubscriptionConfig V1ContractListBalancesResponseUnionSubscriptionConfig `json:"subscription_config"`
-	UniquenessKey      string                                                `json:"uniqueness_key"`
-	// This field is from variant [shared.Credit].
-	RecurringCreditID string `json:"recurring_credit_id"`
-	JSON              struct {
-		ID                      respjson.Field
-		CreatedAt               respjson.Field
-		Product                 respjson.Field
-		Type                    respjson.Field
-		AccessSchedule          respjson.Field
-		Amount                  respjson.Field
-		ApplicableContractIDs   respjson.Field
-		ApplicableProductIDs    respjson.Field
-		ApplicableProductTags   respjson.Field
-		ArchivedAt              respjson.Field
-		Balance                 respjson.Field
-		Contract                respjson.Field
-		CostBasis               respjson.Field
-		CreatedBy               respjson.Field
-		CustomFields            respjson.Field
-		Description             respjson.Field
-		HierarchyConfiguration  respjson.Field
-		InvoiceContract         respjson.Field
-		InvoiceSchedule         respjson.Field
-		Ledger                  respjson.Field
-		Name                    respjson.Field
-		NetsuiteSalesOrderID    respjson.Field
-		Priority                respjson.Field
-		RateType                respjson.Field
-		RecurringCommitID       respjson.Field
-		RolledOverFrom          respjson.Field
-		RolloverFraction        respjson.Field
-		SalesforceOpportunityID respjson.Field
-		Specifiers              respjson.Field
-		SpendTrackerAttributes  respjson.Field
-		SubscriptionConfig      respjson.Field
-		UniquenessKey           respjson.Field
-		RecurringCreditID       respjson.Field
-		raw                     string
-	} `json:"-"`
+ID string `json:"id"`
+// This field is from variant [shared.Commit].
+CreatedAt time.Time `json:"created_at"`
+// This field is a union of [shared.CommitProduct], [shared.CreditProduct]
+Product V1ContractListBalancesResponseUnionProduct `json:"product"`
+Type string `json:"type"`
+// This field is from variant [shared.Commit].
+AccessSchedule shared.ScheduleDuration `json:"access_schedule"`
+// This field is from variant [shared.Commit].
+Amount float64 `json:"amount"`
+ApplicableContractIDs []string `json:"applicable_contract_ids"`
+ApplicableProductIDs []string `json:"applicable_product_ids"`
+ApplicableProductTags []string `json:"applicable_product_tags"`
+// This field is from variant [shared.Commit].
+ArchivedAt time.Time `json:"archived_at"`
+Balance float64 `json:"balance"`
+// This field is a union of [shared.CommitContract], [shared.CreditContract]
+Contract V1ContractListBalancesResponseUnionContract `json:"contract"`
+// This field is from variant [shared.Commit].
+CostBasis float64 `json:"cost_basis"`
+CreatedBy string `json:"created_by"`
+CustomFields string `json:"custom_fields"`
+Description string `json:"description"`
+// This field is from variant [shared.Commit].
+HierarchyConfiguration shared.CommitHierarchyConfiguration `json:"hierarchy_configuration"`
+// This field is from variant [shared.Commit].
+InvoiceContract shared.CommitInvoiceContract `json:"invoice_contract"`
+// This field is from variant [shared.Commit].
+InvoiceSchedule shared.SchedulePointInTime `json:"invoice_schedule"`
+// This field is a union of [[]shared.CommitLedgerUnion],
+// [[]shared.CreditLedgerUnion]
+Ledger V1ContractListBalancesResponseUnionLedger `json:"ledger"`
+Name string `json:"name"`
+NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+Priority float64 `json:"priority"`
+RateType string `json:"rate_type"`
+// This field is from variant [shared.Commit].
+RecurringCommitID string `json:"recurring_commit_id"`
+// This field is a union of [shared.CommitRolledOverFrom],
+// [shared.CreditRolledOverFrom]
+RolledOverFrom V1ContractListBalancesResponseUnionRolledOverFrom `json:"rolled_over_from"`
+// This field is from variant [shared.Commit].
+RolloverFraction float64 `json:"rollover_fraction"`
+SalesforceOpportunityID string `json:"salesforce_opportunity_id"`
+Specifiers []shared.CommitSpecifier `json:"specifiers"`
+// This field is from variant [shared.Commit].
+SpendTrackerAttributes shared.CommitSpendTrackerAttributes `json:"spend_tracker_attributes"`
+// This field is a union of [shared.CommitSubscriptionConfig],
+// [shared.CreditSubscriptionConfig]
+SubscriptionConfig V1ContractListBalancesResponseUnionSubscriptionConfig `json:"subscription_config"`
+UniquenessKey string `json:"uniqueness_key"`
+// This field is from variant [shared.Credit].
+RecurringCreditID string `json:"recurring_credit_id"`
+JSON struct { ID respjson.Field
+CreatedAt respjson.Field
+Product respjson.Field
+Type respjson.Field
+AccessSchedule respjson.Field
+Amount respjson.Field
+ApplicableContractIDs respjson.Field
+ApplicableProductIDs respjson.Field
+ApplicableProductTags respjson.Field
+ArchivedAt respjson.Field
+Balance respjson.Field
+Contract respjson.Field
+CostBasis respjson.Field
+CreatedBy respjson.Field
+CustomFields respjson.Field
+Description respjson.Field
+HierarchyConfiguration respjson.Field
+InvoiceContract respjson.Field
+InvoiceSchedule respjson.Field
+Ledger respjson.Field
+Name respjson.Field
+NetsuiteSalesOrderID respjson.Field
+Priority respjson.Field
+RateType respjson.Field
+RecurringCommitID respjson.Field
+RolledOverFrom respjson.Field
+RolloverFraction respjson.Field
+SalesforceOpportunityID respjson.Field
+Specifiers respjson.Field
+SpendTrackerAttributes respjson.Field
+SubscriptionConfig respjson.Field
+UniquenessKey respjson.Field
+RecurringCreditID respjson.Field
+raw string } `json:"-"`
 }
 
 func (u V1ContractListBalancesResponseUnion) AsCommit() (v shared.Commit) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
+  apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+  return
 }
 
 func (u V1ContractListBalancesResponseUnion) AsCredit() (v shared.Credit) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
+  apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+  return
 }
 
 // Returns the unmodified JSON received from the API
-func (u V1ContractListBalancesResponseUnion) RawJSON() string { return u.JSON.raw }
+func (u V1ContractListBalancesResponseUnion) RawJSON() (string) { return u.JSON.raw }
 
-func (r *V1ContractListBalancesResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListBalancesResponseUnion) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // V1ContractListBalancesResponseUnionProduct is an implicit subunion of
@@ -1600,17 +1576,15 @@ func (r *V1ContractListBalancesResponseUnion) UnmarshalJSON(data []byte) error {
 // For type safety it is recommended to directly use a variant of the
 // [V1ContractListBalancesResponseUnion].
 type V1ContractListBalancesResponseUnionProduct struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	JSON struct {
-		ID   respjson.Field
-		Name respjson.Field
-		raw  string
-	} `json:"-"`
+ID string `json:"id"`
+Name string `json:"name"`
+JSON struct { ID respjson.Field
+Name respjson.Field
+raw string } `json:"-"`
 }
 
-func (r *V1ContractListBalancesResponseUnionProduct) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListBalancesResponseUnionProduct) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // V1ContractListBalancesResponseUnionContract is an implicit subunion of
@@ -1621,15 +1595,13 @@ func (r *V1ContractListBalancesResponseUnionProduct) UnmarshalJSON(data []byte) 
 // For type safety it is recommended to directly use a variant of the
 // [V1ContractListBalancesResponseUnion].
 type V1ContractListBalancesResponseUnionContract struct {
-	ID   string `json:"id"`
-	JSON struct {
-		ID  respjson.Field
-		raw string
-	} `json:"-"`
+ID string `json:"id"`
+JSON struct { ID respjson.Field
+raw string } `json:"-"`
 }
 
-func (r *V1ContractListBalancesResponseUnionContract) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListBalancesResponseUnionContract) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // V1ContractListBalancesResponseUnionLedger is an implicit subunion of
@@ -1642,21 +1614,19 @@ func (r *V1ContractListBalancesResponseUnionContract) UnmarshalJSON(data []byte)
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfCommitLedgerArray OfCreditLedgerArray]
 type V1ContractListBalancesResponseUnionLedger struct {
-	// This field will be present if the value is a [[]shared.CommitLedgerUnion]
-	// instead of an object.
-	OfCommitLedgerArray []shared.CommitLedgerUnion `json:",inline"`
-	// This field will be present if the value is a [[]shared.CreditLedgerUnion]
-	// instead of an object.
-	OfCreditLedgerArray []shared.CreditLedgerUnion `json:",inline"`
-	JSON                struct {
-		OfCommitLedgerArray respjson.Field
-		OfCreditLedgerArray respjson.Field
-		raw                 string
-	} `json:"-"`
+// This field will be present if the value is a [[]shared.CommitLedgerUnion]
+// instead of an object.
+OfCommitLedgerArray []shared.CommitLedgerUnion `json:",inline"`
+// This field will be present if the value is a [[]shared.CreditLedgerUnion]
+// instead of an object.
+OfCreditLedgerArray []shared.CreditLedgerUnion `json:",inline"`
+JSON struct { OfCommitLedgerArray respjson.Field
+OfCreditLedgerArray respjson.Field
+raw string } `json:"-"`
 }
 
-func (r *V1ContractListBalancesResponseUnionLedger) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListBalancesResponseUnionLedger) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // V1ContractListBalancesResponseUnionRolledOverFrom is an implicit subunion of
@@ -1667,21 +1637,19 @@ func (r *V1ContractListBalancesResponseUnionLedger) UnmarshalJSON(data []byte) e
 // For type safety it is recommended to directly use a variant of the
 // [V1ContractListBalancesResponseUnion].
 type V1ContractListBalancesResponseUnionRolledOverFrom struct {
-	// This field is from variant [shared.CommitRolledOverFrom].
-	CommitID   string `json:"commit_id"`
-	ContractID string `json:"contract_id"`
-	// This field is from variant [shared.CreditRolledOverFrom].
-	CreditID string `json:"credit_id"`
-	JSON     struct {
-		CommitID   respjson.Field
-		ContractID respjson.Field
-		CreditID   respjson.Field
-		raw        string
-	} `json:"-"`
+// This field is from variant [shared.CommitRolledOverFrom].
+CommitID string `json:"commit_id"`
+ContractID string `json:"contract_id"`
+// This field is from variant [shared.CreditRolledOverFrom].
+CreditID string `json:"credit_id"`
+JSON struct { CommitID respjson.Field
+ContractID respjson.Field
+CreditID respjson.Field
+raw string } `json:"-"`
 }
 
-func (r *V1ContractListBalancesResponseUnionRolledOverFrom) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListBalancesResponseUnionRolledOverFrom) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // V1ContractListBalancesResponseUnionSubscriptionConfig is an implicit subunion of
@@ -1692,22 +1660,20 @@ func (r *V1ContractListBalancesResponseUnionRolledOverFrom) UnmarshalJSON(data [
 // For type safety it is recommended to directly use a variant of the
 // [V1ContractListBalancesResponseUnion].
 type V1ContractListBalancesResponseUnionSubscriptionConfig struct {
-	Allocation string `json:"allocation"`
-	// This field is a union of
-	// [shared.CommitSubscriptionConfigApplySeatIncreaseConfig],
-	// [shared.CreditSubscriptionConfigApplySeatIncreaseConfig]
-	ApplySeatIncreaseConfig V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config"`
-	SubscriptionID          string                                                                       `json:"subscription_id"`
-	JSON                    struct {
-		Allocation              respjson.Field
-		ApplySeatIncreaseConfig respjson.Field
-		SubscriptionID          respjson.Field
-		raw                     string
-	} `json:"-"`
+Allocation string `json:"allocation"`
+// This field is a union of
+// [shared.CommitSubscriptionConfigApplySeatIncreaseConfig],
+// [shared.CreditSubscriptionConfigApplySeatIncreaseConfig]
+ApplySeatIncreaseConfig V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config"`
+SubscriptionID string `json:"subscription_id"`
+JSON struct { Allocation respjson.Field
+ApplySeatIncreaseConfig respjson.Field
+SubscriptionID respjson.Field
+raw string } `json:"-"`
 }
 
-func (r *V1ContractListBalancesResponseUnionSubscriptionConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListBalancesResponseUnionSubscriptionConfig) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig is
@@ -1718,588 +1684,582 @@ func (r *V1ContractListBalancesResponseUnionSubscriptionConfig) UnmarshalJSON(da
 // For type safety it is recommended to directly use a variant of the
 // [V1ContractListBalancesResponseUnion].
 type V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig struct {
-	IsProrated bool `json:"is_prorated"`
-	JSON       struct {
-		IsProrated respjson.Field
-		raw        string
-	} `json:"-"`
+IsProrated bool `json:"is_prorated"`
+JSON struct { IsProrated respjson.Field
+raw string } `json:"-"`
 }
 
-func (r *V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListBalancesResponseUnionSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesResponse struct {
-	Data       []V1ContractListSeatBalancesResponseData     `json:"data" api:"required"`
-	Pagination V1ContractListSeatBalancesResponsePagination `json:"pagination" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Pagination  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data []V1ContractListSeatBalancesResponseData `json:"data" api:"required"`
+Pagination V1ContractListSeatBalancesResponsePagination `json:"pagination" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              Pagination respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListSeatBalancesResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListSeatBalancesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListSeatBalancesResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesResponseData struct {
-	Balances []V1ContractListSeatBalancesResponseDataBalance `json:"balances" api:"required"`
-	// The unique identifier for the seat
-	SeatID string `json:"seat_id" api:"required"`
-	// Array of commits applicable to this seat with their balances
-	Commits []V1ContractListSeatBalancesResponseDataCommit `json:"commits" api:"nullable"`
-	// Array of credits applicable to this seat with their balances
-	Credits []V1ContractListSeatBalancesResponseDataCredit `json:"credits"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Balances    respjson.Field
-		SeatID      respjson.Field
-		Commits     respjson.Field
-		Credits     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Balances []V1ContractListSeatBalancesResponseDataBalance `json:"balances" api:"required"`
+// The unique identifier for the seat
+SeatID string `json:"seat_id" api:"required"`
+// Array of commits applicable to this seat with their balances
+Commits []V1ContractListSeatBalancesResponseDataCommit `json:"commits" api:"nullable"`
+// Array of credits applicable to this seat with their balances
+Credits []V1ContractListSeatBalancesResponseDataCredit `json:"credits"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Balances respjson.Field
+              SeatID respjson.Field
+              Commits respjson.Field
+              Credits respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListSeatBalancesResponseData) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListSeatBalancesResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListSeatBalancesResponseData) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseData) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesResponseDataBalance struct {
-	// The total balance across all commits and credits for this seat, of this credit
-	// type.
-	Balance      float64 `json:"balance" api:"required"`
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	// The total initial balances of all commits and credits for this seat, of this
-	// credit type.
-	StartingBalance float64 `json:"starting_balance" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Balance         respjson.Field
-		CreditTypeID    respjson.Field
-		StartingBalance respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
+// The total balance across all commits and credits for this seat, of this credit
+// type.
+Balance float64 `json:"balance" api:"required"`
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+// The total initial balances of all commits and credits for this seat, of this
+// credit type.
+StartingBalance float64 `json:"starting_balance" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Balance respjson.Field
+              CreditTypeID respjson.Field
+              StartingBalance respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListSeatBalancesResponseDataBalance) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListSeatBalancesResponseDataBalance) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListSeatBalancesResponseDataBalance) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataBalance) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesResponseDataCommit struct {
-	// The commit or credit ID
-	ID string `json:"id" api:"required" format:"uuid"`
-	// The current balance for this commit for this specific seat
-	Balance float64 `json:"balance" api:"required"`
-	// The datetime when the commit becomes active
-	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
-	// The datetime when the commit expires
-	EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
-	// Transaction history for this commit for this seat (only included if
-	// include_ledgers=true)
-	LedgerEntries []V1ContractListSeatBalancesResponseDataCommitLedgerEntry `json:"ledger_entries"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Balance       respjson.Field
-		StartDate     respjson.Field
-		EndDate       respjson.Field
-		LedgerEntries respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
+// The commit or credit ID
+ID string `json:"id" api:"required" format:"uuid"`
+// The current balance for this commit for this specific seat
+Balance float64 `json:"balance" api:"required"`
+// The datetime when the commit becomes active
+StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+// The datetime when the commit expires
+EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
+// Transaction history for this commit for this seat (only included if
+// include_ledgers=true)
+LedgerEntries []V1ContractListSeatBalancesResponseDataCommitLedgerEntry `json:"ledger_entries"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              Balance respjson.Field
+              StartDate respjson.Field
+              EndDate respjson.Field
+              LedgerEntries respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListSeatBalancesResponseDataCommit) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListSeatBalancesResponseDataCommit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListSeatBalancesResponseDataCommit) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCommit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesResponseDataCommitLedgerEntry struct {
-	// Amount of the ledger entry
-	Amount float64 `json:"amount" api:"required"`
-	// The datetime when the ledger is created
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Commit ledger type
-	//
-	// Any of "PREPAID_COMMIT_SEGMENT_START",
-	// "PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION", "PREPAID_COMMIT_ROLLOVER",
-	// "PREPAID_COMMIT_EXPIRATION", "PREPAID_COMMIT_CANCELED",
-	// "PREPAID_COMMIT_CREDITED", "PREPAID_COMMIT_MANUAL",
-	// "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT".
-	Type string `json:"type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Amount      respjson.Field
-		Timestamp   respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+// Amount of the ledger entry
+Amount float64 `json:"amount" api:"required"`
+// The datetime when the ledger is created
+Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+// Commit ledger type
+//
+// Any of "PREPAID_COMMIT_SEGMENT_START",
+// "PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION", "PREPAID_COMMIT_ROLLOVER",
+// "PREPAID_COMMIT_EXPIRATION", "PREPAID_COMMIT_CANCELED",
+// "PREPAID_COMMIT_CREDITED", "PREPAID_COMMIT_MANUAL",
+// "PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT".
+Type string `json:"type" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Amount respjson.Field
+              Timestamp respjson.Field
+              Type respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListSeatBalancesResponseDataCommitLedgerEntry) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListSeatBalancesResponseDataCommitLedgerEntry) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListSeatBalancesResponseDataCommitLedgerEntry) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCommitLedgerEntry) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesResponseDataCredit struct {
-	// The credit ID
-	ID string `json:"id" api:"required" format:"uuid"`
-	// The current balance for this credit for this specific seat
-	Balance float64 `json:"balance" api:"required"`
-	// The datetime when the credit becomes active
-	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
-	// The datetime when the credit expires
-	EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
-	// Transaction history for this credit for this seat (only included if
-	// include_ledgers=true)
-	LedgerEntries []V1ContractListSeatBalancesResponseDataCreditLedgerEntry `json:"ledger_entries"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Balance       respjson.Field
-		StartDate     respjson.Field
-		EndDate       respjson.Field
-		LedgerEntries respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
+// The credit ID
+ID string `json:"id" api:"required" format:"uuid"`
+// The current balance for this credit for this specific seat
+Balance float64 `json:"balance" api:"required"`
+// The datetime when the credit becomes active
+StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+// The datetime when the credit expires
+EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
+// Transaction history for this credit for this seat (only included if
+// include_ledgers=true)
+LedgerEntries []V1ContractListSeatBalancesResponseDataCreditLedgerEntry `json:"ledger_entries"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              ID respjson.Field
+              Balance respjson.Field
+              StartDate respjson.Field
+              EndDate respjson.Field
+              LedgerEntries respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListSeatBalancesResponseDataCredit) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListSeatBalancesResponseDataCredit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListSeatBalancesResponseDataCredit) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCredit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesResponseDataCreditLedgerEntry struct {
-	// Amount of the ledger entry
-	Amount float64 `json:"amount" api:"required"`
-	// The datetime when the ledger is created
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Credit ledger type
-	//
-	// Any of "CREDIT_SEGMENT_START", "CREDIT_AUTOMATED_INVOICE_DEDUCTION",
-	// "CREDIT_EXPIRATION", "CREDIT_CANCELED", "CREDIT_CREDITED", "CREDIT_MANUAL",
-	// "CREDIT_SEAT_BASED_ADJUSTMENT", "CREDIT_ROLLOVER".
-	Type string `json:"type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Amount      respjson.Field
-		Timestamp   respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+// Amount of the ledger entry
+Amount float64 `json:"amount" api:"required"`
+// The datetime when the ledger is created
+Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+// Credit ledger type
+//
+// Any of "CREDIT_SEGMENT_START", "CREDIT_AUTOMATED_INVOICE_DEDUCTION",
+// "CREDIT_EXPIRATION", "CREDIT_CANCELED", "CREDIT_CREDITED", "CREDIT_MANUAL",
+// "CREDIT_SEAT_BASED_ADJUSTMENT", "CREDIT_ROLLOVER".
+Type string `json:"type" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Amount respjson.Field
+              Timestamp respjson.Field
+              Type respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListSeatBalancesResponseDataCreditLedgerEntry) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListSeatBalancesResponseDataCreditLedgerEntry) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListSeatBalancesResponseDataCreditLedgerEntry) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponseDataCreditLedgerEntry) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesResponsePagination struct {
-	// Number of seats available to fetch in the next page
-	SeatsAvailableForNextPage float64 `json:"seats_available_for_next_page" api:"required"`
-	// Number of seats included in this response
-	SeatsIncluded float64 `json:"seats_included" api:"required"`
-	// Token to retrieve the next page of results. Null if no more pages available
-	NextPage string `json:"next_page" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		SeatsAvailableForNextPage respjson.Field
-		SeatsIncluded             respjson.Field
-		NextPage                  respjson.Field
-		ExtraFields               map[string]respjson.Field
-		raw                       string
-	} `json:"-"`
+// Number of seats available to fetch in the next page
+SeatsAvailableForNextPage float64 `json:"seats_available_for_next_page" api:"required"`
+// Number of seats included in this response
+SeatsIncluded float64 `json:"seats_included" api:"required"`
+// Token to retrieve the next page of results. Null if no more pages available
+NextPage string `json:"next_page" api:"nullable"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              SeatsAvailableForNextPage respjson.Field
+              SeatsIncluded respjson.Field
+              NextPage respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractListSeatBalancesResponsePagination) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListSeatBalancesResponsePagination) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractListSeatBalancesResponsePagination) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractListSeatBalancesResponsePagination) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetRateScheduleResponse struct {
-	Data     []V1ContractGetRateScheduleResponseData `json:"data" api:"required"`
-	NextPage string                                  `json:"next_page" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		NextPage    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data []V1ContractGetRateScheduleResponseData `json:"data" api:"required"`
+NextPage string `json:"next_page" api:"nullable"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              NextPage respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetRateScheduleResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetRateScheduleResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetRateScheduleResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetRateScheduleResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetRateScheduleResponseData struct {
-	Entitled bool        `json:"entitled" api:"required"`
-	ListRate shared.Rate `json:"list_rate" api:"required"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	ProductCustomFields map[string]string `json:"product_custom_fields" api:"required"`
-	ProductID           string            `json:"product_id" api:"required" format:"uuid"`
-	ProductName         string            `json:"product_name" api:"required"`
-	ProductTags         []string          `json:"product_tags" api:"required"`
-	RateCardID          string            `json:"rate_card_id" api:"required" format:"uuid"`
-	StartingAt          time.Time         `json:"starting_at" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	BillingFrequency string `json:"billing_frequency"`
-	// A distinct rate on the rate card. You can choose to use this rate rather than
-	// list rate when consuming a credit or commit.
-	CommitRate         shared.CommitRate `json:"commit_rate"`
-	EndingBefore       time.Time         `json:"ending_before" format:"date-time"`
-	OverrideRate       shared.Rate       `json:"override_rate"`
-	PricingGroupValues map[string]string `json:"pricing_group_values"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entitled            respjson.Field
-		ListRate            respjson.Field
-		ProductCustomFields respjson.Field
-		ProductID           respjson.Field
-		ProductName         respjson.Field
-		ProductTags         respjson.Field
-		RateCardID          respjson.Field
-		StartingAt          respjson.Field
-		BillingFrequency    respjson.Field
-		CommitRate          respjson.Field
-		EndingBefore        respjson.Field
-		OverrideRate        respjson.Field
-		PricingGroupValues  respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
+Entitled bool `json:"entitled" api:"required"`
+ListRate shared.Rate `json:"list_rate" api:"required"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+ProductCustomFields map[string]string `json:"product_custom_fields" api:"required"`
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+ProductName string `json:"product_name" api:"required"`
+ProductTags []string `json:"product_tags" api:"required"`
+RateCardID string `json:"rate_card_id" api:"required" format:"uuid"`
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+BillingFrequency string `json:"billing_frequency"`
+// A distinct rate on the rate card. You can choose to use this rate rather than
+// list rate when consuming a credit or commit.
+CommitRate shared.CommitRate `json:"commit_rate"`
+EndingBefore time.Time `json:"ending_before" format:"date-time"`
+OverrideRate shared.Rate `json:"override_rate"`
+PricingGroupValues map[string]string `json:"pricing_group_values"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Entitled respjson.Field
+              ListRate respjson.Field
+              ProductCustomFields respjson.Field
+              ProductID respjson.Field
+              ProductName respjson.Field
+              ProductTags respjson.Field
+              RateCardID respjson.Field
+              StartingAt respjson.Field
+              BillingFrequency respjson.Field
+              CommitRate respjson.Field
+              EndingBefore respjson.Field
+              OverrideRate respjson.Field
+              PricingGroupValues respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetRateScheduleResponseData) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetRateScheduleResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetRateScheduleResponseData) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetRateScheduleResponseData) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetSubscriptionQuantityHistoryResponse struct {
-	Data V1ContractGetSubscriptionQuantityHistoryResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data V1ContractGetSubscriptionQuantityHistoryResponseData `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetSubscriptionQuantityHistoryResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetSubscriptionQuantityHistoryResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetSubscriptionQuantityHistoryResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionQuantityHistoryResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetSubscriptionQuantityHistoryResponseData struct {
-	FiatCreditTypeID string                                                        `json:"fiat_credit_type_id" format:"uuid"`
-	History          []V1ContractGetSubscriptionQuantityHistoryResponseDataHistory `json:"history"`
-	SubscriptionID   string                                                        `json:"subscription_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FiatCreditTypeID respjson.Field
-		History          respjson.Field
-		SubscriptionID   respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
+FiatCreditTypeID string `json:"fiat_credit_type_id" format:"uuid"`
+History []V1ContractGetSubscriptionQuantityHistoryResponseDataHistory `json:"history"`
+SubscriptionID string `json:"subscription_id" format:"uuid"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              FiatCreditTypeID respjson.Field
+              History respjson.Field
+              SubscriptionID respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetSubscriptionQuantityHistoryResponseData) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractGetSubscriptionQuantityHistoryResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetSubscriptionQuantityHistoryResponseData) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionQuantityHistoryResponseData) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetSubscriptionQuantityHistoryResponseDataHistory struct {
-	Data       []V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData `json:"data" api:"required"`
-	StartingAt time.Time                                                         `json:"starting_at" api:"required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		StartingAt  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data []V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData `json:"data" api:"required"`
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              StartingAt respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetSubscriptionQuantityHistoryResponseDataHistory) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractGetSubscriptionQuantityHistoryResponseDataHistory) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetSubscriptionQuantityHistoryResponseDataHistory) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionQuantityHistoryResponseDataHistory) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData struct {
-	Quantity  float64 `json:"quantity" api:"required"`
-	Total     float64 `json:"total" api:"required"`
-	UnitPrice float64 `json:"unit_price" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Quantity    respjson.Field
-		Total       respjson.Field
-		UnitPrice   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Quantity float64 `json:"quantity" api:"required"`
+Total float64 `json:"total" api:"required"`
+UnitPrice float64 `json:"unit_price" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Quantity respjson.Field
+              Total respjson.Field
+              UnitPrice respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractGetSubscriptionQuantityHistoryResponseDataHistoryData) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractScheduleProServicesInvoiceResponse struct {
-	Data []Invoice `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data []Invoice `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractScheduleProServicesInvoiceResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractScheduleProServicesInvoiceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractScheduleProServicesInvoiceResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractScheduleProServicesInvoiceResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractUpdateEndDateResponse struct {
-	Data shared.ID `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+Data shared.ID `json:"data" api:"required"`
+// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+JSON struct {
+              Data respjson.Field
+              ExtraFields map[string]respjson.Field
+              raw string
+            } `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractUpdateEndDateResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractUpdateEndDateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r V1ContractUpdateEndDateResponse) RawJSON() (string) { return r.JSON.raw }
+func (r *V1ContractUpdateEndDateResponse) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewParams struct {
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// inclusive contract start time
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// exclusive contract end time
-	EndingBefore        param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	Name                param.Opt[string]    `json:"name,omitzero"`
-	NetPaymentTermsDays param.Opt[float64]   `json:"net_payment_terms_days,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Selects the package linked to the specified alias as of the contract's start
-	// date. Mutually exclusive with package_id.
-	PackageAlias param.Opt[string] `json:"package_alias,omitzero"`
-	// If provided, provisions a customer on a package instead of creating a
-	// traditional contract. When specified, only customer_id, starting_at, package_id,
-	// uniqueness_key, transition, and custom_fields are allowed.
-	PackageID param.Opt[string] `json:"package_id,omitzero" format:"uuid"`
-	// Selects the rate card linked to the specified alias as of the contract's start
-	// date.
-	RateCardAlias param.Opt[string] `json:"rate_card_alias,omitzero"`
-	RateCardID    param.Opt[string] `json:"rate_card_id,omitzero" format:"uuid"`
-	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID param.Opt[string] `json:"salesforce_opportunity_id,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	TotalContractValue param.Opt[float64] `json:"total_contract_value,omitzero"`
-	// Prevents the creation of duplicates. If a request to create a record is made
-	// with a previously used uniqueness key, a new record will not be created and the
-	// request will fail with a 409 error.
-	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
-	// The billing provider configuration associated with a contract. Provide either an
-	// ID or the provider and delivery method.
-	BillingProviderConfiguration V1ContractNewParamsBillingProviderConfiguration `json:"billing_provider_configuration,omitzero"`
-	Commits                      []V1ContractNewParamsCommit                     `json:"commits,omitzero"`
-	Credits                      []V1ContractNewParamsCredit                     `json:"credits,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	Discounts              []V1ContractNewParamsDiscount             `json:"discounts,omitzero"`
-	HierarchyConfiguration V1ContractNewParamsHierarchyConfiguration `json:"hierarchy_configuration,omitzero"`
-	// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
-	// prices automatically. EXPLICIT prioritization requires specifying priorities for
-	// each multiplier; the one with the lowest priority value will be prioritized
-	// first. If tiered overrides are used, prioritization must be explicit.
-	//
-	// Any of "LOWEST_MULTIPLIER", "EXPLICIT".
-	MultiplierOverridePrioritization     V1ContractNewParamsMultiplierOverridePrioritization `json:"multiplier_override_prioritization,omitzero"`
-	ContractOverrides                    []V1ContractNewParamsOverride                       `json:"overrides,omitzero"`
-	PrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfigurationParam    `json:"prepaid_balance_threshold_configuration,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	ProfessionalServices []V1ContractNewParamsProfessionalService `json:"professional_services,omitzero"`
-	RecurringCommits     []V1ContractNewParamsRecurringCommit     `json:"recurring_commits,omitzero"`
-	RecurringCredits     []V1ContractNewParamsRecurringCredit     `json:"recurring_credits,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	ResellerRoyalties []V1ContractNewParamsResellerRoyalty `json:"reseller_royalties,omitzero"`
-	// The revenue system configuration associated with a contract. Provide either an
-	// ID or the provider and delivery method.
-	RevenueSystemConfiguration V1ContractNewParamsRevenueSystemConfiguration `json:"revenue_system_configuration,omitzero"`
-	ScheduledCharges           []V1ContractNewParamsScheduledCharge          `json:"scheduled_charges,omitzero"`
-	// Determines which scheduled and commit charges to consolidate onto the Contract's
-	// usage invoice. The charge's `timestamp` must match the usage invoice's
-	// `ending_before` date for consolidation to occur. This field cannot be modified
-	// after a Contract has been created. If this field is omitted, charges will appear
-	// on a separate invoice from usage charges.
-	//
-	// Any of "ALL".
-	ScheduledChargesOnUsageInvoices V1ContractNewParamsScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices,omitzero"`
-	SpendThresholdConfiguration     shared.SpendThresholdConfigurationParam            `json:"spend_threshold_configuration,omitzero"`
-	// Spend trackers to attach to this contract. Aliases must be unique within a
-	// contract.
-	SpendTrackers []V1ContractNewParamsSpendTracker `json:"spend_trackers,omitzero"`
-	// Optional list of
-	// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
-	// to add to the contract.
-	Subscriptions          []V1ContractNewParamsSubscription         `json:"subscriptions,omitzero"`
-	Transition             V1ContractNewParamsTransition             `json:"transition,omitzero"`
-	UsageFilter            shared.BaseUsageFilterParam               `json:"usage_filter,omitzero"`
-	UsageStatementSchedule V1ContractNewParamsUsageStatementSchedule `json:"usage_statement_schedule,omitzero"`
-	paramObj
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// inclusive contract start time
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// exclusive contract end time
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+Name param.Opt[string] `json:"name,omitzero"`
+NetPaymentTermsDays param.Opt[float64] `json:"net_payment_terms_days,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Selects the package linked to the specified alias as of the contract's start
+// date. Mutually exclusive with package_id.
+PackageAlias param.Opt[string] `json:"package_alias,omitzero"`
+// If provided, provisions a customer on a package instead of creating a
+// traditional contract. When specified, only customer_id, starting_at, package_id,
+// uniqueness_key, transition, and custom_fields are allowed.
+PackageID param.Opt[string] `json:"package_id,omitzero" format:"uuid"`
+// Selects the rate card linked to the specified alias as of the contract's start
+// date.
+RateCardAlias param.Opt[string] `json:"rate_card_alias,omitzero"`
+RateCardID param.Opt[string] `json:"rate_card_id,omitzero" format:"uuid"`
+// This field's availability is dependent on your client's configuration.
+SalesforceOpportunityID param.Opt[string] `json:"salesforce_opportunity_id,omitzero"`
+// This field's availability is dependent on your client's configuration.
+TotalContractValue param.Opt[float64] `json:"total_contract_value,omitzero"`
+// Prevents the creation of duplicates. If a request to create a record is made
+// with a previously used uniqueness key, a new record will not be created and the
+// request will fail with a 409 error.
+UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
+// The billing provider configuration associated with a contract. Provide either an
+// ID or the provider and delivery method.
+BillingProviderConfiguration V1ContractNewParamsBillingProviderConfiguration `json:"billing_provider_configuration,omitzero"`
+Commits []V1ContractNewParamsCommit `json:"commits,omitzero"`
+Credits []V1ContractNewParamsCredit `json:"credits,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+// This field's availability is dependent on your client's configuration.
+Discounts []V1ContractNewParamsDiscount `json:"discounts,omitzero"`
+HierarchyConfiguration V1ContractNewParamsHierarchyConfiguration `json:"hierarchy_configuration,omitzero"`
+// Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
+// prices automatically. EXPLICIT prioritization requires specifying priorities for
+// each multiplier; the one with the lowest priority value will be prioritized
+// first. If tiered overrides are used, prioritization must be explicit.
+//
+// Any of "LOWEST_MULTIPLIER", "EXPLICIT".
+MultiplierOverridePrioritization V1ContractNewParamsMultiplierOverridePrioritization `json:"multiplier_override_prioritization,omitzero"`
+ContractOverrides []V1ContractNewParamsOverride `json:"overrides,omitzero"`
+PrepaidBalanceThresholdConfiguration shared.PrepaidBalanceThresholdConfigurationParam `json:"prepaid_balance_threshold_configuration,omitzero"`
+// This field's availability is dependent on your client's configuration.
+ProfessionalServices []V1ContractNewParamsProfessionalService `json:"professional_services,omitzero"`
+RecurringCommits []V1ContractNewParamsRecurringCommit `json:"recurring_commits,omitzero"`
+RecurringCredits []V1ContractNewParamsRecurringCredit `json:"recurring_credits,omitzero"`
+// This field's availability is dependent on your client's configuration.
+ResellerRoyalties []V1ContractNewParamsResellerRoyalty `json:"reseller_royalties,omitzero"`
+// The revenue system configuration associated with a contract. Provide either an
+// ID or the provider and delivery method.
+RevenueSystemConfiguration V1ContractNewParamsRevenueSystemConfiguration `json:"revenue_system_configuration,omitzero"`
+ScheduledCharges []V1ContractNewParamsScheduledCharge `json:"scheduled_charges,omitzero"`
+// Determines which scheduled and commit charges to consolidate onto the Contract's
+// usage invoice. The charge's `timestamp` must match the usage invoice's
+// `ending_before` date for consolidation to occur. This field cannot be modified
+// after a Contract has been created. If this field is omitted, charges will appear
+// on a separate invoice from usage charges.
+//
+// Any of "ALL".
+ScheduledChargesOnUsageInvoices V1ContractNewParamsScheduledChargesOnUsageInvoices `json:"scheduled_charges_on_usage_invoices,omitzero"`
+SpendThresholdConfiguration shared.SpendThresholdConfigurationParam `json:"spend_threshold_configuration,omitzero"`
+// Spend trackers to attach to this contract. Aliases must be unique within a
+// contract.
+SpendTrackers []V1ContractNewParamsSpendTracker `json:"spend_trackers,omitzero"`
+// Optional list of
+// [subscriptions](https://docs.metronome.com/manage-product-access/create-subscription/)
+// to add to the contract.
+Subscriptions []V1ContractNewParamsSubscription `json:"subscriptions,omitzero"`
+Transition V1ContractNewParamsTransition `json:"transition,omitzero"`
+UsageFilter shared.BaseUsageFilterParam `json:"usage_filter,omitzero"`
+UsageStatementSchedule V1ContractNewParamsUsageStatementSchedule `json:"usage_statement_schedule,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The billing provider configuration associated with a contract. Provide either an
 // ID or the provider and delivery method.
 type V1ContractNewParamsBillingProviderConfiguration struct {
-	// The Metronome ID of the billing provider configuration. Use when a customer has
-	// multiple configurations with the same billing provider and delivery method.
-	// Otherwise, specify the billing_provider and delivery_method.
-	BillingProviderConfigurationID param.Opt[string] `json:"billing_provider_configuration_id,omitzero" format:"uuid"`
-	// Do not specify if using billing_provider_configuration_id.
-	//
-	// Any of "aws_marketplace", "azure_marketplace", "gcp_marketplace", "stripe",
-	// "netsuite".
-	BillingProvider string `json:"billing_provider,omitzero"`
-	// Do not specify if using billing_provider_configuration_id.
-	//
-	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
-	DeliveryMethod string `json:"delivery_method,omitzero"`
-	paramObj
+// The Metronome ID of the billing provider configuration. Use when a customer has
+// multiple configurations with the same billing provider and delivery method.
+// Otherwise, specify the billing_provider and delivery_method.
+BillingProviderConfigurationID param.Opt[string] `json:"billing_provider_configuration_id,omitzero" format:"uuid"`
+// Do not specify if using billing_provider_configuration_id.
+//
+// Any of "aws_marketplace", "azure_marketplace", "gcp_marketplace", "stripe",
+// "netsuite".
+BillingProvider string `json:"billing_provider,omitzero"`
+// Do not specify if using billing_provider_configuration_id.
+//
+// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
+DeliveryMethod string `json:"delivery_method,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsBillingProviderConfiguration) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsBillingProviderConfiguration
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsBillingProviderConfiguration
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsBillingProviderConfiguration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsBillingProviderConfiguration](
-		"billing_provider", "aws_marketplace", "azure_marketplace", "gcp_marketplace", "stripe", "netsuite",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsBillingProviderConfiguration](
-		"delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsBillingProviderConfiguration](
+    "billing_provider", "aws_marketplace", "azure_marketplace", "gcp_marketplace", "stripe", "netsuite",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsBillingProviderConfiguration](
+    "delivery_method", "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns",
+  )
 }
 
 // The properties ProductID, Type are required.
 type V1ContractNewParamsCommit struct {
-	ProductID string `json:"product_id" api:"required" format:"uuid"`
-	// Any of "PREPAID", "POSTPAID".
-	Type string `json:"type,omitzero" api:"required"`
-	// (DEPRECATED) Use access_schedule and invoice_schedule instead.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Used only in UI/API. It is not exposed to end customers.
-	Description param.Opt[string] `json:"description,omitzero"`
-	// displayed on invoices
-	Name param.Opt[string] `json:"name,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// If multiple commits are applicable, the one with the lower priority will apply
-	// first.
-	Priority param.Opt[float64] `json:"priority,omitzero"`
-	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
-	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
-	// A temporary ID for the commit that can be used to reference the commit for
-	// commit specific overrides.
-	TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
-	// Required: Schedule for distributing the commit to the customer. For "POSTPAID"
-	// commits only one schedule item is allowed and amount must match invoice_schedule
-	// total.
-	AccessSchedule V1ContractNewParamsCommitAccessSchedule `json:"access_schedule,omitzero"`
-	// Which products the commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Which tags the commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
-	// Required for "POSTPAID" commits: the true up invoice will be generated at this
-	// time and only one schedule item is allowed; the total must match access_schedule
-	// amount. Optional for "PREPAID" commits: if not provided, this will be a
-	// "complimentary" commit with no invoice.
-	InvoiceSchedule V1ContractNewParamsCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,omitzero"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
-	// Optional attributes for spend tracker integration. Immutable after creation.
-	SpendTrackerAttributes V1ContractNewParamsCommitSpendTrackerAttributes `json:"spend_tracker_attributes,omitzero"`
-	paramObj
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Any of "PREPAID", "POSTPAID".
+Type string `json:"type,omitzero" api:"required"`
+// (DEPRECATED) Use access_schedule and invoice_schedule instead.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Used only in UI/API. It is not exposed to end customers.
+Description param.Opt[string] `json:"description,omitzero"`
+// displayed on invoices
+Name param.Opt[string] `json:"name,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// If multiple commits are applicable, the one with the lower priority will apply
+// first.
+Priority param.Opt[float64] `json:"priority,omitzero"`
+// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
+RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
+// A temporary ID for the commit that can be used to reference the commit for
+// commit specific overrides.
+TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+// Required: Schedule for distributing the commit to the customer. For "POSTPAID"
+// commits only one schedule item is allowed and amount must match invoice_schedule
+// total.
+AccessSchedule V1ContractNewParamsCommitAccessSchedule `json:"access_schedule,omitzero"`
+// Which products the commit applies to. If applicable_product_ids,
+// applicable_product_tags or specifiers are not provided, the commit applies to
+// all products.
+ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+// Which tags the commit applies to. If applicable_product_ids,
+// applicable_product_tags or specifiers are not provided, the commit applies to
+// all products.
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+// Optional configuration for commit hierarchy access control
+HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
+// Required for "POSTPAID" commits: the true up invoice will be generated at this
+// time and only one schedule item is allowed; the total must match access_schedule
+// amount. Optional for "PREPAID" commits: if not provided, this will be a
+// "complimentary" commit with no invoice.
+InvoiceSchedule V1ContractNewParamsCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
+// Any of "COMMIT_RATE", "LIST_RATE".
+RateType string `json:"rate_type,omitzero"`
+// List of filters that determine what kind of customer usage draws down a commit
+// or credit. A customer's usage needs to meet the condition of at least one of the
+// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+// be used together with `applicable_product_ids` or `applicable_product_tags`.
+Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+// Optional attributes for spend tracker integration. Immutable after creation.
+SpendTrackerAttributes V1ContractNewParamsCommitSpendTrackerAttributes `json:"spend_tracker_attributes,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsCommit) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommit
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCommit
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCommit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCommit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommit](
-		"type", "PREPAID", "POSTPAID",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommit](
-		"rate_type", "COMMIT_RATE", "LIST_RATE",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsCommit](
+    "type", "PREPAID", "POSTPAID",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsCommit](
+    "rate_type", "COMMIT_RATE", "LIST_RATE",
+  )
 }
 
 // Required: Schedule for distributing the commit to the customer. For "POSTPAID"
@@ -2308,36 +2268,36 @@ func init() {
 //
 // The property ScheduleItems is required.
 type V1ContractNewParamsCommitAccessSchedule struct {
-	ScheduleItems []V1ContractNewParamsCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
-	// Defaults to USD (cents) if not passed
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	paramObj
+ScheduleItems []V1ContractNewParamsCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
+// Defaults to USD (cents) if not passed
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+paramObj
 }
 
 func (r V1ContractNewParamsCommitAccessSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitAccessSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCommitAccessSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCommitAccessSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCommitAccessSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V1ContractNewParamsCommitAccessScheduleScheduleItem struct {
-	Amount float64 `json:"amount" api:"required"`
-	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	paramObj
+Amount float64 `json:"amount" api:"required"`
+// RFC 3339 timestamp (exclusive)
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// RFC 3339 timestamp (inclusive)
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractNewParamsCommitAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitAccessScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCommitAccessScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCommitAccessScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCommitAccessScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Required for "POSTPAID" commits: the true up invoice will be generated at this
@@ -2345,26 +2305,26 @@ func (r *V1ContractNewParamsCommitAccessScheduleScheduleItem) UnmarshalJSON(data
 // amount. Optional for "PREPAID" commits: if not provided, this will be a
 // "complimentary" commit with no invoice.
 type V1ContractNewParamsCommitInvoiceSchedule struct {
-	// Defaults to USD (cents) if not passed.
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// This field is only applicable to commit invoice schedules. If true, this
-	// schedule will not generate an invoice.
-	DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
-	// Enter the unit price and quantity for the charge or instead only send the
-	// amount. If amount is sent, the unit price is assumed to be the amount and
-	// quantity is inferred to be 1.
-	RecurringSchedule V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
-	// Either provide amount or provide both unit_price and quantity.
-	ScheduleItems []V1ContractNewParamsCommitInvoiceScheduleScheduleItem `json:"schedule_items,omitzero"`
-	paramObj
+// Defaults to USD (cents) if not passed.
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// This field is only applicable to commit invoice schedules. If true, this
+// schedule will not generate an invoice.
+DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
+// Enter the unit price and quantity for the charge or instead only send the
+// amount. If amount is sent, the unit price is assumed to be the amount and
+// quantity is inferred to be 1.
+RecurringSchedule V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
+// Either provide amount or provide both unit_price and quantity.
+ScheduleItems []V1ContractNewParamsCommitInvoiceScheduleScheduleItem `json:"schedule_items,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsCommitInvoiceSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitInvoiceSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCommitInvoiceSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCommitInvoiceSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCommitInvoiceSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Enter the unit price and quantity for the charge or instead only send the
@@ -2374,221 +2334,221 @@ func (r *V1ContractNewParamsCommitInvoiceSchedule) UnmarshalJSON(data []byte) er
 // The properties AmountDistribution, EndingBefore, Frequency, StartingAt are
 // required.
 type V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule struct {
-	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
-	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
-	Frequency string `json:"frequency,omitzero" api:"required"`
-	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
+AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
+// RFC 3339 timestamp (exclusive).
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
+Frequency string `json:"frequency,omitzero" api:"required"`
+// RFC 3339 timestamp (inclusive).
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule](
-		"amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule](
-		"frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule](
+    "amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsCommitInvoiceScheduleRecurringSchedule](
+    "frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
+  )
 }
 
 // The property Timestamp is required.
 type V1ContractNewParamsCommitInvoiceScheduleScheduleItem struct {
-	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// timestamp of the scheduled event
+Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsCommitInvoiceScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitInvoiceScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCommitInvoiceScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Optional attributes for spend tracker integration. Immutable after creation.
 //
 // The property CountsAsDiscounted is required.
 type V1ContractNewParamsCommitSpendTrackerAttributes struct {
-	// If true, this commit will be included in spend trackers with discounted set to
-	// DISCOUNTED_ONLY
-	CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
-	paramObj
+// If true, this commit will be included in spend trackers with discounted set to
+// DISCOUNTED_ONLY
+CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsCommitSpendTrackerAttributes) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCommitSpendTrackerAttributes
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCommitSpendTrackerAttributes
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCommitSpendTrackerAttributes) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCommitSpendTrackerAttributes) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccessSchedule, ProductID are required.
 type V1ContractNewParamsCredit struct {
-	// Schedule for distributing the credit to the customer.
-	AccessSchedule V1ContractNewParamsCreditAccessSchedule `json:"access_schedule,omitzero" api:"required"`
-	ProductID      string                                  `json:"product_id" api:"required" format:"uuid"`
-	// Used only in UI/API. It is not exposed to end customers.
-	Description param.Opt[string] `json:"description,omitzero"`
-	// displayed on invoices
-	Name param.Opt[string] `json:"name,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// If multiple credits are applicable, the one with the lower priority will apply
-	// first.
-	Priority param.Opt[float64] `json:"priority,omitzero"`
-	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
-	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
-	// Which products the credit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the credit applies to all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Which tags the credit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the credit applies to all products.
-	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	// Optional configuration for credit hierarchy access control
-	HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,omitzero"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
-	paramObj
+// Schedule for distributing the credit to the customer.
+AccessSchedule V1ContractNewParamsCreditAccessSchedule `json:"access_schedule,omitzero" api:"required"`
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Used only in UI/API. It is not exposed to end customers.
+Description param.Opt[string] `json:"description,omitzero"`
+// displayed on invoices
+Name param.Opt[string] `json:"name,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// If multiple credits are applicable, the one with the lower priority will apply
+// first.
+Priority param.Opt[float64] `json:"priority,omitzero"`
+// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
+RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
+// Which products the credit applies to. If both applicable_product_ids and
+// applicable_product_tags are not provided, the credit applies to all products.
+ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+// Which tags the credit applies to. If both applicable_product_ids and
+// applicable_product_tags are not provided, the credit applies to all products.
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+// Optional configuration for credit hierarchy access control
+HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
+// Any of "COMMIT_RATE", "LIST_RATE".
+RateType string `json:"rate_type,omitzero"`
+// List of filters that determine what kind of customer usage draws down a commit
+// or credit. A customer's usage needs to meet the condition of at least one of the
+// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+// be used together with `applicable_product_ids` or `applicable_product_tags`.
+Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsCredit) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCredit
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCredit
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCredit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCredit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsCredit](
-		"rate_type", "COMMIT_RATE", "LIST_RATE",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsCredit](
+    "rate_type", "COMMIT_RATE", "LIST_RATE",
+  )
 }
 
 // Schedule for distributing the credit to the customer.
 //
 // The property ScheduleItems is required.
 type V1ContractNewParamsCreditAccessSchedule struct {
-	ScheduleItems []V1ContractNewParamsCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
-	// Defaults to USD (cents) if not passed
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	paramObj
+ScheduleItems []V1ContractNewParamsCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
+// Defaults to USD (cents) if not passed
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+paramObj
 }
 
 func (r V1ContractNewParamsCreditAccessSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCreditAccessSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCreditAccessSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCreditAccessSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCreditAccessSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V1ContractNewParamsCreditAccessScheduleScheduleItem struct {
-	Amount float64 `json:"amount" api:"required"`
-	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	paramObj
+Amount float64 `json:"amount" api:"required"`
+// RFC 3339 timestamp (exclusive)
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// RFC 3339 timestamp (inclusive)
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractNewParamsCreditAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsCreditAccessScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsCreditAccessScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsCreditAccessScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsCreditAccessScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties ProductID, Schedule are required.
 type V1ContractNewParamsDiscount struct {
-	ProductID string `json:"product_id" api:"required" format:"uuid"`
-	// Must provide either schedule_items or recurring_schedule.
-	Schedule V1ContractNewParamsDiscountSchedule `json:"schedule,omitzero" api:"required"`
-	// displayed on invoices
-	Name param.Opt[string] `json:"name,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	paramObj
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Must provide either schedule_items or recurring_schedule.
+Schedule V1ContractNewParamsDiscountSchedule `json:"schedule,omitzero" api:"required"`
+// displayed on invoices
+Name param.Opt[string] `json:"name,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsDiscount) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsDiscount
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsDiscount
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsDiscount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsDiscount) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Must provide either schedule_items or recurring_schedule.
 type V1ContractNewParamsDiscountSchedule struct {
-	// Defaults to USD (cents) if not passed.
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// This field is only applicable to commit invoice schedules. If true, this
-	// schedule will not generate an invoice.
-	DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
-	// Enter the unit price and quantity for the charge or instead only send the
-	// amount. If amount is sent, the unit price is assumed to be the amount and
-	// quantity is inferred to be 1.
-	RecurringSchedule V1ContractNewParamsDiscountScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
-	// Either provide amount or provide both unit_price and quantity.
-	ScheduleItems []V1ContractNewParamsDiscountScheduleScheduleItem `json:"schedule_items,omitzero"`
-	paramObj
+// Defaults to USD (cents) if not passed.
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// This field is only applicable to commit invoice schedules. If true, this
+// schedule will not generate an invoice.
+DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
+// Enter the unit price and quantity for the charge or instead only send the
+// amount. If amount is sent, the unit price is assumed to be the amount and
+// quantity is inferred to be 1.
+RecurringSchedule V1ContractNewParamsDiscountScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
+// Either provide amount or provide both unit_price and quantity.
+ScheduleItems []V1ContractNewParamsDiscountScheduleScheduleItem `json:"schedule_items,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsDiscountSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsDiscountSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsDiscountSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsDiscountSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsDiscountSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Enter the unit price and quantity for the charge or instead only send the
@@ -2598,156 +2558,156 @@ func (r *V1ContractNewParamsDiscountSchedule) UnmarshalJSON(data []byte) error {
 // The properties AmountDistribution, EndingBefore, Frequency, StartingAt are
 // required.
 type V1ContractNewParamsDiscountScheduleRecurringSchedule struct {
-	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
-	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
-	Frequency string `json:"frequency,omitzero" api:"required"`
-	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
+AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
+// RFC 3339 timestamp (exclusive).
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
+Frequency string `json:"frequency,omitzero" api:"required"`
+// RFC 3339 timestamp (inclusive).
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsDiscountScheduleRecurringSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsDiscountScheduleRecurringSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsDiscountScheduleRecurringSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsDiscountScheduleRecurringSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsDiscountScheduleRecurringSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsDiscountScheduleRecurringSchedule](
-		"amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsDiscountScheduleRecurringSchedule](
-		"frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsDiscountScheduleRecurringSchedule](
+    "amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsDiscountScheduleRecurringSchedule](
+    "frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
+  )
 }
 
 // The property Timestamp is required.
 type V1ContractNewParamsDiscountScheduleScheduleItem struct {
-	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// timestamp of the scheduled event
+Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsDiscountScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsDiscountScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsDiscountScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsDiscountScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsDiscountScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewParamsHierarchyConfiguration struct {
-	Parent         V1ContractNewParamsHierarchyConfigurationParent         `json:"parent,omitzero"`
-	ParentBehavior V1ContractNewParamsHierarchyConfigurationParentBehavior `json:"parent_behavior,omitzero"`
-	// Indicates which customer should pay for the child's invoice charges
-	//
-	// **SELF**: The child pays for its own invoice charges
-	//
-	// **PARENT**: The parent pays for the child's invoice charges
-	//
-	// Any of "SELF", "PARENT".
-	Payer string `json:"payer,omitzero"`
-	// Indicates the behavior of the child's invoice statements on the parent's
-	// invoices.
-	//
-	// **CONSOLIDATE**: Child's invoice statements will be added to parent's
-	// consolidated invoices
-	//
-	// **SEPARATE**: Child's invoice statements will appear not appear on parent's
-	// consolidated invoices
-	//
-	// Any of "CONSOLIDATE", "SEPARATE".
-	UsageStatementBehavior string `json:"usage_statement_behavior,omitzero"`
-	paramObj
+Parent V1ContractNewParamsHierarchyConfigurationParent `json:"parent,omitzero"`
+ParentBehavior V1ContractNewParamsHierarchyConfigurationParentBehavior `json:"parent_behavior,omitzero"`
+// Indicates which customer should pay for the child's invoice charges
+//
+// **SELF**: The child pays for its own invoice charges
+//
+// **PARENT**: The parent pays for the child's invoice charges
+//
+// Any of "SELF", "PARENT".
+Payer string `json:"payer,omitzero"`
+// Indicates the behavior of the child's invoice statements on the parent's
+// invoices.
+//
+// **CONSOLIDATE**: Child's invoice statements will be added to parent's
+// consolidated invoices
+//
+// **SEPARATE**: Child's invoice statements will appear not appear on parent's
+// consolidated invoices
+//
+// Any of "CONSOLIDATE", "SEPARATE".
+UsageStatementBehavior string `json:"usage_statement_behavior,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsHierarchyConfiguration) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsHierarchyConfiguration
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsHierarchyConfiguration
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsHierarchyConfiguration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsHierarchyConfiguration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfiguration](
-		"payer", "SELF", "PARENT",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfiguration](
-		"usage_statement_behavior", "CONSOLIDATE", "SEPARATE",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfiguration](
+    "payer", "SELF", "PARENT",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfiguration](
+    "usage_statement_behavior", "CONSOLIDATE", "SEPARATE",
+  )
 }
 
 // The properties ContractID, CustomerID are required.
 type V1ContractNewParamsHierarchyConfigurationParent struct {
-	ContractID string `json:"contract_id" api:"required" format:"uuid"`
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	paramObj
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+paramObj
 }
 
 func (r V1ContractNewParamsHierarchyConfigurationParent) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsHierarchyConfigurationParent
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsHierarchyConfigurationParent
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsHierarchyConfigurationParent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsHierarchyConfigurationParent) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewParamsHierarchyConfigurationParentBehavior struct {
-	// Indicates the desired behavior of consolidated invoices generated by the parent
-	// in a customer hierarchy
-	//
-	// **CONCATENATE**: Statements on the invoices of child customers will be appended
-	// to the consolidated invoice
-	//
-	// **NONE**: Do not generate consolidated invoices
-	//
-	// Any of "CONCATENATE", "NONE".
-	InvoiceConsolidationType string `json:"invoice_consolidation_type,omitzero"`
-	paramObj
+// Indicates the desired behavior of consolidated invoices generated by the parent
+// in a customer hierarchy
+//
+// **CONCATENATE**: Statements on the invoices of child customers will be appended
+// to the consolidated invoice
+//
+// **NONE**: Do not generate consolidated invoices
+//
+// Any of "CONCATENATE", "NONE".
+InvoiceConsolidationType string `json:"invoice_consolidation_type,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsHierarchyConfigurationParentBehavior) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsHierarchyConfigurationParentBehavior
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsHierarchyConfigurationParentBehavior
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsHierarchyConfigurationParentBehavior) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsHierarchyConfigurationParentBehavior) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfigurationParentBehavior](
-		"invoice_consolidation_type", "CONCATENATE", "NONE",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsHierarchyConfigurationParentBehavior](
+    "invoice_consolidation_type", "CONCATENATE", "NONE",
+  )
 }
 
 // Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list
@@ -2757,305 +2717,305 @@ func init() {
 type V1ContractNewParamsMultiplierOverridePrioritization string
 
 const (
-	V1ContractNewParamsMultiplierOverridePrioritizationLowestMultiplier V1ContractNewParamsMultiplierOverridePrioritization = "LOWEST_MULTIPLIER"
-	V1ContractNewParamsMultiplierOverridePrioritizationExplicit         V1ContractNewParamsMultiplierOverridePrioritization = "EXPLICIT"
-)
+    V1ContractNewParamsMultiplierOverridePrioritizationLowestMultiplier V1ContractNewParamsMultiplierOverridePrioritization = "LOWEST_MULTIPLIER"
+    V1ContractNewParamsMultiplierOverridePrioritizationExplicit V1ContractNewParamsMultiplierOverridePrioritization = "EXPLICIT"
+  )
 
 // The property StartingAt is required.
 type V1ContractNewParamsOverride struct {
-	// RFC 3339 timestamp indicating when the override will start applying (inclusive)
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// RFC 3339 timestamp indicating when the override will stop applying (exclusive)
-	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	Entitled     param.Opt[bool]      `json:"entitled,omitzero"`
-	// Indicates whether the override should only apply to commits. Defaults to
-	// `false`. If `true` you can specify relevant commits in `override_specifiers` by
-	// passing `commit_ids`, `recurring_commit_ids`, or `any_commit_or_credit_ids`. If
-	// you do not specify any of these fields, the override will apply when consuming
-	// any prepaid commit, postpaid commit, or credit
-	IsCommitSpecific param.Opt[bool] `json:"is_commit_specific,omitzero"`
-	// Required for MULTIPLIER type. Must be >=0.
-	Multiplier param.Opt[float64] `json:"multiplier,omitzero"`
-	// Required for EXPLICIT multiplier prioritization scheme and all TIERED overrides.
-	// Under EXPLICIT prioritization, overwrites are prioritized first, and then tiered
-	// and multiplier overrides are prioritized by their priority value (lowest first).
-	// Must be > 0.
-	Priority param.Opt[float64] `json:"priority,omitzero"`
-	// ID of the product whose rate is being overridden. Cannot be used in conjunction
-	// with override_specifiers.
-	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
-	// tags identifying products whose rates are being overridden. Cannot be used in
-	// conjunction with override_specifiers.
-	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
-	// Cannot be used in conjunction with product_id or applicable_product_tags. If
-	// provided, the override will apply to all products with the specified specifiers.
-	OverrideSpecifiers []V1ContractNewParamsOverrideOverrideSpecifier `json:"override_specifiers,omitzero"`
-	// Required for OVERWRITE type.
-	OverwriteRate V1ContractNewParamsOverrideOverwriteRate `json:"overwrite_rate,omitzero"`
-	// Indicates whether the override applies to commit rates or list rates. Can only
-	// be used for overrides that have `is_commit_specific` set to `true`. Defaults to
-	// `"LIST_RATE"`.
-	//
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	Target string `json:"target,omitzero"`
-	// Required for TIERED type. Must have at least one tier.
-	Tiers []V1ContractNewParamsOverrideTier `json:"tiers,omitzero"`
-	// Overwrites are prioritized over multipliers and tiered overrides.
-	//
-	// Any of "OVERWRITE", "MULTIPLIER", "TIERED".
-	Type string `json:"type,omitzero"`
-	paramObj
+// RFC 3339 timestamp indicating when the override will start applying (inclusive)
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// RFC 3339 timestamp indicating when the override will stop applying (exclusive)
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+Entitled param.Opt[bool] `json:"entitled,omitzero"`
+// Indicates whether the override should only apply to commits. Defaults to
+// `false`. If `true` you can specify relevant commits in `override_specifiers` by
+// passing `commit_ids`, `recurring_commit_ids`, or `any_commit_or_credit_ids`. If
+// you do not specify any of these fields, the override will apply when consuming
+// any prepaid commit, postpaid commit, or credit
+IsCommitSpecific param.Opt[bool] `json:"is_commit_specific,omitzero"`
+// Required for MULTIPLIER type. Must be >=0.
+Multiplier param.Opt[float64] `json:"multiplier,omitzero"`
+// Required for EXPLICIT multiplier prioritization scheme and all TIERED overrides.
+// Under EXPLICIT prioritization, overwrites are prioritized first, and then tiered
+// and multiplier overrides are prioritized by their priority value (lowest first).
+// Must be > 0.
+Priority param.Opt[float64] `json:"priority,omitzero"`
+// ID of the product whose rate is being overridden. Cannot be used in conjunction
+// with override_specifiers.
+ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+// tags identifying products whose rates are being overridden. Cannot be used in
+// conjunction with override_specifiers.
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+// Cannot be used in conjunction with product_id or applicable_product_tags. If
+// provided, the override will apply to all products with the specified specifiers.
+OverrideSpecifiers []V1ContractNewParamsOverrideOverrideSpecifier `json:"override_specifiers,omitzero"`
+// Required for OVERWRITE type.
+OverwriteRate V1ContractNewParamsOverrideOverwriteRate `json:"overwrite_rate,omitzero"`
+// Indicates whether the override applies to commit rates or list rates. Can only
+// be used for overrides that have `is_commit_specific` set to `true`. Defaults to
+// `"LIST_RATE"`.
+//
+// Any of "COMMIT_RATE", "LIST_RATE".
+Target string `json:"target,omitzero"`
+// Required for TIERED type. Must have at least one tier.
+Tiers []V1ContractNewParamsOverrideTier `json:"tiers,omitzero"`
+// Overwrites are prioritized over multipliers and tiered overrides.
+//
+// Any of "OVERWRITE", "MULTIPLIER", "TIERED".
+Type string `json:"type,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsOverride) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsOverride
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsOverride
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsOverride) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsOverride) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsOverride](
-		"target", "COMMIT_RATE", "LIST_RATE",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsOverride](
-		"type", "OVERWRITE", "MULTIPLIER", "TIERED",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsOverride](
+    "target", "COMMIT_RATE", "LIST_RATE",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsOverride](
+    "type", "OVERWRITE", "MULTIPLIER", "TIERED",
+  )
 }
 
 type V1ContractNewParamsOverrideOverrideSpecifier struct {
-	// If provided, the override will only apply to the product with the specified ID.
-	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. Must be used instead of both `commit_ids` and
-	// `recurring_commit_ids` If provided, the override will apply to any specified
-	// commit, credit, recurring commit or recurring credit IDs.
-	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	BillingFrequency string `json:"billing_frequency,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to the
-	// specified commits. If not provided, the override will apply to all commits.
-	CommitIDs []string `json:"commit_ids,omitzero"`
-	// A map of group names to values. The override will only apply to line items with
-	// the specified presentation group values.
-	PresentationGroupValues map[string]string `json:"presentation_group_values,omitzero"`
-	// A map of pricing group names to values. The override will only apply to products
-	// with the specified pricing group values.
-	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
-	// If provided, the override will only apply to products with all the specified
-	// tags.
-	ProductTags []string `json:"product_tags,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to
-	// commits created by the specified recurring commit ids.
-	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	paramObj
+// If provided, the override will only apply to the product with the specified ID.
+ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+// Can only be used for commit specific overrides. Must be used in conjunction with
+// one of `product_id`, `product_tags`, `pricing_group_values`, or
+// `presentation_group_values`. Must be used instead of both `commit_ids` and
+// `recurring_commit_ids` If provided, the override will apply to any specified
+// commit, credit, recurring commit or recurring credit IDs.
+AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+BillingFrequency string `json:"billing_frequency,omitzero"`
+// Can only be used for commit specific overrides. Must be used in conjunction with
+// one of `product_id`, `product_tags`, `pricing_group_values`, or
+// `presentation_group_values`. If provided, the override will only apply to the
+// specified commits. If not provided, the override will apply to all commits.
+CommitIDs []string `json:"commit_ids,omitzero"`
+// A map of group names to values. The override will only apply to line items with
+// the specified presentation group values.
+PresentationGroupValues map[string]string `json:"presentation_group_values,omitzero"`
+// A map of pricing group names to values. The override will only apply to products
+// with the specified pricing group values.
+PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
+// If provided, the override will only apply to products with all the specified
+// tags.
+ProductTags []string `json:"product_tags,omitzero"`
+// Can only be used for commit specific overrides. Must be used in conjunction with
+// one of `product_id`, `product_tags`, `pricing_group_values`, or
+// `presentation_group_values`. If provided, the override will only apply to
+// commits created by the specified recurring commit ids.
+RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsOverrideOverrideSpecifier) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsOverrideOverrideSpecifier
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsOverrideOverrideSpecifier
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsOverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsOverrideOverrideSpecifier) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsOverrideOverrideSpecifier](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsOverrideOverrideSpecifier](
+    "billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+  )
 }
 
 // Required for OVERWRITE type.
 //
 // The property RateType is required.
 type V1ContractNewParamsOverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
-	// "CUSTOM".
-	RateType     string            `json:"rate_type,omitzero" api:"required"`
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
-	// set to true.
-	IsProrated param.Opt[bool] `json:"is_prorated,omitzero"`
-	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
-	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-	Price param.Opt[float64] `json:"price,omitzero"`
-	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
-	// processors.
-	CustomRate map[string]any `json:"custom_rate,omitzero"`
-	// Only set for TIERED rate_type.
-	Tiers []shared.TierParam `json:"tiers,omitzero"`
-	paramObj
+// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+// "CUSTOM".
+RateType string `json:"rate_type,omitzero" api:"required"`
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+// set to true.
+IsProrated param.Opt[bool] `json:"is_prorated,omitzero"`
+// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+Price param.Opt[float64] `json:"price,omitzero"`
+// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+// processors.
+CustomRate map[string]any `json:"custom_rate,omitzero"`
+// Only set for TIERED rate_type.
+Tiers []shared.TierParam `json:"tiers,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsOverrideOverwriteRate) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsOverrideOverwriteRate
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsOverrideOverwriteRate
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsOverrideOverwriteRate) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsOverrideOverwriteRate) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsOverrideOverwriteRate](
-		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsOverrideOverwriteRate](
+    "rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
+  )
 }
 
 // The property Multiplier is required.
 type V1ContractNewParamsOverrideTier struct {
-	Multiplier float64            `json:"multiplier" api:"required"`
-	Size       param.Opt[float64] `json:"size,omitzero"`
-	paramObj
+Multiplier float64 `json:"multiplier" api:"required"`
+Size param.Opt[float64] `json:"size,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsOverrideTier) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsOverrideTier
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsOverrideTier
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsOverrideTier) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsOverrideTier) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties MaxAmount, ProductID, Quantity, UnitPrice are required.
 type V1ContractNewParamsProfessionalService struct {
-	// Maximum amount for the term.
-	MaxAmount float64 `json:"max_amount" api:"required"`
-	ProductID string  `json:"product_id" api:"required" format:"uuid"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount.
-	Quantity float64 `json:"quantity" api:"required"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified.
-	UnitPrice   float64           `json:"unit_price" api:"required"`
-	Description param.Opt[string] `json:"description,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	paramObj
+// Maximum amount for the term.
+MaxAmount float64 `json:"max_amount" api:"required"`
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount.
+Quantity float64 `json:"quantity" api:"required"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified.
+UnitPrice float64 `json:"unit_price" api:"required"`
+Description param.Opt[string] `json:"description,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsProfessionalService) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsProfessionalService
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsProfessionalService
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsProfessionalService) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsProfessionalService) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccessAmount, CommitDuration, Priority, ProductID, StartingAt are
 // required.
 type V1ContractNewParamsRecurringCommit struct {
-	// The amount of commit to grant.
-	AccessAmount V1ContractNewParamsRecurringCommitAccessAmount `json:"access_amount,omitzero" api:"required"`
-	// Defines the length of the access schedule for each created commit/credit. The
-	// value represents the number of units. Unit defaults to "PERIODS", where the
-	// length of a period is determined by the recurrence_frequency.
-	CommitDuration V1ContractNewParamsRecurringCommitCommitDuration `json:"commit_duration,omitzero" api:"required"`
-	// Will be passed down to the individual commits
-	Priority  float64 `json:"priority" api:"required"`
-	ProductID string  `json:"product_id" api:"required" format:"uuid"`
-	// determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Will be passed down to the individual commits
-	Description param.Opt[string] `json:"description,omitzero"`
-	// Determines when the contract will stop creating recurring commits. optional
-	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	// displayed on invoices. will be passed through to the individual commits
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Will be passed down to the individual commits
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Will be passed down to the individual commits. This controls how much of an
-	// individual unexpired commit will roll over upon contract transition. Must be
-	// between 0 and 1.
-	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
-	// A temporary ID that can be used to reference the recurring commit for commit
-	// specific overrides.
-	TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
-	// Will be passed down to the individual commits
-	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Will be passed down to the individual commits
-	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
-	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
-	// The amount the customer should be billed for the commit. Not required.
-	InvoiceAmount V1ContractNewParamsRecurringCommitInvoiceAmount `json:"invoice_amount,omitzero"`
-	// Determines whether the first and last commit will be prorated. If not provided,
-	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
-	//
-	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
-	Proration string `json:"proration,omitzero"`
-	// Optional rounding configuration for prorated recurring commit amounts.
-	ProrationRounding V1ContractNewParamsRecurringCommitProrationRounding `json:"proration_rounding,omitzero"`
-	// Whether the created commits will use the commit rate or list rate
-	//
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,omitzero"`
-	// The frequency at which the recurring commits will be created. If not provided: -
-	// The commits will be created on the usage invoice frequency. If provided: - The
-	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates. - Daily recurring commits have a limit of one per contract, and
-	// are unable to be created with seat-based subscriptions
-	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
-	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
-	// Attach a subscription to the recurring commit/credit.
-	SubscriptionConfig V1ContractNewParamsRecurringCommitSubscriptionConfig `json:"subscription_config,omitzero"`
-	paramObj
+// The amount of commit to grant.
+AccessAmount V1ContractNewParamsRecurringCommitAccessAmount `json:"access_amount,omitzero" api:"required"`
+// Defines the length of the access schedule for each created commit/credit. The
+// value represents the number of units. Unit defaults to "PERIODS", where the
+// length of a period is determined by the recurrence_frequency.
+CommitDuration V1ContractNewParamsRecurringCommitCommitDuration `json:"commit_duration,omitzero" api:"required"`
+// Will be passed down to the individual commits
+Priority float64 `json:"priority" api:"required"`
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// determines the start time for the first commit
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Will be passed down to the individual commits
+Description param.Opt[string] `json:"description,omitzero"`
+// Determines when the contract will stop creating recurring commits. optional
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+// displayed on invoices. will be passed through to the individual commits
+Name param.Opt[string] `json:"name,omitzero"`
+// Will be passed down to the individual commits
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Will be passed down to the individual commits. This controls how much of an
+// individual unexpired commit will roll over upon contract transition. Must be
+// between 0 and 1.
+RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
+// A temporary ID that can be used to reference the recurring commit for commit
+// specific overrides.
+TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+// Will be passed down to the individual commits
+ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+// Will be passed down to the individual commits
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+// Optional configuration for recurring commit/credit hierarchy access control
+HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
+// The amount the customer should be billed for the commit. Not required.
+InvoiceAmount V1ContractNewParamsRecurringCommitInvoiceAmount `json:"invoice_amount,omitzero"`
+// Determines whether the first and last commit will be prorated. If not provided,
+// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+//
+// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
+Proration string `json:"proration,omitzero"`
+// Optional rounding configuration for prorated recurring commit amounts.
+ProrationRounding V1ContractNewParamsRecurringCommitProrationRounding `json:"proration_rounding,omitzero"`
+// Whether the created commits will use the commit rate or list rate
+//
+// Any of "COMMIT_RATE", "LIST_RATE".
+RateType string `json:"rate_type,omitzero"`
+// The frequency at which the recurring commits will be created. If not provided: -
+// The commits will be created on the usage invoice frequency. If provided: - The
+// period defined in the duration will correspond to this frequency. - Commits will
+// be created aligned with the recurring commit's starting_at rather than the usage
+// invoice dates. - Daily recurring commits have a limit of one per contract, and
+// are unable to be created with seat-based subscriptions
+//
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
+// List of filters that determine what kind of customer usage draws down a commit
+// or credit. A customer's usage needs to meet the condition of at least one of the
+// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+// be used together with `applicable_product_ids` or `applicable_product_tags`.
+Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+// Attach a subscription to the recurring commit/credit.
+SubscriptionConfig V1ContractNewParamsRecurringCommitSubscriptionConfig `json:"subscription_config,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommit) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommit
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommit
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommit](
-		"proration", "NONE", "FIRST", "LAST", "FIRST_AND_LAST",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommit](
-		"rate_type", "COMMIT_RATE", "LIST_RATE",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommit](
+    "proration", "NONE", "FIRST", "LAST", "FIRST_AND_LAST",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommit](
+    "rate_type", "COMMIT_RATE", "LIST_RATE",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommit](
+    "recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
+  )
 }
 
 // The amount of commit to grant.
 //
 // The properties CreditTypeID, UnitPrice are required.
 type V1ContractNewParamsRecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
-	// This field is required unless a subscription is attached via
-	// `subscription_config`.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	paramObj
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+UnitPrice float64 `json:"unit_price" api:"required"`
+// This field is required unless a subscription is attached via
+// `subscription_config`.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommitAccessAmount) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommitAccessAmount
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommitAccessAmount
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommitAccessAmount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommitAccessAmount) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Defines the length of the access schedule for each created commit/credit. The
@@ -3064,258 +3024,258 @@ func (r *V1ContractNewParamsRecurringCommitAccessAmount) UnmarshalJSON(data []by
 //
 // The property Value is required.
 type V1ContractNewParamsRecurringCommitCommitDuration struct {
-	Value float64 `json:"value" api:"required"`
-	// Any of "PERIODS".
-	Unit string `json:"unit,omitzero"`
-	paramObj
+Value float64 `json:"value" api:"required"`
+// Any of "PERIODS".
+Unit string `json:"unit,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommitCommitDuration) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommitCommitDuration
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommitCommitDuration
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommitCommitDuration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommitCommitDuration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitCommitDuration](
-		"unit", "PERIODS",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitCommitDuration](
+    "unit", "PERIODS",
+  )
 }
 
 // The amount the customer should be billed for the commit. Not required.
 //
 // The properties CreditTypeID, Quantity, UnitPrice are required.
 type V1ContractNewParamsRecurringCommitInvoiceAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	Quantity     float64 `json:"quantity" api:"required"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
-	paramObj
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+Quantity float64 `json:"quantity" api:"required"`
+UnitPrice float64 `json:"unit_price" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommitInvoiceAmount) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommitInvoiceAmount
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommitInvoiceAmount
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommitInvoiceAmount) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Optional rounding configuration for prorated recurring commit amounts.
 type V1ContractNewParamsRecurringCommitProrationRounding struct {
-	Access  V1ContractNewParamsRecurringCommitProrationRoundingAccess  `json:"access,omitzero"`
-	Invoice V1ContractNewParamsRecurringCommitProrationRoundingInvoice `json:"invoice,omitzero"`
-	paramObj
+Access V1ContractNewParamsRecurringCommitProrationRoundingAccess `json:"access,omitzero"`
+Invoice V1ContractNewParamsRecurringCommitProrationRoundingInvoice `json:"invoice,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommitProrationRounding) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommitProrationRounding
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommitProrationRounding
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommitProrationRounding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommitProrationRounding) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties DecimalPlaces, RoundingMethod are required.
 type V1ContractNewParamsRecurringCommitProrationRoundingAccess struct {
-	// Number of decimal places to round to. Applied directly to the stored monetary
-	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
-	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
-	// dollar).
-	DecimalPlaces float64 `json:"decimal_places" api:"required"`
-	// Any of "HALF_UP", "FLOOR", "CEILING".
-	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
-	paramObj
+// Number of decimal places to round to. Applied directly to the stored monetary
+// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+// dollar).
+DecimalPlaces float64 `json:"decimal_places" api:"required"`
+// Any of "HALF_UP", "FLOOR", "CEILING".
+RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommitProrationRoundingAccess) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommitProrationRoundingAccess
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommitProrationRoundingAccess
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommitProrationRoundingAccess) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitProrationRoundingAccess](
-		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitProrationRoundingAccess](
+    "rounding_method", "HALF_UP", "FLOOR", "CEILING",
+  )
 }
 
 // The properties DecimalPlaces, RoundingMethod are required.
 type V1ContractNewParamsRecurringCommitProrationRoundingInvoice struct {
-	// Number of decimal places to round to. Applied directly to the stored monetary
-	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
-	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
-	// dollar).
-	DecimalPlaces float64 `json:"decimal_places" api:"required"`
-	// Any of "HALF_UP", "FLOOR", "CEILING".
-	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
-	paramObj
+// Number of decimal places to round to. Applied directly to the stored monetary
+// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+// dollar).
+DecimalPlaces float64 `json:"decimal_places" api:"required"`
+// Any of "HALF_UP", "FLOOR", "CEILING".
+RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommitProrationRoundingInvoice) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommitProrationRoundingInvoice
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommitProrationRoundingInvoice
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommitProrationRoundingInvoice) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitProrationRoundingInvoice](
-		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitProrationRoundingInvoice](
+    "rounding_method", "HALF_UP", "FLOOR", "CEILING",
+  )
 }
 
 // Attach a subscription to the recurring commit/credit.
 //
 // The properties ApplySeatIncreaseConfig, SubscriptionID are required.
 type V1ContractNewParamsRecurringCommitSubscriptionConfig struct {
-	ApplySeatIncreaseConfig V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero" api:"required"`
-	// ID of the subscription to configure on the recurring commit/credit.
-	SubscriptionID string `json:"subscription_id" api:"required"`
-	// If set to POOLED, allocation added per seat is pooled across the account. If set
-	// to INDIVIDUAL, each seat in the subscription will have its own allocation.
-	//
-	// Any of "INDIVIDUAL", "POOLED".
-	Allocation string `json:"allocation,omitzero"`
-	paramObj
+ApplySeatIncreaseConfig V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero" api:"required"`
+// ID of the subscription to configure on the recurring commit/credit.
+SubscriptionID string `json:"subscription_id" api:"required"`
+// If set to POOLED, allocation added per seat is pooled across the account. If set
+// to INDIVIDUAL, each seat in the subscription will have its own allocation.
+//
+// Any of "INDIVIDUAL", "POOLED".
+Allocation string `json:"allocation,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommitSubscriptionConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommitSubscriptionConfig
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommitSubscriptionConfig
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommitSubscriptionConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommitSubscriptionConfig) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitSubscriptionConfig](
-		"allocation", "INDIVIDUAL", "POOLED",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitSubscriptionConfig](
+    "allocation", "INDIVIDUAL", "POOLED",
+  )
 }
 
 // The property IsProrated is required.
 type V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig struct {
-	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool `json:"is_prorated" api:"required"`
-	paramObj
+// Indicates whether a mid-period seat increase should be prorated.
+IsProrated bool `json:"is_prorated" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCommitSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccessAmount, CommitDuration, Priority, ProductID, StartingAt are
 // required.
 type V1ContractNewParamsRecurringCredit struct {
-	// The amount of commit to grant.
-	AccessAmount V1ContractNewParamsRecurringCreditAccessAmount `json:"access_amount,omitzero" api:"required"`
-	// Defines the length of the access schedule for each created commit/credit. The
-	// value represents the number of units. Unit defaults to "PERIODS", where the
-	// length of a period is determined by the recurrence_frequency.
-	CommitDuration V1ContractNewParamsRecurringCreditCommitDuration `json:"commit_duration,omitzero" api:"required"`
-	// Will be passed down to the individual commits
-	Priority  float64 `json:"priority" api:"required"`
-	ProductID string  `json:"product_id" api:"required" format:"uuid"`
-	// determines the start time for the first commit
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Will be passed down to the individual commits
-	Description param.Opt[string] `json:"description,omitzero"`
-	// Determines when the contract will stop creating recurring commits. optional
-	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	// displayed on invoices. will be passed through to the individual commits
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Will be passed down to the individual commits
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Will be passed down to the individual commits. This controls how much of an
-	// individual unexpired commit will roll over upon contract transition. Must be
-	// between 0 and 1.
-	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
-	// A temporary ID that can be used to reference the recurring commit for commit
-	// specific overrides.
-	TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
-	// Will be passed down to the individual commits
-	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Will be passed down to the individual commits
-	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
-	// Optional configuration for recurring commit/credit hierarchy access control
-	HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
-	// Determines whether the first and last commit will be prorated. If not provided,
-	// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
-	//
-	// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
-	Proration string `json:"proration,omitzero"`
-	// Optional rounding configuration for prorated recurring credit amounts.
-	ProrationRounding V1ContractNewParamsRecurringCreditProrationRounding `json:"proration_rounding,omitzero"`
-	// Whether the created commits will use the commit rate or list rate
-	//
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,omitzero"`
-	// The frequency at which the recurring commits will be created. If not provided: -
-	// The commits will be created on the usage invoice frequency. If provided: - The
-	// period defined in the duration will correspond to this frequency. - Commits will
-	// be created aligned with the recurring commit's starting_at rather than the usage
-	// invoice dates. - Daily recurring commits have a limit of one per contract, and
-	// are unable to be created with seat-based subscriptions
-	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
-	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
-	// Attach a subscription to the recurring commit/credit.
-	SubscriptionConfig V1ContractNewParamsRecurringCreditSubscriptionConfig `json:"subscription_config,omitzero"`
-	paramObj
+// The amount of commit to grant.
+AccessAmount V1ContractNewParamsRecurringCreditAccessAmount `json:"access_amount,omitzero" api:"required"`
+// Defines the length of the access schedule for each created commit/credit. The
+// value represents the number of units. Unit defaults to "PERIODS", where the
+// length of a period is determined by the recurrence_frequency.
+CommitDuration V1ContractNewParamsRecurringCreditCommitDuration `json:"commit_duration,omitzero" api:"required"`
+// Will be passed down to the individual commits
+Priority float64 `json:"priority" api:"required"`
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// determines the start time for the first commit
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Will be passed down to the individual commits
+Description param.Opt[string] `json:"description,omitzero"`
+// Determines when the contract will stop creating recurring commits. optional
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+// displayed on invoices. will be passed through to the individual commits
+Name param.Opt[string] `json:"name,omitzero"`
+// Will be passed down to the individual commits
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Will be passed down to the individual commits. This controls how much of an
+// individual unexpired commit will roll over upon contract transition. Must be
+// between 0 and 1.
+RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
+// A temporary ID that can be used to reference the recurring commit for commit
+// specific overrides.
+TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+// Will be passed down to the individual commits
+ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+// Will be passed down to the individual commits
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+// Optional configuration for recurring commit/credit hierarchy access control
+HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
+// Determines whether the first and last commit will be prorated. If not provided,
+// the default is FIRST_AND_LAST (i.e. prorate both the first and last commits).
+//
+// Any of "NONE", "FIRST", "LAST", "FIRST_AND_LAST".
+Proration string `json:"proration,omitzero"`
+// Optional rounding configuration for prorated recurring credit amounts.
+ProrationRounding V1ContractNewParamsRecurringCreditProrationRounding `json:"proration_rounding,omitzero"`
+// Whether the created commits will use the commit rate or list rate
+//
+// Any of "COMMIT_RATE", "LIST_RATE".
+RateType string `json:"rate_type,omitzero"`
+// The frequency at which the recurring commits will be created. If not provided: -
+// The commits will be created on the usage invoice frequency. If provided: - The
+// period defined in the duration will correspond to this frequency. - Commits will
+// be created aligned with the recurring commit's starting_at rather than the usage
+// invoice dates. - Daily recurring commits have a limit of one per contract, and
+// are unable to be created with seat-based subscriptions
+//
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
+// List of filters that determine what kind of customer usage draws down a commit
+// or credit. A customer's usage needs to meet the condition of at least one of the
+// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+// be used together with `applicable_product_ids` or `applicable_product_tags`.
+Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+// Attach a subscription to the recurring commit/credit.
+SubscriptionConfig V1ContractNewParamsRecurringCreditSubscriptionConfig `json:"subscription_config,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCredit) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCredit
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCredit
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCredit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCredit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCredit](
-		"proration", "NONE", "FIRST", "LAST", "FIRST_AND_LAST",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCredit](
-		"rate_type", "COMMIT_RATE", "LIST_RATE",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCredit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCredit](
+    "proration", "NONE", "FIRST", "LAST", "FIRST_AND_LAST",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCredit](
+    "rate_type", "COMMIT_RATE", "LIST_RATE",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCredit](
+    "recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
+  )
 }
 
 // The amount of commit to grant.
 //
 // The properties CreditTypeID, UnitPrice are required.
 type V1ContractNewParamsRecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
-	// This field is required unless a subscription is attached via
-	// `subscription_config`.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	paramObj
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+UnitPrice float64 `json:"unit_price" api:"required"`
+// This field is required unless a subscription is attached via
+// `subscription_config`.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCreditAccessAmount) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCreditAccessAmount
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCreditAccessAmount
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCreditAccessAmount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCreditAccessAmount) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Defines the length of the access schedule for each created commit/credit. The
@@ -3324,253 +3284,253 @@ func (r *V1ContractNewParamsRecurringCreditAccessAmount) UnmarshalJSON(data []by
 //
 // The property Value is required.
 type V1ContractNewParamsRecurringCreditCommitDuration struct {
-	Value float64 `json:"value" api:"required"`
-	// Any of "PERIODS".
-	Unit string `json:"unit,omitzero"`
-	paramObj
+Value float64 `json:"value" api:"required"`
+// Any of "PERIODS".
+Unit string `json:"unit,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCreditCommitDuration) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCreditCommitDuration
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCreditCommitDuration
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCreditCommitDuration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCreditCommitDuration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditCommitDuration](
-		"unit", "PERIODS",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditCommitDuration](
+    "unit", "PERIODS",
+  )
 }
 
 // Optional rounding configuration for prorated recurring credit amounts.
 type V1ContractNewParamsRecurringCreditProrationRounding struct {
-	Access V1ContractNewParamsRecurringCreditProrationRoundingAccess `json:"access,omitzero"`
-	paramObj
+Access V1ContractNewParamsRecurringCreditProrationRoundingAccess `json:"access,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCreditProrationRounding) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCreditProrationRounding
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCreditProrationRounding
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCreditProrationRounding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCreditProrationRounding) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties DecimalPlaces, RoundingMethod are required.
 type V1ContractNewParamsRecurringCreditProrationRoundingAccess struct {
-	// Number of decimal places to round to. Applied directly to the stored monetary
-	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
-	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
-	// dollar).
-	DecimalPlaces float64 `json:"decimal_places" api:"required"`
-	// Any of "HALF_UP", "FLOOR", "CEILING".
-	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
-	paramObj
+// Number of decimal places to round to. Applied directly to the stored monetary
+// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+// dollar).
+DecimalPlaces float64 `json:"decimal_places" api:"required"`
+// Any of "HALF_UP", "FLOOR", "CEILING".
+RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCreditProrationRoundingAccess) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCreditProrationRoundingAccess
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCreditProrationRoundingAccess
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCreditProrationRoundingAccess) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditProrationRoundingAccess](
-		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditProrationRoundingAccess](
+    "rounding_method", "HALF_UP", "FLOOR", "CEILING",
+  )
 }
 
 // Attach a subscription to the recurring commit/credit.
 //
 // The properties ApplySeatIncreaseConfig, SubscriptionID are required.
 type V1ContractNewParamsRecurringCreditSubscriptionConfig struct {
-	ApplySeatIncreaseConfig V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero" api:"required"`
-	// ID of the subscription to configure on the recurring commit/credit.
-	SubscriptionID string `json:"subscription_id" api:"required"`
-	// If set to POOLED, allocation added per seat is pooled across the account. If set
-	// to INDIVIDUAL, each seat in the subscription will have its own allocation.
-	//
-	// Any of "INDIVIDUAL", "POOLED".
-	Allocation string `json:"allocation,omitzero"`
-	paramObj
+ApplySeatIncreaseConfig V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig `json:"apply_seat_increase_config,omitzero" api:"required"`
+// ID of the subscription to configure on the recurring commit/credit.
+SubscriptionID string `json:"subscription_id" api:"required"`
+// If set to POOLED, allocation added per seat is pooled across the account. If set
+// to INDIVIDUAL, each seat in the subscription will have its own allocation.
+//
+// Any of "INDIVIDUAL", "POOLED".
+Allocation string `json:"allocation,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCreditSubscriptionConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCreditSubscriptionConfig
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCreditSubscriptionConfig
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCreditSubscriptionConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCreditSubscriptionConfig) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditSubscriptionConfig](
-		"allocation", "INDIVIDUAL", "POOLED",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditSubscriptionConfig](
+    "allocation", "INDIVIDUAL", "POOLED",
+  )
 }
 
 // The property IsProrated is required.
 type V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig struct {
-	// Indicates whether a mid-period seat increase should be prorated.
-	IsProrated bool `json:"is_prorated" api:"required"`
-	paramObj
+// Indicates whether a mid-period seat increase should be prorated.
+IsProrated bool `json:"is_prorated" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRecurringCreditSubscriptionConfigApplySeatIncreaseConfig) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Fraction, NetsuiteResellerID, ResellerType, StartingAt are
 // required.
 type V1ContractNewParamsResellerRoyalty struct {
-	Fraction           float64 `json:"fraction" api:"required"`
-	NetsuiteResellerID string  `json:"netsuite_reseller_id" api:"required"`
-	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType          string               `json:"reseller_type,omitzero" api:"required"`
-	StartingAt            time.Time            `json:"starting_at" api:"required" format:"date-time"`
-	EndingBefore          param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	ResellerContractValue param.Opt[float64]   `json:"reseller_contract_value,omitzero"`
-	// Must provide at least one of applicable_product_ids or applicable_product_tags.
-	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Must provide at least one of applicable_product_ids or applicable_product_tags.
-	ApplicableProductTags []string                                     `json:"applicable_product_tags,omitzero"`
-	AwsOptions            V1ContractNewParamsResellerRoyaltyAwsOptions `json:"aws_options,omitzero"`
-	GcpOptions            V1ContractNewParamsResellerRoyaltyGcpOptions `json:"gcp_options,omitzero"`
-	paramObj
+Fraction float64 `json:"fraction" api:"required"`
+NetsuiteResellerID string `json:"netsuite_reseller_id" api:"required"`
+// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
+ResellerType string `json:"reseller_type,omitzero" api:"required"`
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+ResellerContractValue param.Opt[float64] `json:"reseller_contract_value,omitzero"`
+// Must provide at least one of applicable_product_ids or applicable_product_tags.
+ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+// Must provide at least one of applicable_product_ids or applicable_product_tags.
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+AwsOptions V1ContractNewParamsResellerRoyaltyAwsOptions `json:"aws_options,omitzero"`
+GcpOptions V1ContractNewParamsResellerRoyaltyGcpOptions `json:"gcp_options,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsResellerRoyalty) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsResellerRoyalty
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsResellerRoyalty
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsResellerRoyalty) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsResellerRoyalty) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsResellerRoyalty](
-		"reseller_type", "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsResellerRoyalty](
+    "reseller_type", "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE",
+  )
 }
 
 type V1ContractNewParamsResellerRoyaltyAwsOptions struct {
-	AwsAccountNumber    param.Opt[string] `json:"aws_account_number,omitzero"`
-	AwsOfferID          param.Opt[string] `json:"aws_offer_id,omitzero"`
-	AwsPayerReferenceID param.Opt[string] `json:"aws_payer_reference_id,omitzero"`
-	paramObj
+AwsAccountNumber param.Opt[string] `json:"aws_account_number,omitzero"`
+AwsOfferID param.Opt[string] `json:"aws_offer_id,omitzero"`
+AwsPayerReferenceID param.Opt[string] `json:"aws_payer_reference_id,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsResellerRoyaltyAwsOptions) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsResellerRoyaltyAwsOptions
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsResellerRoyaltyAwsOptions
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsResellerRoyaltyAwsOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsResellerRoyaltyAwsOptions) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewParamsResellerRoyaltyGcpOptions struct {
-	GcpAccountID param.Opt[string] `json:"gcp_account_id,omitzero"`
-	GcpOfferID   param.Opt[string] `json:"gcp_offer_id,omitzero"`
-	paramObj
+GcpAccountID param.Opt[string] `json:"gcp_account_id,omitzero"`
+GcpOfferID param.Opt[string] `json:"gcp_offer_id,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsResellerRoyaltyGcpOptions) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsResellerRoyaltyGcpOptions
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsResellerRoyaltyGcpOptions
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The revenue system configuration associated with a contract. Provide either an
 // ID or the provider and delivery method.
 type V1ContractNewParamsRevenueSystemConfiguration struct {
-	// The Metronome ID of the revenue system configuration. Use when a customer has
-	// multiple configurations with the same provider and delivery method. Otherwise,
-	// specify the provider and delivery_method.
-	RevenueSystemConfigurationID param.Opt[string] `json:"revenue_system_configuration_id,omitzero" format:"uuid"`
-	// How revenue recognition records should be delivered to the revenue system. Do
-	// not specify if using revenue_system_configuration_id.
-	//
-	// Any of "direct_to_billing_provider".
-	DeliveryMethod string `json:"delivery_method,omitzero"`
-	// The system that is providing services for revenue recognition. Do not specify if
-	// using revenue_system_configuration_id.
-	//
-	// Any of "netsuite".
-	Provider string `json:"provider,omitzero"`
-	paramObj
+// The Metronome ID of the revenue system configuration. Use when a customer has
+// multiple configurations with the same provider and delivery method. Otherwise,
+// specify the provider and delivery_method.
+RevenueSystemConfigurationID param.Opt[string] `json:"revenue_system_configuration_id,omitzero" format:"uuid"`
+// How revenue recognition records should be delivered to the revenue system. Do
+// not specify if using revenue_system_configuration_id.
+//
+// Any of "direct_to_billing_provider".
+DeliveryMethod string `json:"delivery_method,omitzero"`
+// The system that is providing services for revenue recognition. Do not specify if
+// using revenue_system_configuration_id.
+//
+// Any of "netsuite".
+Provider string `json:"provider,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsRevenueSystemConfiguration) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsRevenueSystemConfiguration
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsRevenueSystemConfiguration
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsRevenueSystemConfiguration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsRevenueSystemConfiguration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsRevenueSystemConfiguration](
-		"delivery_method", "direct_to_billing_provider",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsRevenueSystemConfiguration](
-		"provider", "netsuite",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsRevenueSystemConfiguration](
+    "delivery_method", "direct_to_billing_provider",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsRevenueSystemConfiguration](
+    "provider", "netsuite",
+  )
 }
 
 // The properties ProductID, Schedule are required.
 type V1ContractNewParamsScheduledCharge struct {
-	ProductID string `json:"product_id" api:"required" format:"uuid"`
-	// Must provide either schedule_items or recurring_schedule.
-	Schedule V1ContractNewParamsScheduledChargeSchedule `json:"schedule,omitzero" api:"required"`
-	// displayed on invoices
-	Name param.Opt[string] `json:"name,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	paramObj
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Must provide either schedule_items or recurring_schedule.
+Schedule V1ContractNewParamsScheduledChargeSchedule `json:"schedule,omitzero" api:"required"`
+// displayed on invoices
+Name param.Opt[string] `json:"name,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsScheduledCharge) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsScheduledCharge
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsScheduledCharge
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsScheduledCharge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsScheduledCharge) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Must provide either schedule_items or recurring_schedule.
 type V1ContractNewParamsScheduledChargeSchedule struct {
-	// Defaults to USD (cents) if not passed.
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// This field is only applicable to commit invoice schedules. If true, this
-	// schedule will not generate an invoice.
-	DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
-	// Enter the unit price and quantity for the charge or instead only send the
-	// amount. If amount is sent, the unit price is assumed to be the amount and
-	// quantity is inferred to be 1.
-	RecurringSchedule V1ContractNewParamsScheduledChargeScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
-	// Either provide amount or provide both unit_price and quantity.
-	ScheduleItems []V1ContractNewParamsScheduledChargeScheduleScheduleItem `json:"schedule_items,omitzero"`
-	paramObj
+// Defaults to USD (cents) if not passed.
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// This field is only applicable to commit invoice schedules. If true, this
+// schedule will not generate an invoice.
+DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
+// Enter the unit price and quantity for the charge or instead only send the
+// amount. If amount is sent, the unit price is assumed to be the amount and
+// quantity is inferred to be 1.
+RecurringSchedule V1ContractNewParamsScheduledChargeScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
+// Either provide amount or provide both unit_price and quantity.
+ScheduleItems []V1ContractNewParamsScheduledChargeScheduleScheduleItem `json:"schedule_items,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsScheduledChargeSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsScheduledChargeSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsScheduledChargeSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsScheduledChargeSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsScheduledChargeSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Enter the unit price and quantity for the charge or instead only send the
@@ -3580,71 +3540,71 @@ func (r *V1ContractNewParamsScheduledChargeSchedule) UnmarshalJSON(data []byte) 
 // The properties AmountDistribution, EndingBefore, Frequency, StartingAt are
 // required.
 type V1ContractNewParamsScheduledChargeScheduleRecurringSchedule struct {
-	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
-	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
-	Frequency string `json:"frequency,omitzero" api:"required"`
-	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
+AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
+// RFC 3339 timestamp (exclusive).
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
+Frequency string `json:"frequency,omitzero" api:"required"`
+// RFC 3339 timestamp (inclusive).
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsScheduledChargeScheduleRecurringSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsScheduledChargeScheduleRecurringSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsScheduledChargeScheduleRecurringSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsScheduledChargeScheduleRecurringSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsScheduledChargeScheduleRecurringSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsScheduledChargeScheduleRecurringSchedule](
-		"amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsScheduledChargeScheduleRecurringSchedule](
-		"frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsScheduledChargeScheduleRecurringSchedule](
+    "amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsScheduledChargeScheduleRecurringSchedule](
+    "frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
+  )
 }
 
 // The property Timestamp is required.
 type V1ContractNewParamsScheduledChargeScheduleScheduleItem struct {
-	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// timestamp of the scheduled event
+Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsScheduledChargeScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsScheduledChargeScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsScheduledChargeScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsScheduledChargeScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsScheduledChargeScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Determines which scheduled and commit charges to consolidate onto the Contract's
@@ -3655,523 +3615,523 @@ func (r *V1ContractNewParamsScheduledChargeScheduleScheduleItem) UnmarshalJSON(d
 type V1ContractNewParamsScheduledChargesOnUsageInvoices string
 
 const (
-	V1ContractNewParamsScheduledChargesOnUsageInvoicesAll V1ContractNewParamsScheduledChargesOnUsageInvoices = "ALL"
-)
+    V1ContractNewParamsScheduledChargesOnUsageInvoicesAll V1ContractNewParamsScheduledChargesOnUsageInvoices = "ALL"
+  )
 
 // The properties Alias, ApplicableSpendSpecifiers, CreditTypeID, ResetFrequency
 // are required.
 type V1ContractNewParamsSpendTracker struct {
-	// Human-readable identifier, unique per contract.
-	Alias                     string                                                    `json:"alias" api:"required"`
-	ApplicableSpendSpecifiers []V1ContractNewParamsSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers,omitzero" api:"required"`
-	CreditTypeID              string                                                    `json:"credit_type_id" api:"required" format:"uuid"`
-	// Any of "BILLING_PERIOD".
-	ResetFrequency string `json:"reset_frequency,omitzero" api:"required"`
-	paramObj
+// Human-readable identifier, unique per contract.
+Alias string `json:"alias" api:"required"`
+ApplicableSpendSpecifiers []V1ContractNewParamsSpendTrackerApplicableSpendSpecifier `json:"applicable_spend_specifiers,omitzero" api:"required"`
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+// Any of "BILLING_PERIOD".
+ResetFrequency string `json:"reset_frequency,omitzero" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsSpendTracker) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsSpendTracker
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsSpendTracker
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsSpendTracker) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsSpendTracker) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsSpendTracker](
-		"reset_frequency", "BILLING_PERIOD",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsSpendTracker](
+    "reset_frequency", "BILLING_PERIOD",
+  )
 }
 
 // The properties Sources, SpendType are required.
 type V1ContractNewParamsSpendTrackerApplicableSpendSpecifier struct {
-	// Any of "THRESHOLD_RECHARGE", "MANUAL".
-	Sources []string `json:"sources,omitzero" api:"required"`
-	// Any of "COMMIT_PURCHASE".
-	SpendType string `json:"spend_type,omitzero" api:"required"`
-	// Filter by whether the spend was discounted. Defaults to ANY if omitted.
-	//
-	// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
-	Discounted string `json:"discounted,omitzero"`
-	paramObj
+// Any of "THRESHOLD_RECHARGE", "MANUAL".
+Sources []string `json:"sources,omitzero" api:"required"`
+// Any of "COMMIT_PURCHASE".
+SpendType string `json:"spend_type,omitzero" api:"required"`
+// Filter by whether the spend was discounted. Defaults to ANY if omitted.
+//
+// Any of "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY".
+Discounted string `json:"discounted,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsSpendTrackerApplicableSpendSpecifier) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsSpendTrackerApplicableSpendSpecifier
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsSpendTrackerApplicableSpendSpecifier
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsSpendTrackerApplicableSpendSpecifier) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsSpendTrackerApplicableSpendSpecifier](
-		"spend_type", "COMMIT_PURCHASE",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsSpendTrackerApplicableSpendSpecifier](
-		"discounted", "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsSpendTrackerApplicableSpendSpecifier](
+    "spend_type", "COMMIT_PURCHASE",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsSpendTrackerApplicableSpendSpecifier](
+    "discounted", "ANY", "DISCOUNTED_ONLY", "UNDISCOUNTED_ONLY",
+  )
 }
 
 // The properties CollectionSchedule, Proration, SubscriptionRate are required.
 type V1ContractNewParamsSubscription struct {
-	// Any of "ADVANCE", "ARREARS".
-	CollectionSchedule string                                          `json:"collection_schedule,omitzero" api:"required"`
-	Proration          V1ContractNewParamsSubscriptionProration        `json:"proration,omitzero" api:"required"`
-	SubscriptionRate   V1ContractNewParamsSubscriptionSubscriptionRate `json:"subscription_rate,omitzero" api:"required"`
-	Description        param.Opt[string]                               `json:"description,omitzero"`
-	// Exclusive end time for the subscription. If not provided, subscription inherits
-	// contract end date.
-	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	// The initial quantity for the subscription. It must be non-negative value.
-	// Required if quantity_management_mode is QUANTITY_ONLY.
-	InitialQuantity param.Opt[float64] `json:"initial_quantity,omitzero"`
-	Name            param.Opt[string]  `json:"name,omitzero"`
-	// Inclusive start time for the subscription. If not provided, defaults to contract
-	// start date
-	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
-	// A temporary ID used to reference the subscription in recurring commit/credit
-	// subscription configs created within the same payload.
-	TemporaryID        param.Opt[string]                                 `json:"temporary_id,omitzero"`
-	BillingCycleConfig V1ContractNewParamsSubscriptionBillingCycleConfig `json:"billing_cycle_config,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	// Determines how the subscription's quantity is controlled. Defaults to
-	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
-	// directly on the subscription. `initial_quantity` must be provided with this
-	// option. Compatible with recurring commits/credits that use POOLED allocation.
-	// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
-	// user_123) to increment and decrement a subscription quantity, rather than
-	// directly providing the quantity. You must use a **SEAT_BASED** subscription to
-	// use a linked recurring credit with an allocation per seat. `seat_config` must be
-	// provided with this option.
-	//
-	// Any of "SEAT_BASED", "QUANTITY_ONLY".
-	QuantityManagementMode string                                    `json:"quantity_management_mode,omitzero"`
-	SeatConfig             V1ContractNewParamsSubscriptionSeatConfig `json:"seat_config,omitzero"`
-	paramObj
+// Any of "ADVANCE", "ARREARS".
+CollectionSchedule string `json:"collection_schedule,omitzero" api:"required"`
+Proration V1ContractNewParamsSubscriptionProration `json:"proration,omitzero" api:"required"`
+SubscriptionRate V1ContractNewParamsSubscriptionSubscriptionRate `json:"subscription_rate,omitzero" api:"required"`
+Description param.Opt[string] `json:"description,omitzero"`
+// Exclusive end time for the subscription. If not provided, subscription inherits
+// contract end date.
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+// The initial quantity for the subscription. It must be non-negative value.
+// Required if quantity_management_mode is QUANTITY_ONLY.
+InitialQuantity param.Opt[float64] `json:"initial_quantity,omitzero"`
+Name param.Opt[string] `json:"name,omitzero"`
+// Inclusive start time for the subscription. If not provided, defaults to contract
+// start date
+StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+// A temporary ID used to reference the subscription in recurring commit/credit
+// subscription configs created within the same payload.
+TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+BillingCycleConfig V1ContractNewParamsSubscriptionBillingCycleConfig `json:"billing_cycle_config,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+// Determines how the subscription's quantity is controlled. Defaults to
+// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
+// directly on the subscription. `initial_quantity` must be provided with this
+// option. Compatible with recurring commits/credits that use POOLED allocation.
+// **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add
+// user_123) to increment and decrement a subscription quantity, rather than
+// directly providing the quantity. You must use a **SEAT_BASED** subscription to
+// use a linked recurring credit with an allocation per seat. `seat_config` must be
+// provided with this option.
+//
+// Any of "SEAT_BASED", "QUANTITY_ONLY".
+QuantityManagementMode string `json:"quantity_management_mode,omitzero"`
+SeatConfig V1ContractNewParamsSubscriptionSeatConfig `json:"seat_config,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsSubscription) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsSubscription
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsSubscription
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsSubscription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsSubscription) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsSubscription](
-		"collection_schedule", "ADVANCE", "ARREARS",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsSubscription](
-		"quantity_management_mode", "SEAT_BASED", "QUANTITY_ONLY",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsSubscription](
+    "collection_schedule", "ADVANCE", "ARREARS",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsSubscription](
+    "quantity_management_mode", "SEAT_BASED", "QUANTITY_ONLY",
+  )
 }
 
 type V1ContractNewParamsSubscriptionProration struct {
-	// Indicates if the partial period will be prorated or charged a full amount.
-	IsProrated param.Opt[bool] `json:"is_prorated,omitzero"`
-	// Indicates how mid-period quantity adjustments are invoiced.
-	// **BILL_IMMEDIATELY**: Only available when collection schedule is `ADVANCE`. The
-	// quantity increase will be billed immediately on the scheduled date.
-	// **BILL_ON_NEXT_COLLECTION_DATE**: The quantity increase will be billed for
-	// in-arrears at the end of the period.
-	//
-	// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
-	InvoiceBehavior string                                           `json:"invoice_behavior,omitzero"`
-	Rounding        V1ContractNewParamsSubscriptionProrationRounding `json:"rounding,omitzero"`
-	paramObj
+// Indicates if the partial period will be prorated or charged a full amount.
+IsProrated param.Opt[bool] `json:"is_prorated,omitzero"`
+// Indicates how mid-period quantity adjustments are invoiced.
+// **BILL_IMMEDIATELY**: Only available when collection schedule is `ADVANCE`. The
+// quantity increase will be billed immediately on the scheduled date.
+// **BILL_ON_NEXT_COLLECTION_DATE**: The quantity increase will be billed for
+// in-arrears at the end of the period.
+//
+// Any of "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE".
+InvoiceBehavior string `json:"invoice_behavior,omitzero"`
+Rounding V1ContractNewParamsSubscriptionProrationRounding `json:"rounding,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsSubscriptionProration) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsSubscriptionProration
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsSubscriptionProration
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsSubscriptionProration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsSubscriptionProration) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionProration](
-		"invoice_behavior", "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionProration](
+    "invoice_behavior", "BILL_IMMEDIATELY", "BILL_ON_NEXT_COLLECTION_DATE",
+  )
 }
 
 // The properties DecimalPlaces, RoundingMethod are required.
 type V1ContractNewParamsSubscriptionProrationRounding struct {
-	// Number of decimal places to round to. Applied directly to the stored monetary
-	// representation. Negative values round to powers of 10 (e.g., -2 rounds to
-	// nearest 100 in the stored unit. For USD, this means rounding to the nearest
-	// dollar).
-	DecimalPlaces float64 `json:"decimal_places" api:"required"`
-	// Any of "HALF_UP", "FLOOR", "CEILING".
-	RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
-	paramObj
+// Number of decimal places to round to. Applied directly to the stored monetary
+// representation. Negative values round to powers of 10 (e.g., -2 rounds to
+// nearest 100 in the stored unit. For USD, this means rounding to the nearest
+// dollar).
+DecimalPlaces float64 `json:"decimal_places" api:"required"`
+// Any of "HALF_UP", "FLOOR", "CEILING".
+RoundingMethod string `json:"rounding_method,omitzero" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewParamsSubscriptionProrationRounding) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsSubscriptionProrationRounding
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsSubscriptionProrationRounding
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsSubscriptionProrationRounding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsSubscriptionProrationRounding) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionProrationRounding](
-		"rounding_method", "HALF_UP", "FLOOR", "CEILING",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionProrationRounding](
+    "rounding_method", "HALF_UP", "FLOOR", "CEILING",
+  )
 }
 
 // The properties BillingFrequency, ProductID are required.
 type V1ContractNewParamsSubscriptionSubscriptionRate struct {
-	// Frequency to bill subscription with. Together with product_id, must match
-	// existing rate on the rate card.
-	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	BillingFrequency string `json:"billing_frequency,omitzero" api:"required"`
-	// Must be subscription type product
-	ProductID string `json:"product_id" api:"required" format:"uuid"`
-	paramObj
+// Frequency to bill subscription with. Together with product_id, must match
+// existing rate on the rate card.
+//
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+BillingFrequency string `json:"billing_frequency,omitzero" api:"required"`
+// Must be subscription type product
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+paramObj
 }
 
 func (r V1ContractNewParamsSubscriptionSubscriptionRate) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsSubscriptionSubscriptionRate
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsSubscriptionSubscriptionRate
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsSubscriptionSubscriptionRate) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsSubscriptionSubscriptionRate) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionSubscriptionRate](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionSubscriptionRate](
+    "billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+  )
 }
 
 type V1ContractNewParamsSubscriptionBillingCycleConfig struct {
-	// The date to anchor the billing cycle to. If omitted, defaults to the contract's
-	// usage invoice billing cycle anchor date.
-	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
-	// Controls whether this subscription consolidates onto usage invoices or gets its
-	// own scheduled invoice. Defaults to ON_USAGE_INVOICE if omitted.
-	//
-	// Any of "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE".
-	InvoicePlacement string `json:"invoice_placement,omitzero"`
-	paramObj
+// The date to anchor the billing cycle to. If omitted, defaults to the contract's
+// usage invoice billing cycle anchor date.
+AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
+// Controls whether this subscription consolidates onto usage invoices or gets its
+// own scheduled invoice. Defaults to ON_USAGE_INVOICE if omitted.
+//
+// Any of "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE".
+InvoicePlacement string `json:"invoice_placement,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsSubscriptionBillingCycleConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsSubscriptionBillingCycleConfig
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsSubscriptionBillingCycleConfig
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsSubscriptionBillingCycleConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsSubscriptionBillingCycleConfig) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionBillingCycleConfig](
-		"invoice_placement", "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsSubscriptionBillingCycleConfig](
+    "invoice_placement", "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE",
+  )
 }
 
 // The properties InitialSeatIDs, SeatGroupKey are required.
 type V1ContractNewParamsSubscriptionSeatConfig struct {
-	// The initial assigned seats on this subscription.
-	InitialSeatIDs []string `json:"initial_seat_ids,omitzero" api:"required"`
-	// The property name, sent on usage events, that identifies the seat ID associated
-	// with the usage event. For example, the property name might be seat_id or
-	// user_id. The property must be set as a group key on billable metrics and a
-	// presentation/pricing group key on contract products. This allows linked
-	// recurring credits with an allocation per seat to be consumed by only one seat's
-	// usage.
-	SeatGroupKey string `json:"seat_group_key" api:"required"`
-	// The initial amount of unassigned seats on this subscription.
-	InitialUnassignedSeats param.Opt[float64] `json:"initial_unassigned_seats,omitzero"`
-	paramObj
+// The initial assigned seats on this subscription.
+InitialSeatIDs []string `json:"initial_seat_ids,omitzero" api:"required"`
+// The property name, sent on usage events, that identifies the seat ID associated
+// with the usage event. For example, the property name might be seat_id or
+// user_id. The property must be set as a group key on billable metrics and a
+// presentation/pricing group key on contract products. This allows linked
+// recurring credits with an allocation per seat to be consumed by only one seat's
+// usage.
+SeatGroupKey string `json:"seat_group_key" api:"required"`
+// The initial amount of unassigned seats on this subscription.
+InitialUnassignedSeats param.Opt[float64] `json:"initial_unassigned_seats,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsSubscriptionSeatConfig) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsSubscriptionSeatConfig
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsSubscriptionSeatConfig
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsSubscriptionSeatConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsSubscriptionSeatConfig) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties FromContractID, Type are required.
 type V1ContractNewParamsTransition struct {
-	FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
-	// This field's available values may vary based on your client's configuration.
-	//
-	// Any of "RENEWAL".
-	Type                  string                                             `json:"type,omitzero" api:"required"`
-	FutureInvoiceBehavior V1ContractNewParamsTransitionFutureInvoiceBehavior `json:"future_invoice_behavior,omitzero"`
-	paramObj
+FromContractID string `json:"from_contract_id" api:"required" format:"uuid"`
+// This field's available values may vary based on your client's configuration.
+//
+// Any of "RENEWAL".
+Type string `json:"type,omitzero" api:"required"`
+FutureInvoiceBehavior V1ContractNewParamsTransitionFutureInvoiceBehavior `json:"future_invoice_behavior,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsTransition) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsTransition
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsTransition
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsTransition) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsTransition) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsTransition](
-		"type", "RENEWAL",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsTransition](
+    "type", "RENEWAL",
+  )
 }
 
 type V1ContractNewParamsTransitionFutureInvoiceBehavior struct {
-	// Controls whether future trueup invoices are billed or removed. Default behavior
-	// is AS_IS if not specified.
-	//
-	// Any of "REMOVE", "AS_IS".
-	Trueup string `json:"trueup,omitzero"`
-	paramObj
+// Controls whether future trueup invoices are billed or removed. Default behavior
+// is AS_IS if not specified.
+//
+// Any of "REMOVE", "AS_IS".
+Trueup string `json:"trueup,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsTransitionFutureInvoiceBehavior) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsTransitionFutureInvoiceBehavior
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsTransitionFutureInvoiceBehavior
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsTransitionFutureInvoiceBehavior) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsTransitionFutureInvoiceBehavior) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsTransitionFutureInvoiceBehavior](
-		"trueup", "REMOVE", "AS_IS",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsTransitionFutureInvoiceBehavior](
+    "trueup", "REMOVE", "AS_IS",
+  )
 }
 
 // The property Frequency is required.
 type V1ContractNewParamsUsageStatementSchedule struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	Frequency string `json:"frequency,omitzero" api:"required"`
-	// Required when using CUSTOM_DATE. This option lets you set a historical billing
-	// anchor date, aligning future billing cycles with a chosen cadence. For example,
-	// if a contract starts on 2024-09-15 and you set the anchor date to 2024-09-10
-	// with a MONTHLY frequency, the first usage statement will cover 09-15 to 10-10.
-	// Subsequent statements will follow the 10th of each month.
-	BillingAnchorDate param.Opt[time.Time] `json:"billing_anchor_date,omitzero" format:"date-time"`
-	// The date Metronome should start generating usage invoices. If unspecified,
-	// contract start date will be used. This is useful to set if you want to import
-	// historical invoices via our 'Create Historical Invoices' API rather than having
-	// Metronome automatically generate them.
-	InvoiceGenerationStartingAt param.Opt[time.Time] `json:"invoice_generation_starting_at,omitzero" format:"date-time"`
-	// If not provided, defaults to the first day of the month.
-	//
-	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
-	Day string `json:"day,omitzero"`
-	paramObj
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+Frequency string `json:"frequency,omitzero" api:"required"`
+// Required when using CUSTOM_DATE. This option lets you set a historical billing
+// anchor date, aligning future billing cycles with a chosen cadence. For example,
+// if a contract starts on 2024-09-15 and you set the anchor date to 2024-09-10
+// with a MONTHLY frequency, the first usage statement will cover 09-15 to 10-10.
+// Subsequent statements will follow the 10th of each month.
+BillingAnchorDate param.Opt[time.Time] `json:"billing_anchor_date,omitzero" format:"date-time"`
+// The date Metronome should start generating usage invoices. If unspecified,
+// contract start date will be used. This is useful to set if you want to import
+// historical invoices via our 'Create Historical Invoices' API rather than having
+// Metronome automatically generate them.
+InvoiceGenerationStartingAt param.Opt[time.Time] `json:"invoice_generation_starting_at,omitzero" format:"date-time"`
+// If not provided, defaults to the first day of the month.
+//
+// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
+Day string `json:"day,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewParamsUsageStatementSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewParamsUsageStatementSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewParamsUsageStatementSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewParamsUsageStatementSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewParamsUsageStatementSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewParamsUsageStatementSchedule](
-		"frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewParamsUsageStatementSchedule](
-		"day", "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewParamsUsageStatementSchedule](
+    "frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewParamsUsageStatementSchedule](
+    "day", "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE",
+  )
 }
 
 type V1ContractGetParams struct {
-	ContractID string `json:"contract_id" api:"required" format:"uuid"`
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// Include the balance of credits and commits in the response. Setting this flag
-	// may cause the query to be slower.
-	IncludeBalance param.Opt[bool] `json:"include_balance,omitzero"`
-	// Include commit ledgers in the response. Setting this flag may cause the query to
-	// be slower.
-	IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
-	paramObj
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// Include the balance of credits and commits in the response. Setting this flag
+// may cause the query to be slower.
+IncludeBalance param.Opt[bool] `json:"include_balance,omitzero"`
+// Include commit ledgers in the response. Setting this flag may cause the query to
+// be slower.
+IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
+paramObj
 }
 
 func (r V1ContractGetParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractGetParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractGetParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractGetParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractGetParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListParams struct {
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// Optional RFC 3339 timestamp. If provided, the response will include only
-	// contracts effective on the provided date. This cannot be provided if the
-	// starting_at filter is provided.
-	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
-	// Include archived contracts in the response
-	IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
-	// Include the balance of credits and commits in the response. Setting this flag
-	// may cause the query to be slower.
-	IncludeBalance param.Opt[bool] `json:"include_balance,omitzero"`
-	// Include commit ledgers in the response. Setting this flag may cause the query to
-	// be slower.
-	IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
-	// Optional RFC 3339 timestamp. If provided, the response will include only
-	// contracts where effective_at is on or after the provided date. This cannot be
-	// provided if the covering_date filter is provided.
-	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
-	paramObj
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// Optional RFC 3339 timestamp. If provided, the response will include only
+// contracts effective on the provided date. This cannot be provided if the
+// starting_at filter is provided.
+CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+// Include archived contracts in the response
+IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
+// Include the balance of credits and commits in the response. Setting this flag
+// may cause the query to be slower.
+IncludeBalance param.Opt[bool] `json:"include_balance,omitzero"`
+// Include commit ledgers in the response. Setting this flag may cause the query to
+// be slower.
+IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
+// Optional RFC 3339 timestamp. If provided, the response will include only
+// contracts where effective_at is on or after the provided date. This cannot be
+// provided if the covering_date filter is provided.
+StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractListParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractListParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractListParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractListParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractAddManualBalanceEntryParams struct {
-	// ID of the balance (commit or credit) to update.
-	ID string `json:"id" api:"required" format:"uuid"`
-	// Amount to add to the segment. A negative number will draw down from the balance.
-	Amount float64 `json:"amount" api:"required"`
-	// ID of the customer whose balance is to be updated.
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// Reason for the manual adjustment. This will be displayed in the ledger.
-	Reason string `json:"reason" api:"required"`
-	// ID of the segment to update.
-	SegmentID string `json:"segment_id" api:"required" format:"uuid"`
-	// ID of the contract to update. Leave blank to update a customer level balance.
-	ContractID param.Opt[string] `json:"contract_id,omitzero" format:"uuid"`
-	// RFC 3339 timestamp indicating when the manual adjustment takes place. If not
-	// provided, it will default to the start of the segment.
-	Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
-	// If using individually configured commits/credits attached to seat managed
-	// subscriptions, the amount to add for each seat. Must sum to total amount.
-	PerGroupAmounts map[string]float64 `json:"per_group_amounts,omitzero"`
-	paramObj
+// ID of the balance (commit or credit) to update.
+ID string `json:"id" api:"required" format:"uuid"`
+// Amount to add to the segment. A negative number will draw down from the balance.
+Amount float64 `json:"amount" api:"required"`
+// ID of the customer whose balance is to be updated.
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// Reason for the manual adjustment. This will be displayed in the ledger.
+Reason string `json:"reason" api:"required"`
+// ID of the segment to update.
+SegmentID string `json:"segment_id" api:"required" format:"uuid"`
+// ID of the contract to update. Leave blank to update a customer level balance.
+ContractID param.Opt[string] `json:"contract_id,omitzero" format:"uuid"`
+// RFC 3339 timestamp indicating when the manual adjustment takes place. If not
+// provided, it will default to the start of the segment.
+Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
+// If using individually configured commits/credits attached to seat managed
+// subscriptions, the amount to add for each seat. Must sum to total amount.
+PerGroupAmounts map[string]float64 `json:"per_group_amounts,omitzero"`
+paramObj
 }
 
 func (r V1ContractAddManualBalanceEntryParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAddManualBalanceEntryParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAddManualBalanceEntryParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAddManualBalanceEntryParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAddManualBalanceEntryParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractAmendParams struct {
-	// ID of the contract to amend
-	ContractID string `json:"contract_id" api:"required" format:"uuid"`
-	// ID of the customer whose contract is to be amended
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// inclusive start time for the amendment
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	SalesforceOpportunityID param.Opt[string] `json:"salesforce_opportunity_id,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	TotalContractValue param.Opt[float64]            `json:"total_contract_value,omitzero"`
-	Commits            []V1ContractAmendParamsCommit `json:"commits,omitzero"`
-	Credits            []V1ContractAmendParamsCredit `json:"credits,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	Discounts         []V1ContractAmendParamsDiscount `json:"discounts,omitzero"`
-	ContractOverrides []V1ContractAmendParamsOverride `json:"overrides,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	ProfessionalServices []V1ContractAmendParamsProfessionalService `json:"professional_services,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	ResellerRoyalties []V1ContractAmendParamsResellerRoyalty `json:"reseller_royalties,omitzero"`
-	ScheduledCharges  []V1ContractAmendParamsScheduledCharge `json:"scheduled_charges,omitzero"`
-	paramObj
+// ID of the contract to amend
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+// ID of the customer whose contract is to be amended
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// inclusive start time for the amendment
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// This field's availability is dependent on your client's configuration.
+SalesforceOpportunityID param.Opt[string] `json:"salesforce_opportunity_id,omitzero"`
+// This field's availability is dependent on your client's configuration.
+TotalContractValue param.Opt[float64] `json:"total_contract_value,omitzero"`
+Commits []V1ContractAmendParamsCommit `json:"commits,omitzero"`
+Credits []V1ContractAmendParamsCredit `json:"credits,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+// This field's availability is dependent on your client's configuration.
+Discounts []V1ContractAmendParamsDiscount `json:"discounts,omitzero"`
+ContractOverrides []V1ContractAmendParamsOverride `json:"overrides,omitzero"`
+// This field's availability is dependent on your client's configuration.
+ProfessionalServices []V1ContractAmendParamsProfessionalService `json:"professional_services,omitzero"`
+// This field's availability is dependent on your client's configuration.
+ResellerRoyalties []V1ContractAmendParamsResellerRoyalty `json:"reseller_royalties,omitzero"`
+ScheduledCharges []V1ContractAmendParamsScheduledCharge `json:"scheduled_charges,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties ProductID, Type are required.
 type V1ContractAmendParamsCommit struct {
-	ProductID string `json:"product_id" api:"required" format:"uuid"`
-	// Any of "PREPAID", "POSTPAID".
-	Type string `json:"type,omitzero" api:"required"`
-	// (DEPRECATED) Use access_schedule and invoice_schedule instead.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Used only in UI/API. It is not exposed to end customers.
-	Description param.Opt[string] `json:"description,omitzero"`
-	// displayed on invoices
-	Name param.Opt[string] `json:"name,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// If multiple commits are applicable, the one with the lower priority will apply
-	// first.
-	Priority param.Opt[float64] `json:"priority,omitzero"`
-	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
-	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
-	// A temporary ID for the commit that can be used to reference the commit for
-	// commit specific overrides.
-	TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
-	// Required: Schedule for distributing the commit to the customer. For "POSTPAID"
-	// commits only one schedule item is allowed and amount must match invoice_schedule
-	// total.
-	AccessSchedule V1ContractAmendParamsCommitAccessSchedule `json:"access_schedule,omitzero"`
-	// Which products the commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Which tags the commit applies to. If applicable_product_ids,
-	// applicable_product_tags or specifiers are not provided, the commit applies to
-	// all products.
-	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	// Optional configuration for commit hierarchy access control
-	HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
-	// Required for "POSTPAID" commits: the true up invoice will be generated at this
-	// time and only one schedule item is allowed; the total must match access_schedule
-	// amount. Optional for "PREPAID" commits: if not provided, this will be a
-	// "complimentary" commit with no invoice.
-	InvoiceSchedule V1ContractAmendParamsCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,omitzero"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
-	// Optional attributes for spend tracker integration. Immutable after creation.
-	SpendTrackerAttributes V1ContractAmendParamsCommitSpendTrackerAttributes `json:"spend_tracker_attributes,omitzero"`
-	paramObj
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Any of "PREPAID", "POSTPAID".
+Type string `json:"type,omitzero" api:"required"`
+// (DEPRECATED) Use access_schedule and invoice_schedule instead.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Used only in UI/API. It is not exposed to end customers.
+Description param.Opt[string] `json:"description,omitzero"`
+// displayed on invoices
+Name param.Opt[string] `json:"name,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// If multiple commits are applicable, the one with the lower priority will apply
+// first.
+Priority param.Opt[float64] `json:"priority,omitzero"`
+// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
+RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
+// A temporary ID for the commit that can be used to reference the commit for
+// commit specific overrides.
+TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+// Required: Schedule for distributing the commit to the customer. For "POSTPAID"
+// commits only one schedule item is allowed and amount must match invoice_schedule
+// total.
+AccessSchedule V1ContractAmendParamsCommitAccessSchedule `json:"access_schedule,omitzero"`
+// Which products the commit applies to. If applicable_product_ids,
+// applicable_product_tags or specifiers are not provided, the commit applies to
+// all products.
+ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+// Which tags the commit applies to. If applicable_product_ids,
+// applicable_product_tags or specifiers are not provided, the commit applies to
+// all products.
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+// Optional configuration for commit hierarchy access control
+HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
+// Required for "POSTPAID" commits: the true up invoice will be generated at this
+// time and only one schedule item is allowed; the total must match access_schedule
+// amount. Optional for "PREPAID" commits: if not provided, this will be a
+// "complimentary" commit with no invoice.
+InvoiceSchedule V1ContractAmendParamsCommitInvoiceSchedule `json:"invoice_schedule,omitzero"`
+// Any of "COMMIT_RATE", "LIST_RATE".
+RateType string `json:"rate_type,omitzero"`
+// List of filters that determine what kind of customer usage draws down a commit
+// or credit. A customer's usage needs to meet the condition of at least one of the
+// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+// be used together with `applicable_product_ids` or `applicable_product_tags`.
+Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+// Optional attributes for spend tracker integration. Immutable after creation.
+SpendTrackerAttributes V1ContractAmendParamsCommitSpendTrackerAttributes `json:"spend_tracker_attributes,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCommit) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommit
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCommit
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCommit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCommit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommit](
-		"type", "PREPAID", "POSTPAID",
-	)
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommit](
-		"rate_type", "COMMIT_RATE", "LIST_RATE",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsCommit](
+    "type", "PREPAID", "POSTPAID",
+  )
+  apijson.RegisterFieldValidator[V1ContractAmendParamsCommit](
+    "rate_type", "COMMIT_RATE", "LIST_RATE",
+  )
 }
 
 // Required: Schedule for distributing the commit to the customer. For "POSTPAID"
@@ -4180,36 +4140,36 @@ func init() {
 //
 // The property ScheduleItems is required.
 type V1ContractAmendParamsCommitAccessSchedule struct {
-	ScheduleItems []V1ContractAmendParamsCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
-	// Defaults to USD (cents) if not passed
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	paramObj
+ScheduleItems []V1ContractAmendParamsCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
+// Defaults to USD (cents) if not passed
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCommitAccessSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitAccessSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCommitAccessSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCommitAccessSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCommitAccessSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V1ContractAmendParamsCommitAccessScheduleScheduleItem struct {
-	Amount float64 `json:"amount" api:"required"`
-	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	paramObj
+Amount float64 `json:"amount" api:"required"`
+// RFC 3339 timestamp (exclusive)
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// RFC 3339 timestamp (inclusive)
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCommitAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitAccessScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCommitAccessScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCommitAccessScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCommitAccessScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Required for "POSTPAID" commits: the true up invoice will be generated at this
@@ -4217,26 +4177,26 @@ func (r *V1ContractAmendParamsCommitAccessScheduleScheduleItem) UnmarshalJSON(da
 // amount. Optional for "PREPAID" commits: if not provided, this will be a
 // "complimentary" commit with no invoice.
 type V1ContractAmendParamsCommitInvoiceSchedule struct {
-	// Defaults to USD (cents) if not passed.
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// This field is only applicable to commit invoice schedules. If true, this
-	// schedule will not generate an invoice.
-	DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
-	// Enter the unit price and quantity for the charge or instead only send the
-	// amount. If amount is sent, the unit price is assumed to be the amount and
-	// quantity is inferred to be 1.
-	RecurringSchedule V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
-	// Either provide amount or provide both unit_price and quantity.
-	ScheduleItems []V1ContractAmendParamsCommitInvoiceScheduleScheduleItem `json:"schedule_items,omitzero"`
-	paramObj
+// Defaults to USD (cents) if not passed.
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// This field is only applicable to commit invoice schedules. If true, this
+// schedule will not generate an invoice.
+DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
+// Enter the unit price and quantity for the charge or instead only send the
+// amount. If amount is sent, the unit price is assumed to be the amount and
+// quantity is inferred to be 1.
+RecurringSchedule V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
+// Either provide amount or provide both unit_price and quantity.
+ScheduleItems []V1ContractAmendParamsCommitInvoiceScheduleScheduleItem `json:"schedule_items,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCommitInvoiceSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitInvoiceSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCommitInvoiceSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCommitInvoiceSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCommitInvoiceSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Enter the unit price and quantity for the charge or instead only send the
@@ -4246,221 +4206,221 @@ func (r *V1ContractAmendParamsCommitInvoiceSchedule) UnmarshalJSON(data []byte) 
 // The properties AmountDistribution, EndingBefore, Frequency, StartingAt are
 // required.
 type V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule struct {
-	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
-	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
-	Frequency string `json:"frequency,omitzero" api:"required"`
-	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
+AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
+// RFC 3339 timestamp (exclusive).
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
+Frequency string `json:"frequency,omitzero" api:"required"`
+// RFC 3339 timestamp (inclusive).
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule](
-		"amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
-	)
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule](
-		"frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule](
+    "amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
+  )
+  apijson.RegisterFieldValidator[V1ContractAmendParamsCommitInvoiceScheduleRecurringSchedule](
+    "frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
+  )
 }
 
 // The property Timestamp is required.
 type V1ContractAmendParamsCommitInvoiceScheduleScheduleItem struct {
-	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// timestamp of the scheduled event
+Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitInvoiceScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCommitInvoiceScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Optional attributes for spend tracker integration. Immutable after creation.
 //
 // The property CountsAsDiscounted is required.
 type V1ContractAmendParamsCommitSpendTrackerAttributes struct {
-	// If true, this commit will be included in spend trackers with discounted set to
-	// DISCOUNTED_ONLY
-	CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
-	paramObj
+// If true, this commit will be included in spend trackers with discounted set to
+// DISCOUNTED_ONLY
+CountsAsDiscounted bool `json:"counts_as_discounted" api:"required"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCommitSpendTrackerAttributes) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCommitSpendTrackerAttributes
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCommitSpendTrackerAttributes
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCommitSpendTrackerAttributes) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCommitSpendTrackerAttributes) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccessSchedule, ProductID are required.
 type V1ContractAmendParamsCredit struct {
-	// Schedule for distributing the credit to the customer.
-	AccessSchedule V1ContractAmendParamsCreditAccessSchedule `json:"access_schedule,omitzero" api:"required"`
-	ProductID      string                                    `json:"product_id" api:"required" format:"uuid"`
-	// Used only in UI/API. It is not exposed to end customers.
-	Description param.Opt[string] `json:"description,omitzero"`
-	// displayed on invoices
-	Name param.Opt[string] `json:"name,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// If multiple credits are applicable, the one with the lower priority will apply
-	// first.
-	Priority param.Opt[float64] `json:"priority,omitzero"`
-	// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
-	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
-	// Which products the credit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the credit applies to all products.
-	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Which tags the credit applies to. If both applicable_product_ids and
-	// applicable_product_tags are not provided, the credit applies to all products.
-	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	// Optional configuration for credit hierarchy access control
-	HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	RateType string `json:"rate_type,omitzero"`
-	// List of filters that determine what kind of customer usage draws down a commit
-	// or credit. A customer's usage needs to meet the condition of at least one of the
-	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
-	// be used together with `applicable_product_ids` or `applicable_product_tags`.
-	Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
-	paramObj
+// Schedule for distributing the credit to the customer.
+AccessSchedule V1ContractAmendParamsCreditAccessSchedule `json:"access_schedule,omitzero" api:"required"`
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Used only in UI/API. It is not exposed to end customers.
+Description param.Opt[string] `json:"description,omitzero"`
+// displayed on invoices
+Name param.Opt[string] `json:"name,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// If multiple credits are applicable, the one with the lower priority will apply
+// first.
+Priority param.Opt[float64] `json:"priority,omitzero"`
+// Fraction of unused segments that will be rolled over. Must be between 0 and 1.
+RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
+// Which products the credit applies to. If both applicable_product_ids and
+// applicable_product_tags are not provided, the credit applies to all products.
+ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+// Which tags the credit applies to. If both applicable_product_ids and
+// applicable_product_tags are not provided, the credit applies to all products.
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+// Optional configuration for credit hierarchy access control
+HierarchyConfiguration shared.CommitHierarchyConfigurationParam `json:"hierarchy_configuration,omitzero"`
+// Any of "COMMIT_RATE", "LIST_RATE".
+RateType string `json:"rate_type,omitzero"`
+// List of filters that determine what kind of customer usage draws down a commit
+// or credit. A customer's usage needs to meet the condition of at least one of the
+// specifiers to contribute to a commit's or credit's drawdown. This field cannot
+// be used together with `applicable_product_ids` or `applicable_product_tags`.
+Specifiers []shared.CommitSpecifierInputParam `json:"specifiers,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCredit) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCredit
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCredit
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCredit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCredit) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsCredit](
-		"rate_type", "COMMIT_RATE", "LIST_RATE",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsCredit](
+    "rate_type", "COMMIT_RATE", "LIST_RATE",
+  )
 }
 
 // Schedule for distributing the credit to the customer.
 //
 // The property ScheduleItems is required.
 type V1ContractAmendParamsCreditAccessSchedule struct {
-	ScheduleItems []V1ContractAmendParamsCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
-	// Defaults to USD (cents) if not passed
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	paramObj
+ScheduleItems []V1ContractAmendParamsCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
+// Defaults to USD (cents) if not passed
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCreditAccessSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCreditAccessSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCreditAccessSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCreditAccessSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCreditAccessSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
 type V1ContractAmendParamsCreditAccessScheduleScheduleItem struct {
-	Amount float64 `json:"amount" api:"required"`
-	// RFC 3339 timestamp (exclusive)
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// RFC 3339 timestamp (inclusive)
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	paramObj
+Amount float64 `json:"amount" api:"required"`
+// RFC 3339 timestamp (exclusive)
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// RFC 3339 timestamp (inclusive)
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractAmendParamsCreditAccessScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsCreditAccessScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsCreditAccessScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsCreditAccessScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsCreditAccessScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties ProductID, Schedule are required.
 type V1ContractAmendParamsDiscount struct {
-	ProductID string `json:"product_id" api:"required" format:"uuid"`
-	// Must provide either schedule_items or recurring_schedule.
-	Schedule V1ContractAmendParamsDiscountSchedule `json:"schedule,omitzero" api:"required"`
-	// displayed on invoices
-	Name param.Opt[string] `json:"name,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	paramObj
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Must provide either schedule_items or recurring_schedule.
+Schedule V1ContractAmendParamsDiscountSchedule `json:"schedule,omitzero" api:"required"`
+// displayed on invoices
+Name param.Opt[string] `json:"name,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsDiscount) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsDiscount
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsDiscount
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsDiscount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsDiscount) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Must provide either schedule_items or recurring_schedule.
 type V1ContractAmendParamsDiscountSchedule struct {
-	// Defaults to USD (cents) if not passed.
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// This field is only applicable to commit invoice schedules. If true, this
-	// schedule will not generate an invoice.
-	DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
-	// Enter the unit price and quantity for the charge or instead only send the
-	// amount. If amount is sent, the unit price is assumed to be the amount and
-	// quantity is inferred to be 1.
-	RecurringSchedule V1ContractAmendParamsDiscountScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
-	// Either provide amount or provide both unit_price and quantity.
-	ScheduleItems []V1ContractAmendParamsDiscountScheduleScheduleItem `json:"schedule_items,omitzero"`
-	paramObj
+// Defaults to USD (cents) if not passed.
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// This field is only applicable to commit invoice schedules. If true, this
+// schedule will not generate an invoice.
+DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
+// Enter the unit price and quantity for the charge or instead only send the
+// amount. If amount is sent, the unit price is assumed to be the amount and
+// quantity is inferred to be 1.
+RecurringSchedule V1ContractAmendParamsDiscountScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
+// Either provide amount or provide both unit_price and quantity.
+ScheduleItems []V1ContractAmendParamsDiscountScheduleScheduleItem `json:"schedule_items,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsDiscountSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsDiscountSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsDiscountSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsDiscountSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsDiscountSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Enter the unit price and quantity for the charge or instead only send the
@@ -4470,369 +4430,369 @@ func (r *V1ContractAmendParamsDiscountSchedule) UnmarshalJSON(data []byte) error
 // The properties AmountDistribution, EndingBefore, Frequency, StartingAt are
 // required.
 type V1ContractAmendParamsDiscountScheduleRecurringSchedule struct {
-	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
-	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
-	Frequency string `json:"frequency,omitzero" api:"required"`
-	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
+AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
+// RFC 3339 timestamp (exclusive).
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
+Frequency string `json:"frequency,omitzero" api:"required"`
+// RFC 3339 timestamp (inclusive).
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsDiscountScheduleRecurringSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsDiscountScheduleRecurringSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsDiscountScheduleRecurringSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsDiscountScheduleRecurringSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsDiscountScheduleRecurringSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsDiscountScheduleRecurringSchedule](
-		"amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
-	)
-	apijson.RegisterFieldValidator[V1ContractAmendParamsDiscountScheduleRecurringSchedule](
-		"frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsDiscountScheduleRecurringSchedule](
+    "amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
+  )
+  apijson.RegisterFieldValidator[V1ContractAmendParamsDiscountScheduleRecurringSchedule](
+    "frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
+  )
 }
 
 // The property Timestamp is required.
 type V1ContractAmendParamsDiscountScheduleScheduleItem struct {
-	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// timestamp of the scheduled event
+Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsDiscountScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsDiscountScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsDiscountScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsDiscountScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsDiscountScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The property StartingAt is required.
 type V1ContractAmendParamsOverride struct {
-	// RFC 3339 timestamp indicating when the override will start applying (inclusive)
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// RFC 3339 timestamp indicating when the override will stop applying (exclusive)
-	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	Entitled     param.Opt[bool]      `json:"entitled,omitzero"`
-	// Indicates whether the override should only apply to commits. Defaults to
-	// `false`. If `true` you can specify relevant commits in `override_specifiers` by
-	// passing `commit_ids`, `recurring_commit_ids`, or `any_commit_or_credit_ids`. If
-	// you do not specify any of these fields, the override will apply when consuming
-	// any prepaid commit, postpaid commit, or credit
-	IsCommitSpecific param.Opt[bool] `json:"is_commit_specific,omitzero"`
-	// Required for MULTIPLIER type. Must be >=0.
-	Multiplier param.Opt[float64] `json:"multiplier,omitzero"`
-	// Required for EXPLICIT multiplier prioritization scheme and all TIERED overrides.
-	// Under EXPLICIT prioritization, overwrites are prioritized first, and then tiered
-	// and multiplier overrides are prioritized by their priority value (lowest first).
-	// Must be > 0.
-	Priority param.Opt[float64] `json:"priority,omitzero"`
-	// ID of the product whose rate is being overridden. Cannot be used in conjunction
-	// with override_specifiers.
-	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
-	// tags identifying products whose rates are being overridden. Cannot be used in
-	// conjunction with override_specifiers.
-	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
-	// Cannot be used in conjunction with product_id or applicable_product_tags. If
-	// provided, the override will apply to all products with the specified specifiers.
-	OverrideSpecifiers []V1ContractAmendParamsOverrideOverrideSpecifier `json:"override_specifiers,omitzero"`
-	// Required for OVERWRITE type.
-	OverwriteRate V1ContractAmendParamsOverrideOverwriteRate `json:"overwrite_rate,omitzero"`
-	// Indicates whether the override applies to commit rates or list rates. Can only
-	// be used for overrides that have `is_commit_specific` set to `true`. Defaults to
-	// `"LIST_RATE"`.
-	//
-	// Any of "COMMIT_RATE", "LIST_RATE".
-	Target string `json:"target,omitzero"`
-	// Required for TIERED type. Must have at least one tier.
-	Tiers []V1ContractAmendParamsOverrideTier `json:"tiers,omitzero"`
-	// Overwrites are prioritized over multipliers and tiered overrides.
-	//
-	// Any of "OVERWRITE", "MULTIPLIER", "TIERED".
-	Type string `json:"type,omitzero"`
-	paramObj
+// RFC 3339 timestamp indicating when the override will start applying (inclusive)
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// RFC 3339 timestamp indicating when the override will stop applying (exclusive)
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+Entitled param.Opt[bool] `json:"entitled,omitzero"`
+// Indicates whether the override should only apply to commits. Defaults to
+// `false`. If `true` you can specify relevant commits in `override_specifiers` by
+// passing `commit_ids`, `recurring_commit_ids`, or `any_commit_or_credit_ids`. If
+// you do not specify any of these fields, the override will apply when consuming
+// any prepaid commit, postpaid commit, or credit
+IsCommitSpecific param.Opt[bool] `json:"is_commit_specific,omitzero"`
+// Required for MULTIPLIER type. Must be >=0.
+Multiplier param.Opt[float64] `json:"multiplier,omitzero"`
+// Required for EXPLICIT multiplier prioritization scheme and all TIERED overrides.
+// Under EXPLICIT prioritization, overwrites are prioritized first, and then tiered
+// and multiplier overrides are prioritized by their priority value (lowest first).
+// Must be > 0.
+Priority param.Opt[float64] `json:"priority,omitzero"`
+// ID of the product whose rate is being overridden. Cannot be used in conjunction
+// with override_specifiers.
+ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+// tags identifying products whose rates are being overridden. Cannot be used in
+// conjunction with override_specifiers.
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+// Cannot be used in conjunction with product_id or applicable_product_tags. If
+// provided, the override will apply to all products with the specified specifiers.
+OverrideSpecifiers []V1ContractAmendParamsOverrideOverrideSpecifier `json:"override_specifiers,omitzero"`
+// Required for OVERWRITE type.
+OverwriteRate V1ContractAmendParamsOverrideOverwriteRate `json:"overwrite_rate,omitzero"`
+// Indicates whether the override applies to commit rates or list rates. Can only
+// be used for overrides that have `is_commit_specific` set to `true`. Defaults to
+// `"LIST_RATE"`.
+//
+// Any of "COMMIT_RATE", "LIST_RATE".
+Target string `json:"target,omitzero"`
+// Required for TIERED type. Must have at least one tier.
+Tiers []V1ContractAmendParamsOverrideTier `json:"tiers,omitzero"`
+// Overwrites are prioritized over multipliers and tiered overrides.
+//
+// Any of "OVERWRITE", "MULTIPLIER", "TIERED".
+Type string `json:"type,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsOverride) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsOverride
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsOverride
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsOverride) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsOverride) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsOverride](
-		"target", "COMMIT_RATE", "LIST_RATE",
-	)
-	apijson.RegisterFieldValidator[V1ContractAmendParamsOverride](
-		"type", "OVERWRITE", "MULTIPLIER", "TIERED",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsOverride](
+    "target", "COMMIT_RATE", "LIST_RATE",
+  )
+  apijson.RegisterFieldValidator[V1ContractAmendParamsOverride](
+    "type", "OVERWRITE", "MULTIPLIER", "TIERED",
+  )
 }
 
 type V1ContractAmendParamsOverrideOverrideSpecifier struct {
-	// If provided, the override will only apply to the product with the specified ID.
-	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. Must be used instead of both `commit_ids` and
-	// `recurring_commit_ids` If provided, the override will apply to any specified
-	// commit, credit, recurring commit or recurring credit IDs.
-	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	BillingFrequency string `json:"billing_frequency,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to the
-	// specified commits. If not provided, the override will apply to all commits.
-	CommitIDs []string `json:"commit_ids,omitzero"`
-	// A map of group names to values. The override will only apply to line items with
-	// the specified presentation group values.
-	PresentationGroupValues map[string]string `json:"presentation_group_values,omitzero"`
-	// A map of pricing group names to values. The override will only apply to products
-	// with the specified pricing group values.
-	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
-	// If provided, the override will only apply to products with all the specified
-	// tags.
-	ProductTags []string `json:"product_tags,omitzero"`
-	// Can only be used for commit specific overrides. Must be used in conjunction with
-	// one of `product_id`, `product_tags`, `pricing_group_values`, or
-	// `presentation_group_values`. If provided, the override will only apply to
-	// commits created by the specified recurring commit ids.
-	RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
-	paramObj
+// If provided, the override will only apply to the product with the specified ID.
+ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+// Can only be used for commit specific overrides. Must be used in conjunction with
+// one of `product_id`, `product_tags`, `pricing_group_values`, or
+// `presentation_group_values`. Must be used instead of both `commit_ids` and
+// `recurring_commit_ids` If provided, the override will apply to any specified
+// commit, credit, recurring commit or recurring credit IDs.
+AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+BillingFrequency string `json:"billing_frequency,omitzero"`
+// Can only be used for commit specific overrides. Must be used in conjunction with
+// one of `product_id`, `product_tags`, `pricing_group_values`, or
+// `presentation_group_values`. If provided, the override will only apply to the
+// specified commits. If not provided, the override will apply to all commits.
+CommitIDs []string `json:"commit_ids,omitzero"`
+// A map of group names to values. The override will only apply to line items with
+// the specified presentation group values.
+PresentationGroupValues map[string]string `json:"presentation_group_values,omitzero"`
+// A map of pricing group names to values. The override will only apply to products
+// with the specified pricing group values.
+PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
+// If provided, the override will only apply to products with all the specified
+// tags.
+ProductTags []string `json:"product_tags,omitzero"`
+// Can only be used for commit specific overrides. Must be used in conjunction with
+// one of `product_id`, `product_tags`, `pricing_group_values`, or
+// `presentation_group_values`. If provided, the override will only apply to
+// commits created by the specified recurring commit ids.
+RecurringCommitIDs []string `json:"recurring_commit_ids,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsOverrideOverrideSpecifier) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsOverrideOverrideSpecifier
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsOverrideOverrideSpecifier
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsOverrideOverrideSpecifier) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsOverrideOverrideSpecifier) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsOverrideOverrideSpecifier](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsOverrideOverrideSpecifier](
+    "billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+  )
 }
 
 // Required for OVERWRITE type.
 //
 // The property RateType is required.
 type V1ContractAmendParamsOverrideOverwriteRate struct {
-	// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
-	// "CUSTOM".
-	RateType     string            `json:"rate_type,omitzero" api:"required"`
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
-	// set to true.
-	IsProrated param.Opt[bool] `json:"is_prorated,omitzero"`
-	// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
-	// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-	Price param.Opt[float64] `json:"price,omitzero"`
-	// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Only set for CUSTOM rate_type. This field is interpreted by custom rate
-	// processors.
-	CustomRate map[string]any `json:"custom_rate,omitzero"`
-	// Only set for TIERED rate_type.
-	Tiers []shared.TierParam `json:"tiers,omitzero"`
-	paramObj
+// Any of "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE",
+// "CUSTOM".
+RateType string `json:"rate_type,omitzero" api:"required"`
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+// set to true.
+IsProrated param.Opt[bool] `json:"is_prorated,omitzero"`
+// Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+// this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+Price param.Opt[float64] `json:"price,omitzero"`
+// Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Only set for CUSTOM rate_type. This field is interpreted by custom rate
+// processors.
+CustomRate map[string]any `json:"custom_rate,omitzero"`
+// Only set for TIERED rate_type.
+Tiers []shared.TierParam `json:"tiers,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsOverrideOverwriteRate) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsOverrideOverwriteRate
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsOverrideOverwriteRate
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsOverrideOverwriteRate) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsOverrideOverwriteRate) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsOverrideOverwriteRate](
-		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsOverrideOverwriteRate](
+    "rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
+  )
 }
 
 // The property Multiplier is required.
 type V1ContractAmendParamsOverrideTier struct {
-	Multiplier float64            `json:"multiplier" api:"required"`
-	Size       param.Opt[float64] `json:"size,omitzero"`
-	paramObj
+Multiplier float64 `json:"multiplier" api:"required"`
+Size param.Opt[float64] `json:"size,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsOverrideTier) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsOverrideTier
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsOverrideTier
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsOverrideTier) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsOverrideTier) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties MaxAmount, ProductID, Quantity, UnitPrice are required.
 type V1ContractAmendParamsProfessionalService struct {
-	// Maximum amount for the term.
-	MaxAmount float64 `json:"max_amount" api:"required"`
-	ProductID string  `json:"product_id" api:"required" format:"uuid"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount.
-	Quantity float64 `json:"quantity" api:"required"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified.
-	UnitPrice   float64           `json:"unit_price" api:"required"`
-	Description param.Opt[string] `json:"description,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	paramObj
+// Maximum amount for the term.
+MaxAmount float64 `json:"max_amount" api:"required"`
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount.
+Quantity float64 `json:"quantity" api:"required"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified.
+UnitPrice float64 `json:"unit_price" api:"required"`
+Description param.Opt[string] `json:"description,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsProfessionalService) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsProfessionalService
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsProfessionalService
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsProfessionalService) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsProfessionalService) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The property ResellerType is required.
 type V1ContractAmendParamsResellerRoyalty struct {
-	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
-	ResellerType string `json:"reseller_type,omitzero" api:"required"`
-	// Use null to indicate that the existing end timestamp should be removed.
-	EndingBefore          param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	Fraction              param.Opt[float64]   `json:"fraction,omitzero"`
-	NetsuiteResellerID    param.Opt[string]    `json:"netsuite_reseller_id,omitzero"`
-	ResellerContractValue param.Opt[float64]   `json:"reseller_contract_value,omitzero"`
-	StartingAt            param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
-	// Must provide at least one of applicable_product_ids or applicable_product_tags.
-	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
-	// Must provide at least one of applicable_product_ids or applicable_product_tags.
-	ApplicableProductTags []string                                       `json:"applicable_product_tags,omitzero"`
-	AwsOptions            V1ContractAmendParamsResellerRoyaltyAwsOptions `json:"aws_options,omitzero"`
-	GcpOptions            V1ContractAmendParamsResellerRoyaltyGcpOptions `json:"gcp_options,omitzero"`
-	paramObj
+// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
+ResellerType string `json:"reseller_type,omitzero" api:"required"`
+// Use null to indicate that the existing end timestamp should be removed.
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+Fraction param.Opt[float64] `json:"fraction,omitzero"`
+NetsuiteResellerID param.Opt[string] `json:"netsuite_reseller_id,omitzero"`
+ResellerContractValue param.Opt[float64] `json:"reseller_contract_value,omitzero"`
+StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+// Must provide at least one of applicable_product_ids or applicable_product_tags.
+ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
+// Must provide at least one of applicable_product_ids or applicable_product_tags.
+ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+AwsOptions V1ContractAmendParamsResellerRoyaltyAwsOptions `json:"aws_options,omitzero"`
+GcpOptions V1ContractAmendParamsResellerRoyaltyGcpOptions `json:"gcp_options,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsResellerRoyalty) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsResellerRoyalty
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsResellerRoyalty
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsResellerRoyalty) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsResellerRoyalty) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsResellerRoyalty](
-		"reseller_type", "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsResellerRoyalty](
+    "reseller_type", "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE",
+  )
 }
 
 type V1ContractAmendParamsResellerRoyaltyAwsOptions struct {
-	AwsAccountNumber    param.Opt[string] `json:"aws_account_number,omitzero"`
-	AwsOfferID          param.Opt[string] `json:"aws_offer_id,omitzero"`
-	AwsPayerReferenceID param.Opt[string] `json:"aws_payer_reference_id,omitzero"`
-	paramObj
+AwsAccountNumber param.Opt[string] `json:"aws_account_number,omitzero"`
+AwsOfferID param.Opt[string] `json:"aws_offer_id,omitzero"`
+AwsPayerReferenceID param.Opt[string] `json:"aws_payer_reference_id,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsResellerRoyaltyAwsOptions) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsResellerRoyaltyAwsOptions
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsResellerRoyaltyAwsOptions
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsResellerRoyaltyAwsOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsResellerRoyaltyAwsOptions) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractAmendParamsResellerRoyaltyGcpOptions struct {
-	GcpAccountID param.Opt[string] `json:"gcp_account_id,omitzero"`
-	GcpOfferID   param.Opt[string] `json:"gcp_offer_id,omitzero"`
-	paramObj
+GcpAccountID param.Opt[string] `json:"gcp_account_id,omitzero"`
+GcpOfferID param.Opt[string] `json:"gcp_offer_id,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsResellerRoyaltyGcpOptions) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsResellerRoyaltyGcpOptions
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsResellerRoyaltyGcpOptions
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsResellerRoyaltyGcpOptions) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties ProductID, Schedule are required.
 type V1ContractAmendParamsScheduledCharge struct {
-	ProductID string `json:"product_id" api:"required" format:"uuid"`
-	// Must provide either schedule_items or recurring_schedule.
-	Schedule V1ContractAmendParamsScheduledChargeSchedule `json:"schedule,omitzero" api:"required"`
-	// displayed on invoices
-	Name param.Opt[string] `json:"name,omitzero"`
-	// This field's availability is dependent on your client's configuration.
-	NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	paramObj
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+// Must provide either schedule_items or recurring_schedule.
+Schedule V1ContractAmendParamsScheduledChargeSchedule `json:"schedule,omitzero" api:"required"`
+// displayed on invoices
+Name param.Opt[string] `json:"name,omitzero"`
+// This field's availability is dependent on your client's configuration.
+NetsuiteSalesOrderID param.Opt[string] `json:"netsuite_sales_order_id,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsScheduledCharge) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsScheduledCharge
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsScheduledCharge
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsScheduledCharge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsScheduledCharge) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Must provide either schedule_items or recurring_schedule.
 type V1ContractAmendParamsScheduledChargeSchedule struct {
-	// Defaults to USD (cents) if not passed.
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// This field is only applicable to commit invoice schedules. If true, this
-	// schedule will not generate an invoice.
-	DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
-	// Enter the unit price and quantity for the charge or instead only send the
-	// amount. If amount is sent, the unit price is assumed to be the amount and
-	// quantity is inferred to be 1.
-	RecurringSchedule V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
-	// Either provide amount or provide both unit_price and quantity.
-	ScheduleItems []V1ContractAmendParamsScheduledChargeScheduleScheduleItem `json:"schedule_items,omitzero"`
-	paramObj
+// Defaults to USD (cents) if not passed.
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// This field is only applicable to commit invoice schedules. If true, this
+// schedule will not generate an invoice.
+DoNotInvoice param.Opt[bool] `json:"do_not_invoice,omitzero"`
+// Enter the unit price and quantity for the charge or instead only send the
+// amount. If amount is sent, the unit price is assumed to be the amount and
+// quantity is inferred to be 1.
+RecurringSchedule V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule `json:"recurring_schedule,omitzero"`
+// Either provide amount or provide both unit_price and quantity.
+ScheduleItems []V1ContractAmendParamsScheduledChargeScheduleScheduleItem `json:"schedule_items,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsScheduledChargeSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsScheduledChargeSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsScheduledChargeSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsScheduledChargeSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsScheduledChargeSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Enter the unit price and quantity for the charge or instead only send the
@@ -4842,204 +4802,204 @@ func (r *V1ContractAmendParamsScheduledChargeSchedule) UnmarshalJSON(data []byte
 // The properties AmountDistribution, EndingBefore, Frequency, StartingAt are
 // required.
 type V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule struct {
-	// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
-	AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
-	// RFC 3339 timestamp (exclusive).
-	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
-	Frequency string `json:"frequency,omitzero" api:"required"`
-	// RFC 3339 timestamp (inclusive).
-	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// Any of "DIVIDED", "DIVIDED_ROUNDED", "EACH".
+AmountDistribution string `json:"amount_distribution,omitzero" api:"required"`
+// RFC 3339 timestamp (exclusive).
+EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL".
+Frequency string `json:"frequency,omitzero" api:"required"`
+// RFC 3339 timestamp (inclusive).
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule](
-		"amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
-	)
-	apijson.RegisterFieldValidator[V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule](
-		"frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
-	)
+  apijson.RegisterFieldValidator[V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule](
+    "amount_distribution", "DIVIDED", "DIVIDED_ROUNDED", "EACH",
+  )
+  apijson.RegisterFieldValidator[V1ContractAmendParamsScheduledChargeScheduleRecurringSchedule](
+    "frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL",
+  )
 }
 
 // The property Timestamp is required.
 type V1ContractAmendParamsScheduledChargeScheduleScheduleItem struct {
-	// timestamp of the scheduled event
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Amount for the charge. Can be provided instead of unit_price and quantity. If
-	// amount is sent, the unit_price is assumed to be the amount and quantity is
-	// inferred to be 1.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount and must be specified with unit_price. If specified amount cannot be
-	// provided.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// Unit price for the charge. Will be multiplied by quantity to determine the
-	// amount and must be specified with quantity. If specified amount cannot be
-	// provided.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+// timestamp of the scheduled event
+Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
+// Amount for the charge. Can be provided instead of unit_price and quantity. If
+// amount is sent, the unit_price is assumed to be the amount and quantity is
+// inferred to be 1.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount and must be specified with unit_price. If specified amount cannot be
+// provided.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// Unit price for the charge. Will be multiplied by quantity to determine the
+// amount and must be specified with quantity. If specified amount cannot be
+// provided.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractAmendParamsScheduledChargeScheduleScheduleItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractAmendParamsScheduledChargeScheduleScheduleItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractAmendParamsScheduledChargeScheduleScheduleItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractAmendParamsScheduledChargeScheduleScheduleItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractAmendParamsScheduledChargeScheduleScheduleItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractArchiveParams struct {
-	// ID of the contract to archive
-	ContractID string `json:"contract_id" api:"required" format:"uuid"`
-	// ID of the customer whose contract is to be archived
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// If false, the existing finalized invoices will remain after the contract is
-	// archived.
-	VoidInvoices bool `json:"void_invoices" api:"required"`
-	paramObj
+// ID of the contract to archive
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+// ID of the customer whose contract is to be archived
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// If false, the existing finalized invoices will remain after the contract is
+// archived.
+VoidInvoices bool `json:"void_invoices" api:"required"`
+paramObj
 }
 
 func (r V1ContractArchiveParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractArchiveParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractArchiveParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractArchiveParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractArchiveParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractNewHistoricalInvoicesParams struct {
-	Invoices []V1ContractNewHistoricalInvoicesParamsInvoice `json:"invoices,omitzero" api:"required"`
-	Preview  bool                                           `json:"preview" api:"required"`
-	paramObj
+Invoices []V1ContractNewHistoricalInvoicesParamsInvoice `json:"invoices,omitzero" api:"required"`
+Preview bool `json:"preview" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewHistoricalInvoicesParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewHistoricalInvoicesParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewHistoricalInvoicesParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewHistoricalInvoicesParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewHistoricalInvoicesParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties ContractID, CreditTypeID, CustomerID, ExclusiveEndDate,
 // InclusiveStartDate, IssueDate, UsageLineItems are required.
 type V1ContractNewHistoricalInvoicesParamsInvoice struct {
-	ContractID         string                                                      `json:"contract_id" api:"required" format:"uuid"`
-	CreditTypeID       string                                                      `json:"credit_type_id" api:"required" format:"uuid"`
-	CustomerID         string                                                      `json:"customer_id" api:"required" format:"uuid"`
-	ExclusiveEndDate   time.Time                                                   `json:"exclusive_end_date" api:"required" format:"date-time"`
-	InclusiveStartDate time.Time                                                   `json:"inclusive_start_date" api:"required" format:"date-time"`
-	IssueDate          time.Time                                                   `json:"issue_date" api:"required" format:"date-time"`
-	UsageLineItems     []V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItem `json:"usage_line_items,omitzero" api:"required"`
-	// This field's availability is dependent on your client's configuration.
-	//
-	// Any of "billable", "unbillable".
-	BillableStatus string `json:"billable_status,omitzero"`
-	// Any of "HOUR", "DAY".
-	BreakdownGranularity string `json:"breakdown_granularity,omitzero"`
-	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields map[string]string `json:"custom_fields,omitzero"`
-	paramObj
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+ExclusiveEndDate time.Time `json:"exclusive_end_date" api:"required" format:"date-time"`
+InclusiveStartDate time.Time `json:"inclusive_start_date" api:"required" format:"date-time"`
+IssueDate time.Time `json:"issue_date" api:"required" format:"date-time"`
+UsageLineItems []V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItem `json:"usage_line_items,omitzero" api:"required"`
+// This field's availability is dependent on your client's configuration.
+//
+// Any of "billable", "unbillable".
+BillableStatus string `json:"billable_status,omitzero"`
+// Any of "HOUR", "DAY".
+BreakdownGranularity string `json:"breakdown_granularity,omitzero"`
+// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+CustomFields map[string]string `json:"custom_fields,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewHistoricalInvoicesParamsInvoice) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewHistoricalInvoicesParamsInvoice
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewHistoricalInvoicesParamsInvoice
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewHistoricalInvoicesParamsInvoice) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewHistoricalInvoicesParamsInvoice) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractNewHistoricalInvoicesParamsInvoice](
-		"billable_status", "billable", "unbillable",
-	)
-	apijson.RegisterFieldValidator[V1ContractNewHistoricalInvoicesParamsInvoice](
-		"breakdown_granularity", "HOUR", "DAY",
-	)
+  apijson.RegisterFieldValidator[V1ContractNewHistoricalInvoicesParamsInvoice](
+    "billable_status", "billable", "unbillable",
+  )
+  apijson.RegisterFieldValidator[V1ContractNewHistoricalInvoicesParamsInvoice](
+    "breakdown_granularity", "HOUR", "DAY",
+  )
 }
 
 // The properties ExclusiveEndDate, InclusiveStartDate, ProductID are required.
 type V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItem struct {
-	ExclusiveEndDate        time.Time                                                                        `json:"exclusive_end_date" api:"required" format:"date-time"`
-	InclusiveStartDate      time.Time                                                                        `json:"inclusive_start_date" api:"required" format:"date-time"`
-	ProductID               string                                                                           `json:"product_id" api:"required" format:"uuid"`
-	Quantity                param.Opt[float64]                                                               `json:"quantity,omitzero"`
-	PresentationGroupValues map[string]string                                                                `json:"presentation_group_values,omitzero"`
-	PricingGroupValues      map[string]string                                                                `json:"pricing_group_values,omitzero"`
-	SubtotalsWithQuantity   []V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity `json:"subtotals_with_quantity,omitzero"`
-	paramObj
+ExclusiveEndDate time.Time `json:"exclusive_end_date" api:"required" format:"date-time"`
+InclusiveStartDate time.Time `json:"inclusive_start_date" api:"required" format:"date-time"`
+ProductID string `json:"product_id" api:"required" format:"uuid"`
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+PresentationGroupValues map[string]string `json:"presentation_group_values,omitzero"`
+PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
+SubtotalsWithQuantity []V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity `json:"subtotals_with_quantity,omitzero"`
+paramObj
 }
 
 func (r V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties ExclusiveEndDate, InclusiveStartDate, Quantity are required.
 type V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity struct {
-	ExclusiveEndDate   time.Time `json:"exclusive_end_date" api:"required" format:"date-time"`
-	InclusiveStartDate time.Time `json:"inclusive_start_date" api:"required" format:"date-time"`
-	Quantity           float64   `json:"quantity" api:"required"`
-	paramObj
+ExclusiveEndDate time.Time `json:"exclusive_end_date" api:"required" format:"date-time"`
+InclusiveStartDate time.Time `json:"inclusive_start_date" api:"required" format:"date-time"`
+Quantity float64 `json:"quantity" api:"required"`
+paramObj
 }
 
 func (r V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractNewHistoricalInvoicesParamsInvoiceUsageLineItemSubtotalsWithQuantity) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetNetBalanceParams struct {
-	// The ID of the customer.
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// The ID of the credit type (can be fiat or a custom pricing unit) to get the
-	// balance for. Defaults to USD (cents) if not specified.
-	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-	// Balance filters are OR'd together, so if a given commit or credit matches any of
-	// the filters, it will be included in the net balance.
-	Filters []shared.BalanceFilterParam `json:"filters,omitzero"`
-	// Controls which invoices are considered when calculating the remaining balance.
-	// `FINALIZED` considers only deductions from finalized invoices.
-	// `FINALIZED_AND_DRAFT` also includes deductions from pending draft invoices.
-	//
-	// Any of "FINALIZED", "FINALIZED_AND_DRAFT".
-	InvoiceInclusionMode V1ContractGetNetBalanceParamsInvoiceInclusionMode `json:"invoice_inclusion_mode,omitzero"`
-	paramObj
+// The ID of the customer.
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// The ID of the credit type (can be fiat or a custom pricing unit) to get the
+// balance for. Defaults to USD (cents) if not specified.
+CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+// Balance filters are OR'd together, so if a given commit or credit matches any of
+// the filters, it will be included in the net balance.
+Filters []shared.BalanceFilterParam `json:"filters,omitzero"`
+// Controls which invoices are considered when calculating the remaining balance.
+// `FINALIZED` considers only deductions from finalized invoices.
+// `FINALIZED_AND_DRAFT` also includes deductions from pending draft invoices.
+//
+// Any of "FINALIZED", "FINALIZED_AND_DRAFT".
+InvoiceInclusionMode V1ContractGetNetBalanceParamsInvoiceInclusionMode `json:"invoice_inclusion_mode,omitzero"`
+paramObj
 }
 
 func (r V1ContractGetNetBalanceParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractGetNetBalanceParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractGetNetBalanceParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractGetNetBalanceParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractGetNetBalanceParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls which invoices are considered when calculating the remaining balance.
@@ -5048,302 +5008,302 @@ func (r *V1ContractGetNetBalanceParams) UnmarshalJSON(data []byte) error {
 type V1ContractGetNetBalanceParamsInvoiceInclusionMode string
 
 const (
-	V1ContractGetNetBalanceParamsInvoiceInclusionModeFinalized         V1ContractGetNetBalanceParamsInvoiceInclusionMode = "FINALIZED"
-	V1ContractGetNetBalanceParamsInvoiceInclusionModeFinalizedAndDraft V1ContractGetNetBalanceParamsInvoiceInclusionMode = "FINALIZED_AND_DRAFT"
-)
+    V1ContractGetNetBalanceParamsInvoiceInclusionModeFinalized V1ContractGetNetBalanceParamsInvoiceInclusionMode = "FINALIZED"
+    V1ContractGetNetBalanceParamsInvoiceInclusionModeFinalizedAndDraft V1ContractGetNetBalanceParamsInvoiceInclusionMode = "FINALIZED_AND_DRAFT"
+  )
 
 type V1ContractGetSubscriptionSeatsHistoryParams struct {
-	ContractID     string `json:"contract_id" api:"required" format:"uuid"`
-	CustomerID     string `json:"customer_id" api:"required" format:"uuid"`
-	SubscriptionID string `json:"subscription_id" api:"required" format:"uuid"`
-	// Get the seats history segment for the covering date. Cannot be used with
-	// `starting_at` or `ending_before`.
-	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
-	// Cursor for pagination. Use the value from the `next_page` field of the previous
-	// response to retrieve the next page of results.
-	Cursor param.Opt[string] `json:"cursor,omitzero"`
-	// Include seats history segments that are active at or before this timestamp. Use
-	// with `starting_at` to get a specific time range. If not set, there's no upper
-	// bound.
-	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	// Maximum number of seat schedule entries to return. Defaults to 10. Required
-	// range: 1 <= x <= 10.
-	Limit param.Opt[int64] `json:"limit,omitzero"`
-	// Include seats history segments that are active at or after this timestamp. Use
-	// with `ending_before` to get a specific time range. If not set, there's no lower
-	// bound.
-	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
-	paramObj
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+SubscriptionID string `json:"subscription_id" api:"required" format:"uuid"`
+// Get the seats history segment for the covering date. Cannot be used with
+// `starting_at` or `ending_before`.
+CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+// Cursor for pagination. Use the value from the `next_page` field of the previous
+// response to retrieve the next page of results.
+Cursor param.Opt[string] `json:"cursor,omitzero"`
+// Include seats history segments that are active at or before this timestamp. Use
+// with `starting_at` to get a specific time range. If not set, there's no upper
+// bound.
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+// Maximum number of seat schedule entries to return. Defaults to 10. Required
+// range: 1 <= x <= 10.
+Limit param.Opt[int64] `json:"limit,omitzero"`
+// Include seats history segments that are active at or after this timestamp. Use
+// with `ending_before` to get a specific time range. If not set, there's no lower
+// bound.
+StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractGetSubscriptionSeatsHistoryParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractGetSubscriptionSeatsHistoryParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractGetSubscriptionSeatsHistoryParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractGetSubscriptionSeatsHistoryParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractGetSubscriptionSeatsHistoryParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListBalancesParams struct {
-	CustomerID string            `json:"customer_id" api:"required" format:"uuid"`
-	ID         param.Opt[string] `json:"id,omitzero" format:"uuid"`
-	// Return only balances that have access schedules that "cover" the provided date
-	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
-	// Include only balances that have any access before the provided date (exclusive)
-	EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
-	// Exclude balances with zero amounts from the response.
-	ExcludeZeroBalances param.Opt[bool] `json:"exclude_zero_balances,omitzero"`
-	// Include archived credits and credits from archived contracts.
-	IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
-	// Include the balance of credits and commits in the response. Setting this flag
-	// may cause the query to be slower.
-	IncludeBalance param.Opt[bool] `json:"include_balance,omitzero"`
-	// Include balances on the contract level.
-	IncludeContractBalances param.Opt[bool] `json:"include_contract_balances,omitzero"`
-	// Include ledgers in the response. Setting this flag may cause the query to be
-	// slower.
-	IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
-	// The maximum number of commits to return. Defaults to 25.
-	Limit param.Opt[int64] `json:"limit,omitzero"`
-	// The next page token from a previous response.
-	NextPage param.Opt[string] `json:"next_page,omitzero"`
-	// Include only balances that have any access on or after the provided date
-	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
-	paramObj
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+ID param.Opt[string] `json:"id,omitzero" format:"uuid"`
+// Return only balances that have access schedules that "cover" the provided date
+CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+// Include only balances that have any access before the provided date (exclusive)
+EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
+// Exclude balances with zero amounts from the response.
+ExcludeZeroBalances param.Opt[bool] `json:"exclude_zero_balances,omitzero"`
+// Include archived credits and credits from archived contracts.
+IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
+// Include the balance of credits and commits in the response. Setting this flag
+// may cause the query to be slower.
+IncludeBalance param.Opt[bool] `json:"include_balance,omitzero"`
+// Include balances on the contract level.
+IncludeContractBalances param.Opt[bool] `json:"include_contract_balances,omitzero"`
+// Include ledgers in the response. Setting this flag may cause the query to be
+// slower.
+IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
+// The maximum number of commits to return. Defaults to 25.
+Limit param.Opt[int64] `json:"limit,omitzero"`
+// The next page token from a previous response.
+NextPage param.Opt[string] `json:"next_page,omitzero"`
+// Include only balances that have any access on or after the provided date
+StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractListBalancesParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractListBalancesParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractListBalancesParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractListBalancesParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListBalancesParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractListSeatBalancesParams struct {
-	// The contract ID to retrieve seat balances for
-	ContractID string `json:"contract_id" api:"required" format:"uuid"`
-	// The customer ID to retrieve seat balances for
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// Include only commits or credits with access that cover this specific date
-	// (cannot be used with starting_at or ending_before).
-	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
-	// Page token from a previous response to retrieve the next page
-	Cursor param.Opt[string] `json:"cursor,omitzero"`
-	// Include only commits or credits with access effective on or before this date
-	// (cannot be used with covering_date).
-	EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
-	// Include credits and commits in the response
-	IncludeCreditsAndCommits param.Opt[bool] `json:"include_credits_and_commits,omitzero"`
-	// Include ledger entries for each commit and commit. `include_credits_and_commits`
-	// must be set to `true` for `include_ledgers=true` to apply.
-	IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
-	// Maximum number of seats to return. Range: 1-100. Default: 25. When
-	// `include_credits_and_commits = true`, if the total commits/credits across all
-	// seats exceeds 100, a limit of 100 applies to the total credits and commits.
-	// Seats are included greedily to maximize the number of seats returned. Example:
-	// if seat 1 has 98 commits and seat 2 has 10 commits, both seats will be returned
-	// (total: 108 commits). Each returned seat includes all of its associated credits
-	// and commits.
-	Limit param.Opt[int64] `json:"limit,omitzero"`
-	// When true, any seat_ids not found in contract subscriptions will be silently
-	// omitted from the response instead of returning a 400 error.
-	SkipMissingSeatIDs param.Opt[bool] `json:"skip_missing_seat_ids,omitzero"`
-	// Include only commits or credits with access effective on or after this date
-	// (cannot be used with covering_date).
-	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
-	// Optional filter to only include specific seats.
-	SeatIDs []string `json:"seat_ids,omitzero"`
-	// Optional filter to only include seats from specific subscriptions. If
-	// subscriptions ids are not mapped to SEAT_BASED subscriptions, error will be
-	// returned.
-	SubscriptionIDs []string `json:"subscription_ids,omitzero" format:"uuid"`
-	paramObj
+// The contract ID to retrieve seat balances for
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+// The customer ID to retrieve seat balances for
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// Include only commits or credits with access that cover this specific date
+// (cannot be used with starting_at or ending_before).
+CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+// Page token from a previous response to retrieve the next page
+Cursor param.Opt[string] `json:"cursor,omitzero"`
+// Include only commits or credits with access effective on or before this date
+// (cannot be used with covering_date).
+EffectiveBefore param.Opt[time.Time] `json:"effective_before,omitzero" format:"date-time"`
+// Include credits and commits in the response
+IncludeCreditsAndCommits param.Opt[bool] `json:"include_credits_and_commits,omitzero"`
+// Include ledger entries for each commit and commit. `include_credits_and_commits`
+// must be set to `true` for `include_ledgers=true` to apply.
+IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
+// Maximum number of seats to return. Range: 1-100. Default: 25. When
+// `include_credits_and_commits = true`, if the total commits/credits across all
+// seats exceeds 100, a limit of 100 applies to the total credits and commits.
+// Seats are included greedily to maximize the number of seats returned. Example:
+// if seat 1 has 98 commits and seat 2 has 10 commits, both seats will be returned
+// (total: 108 commits). Each returned seat includes all of its associated credits
+// and commits.
+Limit param.Opt[int64] `json:"limit,omitzero"`
+// When true, any seat_ids not found in contract subscriptions will be silently
+// omitted from the response instead of returning a 400 error.
+SkipMissingSeatIDs param.Opt[bool] `json:"skip_missing_seat_ids,omitzero"`
+// Include only commits or credits with access effective on or after this date
+// (cannot be used with covering_date).
+StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+// Optional filter to only include specific seats.
+SeatIDs []string `json:"seat_ids,omitzero"`
+// Optional filter to only include seats from specific subscriptions. If
+// subscriptions ids are not mapped to SEAT_BASED subscriptions, error will be
+// returned.
+SubscriptionIDs []string `json:"subscription_ids,omitzero" format:"uuid"`
+paramObj
 }
 
 func (r V1ContractListSeatBalancesParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractListSeatBalancesParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractListSeatBalancesParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractListSeatBalancesParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractListSeatBalancesParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractGetRateScheduleParams struct {
-	// ID of the contract to get the rate schedule for.
-	ContractID string `json:"contract_id" api:"required" format:"uuid"`
-	// ID of the customer for whose contract to get the rate schedule for.
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// Max number of results that should be returned
-	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Cursor that indicates where the next page of results should start.
-	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
-	// optional timestamp which overlaps with the returned rate schedule segments. When
-	// not specified, the current timestamp will be used.
-	At param.Opt[time.Time] `json:"at,omitzero" format:"date-time"`
-	// List of rate selectors, rates matching ANY of the selectors will be included in
-	// the response. Passing no selectors will result in all rates being returned.
-	Selectors []V1ContractGetRateScheduleParamsSelector `json:"selectors,omitzero"`
-	paramObj
+// ID of the contract to get the rate schedule for.
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+// ID of the customer for whose contract to get the rate schedule for.
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// Max number of results that should be returned
+Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+// Cursor that indicates where the next page of results should start.
+NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
+// optional timestamp which overlaps with the returned rate schedule segments. When
+// not specified, the current timestamp will be used.
+At param.Opt[time.Time] `json:"at,omitzero" format:"date-time"`
+// List of rate selectors, rates matching ANY of the selectors will be included in
+// the response. Passing no selectors will result in all rates being returned.
+Selectors []V1ContractGetRateScheduleParamsSelector `json:"selectors,omitzero"`
+paramObj
 }
 
 func (r V1ContractGetRateScheduleParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractGetRateScheduleParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractGetRateScheduleParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractGetRateScheduleParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractGetRateScheduleParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1ContractGetRateScheduleParams]'s query parameters as
 // `url.Values`.
 func (r V1ContractGetRateScheduleParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
+  return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+    ArrayFormat: apiquery.ArrayQueryFormatComma,
+    NestedFormat: apiquery.NestedQueryFormatBrackets,
+  })
 }
 
 type V1ContractGetRateScheduleParamsSelector struct {
-	// Rates matching the product id will be included in the response.
-	ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
-	// Subscription rates matching the billing frequency will be included in the
-	// response.
-	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
-	BillingFrequency string `json:"billing_frequency,omitzero"`
-	// List of pricing group key value pairs, rates containing the matching key / value
-	// pairs will be included in the response.
-	PartialPricingGroupValues map[string]string `json:"partial_pricing_group_values,omitzero"`
-	// List of pricing group key value pairs, rates matching all of the key / value
-	// pairs will be included in the response.
-	PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
-	// List of product tags, rates matching any of the tags will be included in the
-	// response.
-	ProductTags []string `json:"product_tags,omitzero"`
-	paramObj
+// Rates matching the product id will be included in the response.
+ProductID param.Opt[string] `json:"product_id,omitzero" format:"uuid"`
+// Subscription rates matching the billing frequency will be included in the
+// response.
+//
+// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+BillingFrequency string `json:"billing_frequency,omitzero"`
+// List of pricing group key value pairs, rates containing the matching key / value
+// pairs will be included in the response.
+PartialPricingGroupValues map[string]string `json:"partial_pricing_group_values,omitzero"`
+// List of pricing group key value pairs, rates matching all of the key / value
+// pairs will be included in the response.
+PricingGroupValues map[string]string `json:"pricing_group_values,omitzero"`
+// List of product tags, rates matching any of the tags will be included in the
+// response.
+ProductTags []string `json:"product_tags,omitzero"`
+paramObj
 }
 
 func (r V1ContractGetRateScheduleParamsSelector) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractGetRateScheduleParamsSelector
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractGetRateScheduleParamsSelector
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractGetRateScheduleParamsSelector) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractGetRateScheduleParamsSelector) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[V1ContractGetRateScheduleParamsSelector](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
-	)
+  apijson.RegisterFieldValidator[V1ContractGetRateScheduleParamsSelector](
+    "billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+  )
 }
 
 type V1ContractGetSubscriptionQuantityHistoryParams struct {
-	ContractID     string `json:"contract_id" api:"required" format:"uuid"`
-	CustomerID     string `json:"customer_id" api:"required" format:"uuid"`
-	SubscriptionID string `json:"subscription_id" api:"required" format:"uuid"`
-	paramObj
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+SubscriptionID string `json:"subscription_id" api:"required" format:"uuid"`
+paramObj
 }
 
 func (r V1ContractGetSubscriptionQuantityHistoryParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractGetSubscriptionQuantityHistoryParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractGetSubscriptionQuantityHistoryParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractGetSubscriptionQuantityHistoryParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractGetSubscriptionQuantityHistoryParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractScheduleProServicesInvoiceParams struct {
-	ContractID string `json:"contract_id" api:"required" format:"uuid"`
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// The date the invoice is issued
-	IssuedAt time.Time `json:"issued_at" api:"required" format:"date-time"`
-	// Each line requires an amount or both unit_price and quantity.
-	LineItems []V1ContractScheduleProServicesInvoiceParamsLineItem `json:"line_items,omitzero" api:"required"`
-	// The end date of the invoice header in Netsuite
-	NetsuiteInvoiceHeaderEnd param.Opt[time.Time] `json:"netsuite_invoice_header_end,omitzero" format:"date-time"`
-	// The start date of the invoice header in Netsuite
-	NetsuiteInvoiceHeaderStart param.Opt[time.Time] `json:"netsuite_invoice_header_start,omitzero" format:"date-time"`
-	paramObj
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// The date the invoice is issued
+IssuedAt time.Time `json:"issued_at" api:"required" format:"date-time"`
+// Each line requires an amount or both unit_price and quantity.
+LineItems []V1ContractScheduleProServicesInvoiceParamsLineItem `json:"line_items,omitzero" api:"required"`
+// The end date of the invoice header in Netsuite
+NetsuiteInvoiceHeaderEnd param.Opt[time.Time] `json:"netsuite_invoice_header_end,omitzero" format:"date-time"`
+// The start date of the invoice header in Netsuite
+NetsuiteInvoiceHeaderStart param.Opt[time.Time] `json:"netsuite_invoice_header_start,omitzero" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractScheduleProServicesInvoiceParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractScheduleProServicesInvoiceParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractScheduleProServicesInvoiceParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractScheduleProServicesInvoiceParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractScheduleProServicesInvoiceParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 // Describes the line item for a professional service charge on an invoice.
 //
 // The property ProfessionalServiceID is required.
 type V1ContractScheduleProServicesInvoiceParamsLineItem struct {
-	ProfessionalServiceID string `json:"professional_service_id" api:"required" format:"uuid"`
-	// If the professional_service_id was added on an amendment, this is required.
-	AmendmentID param.Opt[string] `json:"amendment_id,omitzero" format:"uuid"`
-	// Amount for the term on the new invoice.
-	Amount param.Opt[float64] `json:"amount,omitzero"`
-	// For client use.
-	Metadata param.Opt[string] `json:"metadata,omitzero"`
-	// The end date for the billing period on the invoice.
-	NetsuiteInvoiceBillingEnd param.Opt[time.Time] `json:"netsuite_invoice_billing_end,omitzero" format:"date-time"`
-	// The start date for the billing period on the invoice.
-	NetsuiteInvoiceBillingStart param.Opt[time.Time] `json:"netsuite_invoice_billing_start,omitzero" format:"date-time"`
-	// Quantity for the charge. Will be multiplied by unit_price to determine the
-	// amount.
-	Quantity param.Opt[float64] `json:"quantity,omitzero"`
-	// If specified, this overrides the unit price on the pro service term. Must also
-	// provide quantity (but not amount) if providing unit_price.
-	UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
-	paramObj
+ProfessionalServiceID string `json:"professional_service_id" api:"required" format:"uuid"`
+// If the professional_service_id was added on an amendment, this is required.
+AmendmentID param.Opt[string] `json:"amendment_id,omitzero" format:"uuid"`
+// Amount for the term on the new invoice.
+Amount param.Opt[float64] `json:"amount,omitzero"`
+// For client use.
+Metadata param.Opt[string] `json:"metadata,omitzero"`
+// The end date for the billing period on the invoice.
+NetsuiteInvoiceBillingEnd param.Opt[time.Time] `json:"netsuite_invoice_billing_end,omitzero" format:"date-time"`
+// The start date for the billing period on the invoice.
+NetsuiteInvoiceBillingStart param.Opt[time.Time] `json:"netsuite_invoice_billing_start,omitzero" format:"date-time"`
+// Quantity for the charge. Will be multiplied by unit_price to determine the
+// amount.
+Quantity param.Opt[float64] `json:"quantity,omitzero"`
+// If specified, this overrides the unit price on the pro service term. Must also
+// provide quantity (but not amount) if providing unit_price.
+UnitPrice param.Opt[float64] `json:"unit_price,omitzero"`
+paramObj
 }
 
 func (r V1ContractScheduleProServicesInvoiceParamsLineItem) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractScheduleProServicesInvoiceParamsLineItem
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractScheduleProServicesInvoiceParamsLineItem
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractScheduleProServicesInvoiceParamsLineItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractScheduleProServicesInvoiceParamsLineItem) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractSetUsageFilterParams struct {
-	ContractID  string    `json:"contract_id" api:"required" format:"uuid"`
-	CustomerID  string    `json:"customer_id" api:"required" format:"uuid"`
-	GroupKey    string    `json:"group_key" api:"required"`
-	GroupValues []string  `json:"group_values,omitzero" api:"required"`
-	StartingAt  time.Time `json:"starting_at" api:"required" format:"date-time"`
-	paramObj
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+GroupKey string `json:"group_key" api:"required"`
+GroupValues []string `json:"group_values,omitzero" api:"required"`
+StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractSetUsageFilterParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractSetUsageFilterParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractSetUsageFilterParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractSetUsageFilterParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractSetUsageFilterParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractUpdateEndDateParams struct {
-	// ID of the contract to update
-	ContractID string `json:"contract_id" api:"required" format:"uuid"`
-	// ID of the customer whose contract is to be updated
-	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// If true, allows setting the contract end date earlier than the end_timestamp of
-	// existing finalized invoices. Finalized invoices will be unchanged; if you want
-	// to incorporate the new end date, you can void and regenerate finalized usage
-	// invoices. Defaults to true.
-	AllowEndingBeforeFinalizedInvoice param.Opt[bool] `json:"allow_ending_before_finalized_invoice,omitzero"`
-	// RFC 3339 timestamp indicating when the contract will end (exclusive). If not
-	// provided, the contract will be updated to be open-ended.
-	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	paramObj
+// ID of the contract to update
+ContractID string `json:"contract_id" api:"required" format:"uuid"`
+// ID of the customer whose contract is to be updated
+CustomerID string `json:"customer_id" api:"required" format:"uuid"`
+// If true, allows setting the contract end date earlier than the end_timestamp of
+// existing finalized invoices. Finalized invoices will be unchanged; if you want
+// to incorporate the new end date, you can void and regenerate finalized usage
+// invoices. Defaults to true.
+AllowEndingBeforeFinalizedInvoice param.Opt[bool] `json:"allow_ending_before_finalized_invoice,omitzero"`
+// RFC 3339 timestamp indicating when the contract will end (exclusive). If not
+// provided, the contract will be updated to be open-ended.
+EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+paramObj
 }
 
 func (r V1ContractUpdateEndDateParams) MarshalJSON() (data []byte, err error) {
-	type shadow V1ContractUpdateEndDateParams
-	return param.MarshalObject(r, (*shadow)(&r))
+  type shadow V1ContractUpdateEndDateParams
+  return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractUpdateEndDateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractUpdateEndDateParams) UnmarshalJSON(data []byte) (error) {
+  return apijson.UnmarshalRoot(data, r)
 }
