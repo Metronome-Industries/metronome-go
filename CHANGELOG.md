@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.11.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.10.0...v3.11.0) (2026-07-31)
+
+### Features
+
+* Add Lifecycle Notification APIs
 ## 3.10.0 (2026-07-23)
 
 Full Changelog: [v3.9.0...v3.10.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.9.0...v3.10.0)
