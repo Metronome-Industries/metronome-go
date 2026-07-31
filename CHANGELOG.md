@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.11.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.10.0...v3.11.0) (2026-07-31)
+
+
+### Features
+
+* add release-please workflow ([#177](https://github.com/Metronome-Industries/metronome-go/issues/177)) ([d69604e](https://github.com/Metronome-Industries/metronome-go/commit/d69604ee9c695b63de1aa48ac71ca1dc7eeafb15))
+* **stlc:** dispatch custom-code seals to api ([890305f](https://github.com/Metronome-Industries/metronome-go/commit/890305f713c560265bae24e6007c9b66f0aef34c))
+* **stlc:** dispatch custom-code seals to api ([6ed8083](https://github.com/Metronome-Industries/metronome-go/commit/6ed80837cd112ab3d155cbf518e2cf23a8e6d7cb))
+
+
+### Bug Fixes
+
+* **stlc:** authenticate promotion with app token ([4dfa19f](https://github.com/Metronome-Industries/metronome-go/commit/4dfa19f5b0a8dc1377bba3a90bcb793840177e23))
+* **stlc:** correct push trigger placement ([ae5ca55](https://github.com/Metronome-Industries/metronome-go/commit/ae5ca558568f896c45d2ad29c4ff6959cf41fa6b))
+* **stlc:** mint app token for seal dispatch ([5c42806](https://github.com/Metronome-Industries/metronome-go/commit/5c428069c492daeccc8cb4e1ce4e4d37b38620ef))
+* **stlc:** place push trigger under workflow events ([7231322](https://github.com/Metronome-Industries/metronome-go/commit/723132254b46c77e9ed99dde3f6ab83c704b3df6))
+* **stlc:** reconcile back-sync ancestry and enable seal dispatch ([6b930d1](https://github.com/Metronome-Industries/metronome-go/commit/6b930d1c46d68e19bd49e4038c8faa7762629924))
+* **stlc:** reconcile staging ancestry before sync skip ([a5bc26d](https://github.com/Metronome-Industries/metronome-go/commit/a5bc26d41d605e833d4a670b495e1dd5518b426b))
+* **stlc:** use bot token for sync ([64d363c](https://github.com/Metronome-Industries/metronome-go/commit/64d363cf0fadfac2b7fd2820b06fa14e5218cec9))
+* **stlc:** use bot token for sync ([5774c9d](https://github.com/Metronome-Industries/metronome-go/commit/5774c9d62e1351668040fab1be5c4815a12fd739))
+
+
+### Chores
+
+* back-sync production into staging ([081dd42](https://github.com/Metronome-Industries/metronome-go/commit/081dd429376511d41bff0b983a4fd44a809bdc14))
+* back-sync production into staging ([b9a1dd3](https://github.com/Metronome-Industries/metronome-go/commit/b9a1dd35faca0edac515cf8dfab81728342b4543))
+* back-sync production into staging (one-time trunk alignment) ([c034eda](https://github.com/Metronome-Industries/metronome-go/commit/c034edaa2939a6651f544b3ae7dde85a8ee0af83))
+* initial promote from stlc staging ([3a76e5c](https://github.com/Metronome-Industries/metronome-go/commit/3a76e5c6edd64fcf0a955b3b651a5971bee0c218))
+* promote SDK changes from staging ([2cf53c1](https://github.com/Metronome-Industries/metronome-go/commit/2cf53c1e79cb3acf01ebc99cb450485a34aa5b59))
+
 ## 3.10.0 (2026-07-23)
 
 Full Changelog: [v3.9.0...v3.10.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.9.0...v3.10.0)
