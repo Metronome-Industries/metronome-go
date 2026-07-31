@@ -236,6 +236,115 @@ func (r *BodyCursorPageAutoPager[T]) Index() int {
 	return r.run
 }
 
+type BodyCursorPageCursorField[T any] struct {
+	// Cursor to fetch the next page
+	Cursor string `json:"cursor"`
+	// Items of the page
+	Data []T `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cursor      respjson.Field
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r BodyCursorPageCursorField[T]) RawJSON() string { return r.JSON.raw }
+func (r *BodyCursorPageCursorField[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *BodyCursorPageCursorField[T]) GetNextPage() (res *BodyCursorPageCursorField[T], err error) {
+	next := r.Cursor
+	if len(next) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+	err = cfg.Apply(option.WithQuery("cursor", next))
+	if err != nil {
+		return nil, err
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *BodyCursorPageCursorField[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &BodyCursorPageCursorField[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type BodyCursorPageCursorFieldAutoPager[T any] struct {
+	page *BodyCursorPageCursorField[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewBodyCursorPageCursorFieldAutoPager[T any](page *BodyCursorPageCursorField[T], err error) *BodyCursorPageCursorFieldAutoPager[T] {
+	return &BodyCursorPageCursorFieldAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *BodyCursorPageCursorFieldAutoPager[T]) Next() bool {
+	if r.page == nil {
+		return false
+	}
+	if r.idx >= len(r.page.Data) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil {
+			return false
+		}
+	}
+	// if the API returned empty data then keep iterating
+	// until we either get more data or there are no more pages
+	// to fetch
+	for len(r.page.Data) == 0 {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil {
+			return false
+		}
+	}
+	r.cur = r.page.Data[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *BodyCursorPageCursorFieldAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *BodyCursorPageCursorFieldAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *BodyCursorPageCursorFieldAutoPager[T]) Index() int {
+	return r.run
+}
+
 type CursorPageWithoutLimit[T any] struct {
 	// Cursor to fetch the next page
 	NextPage string `json:"next_page"`
