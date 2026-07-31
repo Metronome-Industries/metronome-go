@@ -1,8 +1,8 @@
 package paramutil
 
 import (
-	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
 	"fmt"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
 	"reflect"
 )
 

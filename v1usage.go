@@ -3,21 +3,21 @@
 package metronome
 
 import (
-  "context"
-  "net/http"
-  "net/url"
-  "slices"
-  "time"
+	"context"
+	"net/http"
+	"net/url"
+	"slices"
+	"time"
 
-  "github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
-  "github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
-  shimjson "github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json"
-  "github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
-  "github.com/Metronome-Industries/metronome-go/v3/option"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/param"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
-  "github.com/Metronome-Industries/metronome-go/v3/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
+	shimjson "github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // [Usage events](https://docs.metronome.com/connecting-metronome/send-usage-data/)
@@ -31,16 +31,16 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1UsageService] method instead.
 type V1UsageService struct {
-Options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewV1UsageService generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
 func NewV1UsageService(opts ...option.RequestOption) (r V1UsageService) {
-  r = V1UsageService{}
-  r.Options = opts
-  return
+	r = V1UsageService{}
+	r.Options = opts
+	return
 }
 
 // Retrieve aggregated usage data across multiple customers and billable metrics in
@@ -68,29 +68,29 @@ func NewV1UsageService(opts ...option.RequestOption) (r V1UsageService) {
 //
 // ### Usage guidelines:
 //
-// - Time windows: Set `window_size` to `hour`, `day`, or `none` (entire period)
-// - Required parameters: Must specify `starting_on`, `ending_before`, and
-//   `window_size`
-// - Filtering options:
+//   - Time windows: Set `window_size` to `hour`, `day`, or `none` (entire period)
+//   - Required parameters: Must specify `starting_on`, `ending_before`, and
+//     `window_size`
+//   - Filtering options:
 //   - `customer_ids`: Limit to specific customers (omit for all customers)
 //   - `billable_metrics`: Limit to specific metrics (omit for all metrics)
-// - Pagination: Use `next_page` cursor to retrieve large datasets
-// - Null values: Group values may be null when no usage matches that group
+//   - Pagination: Use `next_page` cursor to retrieve large datasets
+//   - Null values: Group values may be null when no usage matches that group
 func (r *V1UsageService) List(ctx context.Context, params V1UsageListParams, opts ...option.RequestOption) (res *pagination.CursorPageWithoutLimit[V1UsageListResponse], err error) {
-  var raw *http.Response
-  opts = slices.Concat(r.Options, opts)
-  opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-  path := "v1/usage"
-  cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
-  if err != nil {
-    return nil, err
-  }
-  err = cfg.Execute()
-  if err != nil {
-    return nil, err
-  }
-  res.SetPageConfig(cfg, raw)
-  return res, nil
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "v1/usage"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
 // Retrieve aggregated usage data across multiple customers and billable metrics in
@@ -118,16 +118,16 @@ func (r *V1UsageService) List(ctx context.Context, params V1UsageListParams, opt
 //
 // ### Usage guidelines:
 //
-// - Time windows: Set `window_size` to `hour`, `day`, or `none` (entire period)
-// - Required parameters: Must specify `starting_on`, `ending_before`, and
-//   `window_size`
-// - Filtering options:
+//   - Time windows: Set `window_size` to `hour`, `day`, or `none` (entire period)
+//   - Required parameters: Must specify `starting_on`, `ending_before`, and
+//     `window_size`
+//   - Filtering options:
 //   - `customer_ids`: Limit to specific customers (omit for all customers)
 //   - `billable_metrics`: Limit to specific metrics (omit for all metrics)
-// - Pagination: Use `next_page` cursor to retrieve large datasets
-// - Null values: Group values may be null when no usage matches that group
-func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListParams, opts ...option.RequestOption) (*pagination.CursorPageWithoutLimitAutoPager[V1UsageListResponse]) {
-  return pagination.NewCursorPageWithoutLimitAutoPager(r.List(ctx, params, opts...))
+//   - Pagination: Use `next_page` cursor to retrieve large datasets
+//   - Null values: Group values may be null when no usage matches that group
+func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListParams, opts ...option.RequestOption) *pagination.CursorPageWithoutLimitAutoPager[V1UsageListResponse] {
+	return pagination.NewCursorPageWithoutLimitAutoPager(r.List(ctx, params, opts...))
 }
 
 // The ingest endpoint is the primary method for sending usage events to Metronome,
@@ -147,17 +147,17 @@ func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListP
 //
 // ### What happens when you send events:
 //
-// - Events are validated and processed in real-time
-// - Events are matched to customers using customer IDs or customer ingest aliases
-// - Events are matched to billable metrics and are immediately available for usage
-//   and spend calculations
+//   - Events are validated and processed in real-time
+//   - Events are matched to customers using customer IDs or customer ingest aliases
+//   - Events are matched to billable metrics and are immediately available for usage
+//     and spend calculations
 //
 // ### Usage guidelines:
 //
-// - Historical events can be backdated up to 34 days and will immediately impact
-//   live customer spend
-// - Duplicate events are automatically detected and ignored (34-day deduplication
-//   window)
+//   - Historical events can be backdated up to 34 days and will immediately impact
+//     live customer spend
+//   - Duplicate events are automatically detected and ignored (34-day deduplication
+//     window)
 //
 // #### Event structure:
 //
@@ -165,18 +165,20 @@ func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListP
 // integration:
 //
 // ```json
-// {
-//   "transaction_id": "2021-01-01T00:00:00Z_cluster42",
-//   "customer_id": "team@example.com",
-//   "event_type": "api_request",
-//   "timestamp": "2021-01-01T00:00:00Z",
-//   "properties": {
-//     "endpoint": "/v1/users",
-//     "method": "POST",
-//     "response_time_ms": 45,
-//     "region": "us-west-2"
-//   }
-// }
+//
+//	{
+//	  "transaction_id": "2021-01-01T00:00:00Z_cluster42",
+//	  "customer_id": "team@example.com",
+//	  "event_type": "api_request",
+//	  "timestamp": "2021-01-01T00:00:00Z",
+//	  "properties": {
+//	    "endpoint": "/v1/users",
+//	    "method": "POST",
+//	    "response_time_ms": 45,
+//	    "region": "us-west-2"
+//	  }
+//	}
+//
 // ```
 //
 // Learn more about
@@ -217,11 +219,11 @@ func (r *V1UsageService) ListAutoPaging(ctx context.Context, params V1UsageListP
 // properties for end customers or internal finance teams measuring underlying
 // COGs.
 func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, opts ...option.RequestOption) (err error) {
-  opts = slices.Concat(r.Options, opts)
-  opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-  path := "v1/ingest"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-  return err
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	path := "v1/ingest"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return err
 }
 
 // Retrieve granular usage data for a specific customer and billable metric, with
@@ -231,10 +233,10 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 //
 // ### Use this endpoint to:
 //
-// - Analyze usage patterns broken down by specific attributes (region, user,
-//   department, etc.)
-// - Build detailed usage dashboards with dimensional filtering
-// - Identify high-usage segments for optimization opportunities
+//   - Analyze usage patterns broken down by specific attributes (region, user,
+//     department, etc.)
+//   - Build detailed usage dashboards with dimensional filtering
+//   - Identify high-usage segments for optimization opportunities
 //
 // ### Request parameters
 //
@@ -243,12 +245,14 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 // recommended for all new integrations:
 //
 // ```json
-// {
-//   "group_key": ["region", "team"],
-//   "group_filters": {
-//     "region": ["US-East", "US-West"]
-//   }
-// }
+//
+//	{
+//	  "group_key": ["region", "team"],
+//	  "group_filters": {
+//	    "region": ["US-East", "US-West"]
+//	  }
+//	}
+//
 // ```
 //
 // Important: For compound group keys, you must pass the complete set of keys that
@@ -267,37 +271,38 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 //     `{"region": "US-East"}`)
 //   - For compound groups, this will be a map with multiple key-value pairs (e.g.,
 //     `{"region": "US-East", "team": "engineering"}`)
+//
 // - `value`: Aggregated usage for this group and time window
 // - `next_page`: Pagination cursor for large datasets
 //
 // ### Usage guidelines:
 //
-// - Required parameters: Must specify `customer_id`, `billable_metric_id`, and
-//   `window_size`
-// - Time windows: Set `window_size` to hour, day, or none for different
-//   granularities
-// - Group filtering: Use `group_key` and `group_filters` to specify groups and
-//   group filters
-// - Limits: When using compound group keys (2+ keys in `group_key`), the default
-//   and max limit is 100
-// - Pagination: Use limit and `next_page` for large result sets
-// - Null handling: Group values may be null for events missing the group key
-//   property
+//   - Required parameters: Must specify `customer_id`, `billable_metric_id`, and
+//     `window_size`
+//   - Time windows: Set `window_size` to hour, day, or none for different
+//     granularities
+//   - Group filtering: Use `group_key` and `group_filters` to specify groups and
+//     group filters
+//   - Limits: When using compound group keys (2+ keys in `group_key`), the default
+//     and max limit is 100
+//   - Pagination: Use limit and `next_page` for large result sets
+//   - Null handling: Group values may be null for events missing the group key
+//     property
 func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListWithGroupsParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1UsageListWithGroupsResponse], err error) {
-  var raw *http.Response
-  opts = slices.Concat(r.Options, opts)
-  opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-  path := "v1/usage/groups"
-  cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
-  if err != nil {
-    return nil, err
-  }
-  err = cfg.Execute()
-  if err != nil {
-    return nil, err
-  }
-  res.SetPageConfig(cfg, raw)
-  return res, nil
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "v1/usage/groups"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
 // Retrieve granular usage data for a specific customer and billable metric, with
@@ -307,10 +312,10 @@ func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListW
 //
 // ### Use this endpoint to:
 //
-// - Analyze usage patterns broken down by specific attributes (region, user,
-//   department, etc.)
-// - Build detailed usage dashboards with dimensional filtering
-// - Identify high-usage segments for optimization opportunities
+//   - Analyze usage patterns broken down by specific attributes (region, user,
+//     department, etc.)
+//   - Build detailed usage dashboards with dimensional filtering
+//   - Identify high-usage segments for optimization opportunities
 //
 // ### Request parameters
 //
@@ -319,12 +324,14 @@ func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListW
 // recommended for all new integrations:
 //
 // ```json
-// {
-//   "group_key": ["region", "team"],
-//   "group_filters": {
-//     "region": ["US-East", "US-West"]
-//   }
-// }
+//
+//	{
+//	  "group_key": ["region", "team"],
+//	  "group_filters": {
+//	    "region": ["US-East", "US-West"]
+//	  }
+//	}
+//
 // ```
 //
 // Important: For compound group keys, you must pass the complete set of keys that
@@ -343,24 +350,25 @@ func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListW
 //     `{"region": "US-East"}`)
 //   - For compound groups, this will be a map with multiple key-value pairs (e.g.,
 //     `{"region": "US-East", "team": "engineering"}`)
+//
 // - `value`: Aggregated usage for this group and time window
 // - `next_page`: Pagination cursor for large datasets
 //
 // ### Usage guidelines:
 //
-// - Required parameters: Must specify `customer_id`, `billable_metric_id`, and
-//   `window_size`
-// - Time windows: Set `window_size` to hour, day, or none for different
-//   granularities
-// - Group filtering: Use `group_key` and `group_filters` to specify groups and
-//   group filters
-// - Limits: When using compound group keys (2+ keys in `group_key`), the default
-//   and max limit is 100
-// - Pagination: Use limit and `next_page` for large result sets
-// - Null handling: Group values may be null for events missing the group key
-//   property
-func (r *V1UsageService) ListWithGroupsAutoPaging(ctx context.Context, params V1UsageListWithGroupsParams, opts ...option.RequestOption) (*pagination.CursorPageAutoPager[V1UsageListWithGroupsResponse]) {
-  return pagination.NewCursorPageAutoPager(r.ListWithGroups(ctx, params, opts...))
+//   - Required parameters: Must specify `customer_id`, `billable_metric_id`, and
+//     `window_size`
+//   - Time windows: Set `window_size` to hour, day, or none for different
+//     granularities
+//   - Group filtering: Use `group_key` and `group_filters` to specify groups and
+//     group filters
+//   - Limits: When using compound group keys (2+ keys in `group_key`), the default
+//     and max limit is 100
+//   - Pagination: Use limit and `next_page` for large result sets
+//   - Null handling: Group values may be null for events missing the group key
+//     property
+func (r *V1UsageService) ListWithGroupsAutoPaging(ctx context.Context, params V1UsageListWithGroupsParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1UsageListWithGroupsResponse] {
+	return pagination.NewCursorPageAutoPager(r.ListWithGroups(ctx, params, opts...))
 }
 
 // This endpoint retrieves events by transaction ID for events that occurred within
@@ -398,230 +406,230 @@ func (r *V1UsageService) ListWithGroupsAutoPaging(ctx context.Context, params V1
 // Instead, implement a sampling strategy to randomly validate a subset of events
 // for observability purposes.
 func (r *V1UsageService) Search(ctx context.Context, body V1UsageSearchParams, opts ...option.RequestOption) (res *[]V1UsageSearchResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/events/search"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/events/search"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 type V1UsageListResponse struct {
-BillableMetricID string `json:"billable_metric_id" api:"required" format:"uuid"`
-BillableMetricName string `json:"billable_metric_name" api:"required"`
-CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-EndTimestamp time.Time `json:"end_timestamp" api:"required" format:"date-time"`
-StartTimestamp time.Time `json:"start_timestamp" api:"required" format:"date-time"`
-Value float64 `json:"value" api:"required"`
-// Values will be either a number or null. Null indicates that there were no
-// matches for the group_by value.
-Groups map[string]float64 `json:"groups"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              BillableMetricID respjson.Field
-              BillableMetricName respjson.Field
-              CustomerID respjson.Field
-              EndTimestamp respjson.Field
-              StartTimestamp respjson.Field
-              Value respjson.Field
-              Groups respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	BillableMetricID   string    `json:"billable_metric_id" api:"required" format:"uuid"`
+	BillableMetricName string    `json:"billable_metric_name" api:"required"`
+	CustomerID         string    `json:"customer_id" api:"required" format:"uuid"`
+	EndTimestamp       time.Time `json:"end_timestamp" api:"required" format:"date-time"`
+	StartTimestamp     time.Time `json:"start_timestamp" api:"required" format:"date-time"`
+	Value              float64   `json:"value" api:"required"`
+	// Values will be either a number or null. Null indicates that there were no
+	// matches for the group_by value.
+	Groups map[string]float64 `json:"groups"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillableMetricID   respjson.Field
+		BillableMetricName respjson.Field
+		CustomerID         respjson.Field
+		EndTimestamp       respjson.Field
+		StartTimestamp     respjson.Field
+		Value              respjson.Field
+		Groups             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1UsageListResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1UsageListResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1UsageListResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageListWithGroupsResponse struct {
-EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-// Use `group` instead. The group key for single-key grouping.
-//
-// Deprecated: deprecated
-GroupKey string `json:"group_key" api:"required"`
-// Use `group` instead. The group value for single-key grouping.
-//
-// Deprecated: deprecated
-GroupValue string `json:"group_value" api:"required"`
-StartingOn time.Time `json:"starting_on" api:"required" format:"date-time"`
-Value float64 `json:"value" api:"required"`
-// Map of group key to their value for this usage aggregate. For simple group keys,
-// this should be a single key e.g. `{"region": "US-East"}` For compound group
-// keys, this should contain the values of each group key that forms the compound
-// e.g. `{"region": "US-East", "team": "engineering"}`
-Group map[string]string `json:"group"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              EndingBefore respjson.Field
-              GroupKey respjson.Field
-              GroupValue respjson.Field
-              StartingOn respjson.Field
-              Value respjson.Field
-              Group respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	// Use `group` instead. The group key for single-key grouping.
+	//
+	// Deprecated: deprecated
+	GroupKey string `json:"group_key" api:"required"`
+	// Use `group` instead. The group value for single-key grouping.
+	//
+	// Deprecated: deprecated
+	GroupValue string    `json:"group_value" api:"required"`
+	StartingOn time.Time `json:"starting_on" api:"required" format:"date-time"`
+	Value      float64   `json:"value" api:"required"`
+	// Map of group key to their value for this usage aggregate. For simple group keys,
+	// this should be a single key e.g. `{"region": "US-East"}` For compound group
+	// keys, this should contain the values of each group key that forms the compound
+	// e.g. `{"region": "US-East", "team": "engineering"}`
+	Group map[string]string `json:"group"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndingBefore respjson.Field
+		GroupKey     respjson.Field
+		GroupValue   respjson.Field
+		StartingOn   respjson.Field
+		Value        respjson.Field
+		Group        respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1UsageListWithGroupsResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1UsageListWithGroupsResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1UsageListWithGroupsResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageListWithGroupsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageSearchResponse struct {
-ID string `json:"id" api:"required"`
-// The ID of the customer in the ingest event body
-CustomerID string `json:"customer_id" api:"required"`
-EventType string `json:"event_type" api:"required"`
-Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-TransactionID string `json:"transaction_id" api:"required"`
-IsDuplicate bool `json:"is_duplicate"`
-MatchedBillableMetrics []V1UsageSearchResponseMatchedBillableMetric `json:"matched_billable_metrics"`
-// The customer the event was matched to if a match was found
-MatchedCustomer V1UsageSearchResponseMatchedCustomer `json:"matched_customer"`
-ProcessedAt time.Time `json:"processed_at" format:"date-time"`
-Properties map[string]any `json:"properties"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              ID respjson.Field
-              CustomerID respjson.Field
-              EventType respjson.Field
-              Timestamp respjson.Field
-              TransactionID respjson.Field
-              IsDuplicate respjson.Field
-              MatchedBillableMetrics respjson.Field
-              MatchedCustomer respjson.Field
-              ProcessedAt respjson.Field
-              Properties respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	ID string `json:"id" api:"required"`
+	// The ID of the customer in the ingest event body
+	CustomerID             string                                       `json:"customer_id" api:"required"`
+	EventType              string                                       `json:"event_type" api:"required"`
+	Timestamp              time.Time                                    `json:"timestamp" api:"required" format:"date-time"`
+	TransactionID          string                                       `json:"transaction_id" api:"required"`
+	IsDuplicate            bool                                         `json:"is_duplicate"`
+	MatchedBillableMetrics []V1UsageSearchResponseMatchedBillableMetric `json:"matched_billable_metrics"`
+	// The customer the event was matched to if a match was found
+	MatchedCustomer V1UsageSearchResponseMatchedCustomer `json:"matched_customer"`
+	ProcessedAt     time.Time                            `json:"processed_at" format:"date-time"`
+	Properties      map[string]any                       `json:"properties"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		CustomerID             respjson.Field
+		EventType              respjson.Field
+		Timestamp              respjson.Field
+		TransactionID          respjson.Field
+		IsDuplicate            respjson.Field
+		MatchedBillableMetrics respjson.Field
+		MatchedCustomer        respjson.Field
+		ProcessedAt            respjson.Field
+		Properties             respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1UsageSearchResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1UsageSearchResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1UsageSearchResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageSearchResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageSearchResponseMatchedBillableMetric struct {
-ID string `json:"id" api:"required" format:"uuid"`
-Name string `json:"name" api:"required"`
-// (DEPRECATED) use aggregation_type instead
-Aggregate string `json:"aggregate"`
-// (DEPRECATED) use aggregation_key instead
-AggregateKeys []string `json:"aggregate_keys"`
-// A key that specifies which property of the event is used to aggregate data. This
-// key must be one of the property filter names and is not applicable when the
-// aggregation type is 'count'.
-AggregationKey string `json:"aggregation_key"`
-// Specifies the type of aggregation performed on matching events. Includes
-// "custom_sql" for events search endpoint responses.
-//
-// Any of "COUNT", "LATEST", "MAX", "SUM", "UNIQUE", "custom_sql".
-AggregationType string `json:"aggregation_type"`
-// RFC 3339 timestamp indicating when the billable metric was archived. If not
-// provided, the billable metric is not archived.
-ArchivedAt time.Time `json:"archived_at" format:"date-time"`
-// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-CustomFields map[string]string `json:"custom_fields"`
-// An optional filtering rule to match the 'event_type' property of an event.
-EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
-// (DEPRECATED) use property_filters & event_type_filter instead
-Filter map[string]any `json:"filter"`
-// (DEPRECATED) use group_keys instead
-GroupBy []string `json:"group_by"`
-// Property names that are used to group usage costs on an invoice. Each entry
-// represents a set of properties used to slice events into distinct buckets.
-GroupKeys [][]string `json:"group_keys"`
-// A list of filters to match events to this billable metric. Each filter defines a
-// rule on an event property. All rules must pass for the event to match the
-// billable metric.
-PropertyFilters []shared.PropertyFilter `json:"property_filters"`
-// The SQL query associated with the billable metric
-Sql string `json:"sql"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              ID respjson.Field
-              Name respjson.Field
-              Aggregate respjson.Field
-              AggregateKeys respjson.Field
-              AggregationKey respjson.Field
-              AggregationType respjson.Field
-              ArchivedAt respjson.Field
-              CustomFields respjson.Field
-              EventTypeFilter respjson.Field
-              Filter respjson.Field
-              GroupBy respjson.Field
-              GroupKeys respjson.Field
-              PropertyFilters respjson.Field
-              Sql respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	ID   string `json:"id" api:"required" format:"uuid"`
+	Name string `json:"name" api:"required"`
+	// (DEPRECATED) use aggregation_type instead
+	Aggregate string `json:"aggregate"`
+	// (DEPRECATED) use aggregation_key instead
+	AggregateKeys []string `json:"aggregate_keys"`
+	// A key that specifies which property of the event is used to aggregate data. This
+	// key must be one of the property filter names and is not applicable when the
+	// aggregation type is 'count'.
+	AggregationKey string `json:"aggregation_key"`
+	// Specifies the type of aggregation performed on matching events. Includes
+	// "custom_sql" for events search endpoint responses.
+	//
+	// Any of "COUNT", "LATEST", "MAX", "SUM", "UNIQUE", "custom_sql".
+	AggregationType string `json:"aggregation_type"`
+	// RFC 3339 timestamp indicating when the billable metric was archived. If not
+	// provided, the billable metric is not archived.
+	ArchivedAt time.Time `json:"archived_at" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	// An optional filtering rule to match the 'event_type' property of an event.
+	EventTypeFilter shared.EventTypeFilter `json:"event_type_filter"`
+	// (DEPRECATED) use property_filters & event_type_filter instead
+	Filter map[string]any `json:"filter"`
+	// (DEPRECATED) use group_keys instead
+	GroupBy []string `json:"group_by"`
+	// Property names that are used to group usage costs on an invoice. Each entry
+	// represents a set of properties used to slice events into distinct buckets.
+	GroupKeys [][]string `json:"group_keys"`
+	// A list of filters to match events to this billable metric. Each filter defines a
+	// rule on an event property. All rules must pass for the event to match the
+	// billable metric.
+	PropertyFilters []shared.PropertyFilter `json:"property_filters"`
+	// The SQL query associated with the billable metric
+	Sql string `json:"sql"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Name            respjson.Field
+		Aggregate       respjson.Field
+		AggregateKeys   respjson.Field
+		AggregationKey  respjson.Field
+		AggregationType respjson.Field
+		ArchivedAt      respjson.Field
+		CustomFields    respjson.Field
+		EventTypeFilter respjson.Field
+		Filter          respjson.Field
+		GroupBy         respjson.Field
+		GroupKeys       respjson.Field
+		PropertyFilters respjson.Field
+		Sql             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1UsageSearchResponseMatchedBillableMetric) RawJSON() (string) { return r.JSON.raw }
-func (r *V1UsageSearchResponseMatchedBillableMetric) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1UsageSearchResponseMatchedBillableMetric) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageSearchResponseMatchedBillableMetric) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The customer the event was matched to if a match was found
 type V1UsageSearchResponseMatchedCustomer struct {
-ID string `json:"id" format:"uuid"`
-Name string `json:"name"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              ID respjson.Field
-              Name respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	ID   string `json:"id" format:"uuid"`
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1UsageSearchResponseMatchedCustomer) RawJSON() (string) { return r.JSON.raw }
-func (r *V1UsageSearchResponseMatchedCustomer) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1UsageSearchResponseMatchedCustomer) RawJSON() string { return r.JSON.raw }
+func (r *V1UsageSearchResponseMatchedCustomer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageListParams struct {
-EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-StartingOn time.Time `json:"starting_on" api:"required" format:"date-time"`
-// A window_size of "day" or "hour" will return the usage for the specified period
-// segmented into daily or hourly aggregates. A window_size of "none" will return a
-// single usage aggregate for the entirety of the specified period.
-//
-// Any of "HOUR", "DAY", "NONE".
-WindowSize V1UsageListParamsWindowSize `json:"window_size,omitzero" api:"required"`
-// Cursor that indicates where the next page of results should start.
-NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
-// A list of billable metrics to fetch usage for. If absent, all billable metrics
-// will be returned.
-BillableMetrics []V1UsageListParamsBillableMetric `json:"billable_metrics,omitzero"`
-// A list of Metronome customer IDs to fetch usage for. If absent, usage for all
-// customers will be returned.
-CustomerIDs []string `json:"customer_ids,omitzero" format:"uuid"`
-paramObj
+	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
+	StartingOn   time.Time `json:"starting_on" api:"required" format:"date-time"`
+	// A window_size of "day" or "hour" will return the usage for the specified period
+	// segmented into daily or hourly aggregates. A window_size of "none" will return a
+	// single usage aggregate for the entirety of the specified period.
+	//
+	// Any of "HOUR", "DAY", "NONE".
+	WindowSize V1UsageListParamsWindowSize `json:"window_size,omitzero" api:"required"`
+	// Cursor that indicates where the next page of results should start.
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
+	// A list of billable metrics to fetch usage for. If absent, all billable metrics
+	// will be returned.
+	BillableMetrics []V1UsageListParamsBillableMetric `json:"billable_metrics,omitzero"`
+	// A list of Metronome customer IDs to fetch usage for. If absent, usage for all
+	// customers will be returned.
+	CustomerIDs []string `json:"customer_ids,omitzero" format:"uuid"`
+	paramObj
 }
 
 func (r V1UsageListParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1UsageListParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1UsageListParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1UsageListParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1UsageListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1UsageListParams]'s query parameters as `url.Values`.
 func (r V1UsageListParams) URLQuery() (v url.Values, err error) {
-  return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-    ArrayFormat: apiquery.ArrayQueryFormatComma,
-    NestedFormat: apiquery.NestedQueryFormatBrackets,
-  })
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 // A window_size of "day" or "hour" will return the usage for the specified period
@@ -630,131 +638,131 @@ func (r V1UsageListParams) URLQuery() (v url.Values, err error) {
 type V1UsageListParamsWindowSize string
 
 const (
-    V1UsageListParamsWindowSizeHour V1UsageListParamsWindowSize = "HOUR"
-    V1UsageListParamsWindowSizeDay V1UsageListParamsWindowSize = "DAY"
-    V1UsageListParamsWindowSizeNone V1UsageListParamsWindowSize = "NONE"
-  )
+	V1UsageListParamsWindowSizeHour V1UsageListParamsWindowSize = "HOUR"
+	V1UsageListParamsWindowSizeDay  V1UsageListParamsWindowSize = "DAY"
+	V1UsageListParamsWindowSizeNone V1UsageListParamsWindowSize = "NONE"
+)
 
 // The property ID is required.
 type V1UsageListParamsBillableMetric struct {
-ID string `json:"id" api:"required" format:"uuid"`
-GroupBy V1UsageListParamsBillableMetricGroupBy `json:"group_by,omitzero"`
-paramObj
+	ID      string                                 `json:"id" api:"required" format:"uuid"`
+	GroupBy V1UsageListParamsBillableMetricGroupBy `json:"group_by,omitzero"`
+	paramObj
 }
 
 func (r V1UsageListParamsBillableMetric) MarshalJSON() (data []byte, err error) {
-  type shadow V1UsageListParamsBillableMetric
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1UsageListParamsBillableMetric
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1UsageListParamsBillableMetric) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1UsageListParamsBillableMetric) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Key is required.
 type V1UsageListParamsBillableMetricGroupBy struct {
-// The name of the group_by key to use
-Key string `json:"key" api:"required"`
-// Values of the group_by key to return in the query. If this field is omitted, all
-// available values will be returned, up to a maximum of 200.
-Values []string `json:"values,omitzero"`
-paramObj
+	// The name of the group_by key to use
+	Key string `json:"key" api:"required"`
+	// Values of the group_by key to return in the query. If this field is omitted, all
+	// available values will be returned, up to a maximum of 200.
+	Values []string `json:"values,omitzero"`
+	paramObj
 }
 
 func (r V1UsageListParamsBillableMetricGroupBy) MarshalJSON() (data []byte, err error) {
-  type shadow V1UsageListParamsBillableMetricGroupBy
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1UsageListParamsBillableMetricGroupBy
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1UsageListParamsBillableMetricGroupBy) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1UsageListParamsBillableMetricGroupBy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageIngestParams struct {
-Usage []V1UsageIngestParamsUsage
-paramObj
+	Usage []V1UsageIngestParamsUsage
+	paramObj
 }
 
 func (r V1UsageIngestParams) MarshalJSON() (data []byte, err error) {
-  return shimjson.Marshal(r.Usage)
+	return shimjson.Marshal(r.Usage)
 }
-func (r *V1UsageIngestParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1UsageIngestParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties CustomerID, EventType, Timestamp, TransactionID are required.
 type V1UsageIngestParamsUsage struct {
-CustomerID string `json:"customer_id" api:"required"`
-EventType string `json:"event_type" api:"required"`
-// RFC 3339 formatted
-Timestamp string `json:"timestamp" api:"required"`
-TransactionID string `json:"transaction_id" api:"required"`
-Properties map[string]any `json:"properties,omitzero"`
-paramObj
+	CustomerID string `json:"customer_id" api:"required"`
+	EventType  string `json:"event_type" api:"required"`
+	// RFC 3339 formatted
+	Timestamp     string         `json:"timestamp" api:"required"`
+	TransactionID string         `json:"transaction_id" api:"required"`
+	Properties    map[string]any `json:"properties,omitzero"`
+	paramObj
 }
 
 func (r V1UsageIngestParamsUsage) MarshalJSON() (data []byte, err error) {
-  type shadow V1UsageIngestParamsUsage
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1UsageIngestParamsUsage
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1UsageIngestParamsUsage) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1UsageIngestParamsUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageListWithGroupsParams struct {
-BillableMetricID string `json:"billable_metric_id" api:"required" format:"uuid"`
-CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-// A window_size of "day" or "hour" will return the usage for the specified period
-// segmented into daily or hourly aggregates. A window_size of "none" will return a
-// single usage aggregate for the entirety of the specified period.
-//
-// Any of "HOUR", "DAY", "NONE".
-WindowSize V1UsageListWithGroupsParamsWindowSize `json:"window_size,omitzero" api:"required"`
-// Max number of results that should be returned
-Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-// Cursor that indicates where the next page of results should start.
-NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
-// If true, will return the usage for the current billing period. Will return an
-// error if the customer is currently uncontracted or starting_on and ending_before
-// are specified when this is true.
-CurrentPeriod param.Opt[bool] `json:"current_period,omitzero"`
-EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-StartingOn param.Opt[time.Time] `json:"starting_on,omitzero" format:"date-time"`
-// Use group_key and group_filters instead. Use a single group key to group by.
-// Compound group keys are not supported.
-GroupBy V1UsageListWithGroupsParamsGroupBy `json:"group_by,omitzero"`
-// Object mapping group keys to arrays of values to filter on. Only usage matching
-// these filter values will be returned. Keys must be present in group_key. Omit a
-// key or use an empty array to include all values for that dimension.
-GroupFilters map[string][]string `json:"group_filters,omitzero"`
-// Group key to group usage by. Supports both simple (single key) and compound
-// (multiple keys) group keys.
-//
-// For simple group keys, provide a single key e.g. `["region"]`. For compound
-// group keys, provide multiple keys e.g. `["region", "team"]`.
-//
-// For streaming metrics, the keys must be defined as a simple or compound group
-// key on the billable metric. For compound group keys, all keys must match an
-// exact compound group key definition — partial matches are not allowed.
-//
-// Cannot be used together with `group_by`.
-GroupKey []string `json:"group_key,omitzero"`
-paramObj
+	BillableMetricID string `json:"billable_metric_id" api:"required" format:"uuid"`
+	CustomerID       string `json:"customer_id" api:"required" format:"uuid"`
+	// A window_size of "day" or "hour" will return the usage for the specified period
+	// segmented into daily or hourly aggregates. A window_size of "none" will return a
+	// single usage aggregate for the entirety of the specified period.
+	//
+	// Any of "HOUR", "DAY", "NONE".
+	WindowSize V1UsageListWithGroupsParamsWindowSize `json:"window_size,omitzero" api:"required"`
+	// Max number of results that should be returned
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Cursor that indicates where the next page of results should start.
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
+	// If true, will return the usage for the current billing period. Will return an
+	// error if the customer is currently uncontracted or starting_on and ending_before
+	// are specified when this is true.
+	CurrentPeriod param.Opt[bool]      `json:"current_period,omitzero"`
+	EndingBefore  param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	StartingOn    param.Opt[time.Time] `json:"starting_on,omitzero" format:"date-time"`
+	// Use group_key and group_filters instead. Use a single group key to group by.
+	// Compound group keys are not supported.
+	GroupBy V1UsageListWithGroupsParamsGroupBy `json:"group_by,omitzero"`
+	// Object mapping group keys to arrays of values to filter on. Only usage matching
+	// these filter values will be returned. Keys must be present in group_key. Omit a
+	// key or use an empty array to include all values for that dimension.
+	GroupFilters map[string][]string `json:"group_filters,omitzero"`
+	// Group key to group usage by. Supports both simple (single key) and compound
+	// (multiple keys) group keys.
+	//
+	// For simple group keys, provide a single key e.g. `["region"]`. For compound
+	// group keys, provide multiple keys e.g. `["region", "team"]`.
+	//
+	// For streaming metrics, the keys must be defined as a simple or compound group
+	// key on the billable metric. For compound group keys, all keys must match an
+	// exact compound group key definition — partial matches are not allowed.
+	//
+	// Cannot be used together with `group_by`.
+	GroupKey []string `json:"group_key,omitzero"`
+	paramObj
 }
 
 func (r V1UsageListWithGroupsParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1UsageListWithGroupsParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1UsageListWithGroupsParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1UsageListWithGroupsParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1UsageListWithGroupsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1UsageListWithGroupsParams]'s query parameters as
 // `url.Values`.
 func (r V1UsageListWithGroupsParams) URLQuery() (v url.Values, err error) {
-  return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-    ArrayFormat: apiquery.ArrayQueryFormatComma,
-    NestedFormat: apiquery.NestedQueryFormatBrackets,
-  })
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 // A window_size of "day" or "hour" will return the usage for the specified period
@@ -763,10 +771,10 @@ func (r V1UsageListWithGroupsParams) URLQuery() (v url.Values, err error) {
 type V1UsageListWithGroupsParamsWindowSize string
 
 const (
-    V1UsageListWithGroupsParamsWindowSizeHour V1UsageListWithGroupsParamsWindowSize = "HOUR"
-    V1UsageListWithGroupsParamsWindowSizeDay V1UsageListWithGroupsParamsWindowSize = "DAY"
-    V1UsageListWithGroupsParamsWindowSizeNone V1UsageListWithGroupsParamsWindowSize = "NONE"
-  )
+	V1UsageListWithGroupsParamsWindowSizeHour V1UsageListWithGroupsParamsWindowSize = "HOUR"
+	V1UsageListWithGroupsParamsWindowSizeDay  V1UsageListWithGroupsParamsWindowSize = "DAY"
+	V1UsageListWithGroupsParamsWindowSizeNone V1UsageListWithGroupsParamsWindowSize = "NONE"
+)
 
 // Use group_key and group_filters instead. Use a single group key to group by.
 // Compound group keys are not supported.
@@ -775,32 +783,32 @@ const (
 //
 // The property Key is required.
 type V1UsageListWithGroupsParamsGroupBy struct {
-// The name of the group_by key to use
-Key string `json:"key" api:"required"`
-// Values of the group_by key to return in the query. Omit this if you'd like all
-// values for the key returned.
-Values []string `json:"values,omitzero"`
-paramObj
+	// The name of the group_by key to use
+	Key string `json:"key" api:"required"`
+	// Values of the group_by key to return in the query. Omit this if you'd like all
+	// values for the key returned.
+	Values []string `json:"values,omitzero"`
+	paramObj
 }
 
 func (r V1UsageListWithGroupsParamsGroupBy) MarshalJSON() (data []byte, err error) {
-  type shadow V1UsageListWithGroupsParamsGroupBy
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1UsageListWithGroupsParamsGroupBy
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1UsageListWithGroupsParamsGroupBy) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1UsageListWithGroupsParamsGroupBy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1UsageSearchParams struct {
-// The transaction IDs of the events to retrieve
-TransactionIDs []string `json:"transactionIds,omitzero" api:"required"`
-paramObj
+	// The transaction IDs of the events to retrieve
+	TransactionIDs []string `json:"transactionIds,omitzero" api:"required"`
+	paramObj
 }
 
 func (r V1UsageSearchParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1UsageSearchParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1UsageSearchParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1UsageSearchParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1UsageSearchParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

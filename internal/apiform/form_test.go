@@ -1,8 +1,8 @@
 package apiform
 
 import (
-	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
 	"bytes"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
 	"io"
 	"mime/multipart"
 	"strings"

@@ -3,15 +3,15 @@
 package metronome
 
 import (
-  "context"
-  "net/http"
-  "slices"
+	"context"
+	"net/http"
+	"slices"
 
-  "github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
-  "github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
-  "github.com/Metronome-Industries/metronome-go/v3/option"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/param"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
 )
 
 // [Invoices](https://docs.metronome.com/invoicing/) reflect how much a customer
@@ -26,16 +26,16 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1InvoiceService] method instead.
 type V1InvoiceService struct {
-Options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewV1InvoiceService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
 func NewV1InvoiceService(opts ...option.RequestOption) (r V1InvoiceService) {
-  r = V1InvoiceService{}
-  r.Options = opts
-  return
+	r = V1InvoiceService{}
+	r.Options = opts
+	return
 }
 
 // This endpoint regenerates a voided invoice and recalculates the invoice based on
@@ -57,10 +57,10 @@ func NewV1InvoiceService(opts ...option.RequestOption) (r V1InvoiceService) {
 // If an invoice is attached to a contract with a billing provider on it, the
 // regenerated invoice will be distributed based on the configuration.
 func (r *V1InvoiceService) Regenerate(ctx context.Context, body V1InvoiceRegenerateParams, opts ...option.RequestOption) (res *V1InvoiceRegenerateResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/invoices/regenerate"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/invoices/regenerate"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Permanently cancels an invoice by setting its status to voided, preventing
@@ -69,101 +69,101 @@ func (r *V1InvoiceService) Regenerate(ctx context.Context, body V1InvoiceRegener
 // collected. Returns the voided invoice ID with the status change applied
 // immediately to stop any payment processing.
 func (r *V1InvoiceService) Void(ctx context.Context, body V1InvoiceVoidParams, opts ...option.RequestOption) (res *V1InvoiceVoidResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/invoices/void"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/invoices/void"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 type V1InvoiceRegenerateResponse struct {
-Data V1InvoiceRegenerateResponseData `json:"data"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              Data respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	Data V1InvoiceRegenerateResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1InvoiceRegenerateResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1InvoiceRegenerateResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1InvoiceRegenerateResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1InvoiceRegenerateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1InvoiceRegenerateResponseData struct {
-// The new invoice id
-ID string `json:"id" api:"required" format:"uuid"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              ID respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	// The new invoice id
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1InvoiceRegenerateResponseData) RawJSON() (string) { return r.JSON.raw }
-func (r *V1InvoiceRegenerateResponseData) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1InvoiceRegenerateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1InvoiceRegenerateResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1InvoiceVoidResponse struct {
-Data V1InvoiceVoidResponseData `json:"data"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              Data respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	Data V1InvoiceVoidResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1InvoiceVoidResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1InvoiceVoidResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1InvoiceVoidResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1InvoiceVoidResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1InvoiceVoidResponseData struct {
-ID string `json:"id" api:"required" format:"uuid"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              ID respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	ID string `json:"id" api:"required" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1InvoiceVoidResponseData) RawJSON() (string) { return r.JSON.raw }
-func (r *V1InvoiceVoidResponseData) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1InvoiceVoidResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1InvoiceVoidResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1InvoiceRegenerateParams struct {
-// The invoice id to regenerate
-ID string `json:"id" api:"required" format:"uuid"`
-paramObj
+	// The invoice id to regenerate
+	ID string `json:"id" api:"required" format:"uuid"`
+	paramObj
 }
 
 func (r V1InvoiceRegenerateParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1InvoiceRegenerateParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1InvoiceRegenerateParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1InvoiceRegenerateParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1InvoiceRegenerateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1InvoiceVoidParams struct {
-// The invoice id to void
-ID string `json:"id" api:"required" format:"uuid"`
-paramObj
+	// The invoice id to void
+	ID string `json:"id" api:"required" format:"uuid"`
+	paramObj
 }
 
 func (r V1InvoiceVoidParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1InvoiceVoidParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1InvoiceVoidParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1InvoiceVoidParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1InvoiceVoidParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

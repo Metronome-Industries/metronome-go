@@ -2,8 +2,4 @@
 
 package internal
 
-import (
-
-)
-
 const PackageVersion = "3.10.0" // x-release-please-version

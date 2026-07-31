@@ -3,22 +3,22 @@
 package metronome
 
 import (
-  "context"
-  "encoding/json"
-  "net/http"
-  "net/url"
-  "slices"
-  "time"
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/url"
+	"slices"
+	"time"
 
-  "github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
-  "github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
-  shimjson "github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json"
-  "github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
-  "github.com/Metronome-Industries/metronome-go/v3/option"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/param"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
-  "github.com/Metronome-Industries/metronome-go/v3/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
+	shimjson "github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // Products are the items that customers purchase.
@@ -30,16 +30,16 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1ContractProductService] method instead.
 type V1ContractProductService struct {
-Options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewV1ContractProductService generates a new service that applies the given
 // options to each request. These options are applied after the parent client's
 // options (if there is one), and before any request-specific options.
 func NewV1ContractProductService(opts ...option.RequestOption) (r V1ContractProductService) {
-  r = V1ContractProductService{}
-  r.Options = opts
-  return
+	r = V1ContractProductService{}
+	r.Options = opts
+	return
 }
 
 // Create a new product object. Products in Metronome represent your company's
@@ -48,18 +48,18 @@ func NewV1ContractProductService(opts ...option.RequestOption) (r V1ContractProd
 // an ERP system. Give the product a meaningful name as they will appear on
 // customer invoices.
 func (r *V1ContractProductService) New(ctx context.Context, body V1ContractProductNewParams, opts ...option.RequestOption) (res *V1ContractProductNewResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/contract-pricing/products/create"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contract-pricing/products/create"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Retrieve a product by its ID, including all metadata and historical changes.
 func (r *V1ContractProductService) Get(ctx context.Context, body V1ContractProductGetParams, opts ...option.RequestOption) (res *V1ContractProductGetResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/contract-pricing/products/get"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contract-pricing/products/get"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Updates a product's configuration while maintaining billing continuity for
@@ -71,40 +71,40 @@ func (r *V1ContractProductService) Get(ctx context.Context, body V1ContractProdu
 //
 // ### Usage guidance:
 //
-// - Product type cannot be changed after creation. For incorrect product types,
-//   create a new product and archive the original instead.
+//   - Product type cannot be changed after creation. For incorrect product types,
+//     create a new product and archive the original instead.
 func (r *V1ContractProductService) Update(ctx context.Context, body V1ContractProductUpdateParams, opts ...option.RequestOption) (res *V1ContractProductUpdateResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/contract-pricing/products/update"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contract-pricing/products/update"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Get a paginated list of all products in your organization with their complete
 // configuration, version history, and metadata. By default excludes archived
 // products unless explicitly requested via the `archive_filter` parameter.
 func (r *V1ContractProductService) List(ctx context.Context, params V1ContractProductListParams, opts ...option.RequestOption) (res *pagination.CursorPage[V1ContractProductListResponse], err error) {
-  var raw *http.Response
-  opts = slices.Concat(r.Options, opts)
-  opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-  path := "v1/contract-pricing/products/list"
-  cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
-  if err != nil {
-    return nil, err
-  }
-  err = cfg.Execute()
-  if err != nil {
-    return nil, err
-  }
-  res.SetPageConfig(cfg, raw)
-  return res, nil
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "v1/contract-pricing/products/list"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
 // Get a paginated list of all products in your organization with their complete
 // configuration, version history, and metadata. By default excludes archived
 // products unless explicitly requested via the `archive_filter` parameter.
-func (r *V1ContractProductService) ListAutoPaging(ctx context.Context, params V1ContractProductListParams, opts ...option.RequestOption) (*pagination.CursorPageAutoPager[V1ContractProductListResponse]) {
-  return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
+func (r *V1ContractProductService) ListAutoPaging(ctx context.Context, params V1ContractProductListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[V1ContractProductListResponse] {
+	return pagination.NewCursorPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Archive a product. Any current rate cards associated with this product will
@@ -112,77 +112,77 @@ func (r *V1ContractProductService) ListAutoPaging(ctx context.Context, params V1
 // option for newly created rates. Once you archive a product, you can still
 // retrieve it in the UI and API, but you cannot unarchive it.
 func (r *V1ContractProductService) Archive(ctx context.Context, body V1ContractProductArchiveParams, opts ...option.RequestOption) (res *V1ContractProductArchiveResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/contract-pricing/products/archive"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/contract-pricing/products/archive"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 type ProductListItemState struct {
-CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-CreatedBy string `json:"created_by" api:"required"`
-Name string `json:"name" api:"required"`
-BillableMetricID string `json:"billable_metric_id"`
-CompositeProductIDs []string `json:"composite_product_ids" format:"uuid"`
-CompositeTags []string `json:"composite_tags"`
-ExcludeFreeUsage bool `json:"exclude_free_usage"`
-// This field's availability is dependent on your client's configuration.
-IsRefundable bool `json:"is_refundable"`
-// This field's availability is dependent on your client's configuration.
-NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
-// This field's availability is dependent on your client's configuration.
-NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-// For USAGE products only. Groups usage line items on invoices. The superset of
-// values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PresentationGroupKey []string `json:"presentation_group_key"`
-// For USAGE products only. If set, pricing for this product will be determined for
-// each pricing_group_key value, as opposed to the product as a whole. The superset
-// of values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PricingGroupKey []string `json:"pricing_group_key"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
-StartingAt time.Time `json:"starting_at" format:"date-time"`
-Tags []string `json:"tags"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              CreatedAt respjson.Field
-              CreatedBy respjson.Field
-              Name respjson.Field
-              BillableMetricID respjson.Field
-              CompositeProductIDs respjson.Field
-              CompositeTags respjson.Field
-              ExcludeFreeUsage respjson.Field
-              IsRefundable respjson.Field
-              NetsuiteInternalItemID respjson.Field
-              NetsuiteOverageItemID respjson.Field
-              PresentationGroupKey respjson.Field
-              PricingGroupKey respjson.Field
-              QuantityConversion respjson.Field
-              QuantityRounding respjson.Field
-              StartingAt respjson.Field
-              Tags respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	CreatedAt           time.Time `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy           string    `json:"created_by" api:"required"`
+	Name                string    `json:"name" api:"required"`
+	BillableMetricID    string    `json:"billable_metric_id"`
+	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
+	CompositeTags       []string  `json:"composite_tags"`
+	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
+	// This field's availability is dependent on your client's configuration.
+	IsRefundable bool `json:"is_refundable"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PresentationGroupKey []string `json:"presentation_group_key"`
+	// For USAGE products only. If set, pricing for this product will be determined for
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PricingGroupKey []string `json:"pricing_group_key"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// converted using the provided conversion factor and operation. For example, if
+	// the operation is "multiply" and the conversion factor is 100, then the quantity
+	// will be multiplied by 100. This can be used in cases where data is sent in one
+	// unit and priced in another. For example, data could be sent in MB and priced in
+	// GB. In this case, the conversion factor would be 1024 and the operation would be
+	// "divide".
+	QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// rounded using the provided rounding method and decimal places. For example, if
+	// the method is "round up" and the decimal places is 0, then the quantity will be
+	// rounded up to the nearest integer.
+	QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
+	StartingAt       time.Time        `json:"starting_at" format:"date-time"`
+	Tags             []string         `json:"tags"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt              respjson.Field
+		CreatedBy              respjson.Field
+		Name                   respjson.Field
+		BillableMetricID       respjson.Field
+		CompositeProductIDs    respjson.Field
+		CompositeTags          respjson.Field
+		ExcludeFreeUsage       respjson.Field
+		IsRefundable           respjson.Field
+		NetsuiteInternalItemID respjson.Field
+		NetsuiteOverageItemID  respjson.Field
+		PresentationGroupKey   respjson.Field
+		PricingGroupKey        respjson.Field
+		QuantityConversion     respjson.Field
+		QuantityRounding       respjson.Field
+		StartingAt             respjson.Field
+		Tags                   respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r ProductListItemState) RawJSON() (string) { return r.JSON.raw }
-func (r *ProductListItemState) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r ProductListItemState) RawJSON() string { return r.JSON.raw }
+func (r *ProductListItemState) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Optional. Only valid for USAGE products. If provided, the quantity will be
@@ -193,28 +193,28 @@ func (r *ProductListItemState) UnmarshalJSON(data []byte) (error) {
 // GB. In this case, the conversion factor would be 1024 and the operation would be
 // "divide".
 type QuantityConversion struct {
-// The factor to multiply or divide the quantity by.
-ConversionFactor float64 `json:"conversion_factor" api:"required"`
-// The operation to perform on the quantity
-//
-// Any of "MULTIPLY", "DIVIDE".
-Operation QuantityConversionOperation `json:"operation" api:"required"`
-// Optional name for this conversion.
-Name string `json:"name"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              ConversionFactor respjson.Field
-              Operation respjson.Field
-              Name respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	// The factor to multiply or divide the quantity by.
+	ConversionFactor float64 `json:"conversion_factor" api:"required"`
+	// The operation to perform on the quantity
+	//
+	// Any of "MULTIPLY", "DIVIDE".
+	Operation QuantityConversionOperation `json:"operation" api:"required"`
+	// Optional name for this conversion.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConversionFactor respjson.Field
+		Operation        respjson.Field
+		Name             respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r QuantityConversion) RawJSON() (string) { return r.JSON.raw }
-func (r *QuantityConversion) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r QuantityConversion) RawJSON() string { return r.JSON.raw }
+func (r *QuantityConversion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // ToParam converts this QuantityConversion to a QuantityConversionParam.
@@ -222,17 +222,17 @@ func (r *QuantityConversion) UnmarshalJSON(data []byte) (error) {
 // Warning: the fields of the param type will not be present. ToParam should only
 // be used at the last possible moment before sending a request. Test for this with
 // QuantityConversionParam.Overrides()
-func (r QuantityConversion) ToParam() (QuantityConversionParam) {
-  return param.Override[QuantityConversionParam](json.RawMessage(r.RawJSON()))
+func (r QuantityConversion) ToParam() QuantityConversionParam {
+	return param.Override[QuantityConversionParam](json.RawMessage(r.RawJSON()))
 }
 
 // The operation to perform on the quantity
 type QuantityConversionOperation string
 
 const (
-    QuantityConversionOperationMultiply QuantityConversionOperation = "MULTIPLY"
-    QuantityConversionOperationDivide QuantityConversionOperation = "DIVIDE"
-  )
+	QuantityConversionOperationMultiply QuantityConversionOperation = "MULTIPLY"
+	QuantityConversionOperationDivide   QuantityConversionOperation = "DIVIDE"
+)
 
 // Optional. Only valid for USAGE products. If provided, the quantity will be
 // converted using the provided conversion factor and operation. For example, if
@@ -244,23 +244,23 @@ const (
 //
 // The properties ConversionFactor, Operation are required.
 type QuantityConversionParam struct {
-// The factor to multiply or divide the quantity by.
-ConversionFactor float64 `json:"conversion_factor" api:"required"`
-// The operation to perform on the quantity
-//
-// Any of "MULTIPLY", "DIVIDE".
-Operation QuantityConversionOperation `json:"operation,omitzero" api:"required"`
-// Optional name for this conversion.
-Name param.Opt[string] `json:"name,omitzero"`
-paramObj
+	// The factor to multiply or divide the quantity by.
+	ConversionFactor float64 `json:"conversion_factor" api:"required"`
+	// The operation to perform on the quantity
+	//
+	// Any of "MULTIPLY", "DIVIDE".
+	Operation QuantityConversionOperation `json:"operation,omitzero" api:"required"`
+	// Optional name for this conversion.
+	Name param.Opt[string] `json:"name,omitzero"`
+	paramObj
 }
 
 func (r QuantityConversionParam) MarshalJSON() (data []byte, err error) {
-  type shadow QuantityConversionParam
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow QuantityConversionParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *QuantityConversionParam) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *QuantityConversionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Optional. Only valid for USAGE products. If provided, the quantity will be
@@ -268,22 +268,22 @@ func (r *QuantityConversionParam) UnmarshalJSON(data []byte) (error) {
 // the method is "round up" and the decimal places is 0, then the quantity will be
 // rounded up to the nearest integer.
 type QuantityRounding struct {
-DecimalPlaces float64 `json:"decimal_places" api:"required"`
-// Any of "ROUND_UP", "ROUND_DOWN", "ROUND_HALF_UP".
-RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method" api:"required"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              DecimalPlaces respjson.Field
-              RoundingMethod respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "ROUND_UP", "ROUND_DOWN", "ROUND_HALF_UP".
+	RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DecimalPlaces  respjson.Field
+		RoundingMethod respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r QuantityRounding) RawJSON() (string) { return r.JSON.raw }
-func (r *QuantityRounding) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r QuantityRounding) RawJSON() string { return r.JSON.raw }
+func (r *QuantityRounding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // ToParam converts this QuantityRounding to a QuantityRoundingParam.
@@ -291,17 +291,17 @@ func (r *QuantityRounding) UnmarshalJSON(data []byte) (error) {
 // Warning: the fields of the param type will not be present. ToParam should only
 // be used at the last possible moment before sending a request. Test for this with
 // QuantityRoundingParam.Overrides()
-func (r QuantityRounding) ToParam() (QuantityRoundingParam) {
-  return param.Override[QuantityRoundingParam](json.RawMessage(r.RawJSON()))
+func (r QuantityRounding) ToParam() QuantityRoundingParam {
+	return param.Override[QuantityRoundingParam](json.RawMessage(r.RawJSON()))
 }
 
 type QuantityRoundingRoundingMethod string
 
 const (
-    QuantityRoundingRoundingMethodRoundUp QuantityRoundingRoundingMethod = "ROUND_UP"
-    QuantityRoundingRoundingMethodRoundDown QuantityRoundingRoundingMethod = "ROUND_DOWN"
-    QuantityRoundingRoundingMethodRoundHalfUp QuantityRoundingRoundingMethod = "ROUND_HALF_UP"
-  )
+	QuantityRoundingRoundingMethodRoundUp     QuantityRoundingRoundingMethod = "ROUND_UP"
+	QuantityRoundingRoundingMethodRoundDown   QuantityRoundingRoundingMethod = "ROUND_DOWN"
+	QuantityRoundingRoundingMethodRoundHalfUp QuantityRoundingRoundingMethod = "ROUND_HALF_UP"
+)
 
 // Optional. Only valid for USAGE products. If provided, the quantity will be
 // rounded using the provided rounding method and decimal places. For example, if
@@ -310,363 +310,363 @@ const (
 //
 // The properties DecimalPlaces, RoundingMethod are required.
 type QuantityRoundingParam struct {
-DecimalPlaces float64 `json:"decimal_places" api:"required"`
-// Any of "ROUND_UP", "ROUND_DOWN", "ROUND_HALF_UP".
-RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method,omitzero" api:"required"`
-paramObj
+	DecimalPlaces float64 `json:"decimal_places" api:"required"`
+	// Any of "ROUND_UP", "ROUND_DOWN", "ROUND_HALF_UP".
+	RoundingMethod QuantityRoundingRoundingMethod `json:"rounding_method,omitzero" api:"required"`
+	paramObj
 }
 
 func (r QuantityRoundingParam) MarshalJSON() (data []byte, err error) {
-  type shadow QuantityRoundingParam
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow QuantityRoundingParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *QuantityRoundingParam) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *QuantityRoundingParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductNewResponse struct {
-Data shared.ID `json:"data" api:"required"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              Data respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	Data shared.ID `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractProductNewResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1ContractProductNewResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1ContractProductNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractProductNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductGetResponse struct {
-Data V1ContractProductGetResponseData `json:"data" api:"required"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              Data respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	Data V1ContractProductGetResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractProductGetResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1ContractProductGetResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1ContractProductGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractProductGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductGetResponseData struct {
-ID string `json:"id" api:"required" format:"uuid"`
-Current ProductListItemState `json:"current" api:"required"`
-Initial ProductListItemState `json:"initial" api:"required"`
-// Any of "USAGE", "SUBSCRIPTION", "COMPOSITE", "FIXED", "PRO_SERVICE".
-Type string `json:"type" api:"required"`
-Updates []V1ContractProductGetResponseDataUpdate `json:"updates" api:"required"`
-ArchivedAt time.Time `json:"archived_at" api:"nullable" format:"date-time"`
-// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-CustomFields map[string]string `json:"custom_fields"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              ID respjson.Field
-              Current respjson.Field
-              Initial respjson.Field
-              Type respjson.Field
-              Updates respjson.Field
-              ArchivedAt respjson.Field
-              CustomFields respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	ID      string               `json:"id" api:"required" format:"uuid"`
+	Current ProductListItemState `json:"current" api:"required"`
+	Initial ProductListItemState `json:"initial" api:"required"`
+	// Any of "USAGE", "SUBSCRIPTION", "COMPOSITE", "FIXED", "PRO_SERVICE".
+	Type       string                                   `json:"type" api:"required"`
+	Updates    []V1ContractProductGetResponseDataUpdate `json:"updates" api:"required"`
+	ArchivedAt time.Time                                `json:"archived_at" api:"nullable" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Current      respjson.Field
+		Initial      respjson.Field
+		Type         respjson.Field
+		Updates      respjson.Field
+		ArchivedAt   respjson.Field
+		CustomFields respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractProductGetResponseData) RawJSON() (string) { return r.JSON.raw }
-func (r *V1ContractProductGetResponseData) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1ContractProductGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractProductGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductGetResponseDataUpdate struct {
-CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-CreatedBy string `json:"created_by" api:"required"`
-BillableMetricID string `json:"billable_metric_id" format:"uuid"`
-CompositeProductIDs []string `json:"composite_product_ids" format:"uuid"`
-CompositeTags []string `json:"composite_tags"`
-ExcludeFreeUsage bool `json:"exclude_free_usage"`
-IsRefundable bool `json:"is_refundable"`
-Name string `json:"name"`
-// This field's availability is dependent on your client's configuration.
-NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
-// This field's availability is dependent on your client's configuration.
-NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-// For USAGE products only. Groups usage line items on invoices. The superset of
-// values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PresentationGroupKey []string `json:"presentation_group_key"`
-// For USAGE products only. If set, pricing for this product will be determined for
-// each pricing_group_key value, as opposed to the product as a whole. The superset
-// of values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PricingGroupKey []string `json:"pricing_group_key"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
-StartingAt time.Time `json:"starting_at" format:"date-time"`
-Tags []string `json:"tags"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              CreatedAt respjson.Field
-              CreatedBy respjson.Field
-              BillableMetricID respjson.Field
-              CompositeProductIDs respjson.Field
-              CompositeTags respjson.Field
-              ExcludeFreeUsage respjson.Field
-              IsRefundable respjson.Field
-              Name respjson.Field
-              NetsuiteInternalItemID respjson.Field
-              NetsuiteOverageItemID respjson.Field
-              PresentationGroupKey respjson.Field
-              PricingGroupKey respjson.Field
-              QuantityConversion respjson.Field
-              QuantityRounding respjson.Field
-              StartingAt respjson.Field
-              Tags respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	CreatedAt           time.Time `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy           string    `json:"created_by" api:"required"`
+	BillableMetricID    string    `json:"billable_metric_id" format:"uuid"`
+	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
+	CompositeTags       []string  `json:"composite_tags"`
+	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
+	IsRefundable        bool      `json:"is_refundable"`
+	Name                string    `json:"name"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PresentationGroupKey []string `json:"presentation_group_key"`
+	// For USAGE products only. If set, pricing for this product will be determined for
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PricingGroupKey []string `json:"pricing_group_key"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// converted using the provided conversion factor and operation. For example, if
+	// the operation is "multiply" and the conversion factor is 100, then the quantity
+	// will be multiplied by 100. This can be used in cases where data is sent in one
+	// unit and priced in another. For example, data could be sent in MB and priced in
+	// GB. In this case, the conversion factor would be 1024 and the operation would be
+	// "divide".
+	QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// rounded using the provided rounding method and decimal places. For example, if
+	// the method is "round up" and the decimal places is 0, then the quantity will be
+	// rounded up to the nearest integer.
+	QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
+	StartingAt       time.Time        `json:"starting_at" format:"date-time"`
+	Tags             []string         `json:"tags"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt              respjson.Field
+		CreatedBy              respjson.Field
+		BillableMetricID       respjson.Field
+		CompositeProductIDs    respjson.Field
+		CompositeTags          respjson.Field
+		ExcludeFreeUsage       respjson.Field
+		IsRefundable           respjson.Field
+		Name                   respjson.Field
+		NetsuiteInternalItemID respjson.Field
+		NetsuiteOverageItemID  respjson.Field
+		PresentationGroupKey   respjson.Field
+		PricingGroupKey        respjson.Field
+		QuantityConversion     respjson.Field
+		QuantityRounding       respjson.Field
+		StartingAt             respjson.Field
+		Tags                   respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractProductGetResponseDataUpdate) RawJSON() (string) { return r.JSON.raw }
-func (r *V1ContractProductGetResponseDataUpdate) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1ContractProductGetResponseDataUpdate) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractProductGetResponseDataUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductUpdateResponse struct {
-Data shared.ID `json:"data" api:"required"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              Data respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	Data shared.ID `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractProductUpdateResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1ContractProductUpdateResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1ContractProductUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractProductUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductListResponse struct {
-ID string `json:"id" api:"required" format:"uuid"`
-Current ProductListItemState `json:"current" api:"required"`
-Initial ProductListItemState `json:"initial" api:"required"`
-// Any of "USAGE", "SUBSCRIPTION", "COMPOSITE", "FIXED", "PRO_SERVICE".
-Type V1ContractProductListResponseType `json:"type" api:"required"`
-Updates []V1ContractProductListResponseUpdate `json:"updates" api:"required"`
-ArchivedAt time.Time `json:"archived_at" api:"nullable" format:"date-time"`
-// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-CustomFields map[string]string `json:"custom_fields"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              ID respjson.Field
-              Current respjson.Field
-              Initial respjson.Field
-              Type respjson.Field
-              Updates respjson.Field
-              ArchivedAt respjson.Field
-              CustomFields respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	ID      string               `json:"id" api:"required" format:"uuid"`
+	Current ProductListItemState `json:"current" api:"required"`
+	Initial ProductListItemState `json:"initial" api:"required"`
+	// Any of "USAGE", "SUBSCRIPTION", "COMPOSITE", "FIXED", "PRO_SERVICE".
+	Type       V1ContractProductListResponseType     `json:"type" api:"required"`
+	Updates    []V1ContractProductListResponseUpdate `json:"updates" api:"required"`
+	ArchivedAt time.Time                             `json:"archived_at" api:"nullable" format:"date-time"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Current      respjson.Field
+		Initial      respjson.Field
+		Type         respjson.Field
+		Updates      respjson.Field
+		ArchivedAt   respjson.Field
+		CustomFields respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractProductListResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1ContractProductListResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1ContractProductListResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractProductListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductListResponseType string
 
 const (
-    V1ContractProductListResponseTypeUsage V1ContractProductListResponseType = "USAGE"
-    V1ContractProductListResponseTypeSubscription V1ContractProductListResponseType = "SUBSCRIPTION"
-    V1ContractProductListResponseTypeComposite V1ContractProductListResponseType = "COMPOSITE"
-    V1ContractProductListResponseTypeFixed V1ContractProductListResponseType = "FIXED"
-    V1ContractProductListResponseTypeProService V1ContractProductListResponseType = "PRO_SERVICE"
-  )
+	V1ContractProductListResponseTypeUsage        V1ContractProductListResponseType = "USAGE"
+	V1ContractProductListResponseTypeSubscription V1ContractProductListResponseType = "SUBSCRIPTION"
+	V1ContractProductListResponseTypeComposite    V1ContractProductListResponseType = "COMPOSITE"
+	V1ContractProductListResponseTypeFixed        V1ContractProductListResponseType = "FIXED"
+	V1ContractProductListResponseTypeProService   V1ContractProductListResponseType = "PRO_SERVICE"
+)
 
 type V1ContractProductListResponseUpdate struct {
-CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-CreatedBy string `json:"created_by" api:"required"`
-BillableMetricID string `json:"billable_metric_id" format:"uuid"`
-CompositeProductIDs []string `json:"composite_product_ids" format:"uuid"`
-CompositeTags []string `json:"composite_tags"`
-ExcludeFreeUsage bool `json:"exclude_free_usage"`
-IsRefundable bool `json:"is_refundable"`
-Name string `json:"name"`
-// This field's availability is dependent on your client's configuration.
-NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
-// This field's availability is dependent on your client's configuration.
-NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
-// For USAGE products only. Groups usage line items on invoices. The superset of
-// values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PresentationGroupKey []string `json:"presentation_group_key"`
-// For USAGE products only. If set, pricing for this product will be determined for
-// each pricing_group_key value, as opposed to the product as a whole. The superset
-// of values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PricingGroupKey []string `json:"pricing_group_key"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
-StartingAt time.Time `json:"starting_at" format:"date-time"`
-Tags []string `json:"tags"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              CreatedAt respjson.Field
-              CreatedBy respjson.Field
-              BillableMetricID respjson.Field
-              CompositeProductIDs respjson.Field
-              CompositeTags respjson.Field
-              ExcludeFreeUsage respjson.Field
-              IsRefundable respjson.Field
-              Name respjson.Field
-              NetsuiteInternalItemID respjson.Field
-              NetsuiteOverageItemID respjson.Field
-              PresentationGroupKey respjson.Field
-              PricingGroupKey respjson.Field
-              QuantityConversion respjson.Field
-              QuantityRounding respjson.Field
-              StartingAt respjson.Field
-              Tags respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	CreatedAt           time.Time `json:"created_at" api:"required" format:"date-time"`
+	CreatedBy           string    `json:"created_by" api:"required"`
+	BillableMetricID    string    `json:"billable_metric_id" format:"uuid"`
+	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
+	CompositeTags       []string  `json:"composite_tags"`
+	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
+	IsRefundable        bool      `json:"is_refundable"`
+	Name                string    `json:"name"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteOverageItemID string `json:"netsuite_overage_item_id"`
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PresentationGroupKey []string `json:"presentation_group_key"`
+	// For USAGE products only. If set, pricing for this product will be determined for
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PricingGroupKey []string `json:"pricing_group_key"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// converted using the provided conversion factor and operation. For example, if
+	// the operation is "multiply" and the conversion factor is 100, then the quantity
+	// will be multiplied by 100. This can be used in cases where data is sent in one
+	// unit and priced in another. For example, data could be sent in MB and priced in
+	// GB. In this case, the conversion factor would be 1024 and the operation would be
+	// "divide".
+	QuantityConversion QuantityConversion `json:"quantity_conversion" api:"nullable"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// rounded using the provided rounding method and decimal places. For example, if
+	// the method is "round up" and the decimal places is 0, then the quantity will be
+	// rounded up to the nearest integer.
+	QuantityRounding QuantityRounding `json:"quantity_rounding" api:"nullable"`
+	StartingAt       time.Time        `json:"starting_at" format:"date-time"`
+	Tags             []string         `json:"tags"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt              respjson.Field
+		CreatedBy              respjson.Field
+		BillableMetricID       respjson.Field
+		CompositeProductIDs    respjson.Field
+		CompositeTags          respjson.Field
+		ExcludeFreeUsage       respjson.Field
+		IsRefundable           respjson.Field
+		Name                   respjson.Field
+		NetsuiteInternalItemID respjson.Field
+		NetsuiteOverageItemID  respjson.Field
+		PresentationGroupKey   respjson.Field
+		PricingGroupKey        respjson.Field
+		QuantityConversion     respjson.Field
+		QuantityRounding       respjson.Field
+		StartingAt             respjson.Field
+		Tags                   respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractProductListResponseUpdate) RawJSON() (string) { return r.JSON.raw }
-func (r *V1ContractProductListResponseUpdate) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1ContractProductListResponseUpdate) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractProductListResponseUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductArchiveResponse struct {
-Data shared.ID `json:"data" api:"required"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              Data respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	Data shared.ID `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1ContractProductArchiveResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1ContractProductArchiveResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1ContractProductArchiveResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1ContractProductArchiveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductNewParams struct {
-// displayed on invoices
-Name string `json:"name" api:"required"`
-// Any of "FIXED", "USAGE", "COMPOSITE", "SUBSCRIPTION", "PROFESSIONAL_SERVICE",
-// "PRO_SERVICE".
-Type V1ContractProductNewParamsType `json:"type,omitzero" api:"required"`
-// Required for USAGE products
-BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
-// Beta feature only available for composite products. If true, products with $0
-// will not be included when computing composite usage. Defaults to false
-ExcludeFreeUsage param.Opt[bool] `json:"exclude_free_usage,omitzero"`
-// This field's availability is dependent on your client's configuration. Defaults
-// to true.
-IsRefundable param.Opt[bool] `json:"is_refundable,omitzero"`
-// This field's availability is dependent on your client's configuration.
-NetsuiteInternalItemID param.Opt[string] `json:"netsuite_internal_item_id,omitzero"`
-// This field's availability is dependent on your client's configuration.
-NetsuiteOverageItemID param.Opt[string] `json:"netsuite_overage_item_id,omitzero"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-QuantityConversion QuantityConversionParam `json:"quantity_conversion,omitzero"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-QuantityRounding QuantityRoundingParam `json:"quantity_rounding,omitzero"`
-// Required for COMPOSITE products
-CompositeProductIDs []string `json:"composite_product_ids,omitzero" format:"uuid"`
-// Required for COMPOSITE products
-CompositeTags []string `json:"composite_tags,omitzero"`
-// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-CustomFields map[string]string `json:"custom_fields,omitzero"`
-// For USAGE products only. Groups usage line items on invoices. The superset of
-// values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PresentationGroupKey []string `json:"presentation_group_key,omitzero"`
-// For USAGE products only. If set, pricing for this product will be determined for
-// each pricing_group_key value, as opposed to the product as a whole. The superset
-// of values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PricingGroupKey []string `json:"pricing_group_key,omitzero"`
-// Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
-// If set to 'service_period' (default), the usage will be evaluated once for all
-// events the invoice service period and the usage will be applied at the last
-// instant of the invoice. If set to 'hour', it will be broken down and evaluated
-// for each hour. For most use cases, 'hour' is recommended. The setting has no
-// effect for Streaming Billable Metrics.
-//
-// Any of "HOUR", "SERVICE_PERIOD".
-SqlBreakdownGranularity V1ContractProductNewParamsSqlBreakdownGranularity `json:"sql_breakdown_granularity,omitzero"`
-Tags []string `json:"tags,omitzero"`
-paramObj
+	// displayed on invoices
+	Name string `json:"name" api:"required"`
+	// Any of "FIXED", "USAGE", "COMPOSITE", "SUBSCRIPTION", "PROFESSIONAL_SERVICE",
+	// "PRO_SERVICE".
+	Type V1ContractProductNewParamsType `json:"type,omitzero" api:"required"`
+	// Required for USAGE products
+	BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
+	// Beta feature only available for composite products. If true, products with $0
+	// will not be included when computing composite usage. Defaults to false
+	ExcludeFreeUsage param.Opt[bool] `json:"exclude_free_usage,omitzero"`
+	// This field's availability is dependent on your client's configuration. Defaults
+	// to true.
+	IsRefundable param.Opt[bool] `json:"is_refundable,omitzero"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteInternalItemID param.Opt[string] `json:"netsuite_internal_item_id,omitzero"`
+	// This field's availability is dependent on your client's configuration.
+	NetsuiteOverageItemID param.Opt[string] `json:"netsuite_overage_item_id,omitzero"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// converted using the provided conversion factor and operation. For example, if
+	// the operation is "multiply" and the conversion factor is 100, then the quantity
+	// will be multiplied by 100. This can be used in cases where data is sent in one
+	// unit and priced in another. For example, data could be sent in MB and priced in
+	// GB. In this case, the conversion factor would be 1024 and the operation would be
+	// "divide".
+	QuantityConversion QuantityConversionParam `json:"quantity_conversion,omitzero"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// rounded using the provided rounding method and decimal places. For example, if
+	// the method is "round up" and the decimal places is 0, then the quantity will be
+	// rounded up to the nearest integer.
+	QuantityRounding QuantityRoundingParam `json:"quantity_rounding,omitzero"`
+	// Required for COMPOSITE products
+	CompositeProductIDs []string `json:"composite_product_ids,omitzero" format:"uuid"`
+	// Required for COMPOSITE products
+	CompositeTags []string `json:"composite_tags,omitzero"`
+	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+	CustomFields map[string]string `json:"custom_fields,omitzero"`
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PresentationGroupKey []string `json:"presentation_group_key,omitzero"`
+	// For USAGE products only. If set, pricing for this product will be determined for
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PricingGroupKey []string `json:"pricing_group_key,omitzero"`
+	// Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
+	// If set to 'service_period' (default), the usage will be evaluated once for all
+	// events the invoice service period and the usage will be applied at the last
+	// instant of the invoice. If set to 'hour', it will be broken down and evaluated
+	// for each hour. For most use cases, 'hour' is recommended. The setting has no
+	// effect for Streaming Billable Metrics.
+	//
+	// Any of "HOUR", "SERVICE_PERIOD".
+	SqlBreakdownGranularity V1ContractProductNewParamsSqlBreakdownGranularity `json:"sql_breakdown_granularity,omitzero"`
+	Tags                    []string                                          `json:"tags,omitzero"`
+	paramObj
 }
 
 func (r V1ContractProductNewParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1ContractProductNewParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1ContractProductNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractProductNewParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractProductNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductNewParamsType string
 
 const (
-    V1ContractProductNewParamsTypeFixed V1ContractProductNewParamsType = "FIXED"
-    V1ContractProductNewParamsTypeUsage V1ContractProductNewParamsType = "USAGE"
-    V1ContractProductNewParamsTypeComposite V1ContractProductNewParamsType = "COMPOSITE"
-    V1ContractProductNewParamsTypeSubscription V1ContractProductNewParamsType = "SUBSCRIPTION"
-    V1ContractProductNewParamsTypeProfessionalService V1ContractProductNewParamsType = "PROFESSIONAL_SERVICE"
-    V1ContractProductNewParamsTypeProService V1ContractProductNewParamsType = "PRO_SERVICE"
-  )
+	V1ContractProductNewParamsTypeFixed               V1ContractProductNewParamsType = "FIXED"
+	V1ContractProductNewParamsTypeUsage               V1ContractProductNewParamsType = "USAGE"
+	V1ContractProductNewParamsTypeComposite           V1ContractProductNewParamsType = "COMPOSITE"
+	V1ContractProductNewParamsTypeSubscription        V1ContractProductNewParamsType = "SUBSCRIPTION"
+	V1ContractProductNewParamsTypeProfessionalService V1ContractProductNewParamsType = "PROFESSIONAL_SERVICE"
+	V1ContractProductNewParamsTypeProService          V1ContractProductNewParamsType = "PRO_SERVICE"
+)
 
 // Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
 // If set to 'service_period' (default), the usage will be evaluated once for all
@@ -677,94 +677,94 @@ const (
 type V1ContractProductNewParamsSqlBreakdownGranularity string
 
 const (
-    V1ContractProductNewParamsSqlBreakdownGranularityHour V1ContractProductNewParamsSqlBreakdownGranularity = "HOUR"
-    V1ContractProductNewParamsSqlBreakdownGranularityServicePeriod V1ContractProductNewParamsSqlBreakdownGranularity = "SERVICE_PERIOD"
-  )
+	V1ContractProductNewParamsSqlBreakdownGranularityHour          V1ContractProductNewParamsSqlBreakdownGranularity = "HOUR"
+	V1ContractProductNewParamsSqlBreakdownGranularityServicePeriod V1ContractProductNewParamsSqlBreakdownGranularity = "SERVICE_PERIOD"
+)
 
 type V1ContractProductGetParams struct {
-ID shared.IDParam
-paramObj
+	ID shared.IDParam
+	paramObj
 }
 
 func (r V1ContractProductGetParams) MarshalJSON() (data []byte, err error) {
-  return shimjson.Marshal(r.ID)
+	return shimjson.Marshal(r.ID)
 }
-func (r *V1ContractProductGetParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractProductGetParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1ContractProductUpdateParams struct {
-// ID of the product to update
-ProductID string `json:"product_id" api:"required" format:"uuid"`
-// Timestamp representing when the update should go into effect. It must be on an
-// hour boundary (e.g. 1:00, not 1:30).
-StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
-// Available for USAGE products only. If not provided, defaults to product's
-// current billable metric.
-BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
-// Beta feature only available for composite products. If true, products with $0
-// will not be included when computing composite usage. Defaults to false
-ExcludeFreeUsage param.Opt[bool] `json:"exclude_free_usage,omitzero"`
-// Defaults to product's current refundability status. This field's availability is
-// dependent on your client's configuration.
-IsRefundable param.Opt[bool] `json:"is_refundable,omitzero"`
-// displayed on invoices. If not provided, defaults to product's current name.
-Name param.Opt[string] `json:"name,omitzero"`
-// If not provided, defaults to product's current netsuite_internal_item_id. This
-// field's availability is dependent on your client's configuration.
-NetsuiteInternalItemID param.Opt[string] `json:"netsuite_internal_item_id,omitzero"`
-// Available for USAGE and COMPOSITE products only. If not provided, defaults to
-// product's current netsuite_overage_item_id. This field's availability is
-// dependent on your client's configuration.
-NetsuiteOverageItemID param.Opt[string] `json:"netsuite_overage_item_id,omitzero"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// converted using the provided conversion factor and operation. For example, if
-// the operation is "multiply" and the conversion factor is 100, then the quantity
-// will be multiplied by 100. This can be used in cases where data is sent in one
-// unit and priced in another. For example, data could be sent in MB and priced in
-// GB. In this case, the conversion factor would be 1024 and the operation would be
-// "divide".
-QuantityConversion QuantityConversionParam `json:"quantity_conversion,omitzero"`
-// Optional. Only valid for USAGE products. If provided, the quantity will be
-// rounded using the provided rounding method and decimal places. For example, if
-// the method is "round up" and the decimal places is 0, then the quantity will be
-// rounded up to the nearest integer.
-QuantityRounding QuantityRoundingParam `json:"quantity_rounding,omitzero"`
-// Available for COMPOSITE products only. If not provided, defaults to product's
-// current composite_product_ids.
-CompositeProductIDs []string `json:"composite_product_ids,omitzero" format:"uuid"`
-// Available for COMPOSITE products only. If not provided, defaults to product's
-// current composite_tags.
-CompositeTags []string `json:"composite_tags,omitzero"`
-// For USAGE products only. Groups usage line items on invoices. The superset of
-// values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PresentationGroupKey []string `json:"presentation_group_key,omitzero"`
-// For USAGE products only. If set, pricing for this product will be determined for
-// each pricing_group_key value, as opposed to the product as a whole. The superset
-// of values in the pricing group key and presentation group key must be set as one
-// compound group key on the billable metric.
-PricingGroupKey []string `json:"pricing_group_key,omitzero"`
-// Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
-// If set to 'service_period' (default), the usage will be evaluated once for all
-// events the invoice service period and the usage will be applied at the last
-// instant of the invoice. If set to 'hour', it will be broken down and evaluated
-// for each hour. For most use cases, 'hour' is recommended. The setting has no
-// effect for Streaming Billable Metrics.
-//
-// Any of "HOUR", "SERVICE_PERIOD".
-SqlBreakdownGranularity V1ContractProductUpdateParamsSqlBreakdownGranularity `json:"sql_breakdown_granularity,omitzero"`
-// If not provided, defaults to product's current tags
-Tags []string `json:"tags,omitzero"`
-paramObj
+	// ID of the product to update
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
+	// Timestamp representing when the update should go into effect. It must be on an
+	// hour boundary (e.g. 1:00, not 1:30).
+	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// Available for USAGE products only. If not provided, defaults to product's
+	// current billable metric.
+	BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
+	// Beta feature only available for composite products. If true, products with $0
+	// will not be included when computing composite usage. Defaults to false
+	ExcludeFreeUsage param.Opt[bool] `json:"exclude_free_usage,omitzero"`
+	// Defaults to product's current refundability status. This field's availability is
+	// dependent on your client's configuration.
+	IsRefundable param.Opt[bool] `json:"is_refundable,omitzero"`
+	// displayed on invoices. If not provided, defaults to product's current name.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// If not provided, defaults to product's current netsuite_internal_item_id. This
+	// field's availability is dependent on your client's configuration.
+	NetsuiteInternalItemID param.Opt[string] `json:"netsuite_internal_item_id,omitzero"`
+	// Available for USAGE and COMPOSITE products only. If not provided, defaults to
+	// product's current netsuite_overage_item_id. This field's availability is
+	// dependent on your client's configuration.
+	NetsuiteOverageItemID param.Opt[string] `json:"netsuite_overage_item_id,omitzero"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// converted using the provided conversion factor and operation. For example, if
+	// the operation is "multiply" and the conversion factor is 100, then the quantity
+	// will be multiplied by 100. This can be used in cases where data is sent in one
+	// unit and priced in another. For example, data could be sent in MB and priced in
+	// GB. In this case, the conversion factor would be 1024 and the operation would be
+	// "divide".
+	QuantityConversion QuantityConversionParam `json:"quantity_conversion,omitzero"`
+	// Optional. Only valid for USAGE products. If provided, the quantity will be
+	// rounded using the provided rounding method and decimal places. For example, if
+	// the method is "round up" and the decimal places is 0, then the quantity will be
+	// rounded up to the nearest integer.
+	QuantityRounding QuantityRoundingParam `json:"quantity_rounding,omitzero"`
+	// Available for COMPOSITE products only. If not provided, defaults to product's
+	// current composite_product_ids.
+	CompositeProductIDs []string `json:"composite_product_ids,omitzero" format:"uuid"`
+	// Available for COMPOSITE products only. If not provided, defaults to product's
+	// current composite_tags.
+	CompositeTags []string `json:"composite_tags,omitzero"`
+	// For USAGE products only. Groups usage line items on invoices. The superset of
+	// values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PresentationGroupKey []string `json:"presentation_group_key,omitzero"`
+	// For USAGE products only. If set, pricing for this product will be determined for
+	// each pricing_group_key value, as opposed to the product as a whole. The superset
+	// of values in the pricing group key and presentation group key must be set as one
+	// compound group key on the billable metric.
+	PricingGroupKey []string `json:"pricing_group_key,omitzero"`
+	// Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
+	// If set to 'service_period' (default), the usage will be evaluated once for all
+	// events the invoice service period and the usage will be applied at the last
+	// instant of the invoice. If set to 'hour', it will be broken down and evaluated
+	// for each hour. For most use cases, 'hour' is recommended. The setting has no
+	// effect for Streaming Billable Metrics.
+	//
+	// Any of "HOUR", "SERVICE_PERIOD".
+	SqlBreakdownGranularity V1ContractProductUpdateParamsSqlBreakdownGranularity `json:"sql_breakdown_granularity,omitzero"`
+	// If not provided, defaults to product's current tags
+	Tags []string `json:"tags,omitzero"`
+	paramObj
 }
 
 func (r V1ContractProductUpdateParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1ContractProductUpdateParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1ContractProductUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractProductUpdateParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractProductUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Defines the breakdown behavior when calculating usage from SQL Billable Metrics.
@@ -776,58 +776,58 @@ func (r *V1ContractProductUpdateParams) UnmarshalJSON(data []byte) (error) {
 type V1ContractProductUpdateParamsSqlBreakdownGranularity string
 
 const (
-    V1ContractProductUpdateParamsSqlBreakdownGranularityHour V1ContractProductUpdateParamsSqlBreakdownGranularity = "HOUR"
-    V1ContractProductUpdateParamsSqlBreakdownGranularityServicePeriod V1ContractProductUpdateParamsSqlBreakdownGranularity = "SERVICE_PERIOD"
-  )
+	V1ContractProductUpdateParamsSqlBreakdownGranularityHour          V1ContractProductUpdateParamsSqlBreakdownGranularity = "HOUR"
+	V1ContractProductUpdateParamsSqlBreakdownGranularityServicePeriod V1ContractProductUpdateParamsSqlBreakdownGranularity = "SERVICE_PERIOD"
+)
 
 type V1ContractProductListParams struct {
-// Max number of results that should be returned
-Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-// Cursor that indicates where the next page of results should start.
-NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
-// Filter options for the product list. If not provided, defaults to not archived.
-//
-// Any of "ARCHIVED", "NOT_ARCHIVED", "ALL".
-ArchiveFilter V1ContractProductListParamsArchiveFilter `json:"archive_filter,omitzero"`
-paramObj
+	// Max number of results that should be returned
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Cursor that indicates where the next page of results should start.
+	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
+	// Filter options for the product list. If not provided, defaults to not archived.
+	//
+	// Any of "ARCHIVED", "NOT_ARCHIVED", "ALL".
+	ArchiveFilter V1ContractProductListParamsArchiveFilter `json:"archive_filter,omitzero"`
+	paramObj
 }
 
 func (r V1ContractProductListParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1ContractProductListParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1ContractProductListParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractProductListParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractProductListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [V1ContractProductListParams]'s query parameters as
 // `url.Values`.
 func (r V1ContractProductListParams) URLQuery() (v url.Values, err error) {
-  return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-    ArrayFormat: apiquery.ArrayQueryFormatComma,
-    NestedFormat: apiquery.NestedQueryFormatBrackets,
-  })
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 // Filter options for the product list. If not provided, defaults to not archived.
 type V1ContractProductListParamsArchiveFilter string
 
 const (
-    V1ContractProductListParamsArchiveFilterArchived V1ContractProductListParamsArchiveFilter = "ARCHIVED"
-    V1ContractProductListParamsArchiveFilterNotArchived V1ContractProductListParamsArchiveFilter = "NOT_ARCHIVED"
-    V1ContractProductListParamsArchiveFilterAll V1ContractProductListParamsArchiveFilter = "ALL"
-  )
+	V1ContractProductListParamsArchiveFilterArchived    V1ContractProductListParamsArchiveFilter = "ARCHIVED"
+	V1ContractProductListParamsArchiveFilterNotArchived V1ContractProductListParamsArchiveFilter = "NOT_ARCHIVED"
+	V1ContractProductListParamsArchiveFilterAll         V1ContractProductListParamsArchiveFilter = "ALL"
+)
 
 type V1ContractProductArchiveParams struct {
-// ID of the product to be archived
-ProductID string `json:"product_id" api:"required" format:"uuid"`
-paramObj
+	// ID of the product to be archived
+	ProductID string `json:"product_id" api:"required" format:"uuid"`
+	paramObj
 }
 
 func (r V1ContractProductArchiveParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1ContractProductArchiveParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1ContractProductArchiveParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1ContractProductArchiveParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1ContractProductArchiveParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

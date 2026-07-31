@@ -3,16 +3,16 @@
 package metronome
 
 import (
-  "context"
-  "net/http"
-  "slices"
+	"context"
+	"net/http"
+	"slices"
 
-  "github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
-  "github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
-  "github.com/Metronome-Industries/metronome-go/v3/option"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/param"
-  "github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
-  "github.com/Metronome-Industries/metronome-go/v3/shared"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
+	"github.com/Metronome-Industries/metronome-go/v3/option"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // [Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor
@@ -28,16 +28,16 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewV1AlertService] method instead.
 type V1AlertService struct {
-Options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewV1AlertService generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
 func NewV1AlertService(opts ...option.RequestOption) (r V1AlertService) {
-  r = V1AlertService{}
-  r.Options = opts
-  return
+	r = V1AlertService{}
+	r.Options = opts
+	return
 }
 
 // Create a new threshold notification to monitor customer spending, balances, and
@@ -52,44 +52,44 @@ func NewV1AlertService(opts ...option.RequestOption) (r V1AlertService) {
 //
 // ### Use this endpoint to:
 //
-// - Proactively monitor customer spending patterns to prevent unexpected overages
-//   or credit exhaustion
-// - Automate notifications when customers approach commitment limits or credit
-//   thresholds
-// - Enable real-time intervention for accounts at risk of churn or payment issues
-// - Scale billing operations by automating threshold-based workflows and
-//   notifications
+//   - Proactively monitor customer spending patterns to prevent unexpected overages
+//     or credit exhaustion
+//   - Automate notifications when customers approach commitment limits or credit
+//     thresholds
+//   - Enable real-time intervention for accounts at risk of churn or payment issues
+//   - Scale billing operations by automating threshold-based workflows and
+//     notifications
 //
 // ### Key response fields:
 //
 // A successful response returns a CustomerAlert object containing:
 //
-// - The threshold notification configuration with its unique ID and current status
-// - The customer's evaluation status (ok, in_alarm, or evaluating)
-// - Threshold notification metadata including type, threshold values, and update
-//   timestamps
+//   - The threshold notification configuration with its unique ID and current status
+//   - The customer's evaluation status (ok, in_alarm, or evaluating)
+//   - Threshold notification metadata including type, threshold values, and update
+//     timestamps
 //
 // ### Usage guidelines:
 //
-// - Immediate evaluation: Set `evaluate_on_create` : `true` (default) for instant
-//   evaluation against existing customers
-// - Uniqueness constraints: Each threshold notification must have a unique
-//   `uniqueness_key` within your organization. Use `release_uniqueness_key` :
-//   `true` when archiving to reuse keys
-// - Notification type requirements: Different threshold notification types require
-//   specific fields (e.g., `billable_metric_id` for usage notifications,
-//   `credit_type_id` for credit-based threshold notifications)
-// - Webhook delivery: Threshold notifications trigger webhook notifications for
-//   real-time integration with your systems. Configure webhook endpoints before
-//   creating threshold notifications
-// - Performance at scale: Metronome's event-driven architecture processes
-//   threshold notification evaluations in real-time as usage events stream in,
-//   unlike competitors who rely on periodic polling or batch evaluation cycles
+//   - Immediate evaluation: Set `evaluate_on_create` : `true` (default) for instant
+//     evaluation against existing customers
+//   - Uniqueness constraints: Each threshold notification must have a unique
+//     `uniqueness_key` within your organization. Use `release_uniqueness_key` :
+//     `true` when archiving to reuse keys
+//   - Notification type requirements: Different threshold notification types require
+//     specific fields (e.g., `billable_metric_id` for usage notifications,
+//     `credit_type_id` for credit-based threshold notifications)
+//   - Webhook delivery: Threshold notifications trigger webhook notifications for
+//     real-time integration with your systems. Configure webhook endpoints before
+//     creating threshold notifications
+//   - Performance at scale: Metronome's event-driven architecture processes
+//     threshold notification evaluations in real-time as usage events stream in,
+//     unlike competitors who rely on periodic polling or batch evaluation cycles
 func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ...option.RequestOption) (res *V1AlertNewResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/alerts/create"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/alerts/create"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Permanently disable a threshold notification and remove it from active
@@ -99,12 +99,12 @@ func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ..
 //
 // ### Use this endpoint to:
 //
-// - Decommission threshold notifications that are no longer needed
-// - Clean up test or deprecated threshold notification configurations
-// - Free up uniqueness keys for reuse with new threshold notifications
-// - Stop threshold notification evaluations without losing historical
-//   configuration data
-// - Disable outdated monitoring rules during pricing model transitions
+//   - Decommission threshold notifications that are no longer needed
+//   - Clean up test or deprecated threshold notification configurations
+//   - Free up uniqueness keys for reuse with new threshold notifications
+//   - Stop threshold notification evaluations without losing historical
+//     configuration data
+//   - Disable outdated monitoring rules during pricing model transitions
 //
 // ### Key response fields:
 //
@@ -112,263 +112,263 @@ func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ..
 //
 // ### Usage guidelines:
 //
-// - Irreversible for evaluation: Archived threshold notifications cannot be
-//   re-enabled; create a new threshold notification to resume monitoring
-// - Uniqueness key handling: Set `release_uniqueness_key` : `true` to reuse the
-//   key in future threshold notifications
-// - Immediate effect: Threshold notification evaluation stops instantly across all
-//   customers
-// - Historical preservation: Archive operation maintains threshold notification
-//   history and configuration for compliance and auditing
+//   - Irreversible for evaluation: Archived threshold notifications cannot be
+//     re-enabled; create a new threshold notification to resume monitoring
+//   - Uniqueness key handling: Set `release_uniqueness_key` : `true` to reuse the
+//     key in future threshold notifications
+//   - Immediate effect: Threshold notification evaluation stops instantly across all
+//     customers
+//   - Historical preservation: Archive operation maintains threshold notification
+//     history and configuration for compliance and auditing
 func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams, opts ...option.RequestOption) (res *V1AlertArchiveResponse, err error) {
-  opts = slices.Concat(r.Options, opts)
-  path := "v1/alerts/archive"
-  err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-  return res, err
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/alerts/archive"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 type V1AlertNewResponse struct {
-Data shared.ID `json:"data" api:"required"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              Data respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	Data shared.ID `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1AlertNewResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1AlertNewResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1AlertNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1AlertNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1AlertArchiveResponse struct {
-Data shared.ID `json:"data" api:"required"`
-// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-JSON struct {
-              Data respjson.Field
-              ExtraFields map[string]respjson.Field
-              raw string
-            } `json:"-"`
+	Data shared.ID `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r V1AlertArchiveResponse) RawJSON() (string) { return r.JSON.raw }
-func (r *V1AlertArchiveResponse) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r V1AlertArchiveResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1AlertArchiveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1AlertNewParams struct {
-// Type of the threshold notification
-//
-// Any of "low_credit_balance_reached", "spend_threshold_reached",
-// "monthly_invoice_total_spend_threshold_reached",
-// "low_remaining_days_in_plan_reached", "low_remaining_credit_percentage_reached",
-// "usage_threshold_reached", "low_remaining_days_for_commit_segment_reached",
-// "low_remaining_commit_balance_reached",
-// "low_remaining_commit_percentage_reached",
-// "low_remaining_days_for_contract_credit_segment_reached",
-// "low_remaining_contract_credit_balance_reached",
-// "low_remaining_contract_credit_percentage_reached",
-// "low_remaining_contract_credit_and_commit_balance_reached",
-// "invoice_total_reached", "low_remaining_seat_balance_reached".
-AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero" api:"required"`
-// Name of the threshold notification
-Name string `json:"name" api:"required"`
-// Threshold value of the notification policy. Depending upon the notification
-// type, this number may represent a financial amount, the days remaining, or a
-// percentage reached.
-Threshold float64 `json:"threshold" api:"required"`
-// For threshold notifications of type `usage_threshold_reached`, specifies which
-// billable metric to track the usage for.
-BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
-// ID of the credit's currency, defaults to USD. If the specific notification type
-// requires a pricing unit/currency, find the ID in the
-// [Metronome app](https://app.metronome.com/offering/pricing-units).
-CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
-// If provided, will create this threshold notification for this specific customer.
-// To create a notification for all customers, do not specify a `customer_id`.
-CustomerID param.Opt[string] `json:"customer_id,omitzero" format:"uuid"`
-// If true, the threshold notification will evaluate immediately on customers that
-// already meet the notification threshold. If false, it will only evaluate on
-// future customers that trigger the threshold. Defaults to true.
-EvaluateOnCreate param.Opt[bool] `json:"evaluate_on_create,omitzero"`
-// If provided, will create this threshold notification for this specific plan. To
-// create a notification for all customers, do not specify a `plan_id`.
-PlanID param.Opt[string] `json:"plan_id,omitzero" format:"uuid"`
-// Prevents the creation of duplicates. If a request to create a record is made
-// with a previously used uniqueness key, a new record will not be created and the
-// request will fail with a 409 error.
-UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
-// Can be used with only `low_remaining_contract_credit_and_commit_balance_reached`
-// notifications. Defines the balances that are considered when evaluating the
-// alert.
-AlertSpecifiers []V1AlertNewParamsAlertSpecifier `json:"alert_specifiers,omitzero"`
-// An array of strings, representing a way to filter the credit grant this
-// threshold notification applies to, by looking at the credit_grant_type field on
-// the credit grant. This field is only defined for CreditPercentage and
-// CreditBalance notifications
-CreditGrantTypeFilters []string `json:"credit_grant_type_filters,omitzero"`
-// A list of custom field filters for threshold notification types that support
-// advanced filtering. Only present for contract invoices.
-CustomFieldFilters []V1AlertNewParamsCustomFieldFilter `json:"custom_field_filters,omitzero"`
-// Only present for `spend_threshold_reached` notifications. Scope notification to
-// a specific group key on individual line items.
-GroupValues []V1AlertNewParamsGroupValue `json:"group_values,omitzero"`
-// Only supported for invoice_total_reached threshold notifications. A list of
-// invoice types to evaluate.
-InvoiceTypesFilter []string `json:"invoice_types_filter,omitzero"`
-// Required for `low_remaining_seat_balance_reached` notifications. The alert is
-// scoped to this seat group key-value pair.
-SeatFilter V1AlertNewParamsSeatFilter `json:"seat_filter,omitzero"`
-paramObj
+	// Type of the threshold notification
+	//
+	// Any of "low_credit_balance_reached", "spend_threshold_reached",
+	// "monthly_invoice_total_spend_threshold_reached",
+	// "low_remaining_days_in_plan_reached", "low_remaining_credit_percentage_reached",
+	// "usage_threshold_reached", "low_remaining_days_for_commit_segment_reached",
+	// "low_remaining_commit_balance_reached",
+	// "low_remaining_commit_percentage_reached",
+	// "low_remaining_days_for_contract_credit_segment_reached",
+	// "low_remaining_contract_credit_balance_reached",
+	// "low_remaining_contract_credit_percentage_reached",
+	// "low_remaining_contract_credit_and_commit_balance_reached",
+	// "invoice_total_reached", "low_remaining_seat_balance_reached".
+	AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero" api:"required"`
+	// Name of the threshold notification
+	Name string `json:"name" api:"required"`
+	// Threshold value of the notification policy. Depending upon the notification
+	// type, this number may represent a financial amount, the days remaining, or a
+	// percentage reached.
+	Threshold float64 `json:"threshold" api:"required"`
+	// For threshold notifications of type `usage_threshold_reached`, specifies which
+	// billable metric to track the usage for.
+	BillableMetricID param.Opt[string] `json:"billable_metric_id,omitzero" format:"uuid"`
+	// ID of the credit's currency, defaults to USD. If the specific notification type
+	// requires a pricing unit/currency, find the ID in the
+	// [Metronome app](https://app.metronome.com/offering/pricing-units).
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// If provided, will create this threshold notification for this specific customer.
+	// To create a notification for all customers, do not specify a `customer_id`.
+	CustomerID param.Opt[string] `json:"customer_id,omitzero" format:"uuid"`
+	// If true, the threshold notification will evaluate immediately on customers that
+	// already meet the notification threshold. If false, it will only evaluate on
+	// future customers that trigger the threshold. Defaults to true.
+	EvaluateOnCreate param.Opt[bool] `json:"evaluate_on_create,omitzero"`
+	// If provided, will create this threshold notification for this specific plan. To
+	// create a notification for all customers, do not specify a `plan_id`.
+	PlanID param.Opt[string] `json:"plan_id,omitzero" format:"uuid"`
+	// Prevents the creation of duplicates. If a request to create a record is made
+	// with a previously used uniqueness key, a new record will not be created and the
+	// request will fail with a 409 error.
+	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
+	// Can be used with only `low_remaining_contract_credit_and_commit_balance_reached`
+	// notifications. Defines the balances that are considered when evaluating the
+	// alert.
+	AlertSpecifiers []V1AlertNewParamsAlertSpecifier `json:"alert_specifiers,omitzero"`
+	// An array of strings, representing a way to filter the credit grant this
+	// threshold notification applies to, by looking at the credit_grant_type field on
+	// the credit grant. This field is only defined for CreditPercentage and
+	// CreditBalance notifications
+	CreditGrantTypeFilters []string `json:"credit_grant_type_filters,omitzero"`
+	// A list of custom field filters for threshold notification types that support
+	// advanced filtering. Only present for contract invoices.
+	CustomFieldFilters []V1AlertNewParamsCustomFieldFilter `json:"custom_field_filters,omitzero"`
+	// Only present for `spend_threshold_reached` notifications. Scope notification to
+	// a specific group key on individual line items.
+	GroupValues []V1AlertNewParamsGroupValue `json:"group_values,omitzero"`
+	// Only supported for invoice_total_reached threshold notifications. A list of
+	// invoice types to evaluate.
+	InvoiceTypesFilter []string `json:"invoice_types_filter,omitzero"`
+	// Required for `low_remaining_seat_balance_reached` notifications. The alert is
+	// scoped to this seat group key-value pair.
+	SeatFilter V1AlertNewParamsSeatFilter `json:"seat_filter,omitzero"`
+	paramObj
 }
 
 func (r V1AlertNewParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertNewParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertNewParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Type of the threshold notification
 type V1AlertNewParamsAlertType string
 
 const (
-    V1AlertNewParamsAlertTypeLowCreditBalanceReached V1AlertNewParamsAlertType = "low_credit_balance_reached"
-    V1AlertNewParamsAlertTypeSpendThresholdReached V1AlertNewParamsAlertType = "spend_threshold_reached"
-    V1AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached V1AlertNewParamsAlertType = "monthly_invoice_total_spend_threshold_reached"
-    V1AlertNewParamsAlertTypeLowRemainingDaysInPlanReached V1AlertNewParamsAlertType = "low_remaining_days_in_plan_reached"
-    V1AlertNewParamsAlertTypeLowRemainingCreditPercentageReached V1AlertNewParamsAlertType = "low_remaining_credit_percentage_reached"
-    V1AlertNewParamsAlertTypeUsageThresholdReached V1AlertNewParamsAlertType = "usage_threshold_reached"
-    V1AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached V1AlertNewParamsAlertType = "low_remaining_days_for_commit_segment_reached"
-    V1AlertNewParamsAlertTypeLowRemainingCommitBalanceReached V1AlertNewParamsAlertType = "low_remaining_commit_balance_reached"
-    V1AlertNewParamsAlertTypeLowRemainingCommitPercentageReached V1AlertNewParamsAlertType = "low_remaining_commit_percentage_reached"
-    V1AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached V1AlertNewParamsAlertType = "low_remaining_days_for_contract_credit_segment_reached"
-    V1AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached V1AlertNewParamsAlertType = "low_remaining_contract_credit_balance_reached"
-    V1AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached V1AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
-    V1AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached V1AlertNewParamsAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
-    V1AlertNewParamsAlertTypeInvoiceTotalReached V1AlertNewParamsAlertType = "invoice_total_reached"
-    V1AlertNewParamsAlertTypeLowRemainingSeatBalanceReached V1AlertNewParamsAlertType = "low_remaining_seat_balance_reached"
-  )
+	V1AlertNewParamsAlertTypeLowCreditBalanceReached                           V1AlertNewParamsAlertType = "low_credit_balance_reached"
+	V1AlertNewParamsAlertTypeSpendThresholdReached                             V1AlertNewParamsAlertType = "spend_threshold_reached"
+	V1AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached          V1AlertNewParamsAlertType = "monthly_invoice_total_spend_threshold_reached"
+	V1AlertNewParamsAlertTypeLowRemainingDaysInPlanReached                     V1AlertNewParamsAlertType = "low_remaining_days_in_plan_reached"
+	V1AlertNewParamsAlertTypeLowRemainingCreditPercentageReached               V1AlertNewParamsAlertType = "low_remaining_credit_percentage_reached"
+	V1AlertNewParamsAlertTypeUsageThresholdReached                             V1AlertNewParamsAlertType = "usage_threshold_reached"
+	V1AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached           V1AlertNewParamsAlertType = "low_remaining_days_for_commit_segment_reached"
+	V1AlertNewParamsAlertTypeLowRemainingCommitBalanceReached                  V1AlertNewParamsAlertType = "low_remaining_commit_balance_reached"
+	V1AlertNewParamsAlertTypeLowRemainingCommitPercentageReached               V1AlertNewParamsAlertType = "low_remaining_commit_percentage_reached"
+	V1AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached   V1AlertNewParamsAlertType = "low_remaining_days_for_contract_credit_segment_reached"
+	V1AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached          V1AlertNewParamsAlertType = "low_remaining_contract_credit_balance_reached"
+	V1AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached       V1AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
+	V1AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached V1AlertNewParamsAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
+	V1AlertNewParamsAlertTypeInvoiceTotalReached                               V1AlertNewParamsAlertType = "invoice_total_reached"
+	V1AlertNewParamsAlertTypeLowRemainingSeatBalanceReached                    V1AlertNewParamsAlertType = "low_remaining_seat_balance_reached"
+)
 
 type V1AlertNewParamsAlertSpecifier struct {
-// A list of custom field filters for notification types that support advanced
-// filtering
-CustomFieldFilters []V1AlertNewParamsAlertSpecifierCustomFieldFilter `json:"custom_field_filters,omitzero"`
-// If provided, the specifier will not apply to balances that matches the inclusion
-// criteria and any of the excluding values.
-Exclude []V1AlertNewParamsAlertSpecifierExclude `json:"exclude,omitzero"`
-paramObj
+	// A list of custom field filters for notification types that support advanced
+	// filtering
+	CustomFieldFilters []V1AlertNewParamsAlertSpecifierCustomFieldFilter `json:"custom_field_filters,omitzero"`
+	// If provided, the specifier will not apply to balances that matches the inclusion
+	// criteria and any of the excluding values.
+	Exclude []V1AlertNewParamsAlertSpecifierExclude `json:"exclude,omitzero"`
+	paramObj
 }
 
 func (r V1AlertNewParamsAlertSpecifier) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertNewParamsAlertSpecifier
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertNewParamsAlertSpecifier
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertNewParamsAlertSpecifier) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertNewParamsAlertSpecifier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Entity, Key are required.
 type V1AlertNewParamsAlertSpecifierCustomFieldFilter struct {
-// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
-Entity string `json:"entity,omitzero" api:"required"`
-Key string `json:"key" api:"required"`
-Value param.Opt[string] `json:"value,omitzero"`
-paramObj
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string            `json:"entity,omitzero" api:"required"`
+	Key    string            `json:"key" api:"required"`
+	Value  param.Opt[string] `json:"value,omitzero"`
+	paramObj
 }
 
 func (r V1AlertNewParamsAlertSpecifierCustomFieldFilter) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertNewParamsAlertSpecifierCustomFieldFilter
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertNewParamsAlertSpecifierCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertNewParamsAlertSpecifierCustomFieldFilter) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertNewParamsAlertSpecifierCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-  apijson.RegisterFieldValidator[V1AlertNewParamsAlertSpecifierCustomFieldFilter](
-    "entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
-  )
+	apijson.RegisterFieldValidator[V1AlertNewParamsAlertSpecifierCustomFieldFilter](
+		"entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
 }
 
 type V1AlertNewParamsAlertSpecifierExclude struct {
-// A list of custom field filters for notification types that support advanced
-// filtering
-CustomFieldFilters []V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter `json:"custom_field_filters,omitzero"`
-paramObj
+	// A list of custom field filters for notification types that support advanced
+	// filtering
+	CustomFieldFilters []V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter `json:"custom_field_filters,omitzero"`
+	paramObj
 }
 
 func (r V1AlertNewParamsAlertSpecifierExclude) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertNewParamsAlertSpecifierExclude
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertNewParamsAlertSpecifierExclude
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertNewParamsAlertSpecifierExclude) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertNewParamsAlertSpecifierExclude) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Entity, Key, Value are required.
 type V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter struct {
-// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
-Entity string `json:"entity,omitzero" api:"required"`
-Key string `json:"key" api:"required"`
-Value string `json:"value" api:"required"`
-paramObj
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	paramObj
 }
 
 func (r V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-  apijson.RegisterFieldValidator[V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter](
-    "entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
-  )
+	apijson.RegisterFieldValidator[V1AlertNewParamsAlertSpecifierExcludeCustomFieldFilter](
+		"entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
 }
 
 // The properties Entity, Key, Value are required.
 type V1AlertNewParamsCustomFieldFilter struct {
-// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
-Entity string `json:"entity,omitzero" api:"required"`
-Key string `json:"key" api:"required"`
-Value string `json:"value" api:"required"`
-paramObj
+	// Any of "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit".
+	Entity string `json:"entity,omitzero" api:"required"`
+	Key    string `json:"key" api:"required"`
+	Value  string `json:"value" api:"required"`
+	paramObj
 }
 
 func (r V1AlertNewParamsCustomFieldFilter) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertNewParamsCustomFieldFilter
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertNewParamsCustomFieldFilter
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertNewParamsCustomFieldFilter) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertNewParamsCustomFieldFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-  apijson.RegisterFieldValidator[V1AlertNewParamsCustomFieldFilter](
-    "entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
-  )
+	apijson.RegisterFieldValidator[V1AlertNewParamsCustomFieldFilter](
+		"entity", "Contract", "Commit", "ContractCredit", "ContractCreditOrCommit",
+	)
 }
 
 // The property Key is required.
 type V1AlertNewParamsGroupValue struct {
-Key string `json:"key" api:"required"`
-Value param.Opt[string] `json:"value,omitzero"`
-paramObj
+	Key   string            `json:"key" api:"required"`
+	Value param.Opt[string] `json:"value,omitzero"`
+	paramObj
 }
 
 func (r V1AlertNewParamsGroupValue) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertNewParamsGroupValue
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertNewParamsGroupValue
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertNewParamsGroupValue) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertNewParamsGroupValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Required for `low_remaining_seat_balance_reached` notifications. The alert is
@@ -376,34 +376,34 @@ func (r *V1AlertNewParamsGroupValue) UnmarshalJSON(data []byte) (error) {
 //
 // The property SeatGroupKey is required.
 type V1AlertNewParamsSeatFilter struct {
-// The seat group key (e.g., "seat_id", "user_id")
-SeatGroupKey string `json:"seat_group_key" api:"required"`
-// Optional seat identifier the alert is scoped to.
-SeatGroupValue param.Opt[string] `json:"seat_group_value,omitzero"`
-paramObj
+	// The seat group key (e.g., "seat_id", "user_id")
+	SeatGroupKey string `json:"seat_group_key" api:"required"`
+	// Optional seat identifier the alert is scoped to.
+	SeatGroupValue param.Opt[string] `json:"seat_group_value,omitzero"`
+	paramObj
 }
 
 func (r V1AlertNewParamsSeatFilter) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertNewParamsSeatFilter
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertNewParamsSeatFilter
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertNewParamsSeatFilter) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertNewParamsSeatFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1AlertArchiveParams struct {
-// The Metronome ID of the threshold notification
-ID string `json:"id" api:"required" format:"uuid"`
-// If true, resets the uniqueness key on this threshold notification so it can be
-// re-used
-ReleaseUniquenessKey param.Opt[bool] `json:"release_uniqueness_key,omitzero"`
-paramObj
+	// The Metronome ID of the threshold notification
+	ID string `json:"id" api:"required" format:"uuid"`
+	// If true, resets the uniqueness key on this threshold notification so it can be
+	// re-used
+	ReleaseUniquenessKey param.Opt[bool] `json:"release_uniqueness_key,omitzero"`
+	paramObj
 }
 
 func (r V1AlertArchiveParams) MarshalJSON() (data []byte, err error) {
-  type shadow V1AlertArchiveParams
-  return param.MarshalObject(r, (*shadow)(&r))
+	type shadow V1AlertArchiveParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *V1AlertArchiveParams) UnmarshalJSON(data []byte) (error) {
-  return apijson.UnmarshalRoot(data, r)
+func (r *V1AlertArchiveParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

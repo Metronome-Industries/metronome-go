@@ -1,8 +1,8 @@
 package param_test
 
 import (
-	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
 	"encoding/json"
+	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
 	"testing"
 )
 

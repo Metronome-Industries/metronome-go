@@ -11,10 +11,10 @@
 package json
 
 import (
-	"github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json/shims"
 	"encoding"
 	"encoding/base64"
 	"fmt"
+	"github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json/shims"
 	"reflect"
 	"strconv"
 	"strings"
