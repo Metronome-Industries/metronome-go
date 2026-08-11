@@ -6444,6 +6444,16 @@ type PrepaidBalanceThresholdConfigurationCommit struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. If not provided, defaults to one year.
+	Duration PrepaidBalanceThresholdConfigurationCommitDuration `json:"duration"`
+	// Whether the created commits will be charged at commit rate or list rate.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1.
+	RolloverFraction float64 `json:"rollover_fraction"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -6453,6 +6463,9 @@ type PrepaidBalanceThresholdConfigurationCommit struct {
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
+		Duration              respjson.Field
+		RateType              respjson.Field
+		RolloverFraction      respjson.Field
 		Specifiers            respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
@@ -6463,6 +6476,27 @@ type PrepaidBalanceThresholdConfigurationCommit struct {
 // Returns the unmodified JSON received from the API
 func (r PrepaidBalanceThresholdConfigurationCommit) RawJSON() string { return r.JSON.raw }
 func (r *PrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+type PrepaidBalanceThresholdConfigurationCommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationCommitDuration) RawJSON() string { return r.JSON.raw }
+func (r *PrepaidBalanceThresholdConfigurationCommitDuration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6619,6 +6653,14 @@ type PrepaidBalanceThresholdConfigurationCommitParam struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. If not provided, defaults to one year.
+	Duration PrepaidBalanceThresholdConfigurationCommitDurationParam `json:"duration,omitzero"`
+	// Whether the created commits will be charged at commit rate or list rate.
+	RateType string `json:"rate_type,omitzero"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -6633,6 +6675,31 @@ func (r PrepaidBalanceThresholdConfigurationCommitParam) MarshalJSON() (data []b
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+//
+// The properties Unit, Value are required.
+type PrepaidBalanceThresholdConfigurationCommitDurationParam struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit,omitzero" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationCommitDurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationCommitDurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationCommitDurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[PrepaidBalanceThresholdConfigurationCommitDurationParam](
+		"unit", "DAYS", "WEEKS", "MONTHS", "YEARS",
+	)
 }
 
 // The property PaymentFraction is required.
@@ -6789,6 +6856,16 @@ type PrepaidBalanceThresholdConfigurationV2Commit struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. If not provided, defaults to one year.
+	Duration PrepaidBalanceThresholdConfigurationV2CommitDuration `json:"duration"`
+	// Whether the created commits will be charged at commit rate or list rate.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1.
+	RolloverFraction float64 `json:"rollover_fraction"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -6800,6 +6877,9 @@ type PrepaidBalanceThresholdConfigurationV2Commit struct {
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
+		Duration              respjson.Field
+		RateType              respjson.Field
+		RolloverFraction      respjson.Field
 		Specifiers            respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
@@ -6810,6 +6890,27 @@ type PrepaidBalanceThresholdConfigurationV2Commit struct {
 // Returns the unmodified JSON received from the API
 func (r PrepaidBalanceThresholdConfigurationV2Commit) RawJSON() string { return r.JSON.raw }
 func (r *PrepaidBalanceThresholdConfigurationV2Commit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+type PrepaidBalanceThresholdConfigurationV2CommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationV2CommitDuration) RawJSON() string { return r.JSON.raw }
+func (r *PrepaidBalanceThresholdConfigurationV2CommitDuration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6962,6 +7063,14 @@ type PrepaidBalanceThresholdConfigurationV2CommitParam struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. If not provided, defaults to one year.
+	Duration PrepaidBalanceThresholdConfigurationV2CommitDurationParam `json:"duration,omitzero"`
+	// Whether the created commits will be charged at commit rate or list rate.
+	RateType string `json:"rate_type,omitzero"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -6978,6 +7087,31 @@ func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data [
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+//
+// The properties Unit, Value are required.
+type PrepaidBalanceThresholdConfigurationV2CommitDurationParam struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit,omitzero" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2CommitDurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationV2CommitDurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationV2CommitDurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[PrepaidBalanceThresholdConfigurationV2CommitDurationParam](
+		"unit", "DAYS", "WEEKS", "MONTHS", "YEARS",
+	)
 }
 
 // The property PaymentFraction is required.
