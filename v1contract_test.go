@@ -240,6 +240,12 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 				ApplicableProductTags: []string{"string"},
+				Duration: shared.PrepaidBalanceThresholdConfigurationCommitDurationParam{
+					Unit:  "DAYS",
+					Value: 0,
+				},
+				RateType:         "COMMIT_RATE",
+				RolloverFraction: metronome.Float(0),
 				Specifiers: []shared.CommitSpecifierInputParam{{
 					PresentationGroupValues: map[string]string{
 						"foo": "string",

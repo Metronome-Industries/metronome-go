@@ -965,6 +965,12 @@ type PrepaidBalanceThresholdConfiguration = shared.PrepaidBalanceThresholdConfig
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationCommit = shared.PrepaidBalanceThresholdConfigurationCommit
 
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+//
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationCommitDuration = shared.PrepaidBalanceThresholdConfigurationCommitDuration
+
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationDiscountConfiguration = shared.PrepaidBalanceThresholdConfigurationDiscountConfiguration
 
@@ -988,6 +994,12 @@ type PrepaidBalanceThresholdConfigurationParam = shared.PrepaidBalanceThresholdC
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationCommitParam = shared.PrepaidBalanceThresholdConfigurationCommitParam
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+//
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationCommitDurationParam = shared.PrepaidBalanceThresholdConfigurationCommitDurationParam
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationDiscountConfigurationParam = shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam
@@ -1013,6 +1025,12 @@ type PrepaidBalanceThresholdConfigurationV2 = shared.PrepaidBalanceThresholdConf
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2Commit = shared.PrepaidBalanceThresholdConfigurationV2Commit
 
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+//
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2CommitDuration = shared.PrepaidBalanceThresholdConfigurationV2CommitDuration
+
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2DiscountConfiguration = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfiguration
 
@@ -1036,6 +1054,12 @@ type PrepaidBalanceThresholdConfigurationV2Param = shared.PrepaidBalanceThreshol
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2CommitParam = shared.PrepaidBalanceThresholdConfigurationV2CommitParam
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+//
+// This is an alias to an internal type.
+type PrepaidBalanceThresholdConfigurationV2CommitDurationParam = shared.PrepaidBalanceThresholdConfigurationV2CommitDurationParam
 
 // This is an alias to an internal type.
 type PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam = shared.PrepaidBalanceThresholdConfigurationV2DiscountConfigurationParam

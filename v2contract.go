@@ -2189,6 +2189,18 @@ type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCom
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
 	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. Set to null to clear a previously configured
+	// duration.
+	Duration V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommitDuration `json:"duration" api:"nullable"`
+	// Whether the created commits will be charged at commit rate or list rate. Set to
+	// null to clear a previously configured rate type.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type" api:"nullable"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1. Set to null to clear a previously configured rollover fraction.
+	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -2200,6 +2212,9 @@ type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCom
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
+		Duration              respjson.Field
+		RateType              respjson.Field
+		RolloverFraction      respjson.Field
 		Specifiers            respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
@@ -2212,6 +2227,30 @@ func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfiguration
 	return r.JSON.raw
 }
 func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. Set to null to clear a previously configured
+// duration.
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommitDuration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommitDuration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4943,6 +4982,18 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
 	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. Set to null to clear a previously configured
+	// duration.
+	Duration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitDuration `json:"duration" api:"nullable"`
+	// Whether the created commits will be charged at commit rate or list rate. Set to
+	// null to clear a previously configured rate type.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type" api:"nullable"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1. Set to null to clear a previously configured rollover fraction.
+	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -4954,6 +5005,9 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
+		Duration              respjson.Field
+		RateType              respjson.Field
+		RolloverFraction      respjson.Field
 		Specifiers            respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
@@ -4966,6 +5020,30 @@ func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigu
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. Set to null to clear a previously configured
+// duration.
+type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitDuration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitDuration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7955,6 +8033,16 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. Set to null to clear a previously configured
+	// duration.
+	Duration V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration `json:"duration,omitzero"`
+	// Whether the created commits will be charged at commit rate or list rate. Set to
+	// null to clear a previously configured rate type.
+	RateType string `json:"rate_type,omitzero"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1. Set to null to clear a previously configured rollover fraction.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -7971,6 +8059,32 @@ func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) Ma
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. Set to null to clear a previously configured
+// duration.
+//
+// The properties Unit, Value are required.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit,omitzero" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration](
+		"unit", "DAYS", "WEEKS", "MONTHS", "YEARS",
+	)
 }
 
 type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {
