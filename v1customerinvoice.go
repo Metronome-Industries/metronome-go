@@ -563,6 +563,9 @@ type InvoiceLineItem struct {
 	ProfessionalServiceID           string            `json:"professional_service_id" format:"uuid"`
 	// The quantity associated with the line item.
 	Quantity float64 `json:"quantity"`
+	// Present on applied commit line items for quantity-based commits. Represents the
+	// unit quantity deducted the commit.
+	QuantityConsumed float64 `json:"quantity_consumed"`
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
 	ResellerType string `json:"reseller_type"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
@@ -617,6 +620,7 @@ type InvoiceLineItem struct {
 		ProfessionalServiceCustomFields respjson.Field
 		ProfessionalServiceID           respjson.Field
 		Quantity                        respjson.Field
+		QuantityConsumed                respjson.Field
 		ResellerType                    respjson.Field
 		ScheduledChargeCustomFields     respjson.Field
 		ScheduledChargeID               respjson.Field
