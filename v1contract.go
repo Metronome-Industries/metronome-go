@@ -4097,6 +4097,10 @@ type V1ContractAddManualBalanceEntryParams struct {
 	// RFC 3339 timestamp indicating when the manual adjustment takes place. If not
 	// provided, it will default to the start of the segment.
 	Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
+	// Prevents the creation of duplicates. If a request to create a record is made
+	// with a previously used uniqueness key, a new record will not be created and the
+	// request will fail with a 409 error.
+	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
 	// If using individually configured commits/credits attached to seat managed
 	// subscriptions, the amount to add for each seat. Must sum to total amount.
 	PerGroupAmounts map[string]float64 `json:"per_group_amounts,omitzero"`

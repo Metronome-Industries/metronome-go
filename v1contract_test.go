@@ -660,7 +660,8 @@ func TestV1ContractAddManualBalanceEntryWithOptionalParams(t *testing.T) {
 		PerGroupAmounts: map[string]float64{
 			"foo": 0,
 		},
-		Timestamp: metronome.Time(time.Now()),
+		Timestamp:     metronome.Time(time.Now()),
+		UniquenessKey: metronome.String("x"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
