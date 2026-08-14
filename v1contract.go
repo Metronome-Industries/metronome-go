@@ -821,7 +821,8 @@ func (r *V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) 
 // this billing provider will not be sent to its associated destination for the
 // associated contract. Rules only apply to the specified `invoice_type` (or all
 // invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
-// Rule precedence is evaluated from more specific to less specific.
+// Rule precedence is evaluated from more specific to less specific. This method
+// will fail with a 400 if multiple rules with the same specificity are included.
 type V1ContractNewResponseDataContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration struct {
 	// The type of invoice this rule applies to.
 	//
