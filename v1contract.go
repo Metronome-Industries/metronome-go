@@ -885,6 +885,8 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V1ContractNewResponseDataContractRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V1ContractNewResponseDataContractRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -943,6 +945,7 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -1151,6 +1154,8 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V1ContractNewResponseDataContractRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V1ContractNewResponseDataContractRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -1207,6 +1212,7 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field

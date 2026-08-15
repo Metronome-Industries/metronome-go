@@ -674,6 +674,8 @@ type V2ContractEditResponseDataEditAddRecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V2ContractEditResponseDataEditAddRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V2ContractEditResponseDataEditAddRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -732,6 +734,7 @@ type V2ContractEditResponseDataEditAddRecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -938,6 +941,8 @@ type V2ContractEditResponseDataEditAddRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V2ContractEditResponseDataEditAddRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V2ContractEditResponseDataEditAddRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -994,6 +999,7 @@ type V2ContractEditResponseDataEditAddRecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -3445,6 +3451,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V2ContractGetEditHistoryResponseDataAddRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V2ContractGetEditHistoryResponseDataAddRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -3503,6 +3511,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -3713,6 +3722,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V2ContractGetEditHistoryResponseDataAddRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V2ContractGetEditHistoryResponseDataAddRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -3769,6 +3780,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field

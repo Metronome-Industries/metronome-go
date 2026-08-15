@@ -3418,6 +3418,8 @@ type ContractV2RecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount ContractV2RecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration ContractV2RecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -3476,6 +3478,7 @@ type ContractV2RecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -3670,6 +3673,8 @@ type ContractV2RecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount ContractV2RecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration ContractV2RecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -3726,6 +3731,7 @@ type ContractV2RecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -4486,6 +4492,8 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount ContractWithoutAmendmentsRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration ContractWithoutAmendmentsRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -4544,6 +4552,7 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -4746,6 +4755,8 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount ContractWithoutAmendmentsRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration ContractWithoutAmendmentsRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -4802,6 +4813,7 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
