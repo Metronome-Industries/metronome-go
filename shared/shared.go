@@ -4109,12 +4109,16 @@ type ContractV2Subscription struct {
 	ID                 string                                   `json:"id" format:"uuid"`
 	BillingCycleConfig ContractV2SubscriptionBillingCycleConfig `json:"billing_cycle_config"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields     map[string]string                `json:"custom_fields"`
-	Description      string                           `json:"description"`
-	EndingBefore     time.Time                        `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                           `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                           `json:"name"`
-	SeatConfig       ContractV2SubscriptionSeatConfig `json:"seat_config"`
+	CustomFields     map[string]string `json:"custom_fields"`
+	Description      string            `json:"description"`
+	EndingBefore     time.Time         `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string            `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string            `json:"name"`
+	// Custom fields from the subscription product referenced by
+	// `subscription_rate.product`. These are distinct from the subscription instance's
+	// `custom_fields`.
+	ProductCustomFields map[string]string                `json:"product_custom_fields"`
+	SeatConfig          ContractV2SubscriptionSeatConfig `json:"seat_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingPeriods         respjson.Field
@@ -4131,6 +4135,7 @@ type ContractV2Subscription struct {
 		EndingBefore           respjson.Field
 		FiatCreditTypeID       respjson.Field
 		Name                   respjson.Field
+		ProductCustomFields    respjson.Field
 		SeatConfig             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
@@ -8014,12 +8019,16 @@ type Subscription struct {
 	ID                 string                         `json:"id" format:"uuid"`
 	BillingCycleConfig SubscriptionBillingCycleConfig `json:"billing_cycle_config"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields     map[string]string      `json:"custom_fields"`
-	Description      string                 `json:"description"`
-	EndingBefore     time.Time              `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                 `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                 `json:"name"`
-	SeatConfig       SubscriptionSeatConfig `json:"seat_config"`
+	CustomFields     map[string]string `json:"custom_fields"`
+	Description      string            `json:"description"`
+	EndingBefore     time.Time         `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string            `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string            `json:"name"`
+	// Custom fields from the subscription product referenced by
+	// `subscription_rate.product`. These are distinct from the subscription instance's
+	// `custom_fields`.
+	ProductCustomFields map[string]string      `json:"product_custom_fields"`
+	SeatConfig          SubscriptionSeatConfig `json:"seat_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingPeriods         respjson.Field
@@ -8036,6 +8045,7 @@ type Subscription struct {
 		EndingBefore           respjson.Field
 		FiatCreditTypeID       respjson.Field
 		Name                   respjson.Field
+		ProductCustomFields    respjson.Field
 		SeatConfig             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
