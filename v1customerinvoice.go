@@ -382,7 +382,8 @@ type Invoice struct {
 	Total       float64               `json:"total" api:"required"`
 	Type        string                `json:"type" api:"required"`
 	AmendmentID string                `json:"amendment_id" format:"uuid"`
-	// This field's availability is dependent on your client's configuration.
+	// Indicates if the invoice has been or will be sent to the configured customer
+	// billing provider. Defaults to `billable`.
 	BillableStatus any `json:"billable_status"`
 	// Required on invoices with type USAGE_CONSOLIDATED. List of constituent invoices
 	// that were consolidated to create this invoice.
