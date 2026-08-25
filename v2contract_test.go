@@ -296,6 +296,12 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 				ApplicableProductTags: []string{"string"},
+				Duration: shared.PrepaidBalanceThresholdConfigurationV2CommitDurationParam{
+					Unit:  "DAYS",
+					Value: 0,
+				},
+				RateType:         "COMMIT_RATE",
+				RolloverFraction: metronome.Float(0),
 				Specifiers: []shared.CommitSpecifierInputParam{{
 					PresentationGroupValues: map[string]string{
 						"foo": "string",
@@ -719,6 +725,12 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 				},
 				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 				ApplicableProductTags: []string{"string"},
+				Duration: metronome.V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration{
+					Unit:  "DAYS",
+					Value: 0,
+				},
+				RateType:         "COMMIT_RATE",
+				RolloverFraction: metronome.Float(0),
 				Specifiers: []shared.CommitSpecifierInputParam{{
 					PresentationGroupValues: map[string]string{
 						"foo": "string",

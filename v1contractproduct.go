@@ -126,6 +126,9 @@ type ProductListItemState struct {
 	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
 	CompositeTags       []string  `json:"composite_tags"`
 	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
+	// Only for composite products. If true, allows a composite to incorporate spend
+	// from other composite products. Defaults to false
+	IncludeCompositeSpend bool `json:"include_composite_spend"`
 	// This field's availability is dependent on your client's configuration.
 	IsRefundable bool `json:"is_refundable"`
 	// This field's availability is dependent on your client's configuration.
@@ -165,6 +168,7 @@ type ProductListItemState struct {
 		CompositeProductIDs    respjson.Field
 		CompositeTags          respjson.Field
 		ExcludeFreeUsage       respjson.Field
+		IncludeCompositeSpend  respjson.Field
 		IsRefundable           respjson.Field
 		NetsuiteInternalItemID respjson.Field
 		NetsuiteOverageItemID  respjson.Field
@@ -393,8 +397,11 @@ type V1ContractProductGetResponseDataUpdate struct {
 	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
 	CompositeTags       []string  `json:"composite_tags"`
 	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
-	IsRefundable        bool      `json:"is_refundable"`
-	Name                string    `json:"name"`
+	// Only for composite products. If true, allows a composite to incorporate spend
+	// from other composite products. Defaults to false
+	IncludeCompositeSpend bool   `json:"include_composite_spend"`
+	IsRefundable          bool   `json:"is_refundable"`
+	Name                  string `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
 	// This field's availability is dependent on your client's configuration.
@@ -431,6 +438,7 @@ type V1ContractProductGetResponseDataUpdate struct {
 		CompositeProductIDs    respjson.Field
 		CompositeTags          respjson.Field
 		ExcludeFreeUsage       respjson.Field
+		IncludeCompositeSpend  respjson.Field
 		IsRefundable           respjson.Field
 		Name                   respjson.Field
 		NetsuiteInternalItemID respjson.Field
@@ -515,8 +523,11 @@ type V1ContractProductListResponseUpdate struct {
 	CompositeProductIDs []string  `json:"composite_product_ids" format:"uuid"`
 	CompositeTags       []string  `json:"composite_tags"`
 	ExcludeFreeUsage    bool      `json:"exclude_free_usage"`
-	IsRefundable        bool      `json:"is_refundable"`
-	Name                string    `json:"name"`
+	// Only for composite products. If true, allows a composite to incorporate spend
+	// from other composite products. Defaults to false
+	IncludeCompositeSpend bool   `json:"include_composite_spend"`
+	IsRefundable          bool   `json:"is_refundable"`
+	Name                  string `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteInternalItemID string `json:"netsuite_internal_item_id"`
 	// This field's availability is dependent on your client's configuration.
@@ -553,6 +564,7 @@ type V1ContractProductListResponseUpdate struct {
 		CompositeProductIDs    respjson.Field
 		CompositeTags          respjson.Field
 		ExcludeFreeUsage       respjson.Field
+		IncludeCompositeSpend  respjson.Field
 		IsRefundable           respjson.Field
 		Name                   respjson.Field
 		NetsuiteInternalItemID respjson.Field
@@ -601,6 +613,9 @@ type V1ContractProductNewParams struct {
 	// Beta feature only available for composite products. If true, products with $0
 	// will not be included when computing composite usage. Defaults to false
 	ExcludeFreeUsage param.Opt[bool] `json:"exclude_free_usage,omitzero"`
+	// Only for composite products. If true, allows a composite to incorporate spend
+	// from other composite products. Defaults to false
+	IncludeCompositeSpend param.Opt[bool] `json:"include_composite_spend,omitzero"`
 	// This field's availability is dependent on your client's configuration. Defaults
 	// to true.
 	IsRefundable param.Opt[bool] `json:"is_refundable,omitzero"`
@@ -705,6 +720,9 @@ type V1ContractProductUpdateParams struct {
 	// Beta feature only available for composite products. If true, products with $0
 	// will not be included when computing composite usage. Defaults to false
 	ExcludeFreeUsage param.Opt[bool] `json:"exclude_free_usage,omitzero"`
+	// Only for composite products. If true, allows a composite to incorporate spend
+	// from other composite products. Defaults to false
+	IncludeCompositeSpend param.Opt[bool] `json:"include_composite_spend,omitzero"`
 	// Defaults to product's current refundability status. This field's availability is
 	// dependent on your client's configuration.
 	IsRefundable param.Opt[bool] `json:"is_refundable,omitzero"`

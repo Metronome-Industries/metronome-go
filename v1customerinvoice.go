@@ -382,7 +382,8 @@ type Invoice struct {
 	Total       float64               `json:"total" api:"required"`
 	Type        string                `json:"type" api:"required"`
 	AmendmentID string                `json:"amendment_id" format:"uuid"`
-	// This field's availability is dependent on your client's configuration.
+	// Indicates if the invoice has been or will be sent to the configured customer
+	// billing provider. Defaults to `billable`.
 	BillableStatus any `json:"billable_status"`
 	// Required on invoices with type USAGE_CONSOLIDATED. List of constituent invoices
 	// that were consolidated to create this invoice.
@@ -563,6 +564,9 @@ type InvoiceLineItem struct {
 	ProfessionalServiceID           string            `json:"professional_service_id" format:"uuid"`
 	// The quantity associated with the line item.
 	Quantity float64 `json:"quantity"`
+	// Present on applied commit line items for quantity-based commits. Represents the
+	// unit quantity deducted the commit.
+	QuantityConsumed float64 `json:"quantity_consumed"`
 	// Any of "AWS", "AWS_PRO_SERVICE", "GCP", "GCP_PRO_SERVICE".
 	ResellerType string `json:"reseller_type"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
@@ -617,6 +621,7 @@ type InvoiceLineItem struct {
 		ProfessionalServiceCustomFields respjson.Field
 		ProfessionalServiceID           respjson.Field
 		Quantity                        respjson.Field
+		QuantityConsumed                respjson.Field
 		ResellerType                    respjson.Field
 		ScheduledChargeCustomFields     respjson.Field
 		ScheduledChargeID               respjson.Field

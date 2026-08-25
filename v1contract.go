@@ -231,8 +231,9 @@ func (r *V1ContractService) AddManualBalanceEntry(ctx context.Context, body V1Co
 // Amendments will be replaced by Contract editing. New clients should implement
 // using the `editContract` endpoint. Read more about the migration to contract
 // editing [here](/guides/implement-metronome/migrate-amendments-to-edits/) and
-// reach out to your Metronome representative for more details. Once contract
-// editing is enabled, access to this endpoint will be removed.
+// contact us via the [Metronome support portal](https://support.metronome.com/)
+// for more details. Once contract editing is enabled, access to this endpoint will
+// be removed.
 func (r *V1ContractService) Amend(ctx context.Context, body V1ContractAmendParams, opts ...option.RequestOption) (res *V1ContractAmendResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/contracts/amend"
@@ -788,18 +789,23 @@ type V1ContractNewResponseDataContractCustomerBillingProviderConfiguration struc
 	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
+	// Rules that stop matching invoices from being sent to the billing provider. Only
+	// supported for Stripe billing provider configurations. When omitted, every
+	// invoice is sent to the billing provider.
+	UnbillableInvoicesConfiguration []V1ContractNewResponseDataContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                          respjson.Field
-		ArchivedAt                  respjson.Field
-		BillingProvider             respjson.Field
-		Configuration               respjson.Field
-		CustomerID                  respjson.Field
-		DeliveryMethod              respjson.Field
-		DeliveryMethodConfiguration respjson.Field
-		DeliveryMethodID            respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
+		ID                              respjson.Field
+		ArchivedAt                      respjson.Field
+		BillingProvider                 respjson.Field
+		Configuration                   respjson.Field
+		CustomerID                      respjson.Field
+		DeliveryMethod                  respjson.Field
+		DeliveryMethodConfiguration     respjson.Field
+		DeliveryMethodID                respjson.Field
+		UnbillableInvoicesConfiguration respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -808,6 +814,44 @@ func (r V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) R
 	return r.JSON.raw
 }
 func (r *V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An individual rule that, when evaluated to true, indicates that any invoices for
+// this billing provider will not be sent to its associated destination for the
+// associated contract. Rules only apply to the specified `invoice_type` (or all
+// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
+// Rule precedence is evaluated from more specific to less specific. This method
+// will fail with a 400 if multiple rules with the same specificity are included.
+type V1ContractNewResponseDataContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration struct {
+	// The type of invoice this rule applies to.
+	//
+	// Any of "usage", "scheduled".
+	InvoiceType string `json:"invoice_type" api:"required"`
+	// Restricts the rule to invoices in this fiat currency. Omit for a catch-all rule
+	// that applies to every currency of the `invoice_type`. Required when `max_amount`
+	// is set.
+	FiatCreditTypeID string `json:"fiat_credit_type_id" format:"uuid"`
+	// A positive decimal, in the units of `fiat_credit_type_id`. Only invoices whose
+	// total is at or below this amount are suppressed; a higher total is still sent to
+	// the billing provider. When omitted, every matching invoice is suppressed
+	// regardless of amount.
+	MaxAmount float64 `json:"max_amount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceType      respjson.Field
+		FiatCreditTypeID respjson.Field
+		MaxAmount        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -841,6 +885,8 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V1ContractNewResponseDataContractRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V1ContractNewResponseDataContractRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -899,6 +945,7 @@ type V1ContractNewResponseDataContractRecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -1107,6 +1154,8 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V1ContractNewResponseDataContractRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V1ContractNewResponseDataContractRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -1163,6 +1212,7 @@ type V1ContractNewResponseDataContractRecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -4053,6 +4103,10 @@ type V1ContractAddManualBalanceEntryParams struct {
 	// RFC 3339 timestamp indicating when the manual adjustment takes place. If not
 	// provided, it will default to the start of the segment.
 	Timestamp param.Opt[time.Time] `json:"timestamp,omitzero" format:"date-time"`
+	// Prevents the creation of duplicates. If a request to create a record is made
+	// with a previously used uniqueness key, a new record will not be created and the
+	// request will fail with a 409 error.
+	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
 	// If using individually configured commits/credits attached to seat managed
 	// subscriptions, the amount to add for each seat. Must sum to total amount.
 	PerGroupAmounts map[string]float64 `json:"per_group_amounts,omitzero"`

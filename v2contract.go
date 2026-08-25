@@ -101,8 +101,8 @@ func (r *V2ContractService) List(ctx context.Context, body V2ContractListParams,
 //   - When you edit a contract, any draft invoices update immediately to reflect
 //     that edit. Finalized invoices remain unchanged - you must void and regenerate
 //     them in the UI or API to reflect the edit.
-//   - Contract editing must be enabled to use this endpoint. Reach out to your
-//     Metronome representative to learn more.
+//   - Contract editing must be enabled to use this endpoint. Contact us via the
+//     [Metronome support portal](https://support.metronome.com/) to learn more.
 func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams, opts ...option.RequestOption) (res *V2ContractEditResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/edit"
@@ -674,6 +674,8 @@ type V2ContractEditResponseDataEditAddRecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V2ContractEditResponseDataEditAddRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V2ContractEditResponseDataEditAddRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -732,6 +734,7 @@ type V2ContractEditResponseDataEditAddRecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -938,6 +941,8 @@ type V2ContractEditResponseDataEditAddRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V2ContractEditResponseDataEditAddRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V2ContractEditResponseDataEditAddRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -994,6 +999,7 @@ type V2ContractEditResponseDataEditAddRecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -1257,12 +1263,16 @@ type V2ContractEditResponseDataEditAddSubscription struct {
 	ID                 string                                                          `json:"id" format:"uuid"`
 	BillingCycleConfig V2ContractEditResponseDataEditAddSubscriptionBillingCycleConfig `json:"billing_cycle_config"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields     map[string]string                                       `json:"custom_fields"`
-	Description      string                                                  `json:"description"`
-	EndingBefore     time.Time                                               `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                                                  `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                                                  `json:"name"`
-	SeatConfig       V2ContractEditResponseDataEditAddSubscriptionSeatConfig `json:"seat_config"`
+	CustomFields     map[string]string `json:"custom_fields"`
+	Description      string            `json:"description"`
+	EndingBefore     time.Time         `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string            `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string            `json:"name"`
+	// Custom fields from the subscription product referenced by
+	// `subscription_rate.product`. These are distinct from the subscription instance's
+	// `custom_fields`.
+	ProductCustomFields map[string]string                                       `json:"product_custom_fields"`
+	SeatConfig          V2ContractEditResponseDataEditAddSubscriptionSeatConfig `json:"seat_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingPeriods         respjson.Field
@@ -1279,6 +1289,7 @@ type V2ContractEditResponseDataEditAddSubscription struct {
 		EndingBefore           respjson.Field
 		FiatCreditTypeID       respjson.Field
 		Name                   respjson.Field
+		ProductCustomFields    respjson.Field
 		SeatConfig             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
@@ -2189,6 +2200,18 @@ type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCom
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
 	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. Set to null to clear a previously configured
+	// duration.
+	Duration V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommitDuration `json:"duration" api:"nullable"`
+	// Whether the created commits will be charged at commit rate or list rate. Set to
+	// null to clear a previously configured rate type.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type" api:"nullable"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1. Set to null to clear a previously configured rollover fraction.
+	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -2200,6 +2223,9 @@ type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCom
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
+		Duration              respjson.Field
+		RateType              respjson.Field
+		RolloverFraction      respjson.Field
 		Specifiers            respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
@@ -2212,6 +2238,30 @@ func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfiguration
 	return r.JSON.raw
 }
 func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. Set to null to clear a previously configured
+// duration.
+type V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommitDuration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditUpdatePrepaidBalanceThresholdConfigurationCommitDuration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3406,6 +3456,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V2ContractGetEditHistoryResponseDataAddRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V2ContractGetEditHistoryResponseDataAddRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -3464,6 +3516,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -3674,6 +3727,8 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount V2ContractGetEditHistoryResponseDataAddRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration V2ContractGetEditHistoryResponseDataAddRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -3730,6 +3785,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -3999,12 +4055,16 @@ type V2ContractGetEditHistoryResponseDataAddSubscription struct {
 	ID                 string                                                                `json:"id" format:"uuid"`
 	BillingCycleConfig V2ContractGetEditHistoryResponseDataAddSubscriptionBillingCycleConfig `json:"billing_cycle_config"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields     map[string]string                                             `json:"custom_fields"`
-	Description      string                                                        `json:"description"`
-	EndingBefore     time.Time                                                     `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                                                        `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                                                        `json:"name"`
-	SeatConfig       V2ContractGetEditHistoryResponseDataAddSubscriptionSeatConfig `json:"seat_config"`
+	CustomFields     map[string]string `json:"custom_fields"`
+	Description      string            `json:"description"`
+	EndingBefore     time.Time         `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string            `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string            `json:"name"`
+	// Custom fields from the subscription product referenced by
+	// `subscription_rate.product`. These are distinct from the subscription instance's
+	// `custom_fields`.
+	ProductCustomFields map[string]string                                             `json:"product_custom_fields"`
+	SeatConfig          V2ContractGetEditHistoryResponseDataAddSubscriptionSeatConfig `json:"seat_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingPeriods         respjson.Field
@@ -4021,6 +4081,7 @@ type V2ContractGetEditHistoryResponseDataAddSubscription struct {
 		EndingBefore           respjson.Field
 		FiatCreditTypeID       respjson.Field
 		Name                   respjson.Field
+		ProductCustomFields    respjson.Field
 		SeatConfig             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
@@ -4943,6 +5004,18 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
 	ApplicableProductTags []string `json:"applicable_product_tags" api:"nullable"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. Set to null to clear a previously configured
+	// duration.
+	Duration V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitDuration `json:"duration" api:"nullable"`
+	// Whether the created commits will be charged at commit rate or list rate. Set to
+	// null to clear a previously configured rate type.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type" api:"nullable"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1. Set to null to clear a previously configured rollover fraction.
+	RolloverFraction float64 `json:"rollover_fraction" api:"nullable"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -4954,6 +5027,9 @@ type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurat
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
+		Duration              respjson.Field
+		RateType              respjson.Field
+		RolloverFraction      respjson.Field
 		Specifiers            respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
@@ -4966,6 +5042,30 @@ func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigu
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. Set to null to clear a previously configured
+// duration.
+type V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitDuration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataUpdatePrepaidBalanceThresholdConfigurationCommitDuration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7955,6 +8055,16 @@ type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit struct
 	// Which tags the threshold commit applies to. If both applicable_product_ids and
 	// applicable_product_tags are not provided, the commit applies to all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. Set to null to clear a previously configured
+	// duration.
+	Duration V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration `json:"duration,omitzero"`
+	// Whether the created commits will be charged at commit rate or list rate. Set to
+	// null to clear a previously configured rate type.
+	RateType string `json:"rate_type,omitzero"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1. Set to null to clear a previously configured rollover fraction.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -7971,6 +8081,32 @@ func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommit) Ma
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. Set to null to clear a previously configured
+// duration.
+//
+// The properties Unit, Value are required.
+type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit,omitzero" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	paramObj
+}
+
+func (r V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration) MarshalJSON() (data []byte, err error) {
+	type shadow V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationCommitDuration](
+		"unit", "DAYS", "WEEKS", "MONTHS", "YEARS",
+	)
 }
 
 type V2ContractEditParamsUpdatePrepaidBalanceThresholdConfigurationDiscountConfiguration struct {

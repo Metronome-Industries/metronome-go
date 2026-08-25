@@ -1443,24 +1443,67 @@ type ContractCustomerBillingProviderConfiguration struct {
 	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
+	// Rules that stop matching invoices from being sent to the billing provider. Only
+	// supported for Stripe billing provider configurations. When omitted, every
+	// invoice is sent to the billing provider.
+	UnbillableInvoicesConfiguration []ContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                          respjson.Field
-		ArchivedAt                  respjson.Field
-		BillingProvider             respjson.Field
-		Configuration               respjson.Field
-		CustomerID                  respjson.Field
-		DeliveryMethod              respjson.Field
-		DeliveryMethodConfiguration respjson.Field
-		DeliveryMethodID            respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
+		ID                              respjson.Field
+		ArchivedAt                      respjson.Field
+		BillingProvider                 respjson.Field
+		Configuration                   respjson.Field
+		CustomerID                      respjson.Field
+		DeliveryMethod                  respjson.Field
+		DeliveryMethodConfiguration     respjson.Field
+		DeliveryMethodID                respjson.Field
+		UnbillableInvoicesConfiguration respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ContractCustomerBillingProviderConfiguration) RawJSON() string { return r.JSON.raw }
 func (r *ContractCustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An individual rule that, when evaluated to true, indicates that any invoices for
+// this billing provider will not be sent to its associated destination for the
+// associated contract. Rules only apply to the specified `invoice_type` (or all
+// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
+// Rule precedence is evaluated from more specific to less specific. This method
+// will fail with a 400 if multiple rules with the same specificity are included.
+type ContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration struct {
+	// The type of invoice this rule applies to.
+	//
+	// Any of "usage", "scheduled".
+	InvoiceType string `json:"invoice_type" api:"required"`
+	// Restricts the rule to invoices in this fiat currency. Omit for a catch-all rule
+	// that applies to every currency of the `invoice_type`. Required when `max_amount`
+	// is set.
+	FiatCreditTypeID string `json:"fiat_credit_type_id" format:"uuid"`
+	// A positive decimal, in the units of `fiat_credit_type_id`. Only invoices whose
+	// total is at or below this amount are suppressed; a higher total is still sent to
+	// the billing provider. When omitted, every matching invoice is suppressed
+	// regardless of amount.
+	MaxAmount float64 `json:"max_amount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceType      respjson.Field
+		FiatCreditTypeID respjson.Field
+		MaxAmount        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2579,18 +2622,23 @@ type ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration 
 	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
+	// Rules that stop matching invoices from being sent to the billing provider. Only
+	// supported for Stripe billing provider configurations. When omitted, every
+	// invoice is sent to the billing provider.
+	UnbillableInvoicesConfiguration []ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                          respjson.Field
-		ArchivedAt                  respjson.Field
-		BillingProvider             respjson.Field
-		Configuration               respjson.Field
-		CustomerID                  respjson.Field
-		DeliveryMethod              respjson.Field
-		DeliveryMethodConfiguration respjson.Field
-		DeliveryMethodID            respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
+		ID                              respjson.Field
+		ArchivedAt                      respjson.Field
+		BillingProvider                 respjson.Field
+		Configuration                   respjson.Field
+		CustomerID                      respjson.Field
+		DeliveryMethod                  respjson.Field
+		DeliveryMethodConfiguration     respjson.Field
+		DeliveryMethodID                respjson.Field
+		UnbillableInvoicesConfiguration respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -2599,6 +2647,44 @@ func (r ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurati
 	return r.JSON.raw
 }
 func (r *ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An individual rule that, when evaluated to true, indicates that any invoices for
+// this billing provider will not be sent to its associated destination for the
+// associated contract. Rules only apply to the specified `invoice_type` (or all
+// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
+// Rule precedence is evaluated from more specific to less specific. This method
+// will fail with a 400 if multiple rules with the same specificity are included.
+type ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationUnbillableInvoicesConfiguration struct {
+	// The type of invoice this rule applies to.
+	//
+	// Any of "usage", "scheduled".
+	InvoiceType string `json:"invoice_type" api:"required"`
+	// Restricts the rule to invoices in this fiat currency. Omit for a catch-all rule
+	// that applies to every currency of the `invoice_type`. Required when `max_amount`
+	// is set.
+	FiatCreditTypeID string `json:"fiat_credit_type_id" format:"uuid"`
+	// A positive decimal, in the units of `fiat_credit_type_id`. Only invoices whose
+	// total is at or below this amount are suppressed; a higher total is still sent to
+	// the billing provider. When omitted, every matching invoice is suppressed
+	// regardless of amount.
+	MaxAmount float64 `json:"max_amount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceType      respjson.Field
+		FiatCreditTypeID respjson.Field
+		MaxAmount        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationUnbillableInvoicesConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationUnbillableInvoicesConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3052,24 +3138,67 @@ type ContractV2CustomerBillingProviderConfiguration struct {
 	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
+	// Rules that stop matching invoices from being sent to the billing provider. Only
+	// supported for Stripe billing provider configurations. When omitted, every
+	// invoice is sent to the billing provider.
+	UnbillableInvoicesConfiguration []ContractV2CustomerBillingProviderConfigurationUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                          respjson.Field
-		ArchivedAt                  respjson.Field
-		BillingProvider             respjson.Field
-		Configuration               respjson.Field
-		CustomerID                  respjson.Field
-		DeliveryMethod              respjson.Field
-		DeliveryMethodConfiguration respjson.Field
-		DeliveryMethodID            respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
+		ID                              respjson.Field
+		ArchivedAt                      respjson.Field
+		BillingProvider                 respjson.Field
+		Configuration                   respjson.Field
+		CustomerID                      respjson.Field
+		DeliveryMethod                  respjson.Field
+		DeliveryMethodConfiguration     respjson.Field
+		DeliveryMethodID                respjson.Field
+		UnbillableInvoicesConfiguration respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ContractV2CustomerBillingProviderConfiguration) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2CustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An individual rule that, when evaluated to true, indicates that any invoices for
+// this billing provider will not be sent to its associated destination for the
+// associated contract. Rules only apply to the specified `invoice_type` (or all
+// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
+// Rule precedence is evaluated from more specific to less specific. This method
+// will fail with a 400 if multiple rules with the same specificity are included.
+type ContractV2CustomerBillingProviderConfigurationUnbillableInvoicesConfiguration struct {
+	// The type of invoice this rule applies to.
+	//
+	// Any of "usage", "scheduled".
+	InvoiceType string `json:"invoice_type" api:"required"`
+	// Restricts the rule to invoices in this fiat currency. Omit for a catch-all rule
+	// that applies to every currency of the `invoice_type`. Required when `max_amount`
+	// is set.
+	FiatCreditTypeID string `json:"fiat_credit_type_id" format:"uuid"`
+	// A positive decimal, in the units of `fiat_credit_type_id`. Only invoices whose
+	// total is at or below this amount are suppressed; a higher total is still sent to
+	// the billing provider. When omitted, every matching invoice is suppressed
+	// regardless of amount.
+	MaxAmount float64 `json:"max_amount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceType      respjson.Field
+		FiatCreditTypeID respjson.Field
+		MaxAmount        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2CustomerBillingProviderConfigurationUnbillableInvoicesConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2CustomerBillingProviderConfigurationUnbillableInvoicesConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3289,6 +3418,8 @@ type ContractV2RecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount ContractV2RecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration ContractV2RecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -3347,6 +3478,7 @@ type ContractV2RecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -3541,6 +3673,8 @@ type ContractV2RecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount ContractV2RecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration ContractV2RecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -3597,6 +3731,7 @@ type ContractV2RecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -3974,12 +4109,16 @@ type ContractV2Subscription struct {
 	ID                 string                                   `json:"id" format:"uuid"`
 	BillingCycleConfig ContractV2SubscriptionBillingCycleConfig `json:"billing_cycle_config"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields     map[string]string                `json:"custom_fields"`
-	Description      string                           `json:"description"`
-	EndingBefore     time.Time                        `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                           `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                           `json:"name"`
-	SeatConfig       ContractV2SubscriptionSeatConfig `json:"seat_config"`
+	CustomFields     map[string]string `json:"custom_fields"`
+	Description      string            `json:"description"`
+	EndingBefore     time.Time         `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string            `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string            `json:"name"`
+	// Custom fields from the subscription product referenced by
+	// `subscription_rate.product`. These are distinct from the subscription instance's
+	// `custom_fields`.
+	ProductCustomFields map[string]string                `json:"product_custom_fields"`
+	SeatConfig          ContractV2SubscriptionSeatConfig `json:"seat_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingPeriods         respjson.Field
@@ -3996,6 +4135,7 @@ type ContractV2Subscription struct {
 		EndingBefore           respjson.Field
 		FiatCreditTypeID       respjson.Field
 		Name                   respjson.Field
+		ProductCustomFields    respjson.Field
 		SeatConfig             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
@@ -4357,6 +4497,8 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount ContractWithoutAmendmentsRecurringCommitAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration ContractWithoutAmendmentsRecurringCommitCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -4415,6 +4557,7 @@ type ContractWithoutAmendmentsRecurringCommit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -4617,6 +4760,8 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The amount of commit to grant.
 	AccessAmount ContractWithoutAmendmentsRecurringCreditAccessAmount `json:"access_amount" api:"required"`
+	// The date this recurring commit's billing periods are anchored to.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
 	// The amount of time the created commits will be valid for
 	CommitDuration ContractWithoutAmendmentsRecurringCreditCommitDuration `json:"commit_duration" api:"required"`
 	// Will be passed down to the individual commits
@@ -4673,6 +4818,7 @@ type ContractWithoutAmendmentsRecurringCredit struct {
 	JSON struct {
 		ID                     respjson.Field
 		AccessAmount           respjson.Field
+		AnchorDate             respjson.Field
 		CommitDuration         respjson.Field
 		Priority               respjson.Field
 		Product                respjson.Field
@@ -6444,6 +6590,16 @@ type PrepaidBalanceThresholdConfigurationCommit struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. If not provided, defaults to one year.
+	Duration PrepaidBalanceThresholdConfigurationCommitDuration `json:"duration"`
+	// Whether the created commits will be charged at commit rate or list rate.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1.
+	RolloverFraction float64 `json:"rollover_fraction"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -6453,6 +6609,9 @@ type PrepaidBalanceThresholdConfigurationCommit struct {
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
+		Duration              respjson.Field
+		RateType              respjson.Field
+		RolloverFraction      respjson.Field
 		Specifiers            respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
@@ -6463,6 +6622,27 @@ type PrepaidBalanceThresholdConfigurationCommit struct {
 // Returns the unmodified JSON received from the API
 func (r PrepaidBalanceThresholdConfigurationCommit) RawJSON() string { return r.JSON.raw }
 func (r *PrepaidBalanceThresholdConfigurationCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+type PrepaidBalanceThresholdConfigurationCommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationCommitDuration) RawJSON() string { return r.JSON.raw }
+func (r *PrepaidBalanceThresholdConfigurationCommitDuration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6619,6 +6799,14 @@ type PrepaidBalanceThresholdConfigurationCommitParam struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. If not provided, defaults to one year.
+	Duration PrepaidBalanceThresholdConfigurationCommitDurationParam `json:"duration,omitzero"`
+	// Whether the created commits will be charged at commit rate or list rate.
+	RateType string `json:"rate_type,omitzero"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -6633,6 +6821,31 @@ func (r PrepaidBalanceThresholdConfigurationCommitParam) MarshalJSON() (data []b
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+//
+// The properties Unit, Value are required.
+type PrepaidBalanceThresholdConfigurationCommitDurationParam struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit,omitzero" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationCommitDurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationCommitDurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationCommitDurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[PrepaidBalanceThresholdConfigurationCommitDurationParam](
+		"unit", "DAYS", "WEEKS", "MONTHS", "YEARS",
+	)
 }
 
 // The property PaymentFraction is required.
@@ -6789,6 +7002,16 @@ type PrepaidBalanceThresholdConfigurationV2Commit struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. If not provided, defaults to one year.
+	Duration PrepaidBalanceThresholdConfigurationV2CommitDuration `json:"duration"`
+	// Whether the created commits will be charged at commit rate or list rate.
+	//
+	// Any of "COMMIT_RATE", "LIST_RATE".
+	RateType string `json:"rate_type"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1.
+	RolloverFraction float64 `json:"rollover_fraction"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -6800,6 +7023,9 @@ type PrepaidBalanceThresholdConfigurationV2Commit struct {
 	JSON struct {
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
+		Duration              respjson.Field
+		RateType              respjson.Field
+		RolloverFraction      respjson.Field
 		Specifiers            respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
@@ -6810,6 +7036,27 @@ type PrepaidBalanceThresholdConfigurationV2Commit struct {
 // Returns the unmodified JSON received from the API
 func (r PrepaidBalanceThresholdConfigurationV2Commit) RawJSON() string { return r.JSON.raw }
 func (r *PrepaidBalanceThresholdConfigurationV2Commit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+type PrepaidBalanceThresholdConfigurationV2CommitDuration struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PrepaidBalanceThresholdConfigurationV2CommitDuration) RawJSON() string { return r.JSON.raw }
+func (r *PrepaidBalanceThresholdConfigurationV2CommitDuration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6962,6 +7209,14 @@ type PrepaidBalanceThresholdConfigurationV2CommitParam struct {
 	// applicable_product_tags or specifiers are not provided, the commit applies to
 	// all products.
 	ApplicableProductTags []string `json:"applicable_product_tags,omitzero"`
+	// The length of time the created commit will be valid, starting from the end of
+	// the invoice's service period. If not provided, defaults to one year.
+	Duration PrepaidBalanceThresholdConfigurationV2CommitDurationParam `json:"duration,omitzero"`
+	// Whether the created commits will be charged at commit rate or list rate.
+	RateType string `json:"rate_type,omitzero"`
+	// Fraction of the created commit's unused balance that will roll over. Must be
+	// between 0 and 1.
+	RolloverFraction param.Opt[float64] `json:"rollover_fraction,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
 	// specifiers to contribute to a commit's or credit's drawdown. This field cannot
@@ -6978,6 +7233,31 @@ func (r PrepaidBalanceThresholdConfigurationV2CommitParam) MarshalJSON() (data [
 		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
 	}
 	return param.MarshalObject(r, shadow{&r, false})
+}
+
+// The length of time the created commit will be valid, starting from the end of
+// the invoice's service period. If not provided, defaults to one year.
+//
+// The properties Unit, Value are required.
+type PrepaidBalanceThresholdConfigurationV2CommitDurationParam struct {
+	// Any of "DAYS", "WEEKS", "MONTHS", "YEARS".
+	Unit  string `json:"unit,omitzero" api:"required"`
+	Value int64  `json:"value" api:"required"`
+	paramObj
+}
+
+func (r PrepaidBalanceThresholdConfigurationV2CommitDurationParam) MarshalJSON() (data []byte, err error) {
+	type shadow PrepaidBalanceThresholdConfigurationV2CommitDurationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PrepaidBalanceThresholdConfigurationV2CommitDurationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[PrepaidBalanceThresholdConfigurationV2CommitDurationParam](
+		"unit", "DAYS", "WEEKS", "MONTHS", "YEARS",
+	)
 }
 
 // The property PaymentFraction is required.
@@ -7739,12 +8019,16 @@ type Subscription struct {
 	ID                 string                         `json:"id" format:"uuid"`
 	BillingCycleConfig SubscriptionBillingCycleConfig `json:"billing_cycle_config"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
-	CustomFields     map[string]string      `json:"custom_fields"`
-	Description      string                 `json:"description"`
-	EndingBefore     time.Time              `json:"ending_before" format:"date-time"`
-	FiatCreditTypeID string                 `json:"fiat_credit_type_id" format:"uuid"`
-	Name             string                 `json:"name"`
-	SeatConfig       SubscriptionSeatConfig `json:"seat_config"`
+	CustomFields     map[string]string `json:"custom_fields"`
+	Description      string            `json:"description"`
+	EndingBefore     time.Time         `json:"ending_before" format:"date-time"`
+	FiatCreditTypeID string            `json:"fiat_credit_type_id" format:"uuid"`
+	Name             string            `json:"name"`
+	// Custom fields from the subscription product referenced by
+	// `subscription_rate.product`. These are distinct from the subscription instance's
+	// `custom_fields`.
+	ProductCustomFields map[string]string      `json:"product_custom_fields"`
+	SeatConfig          SubscriptionSeatConfig `json:"seat_config"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingPeriods         respjson.Field
@@ -7761,6 +8045,7 @@ type Subscription struct {
 		EndingBefore           respjson.Field
 		FiatCreditTypeID       respjson.Field
 		Name                   respjson.Field
+		ProductCustomFields    respjson.Field
 		SeatConfig             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string

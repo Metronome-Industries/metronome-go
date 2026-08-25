@@ -807,24 +807,67 @@ type V1CustomerGetBillingConfigurationsResponseData struct {
 	DeliveryMethodConfiguration map[string]any `json:"delivery_method_configuration" api:"required"`
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
+	// Rules that stop matching invoices from being sent to the billing provider. Only
+	// supported for Stripe billing provider configurations. When omitted, every
+	// invoice is sent to the billing provider.
+	UnbillableInvoicesConfiguration []V1CustomerGetBillingConfigurationsResponseDataUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                          respjson.Field
-		ArchivedAt                  respjson.Field
-		BillingProvider             respjson.Field
-		Configuration               respjson.Field
-		CustomerID                  respjson.Field
-		DeliveryMethod              respjson.Field
-		DeliveryMethodConfiguration respjson.Field
-		DeliveryMethodID            respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
+		ID                              respjson.Field
+		ArchivedAt                      respjson.Field
+		BillingProvider                 respjson.Field
+		Configuration                   respjson.Field
+		CustomerID                      respjson.Field
+		DeliveryMethod                  respjson.Field
+		DeliveryMethodConfiguration     respjson.Field
+		DeliveryMethodID                respjson.Field
+		UnbillableInvoicesConfiguration respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r V1CustomerGetBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
 func (r *V1CustomerGetBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An individual rule that, when evaluated to true, indicates that any invoices for
+// this billing provider will not be sent to its associated destination for the
+// associated contract. Rules only apply to the specified `invoice_type` (or all
+// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
+// Rule precedence is evaluated from more specific to less specific. This method
+// will fail with a 400 if multiple rules with the same specificity are included.
+type V1CustomerGetBillingConfigurationsResponseDataUnbillableInvoicesConfiguration struct {
+	// The type of invoice this rule applies to.
+	//
+	// Any of "usage", "scheduled".
+	InvoiceType string `json:"invoice_type" api:"required"`
+	// Restricts the rule to invoices in this fiat currency. Omit for a catch-all rule
+	// that applies to every currency of the `invoice_type`. Required when `max_amount`
+	// is set.
+	FiatCreditTypeID string `json:"fiat_credit_type_id" format:"uuid"`
+	// A positive decimal, in the units of `fiat_credit_type_id`. Only invoices whose
+	// total is at or below this amount are suppressed; a higher total is still sent to
+	// the billing provider. When omitted, every matching invoice is suppressed
+	// regardless of amount.
+	MaxAmount float64 `json:"max_amount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InvoiceType      respjson.Field
+		FiatCreditTypeID respjson.Field
+		MaxAmount        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerGetBillingConfigurationsResponseDataUnbillableInvoicesConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1CustomerGetBillingConfigurationsResponseDataUnbillableInvoicesConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1276,6 +1319,10 @@ type V1CustomerSetBillingConfigurationsParamsData struct {
 	//
 	// Any of "anrok", "avalara", "stripe".
 	TaxProvider string `json:"tax_provider,omitzero"`
+	// Rules that stop matching invoices from being sent to the billing provider. Only
+	// supported for Stripe billing provider configurations. When omitted, every
+	// invoice is sent to the billing provider.
+	UnbillableInvoicesConfiguration []V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration,omitzero"`
 	paramObj
 }
 
@@ -1296,6 +1343,45 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
 		"tax_provider", "anrok", "avalara", "stripe",
+	)
+}
+
+// An individual rule that, when evaluated to true, indicates that any invoices for
+// this billing provider will not be sent to its associated destination for the
+// associated contract. Rules only apply to the specified `invoice_type` (or all
+// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
+// Rule precedence is evaluated from more specific to less specific. This method
+// will fail with a 400 if multiple rules with the same specificity are included.
+//
+// The property InvoiceType is required.
+type V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration struct {
+	// The type of invoice this rule applies to.
+	//
+	// Any of "usage", "scheduled".
+	InvoiceType string `json:"invoice_type,omitzero" api:"required"`
+	// Restricts the rule to invoices in this fiat currency. Omit for a catch-all rule
+	// that applies to every currency of the `invoice_type`. Required when `max_amount`
+	// is set.
+	FiatCreditTypeID param.Opt[string] `json:"fiat_credit_type_id,omitzero" format:"uuid"`
+	// A positive decimal, in the units of `fiat_credit_type_id`. Only invoices whose
+	// total is at or below this amount are suppressed; a higher total is still sent to
+	// the billing provider. When omitted, every matching invoice is suppressed
+	// regardless of amount.
+	MaxAmount param.Opt[float64] `json:"max_amount,omitzero"`
+	paramObj
+}
+
+func (r V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration](
+		"invoice_type", "usage", "scheduled",
 	)
 }
 
