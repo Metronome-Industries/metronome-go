@@ -5,11 +5,13 @@
 
 ### Features
 
-* Add access type filters to balance lists ([2050030](https://github.com/Metronome-Industries/metronome-go/commit/205003081cb0ef05562cf6433c200912563e3041))
-* Add access type to commit responses ([6759557](https://github.com/Metronome-Industries/metronome-go/commit/67595578ff060e466b65a676a1729e46b52a9235))
-* Add access_type to commit creation requests ([9433541](https://github.com/Metronome-Industries/metronome-go/commit/94335416c1971c6dbee121a1ae00e3497739f781))
-* expose product custom fields on contract subscription terms ([cef20ed](https://github.com/Metronome-Industries/metronome-go/commit/cef20edaf40c5ba7ace0c330c061415f8663248c))
-* Retire the MCP node package. ([39a105d](https://github.com/Metronome-Industries/metronome-go/commit/39a105deb5b00806b99c682de65c9d9a81d16b34))
+* Add `uniqueness_key` to manual balance entries
+* Expose `include_composite_spend` on products
+* Add unbillable invoice rules to billing provider configurations
+* Add `anchor_date` to recurring commit and credit responses
+* Add `duration`, `rate_type`, and `rollover_fraction` to prepaid balance threshold commits
+* Add `quantity_consumed` to invoice line items
+* Expose product custom fields on contract subscription terms
 
 ## [3.11.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.10.0...v3.11.0) (2026-07-31)
 
