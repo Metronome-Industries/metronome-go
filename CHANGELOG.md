@@ -11,16 +11,6 @@
 * expose product custom fields on contract subscription terms ([cef20ed](https://github.com/Metronome-Industries/metronome-go/commit/cef20edaf40c5ba7ace0c330c061415f8663248c))
 * Retire the MCP node package. ([39a105d](https://github.com/Metronome-Industries/metronome-go/commit/39a105deb5b00806b99c682de65c9d9a81d16b34))
 
-
-### Bug Fixes
-
-* **release:** update versioned PR metadata and guard prod jobs ([#7](https://github.com/Metronome-Industries/metronome-go/issues/7)) ([517eca8](https://github.com/Metronome-Industries/metronome-go/commit/517eca8dafbf5a7365e8903191e2eb80ec41c786))
-
-
-### Chores
-
-* promote SDK changes from staging ([71cd35c](https://github.com/Metronome-Industries/metronome-go/commit/71cd35cf5975eb367bb887dfd849abdda050fb73))
-
 ## [3.11.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.10.0...v3.11.0) (2026-07-31)
 
 ### Features
