@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.13.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.12.0...v3.13.0) (2026-08-27)
+## [3.12.1](https://github.com/Metronome-Industries/metronome-go/compare/v3.12.0...v3.12.1) (2026-08-27)
 
 
 ### Features
