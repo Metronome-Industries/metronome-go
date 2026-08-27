@@ -2808,6 +2808,7 @@ func (r *V2ContractEditResponseDataEditUpdateSpendThresholdConfigurationDiscount
 type V2ContractEditResponseDataEditUpdateSubscription struct {
 	ID              string                                                           `json:"id" api:"required" format:"uuid"`
 	EndingBefore    time.Time                                                        `json:"ending_before" format:"date-time"`
+	Name            string                                                           `json:"name"`
 	QuantityUpdates []V2ContractEditResponseDataEditUpdateSubscriptionQuantityUpdate `json:"quantity_updates"`
 	// Manage subscription seats for subscriptions in SEAT_BASED mode.
 	SeatUpdates V2ContractEditResponseDataEditUpdateSubscriptionSeatUpdates `json:"seat_updates"`
@@ -2815,6 +2816,7 @@ type V2ContractEditResponseDataEditUpdateSubscription struct {
 	JSON struct {
 		ID              respjson.Field
 		EndingBefore    respjson.Field
+		Name            respjson.Field
 		QuantityUpdates respjson.Field
 		SeatUpdates     respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -5618,6 +5620,7 @@ func (r *V2ContractGetEditHistoryResponseDataUpdateSpendThresholdConfigurationDi
 type V2ContractGetEditHistoryResponseDataUpdateSubscription struct {
 	ID              string                                                                 `json:"id" api:"required" format:"uuid"`
 	EndingBefore    time.Time                                                              `json:"ending_before" format:"date-time"`
+	Name            string                                                                 `json:"name"`
 	QuantityUpdates []V2ContractGetEditHistoryResponseDataUpdateSubscriptionQuantityUpdate `json:"quantity_updates"`
 	// Manage subscription seats for subscriptions in SEAT_BASED mode.
 	SeatUpdates V2ContractGetEditHistoryResponseDataUpdateSubscriptionSeatUpdates `json:"seat_updates"`
@@ -5625,6 +5628,7 @@ type V2ContractGetEditHistoryResponseDataUpdateSubscription struct {
 	JSON struct {
 		ID              respjson.Field
 		EndingBefore    respjson.Field
+		Name            respjson.Field
 		QuantityUpdates respjson.Field
 		SeatUpdates     respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -8549,6 +8553,7 @@ func (r *V2ContractEditParamsUpdateSpendThresholdConfigurationDiscountConfigurat
 type V2ContractEditParamsUpdateSubscription struct {
 	SubscriptionID    string                                                  `json:"subscription_id" api:"required" format:"uuid"`
 	EndingBefore      param.Opt[time.Time]                                    `json:"ending_before,omitzero" format:"date-time"`
+	Name              param.Opt[string]                                       `json:"name,omitzero"`
 	ProrationRounding V2ContractEditParamsUpdateSubscriptionProrationRounding `json:"proration_rounding,omitzero"`
 	// Update the subscription's quantity management mode from QUANTITY_ONLY to
 	// SEAT_BASED with the provided seat_group_key.
