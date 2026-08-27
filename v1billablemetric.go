@@ -103,6 +103,35 @@ func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetri
 	return res, err
 }
 
+// Updates only the display name of an existing billable metric. Use this to
+// correct mistakes or apply standardized naming conventions across all billable
+// metrics. Returns the billable metric ID to confirm the update.
+//
+// Important: Only the name can be modified via this endpoint; configurations
+// cannot be changed after creation.
+//
+// #### Example workflow:
+//
+// If you need to make changes to a streaming billable metric, for example,
+// Metronome supports easily rolling out these changes using a simple workflow:
+//
+//  1. Duplicate the billable metric
+//  2. Make required changes
+//  3. Save the metric
+//  4. Navigate to the product you have associated with the incorrect metric
+//  5. Schedule the product to reference the newly created metric on the appropriate
+//     date
+func (r *V1BillableMetricService) Update(ctx context.Context, params V1BillableMetricUpdateParams, opts ...option.RequestOption) (res *V1BillableMetricUpdateResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if params.BillableMetricID == "" {
+		err = errors.New("missing required billable_metric_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/billable-metrics/%s", params.BillableMetricID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
+	return res, err
+}
+
 // Retrieves all billable metrics with their complete configurations. Use this for
 // programmatic discovery and management of billable metrics, such as associating
 // metrics to products and auditing for orphaned or archived metrics. Important:
@@ -231,6 +260,22 @@ type V1BillableMetricGetResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r V1BillableMetricGetResponseData) RawJSON() string { return r.JSON.raw }
 func (r *V1BillableMetricGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1BillableMetricUpdateResponse struct {
+	Data shared.ID `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1BillableMetricUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1BillableMetricUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -364,6 +409,21 @@ const (
 type V1BillableMetricGetParams struct {
 	BillableMetricID string `path:"billable_metric_id" api:"required" format:"uuid" json:"-"`
 	paramObj
+}
+
+type V1BillableMetricUpdateParams struct {
+	BillableMetricID string `path:"billable_metric_id" api:"required" format:"uuid" json:"-"`
+	// The new name of the metric
+	Name string `json:"name" api:"required"`
+	paramObj
+}
+
+func (r V1BillableMetricUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1BillableMetricUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1BillableMetricUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type V1BillableMetricListParams struct {

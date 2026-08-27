@@ -871,6 +871,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		UpdateSubscriptions: []metronome.V2ContractEditParamsUpdateSubscription{{
 			SubscriptionID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			EndingBefore:   metronome.Time(time.Now()),
+			Name:           metronome.String("name"),
 			ProrationRounding: metronome.V2ContractEditParamsUpdateSubscriptionProrationRounding{
 				DecimalPlaces:  -5,
 				RoundingMethod: "HALF_UP",
