@@ -9,10 +9,6 @@
 * allow edit subscription name via editContract ([bf6f50c](https://github.com/Metronome-Industries/metronome-go/commit/bf6f50c186d6586c4722d882ba37104b053e12b7))
 
 
-### Chores
-
-* promote SDK changes from staging ([75b615d](https://github.com/Metronome-Industries/metronome-go/commit/75b615dab09611bfcf3d8a08ad17b48d6d5a431b))
-
 ## [3.12.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.11.0...v3.12.0) (2026-08-25)
 
 
