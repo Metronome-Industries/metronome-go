@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.12.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.11.0...v3.12.0) (2026-08-25)
+
+
+### Features
+
+* Add `uniqueness_key` to manual balance entries
+* Expose `include_composite_spend` on products
+* Add unbillable invoice rules to billing provider configurations
+* Add `anchor_date` to recurring commit and credit responses
+* Add `duration`, `rate_type`, and `rollover_fraction` to prepaid balance threshold commits
+* Add `quantity_consumed` to invoice line items
+* Expose product custom fields on contract subscription terms
+
 ## [3.11.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.10.0...v3.11.0) (2026-07-31)
 
 ### Features
