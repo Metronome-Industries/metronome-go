@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.12.1](https://github.com/Metronome-Industries/metronome-go/compare/v3.12.0...v3.12.1) (2026-08-27)
+
+
+### Features
+
+* add Billable Metric Update method ([5c1883b](https://github.com/Metronome-Industries/metronome-go/commit/5c1883b9dda1a511718bf2aa45bbe17ed077cc22))
+* allow edit subscription name via editContract ([bf6f50c](https://github.com/Metronome-Industries/metronome-go/commit/bf6f50c186d6586c4722d882ba37104b053e12b7))
+
+
 ## [3.12.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.11.0...v3.12.0) (2026-08-25)
 
 
