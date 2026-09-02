@@ -209,16 +209,6 @@ type ContractAmendmentResellerRoyalty = shared.ContractAmendmentResellerRoyalty
 // This is an alias to an internal type.
 type ContractCustomerBillingProviderConfiguration = shared.ContractCustomerBillingProviderConfiguration
 
-// An individual rule that, when evaluated to true, indicates that any invoices for
-// this billing provider will not be sent to its associated destination for the
-// associated contract. Rules only apply to the specified `invoice_type` (or all
-// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
-// Rule precedence is evaluated from more specific to less specific. This method
-// will fail with a 400 if multiple rules with the same specificity are included.
-//
-// This is an alias to an internal type.
-type ContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration = shared.ContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration
-
 // Determines which scheduled and commit charges to consolidate onto the Contract's
 // usage invoice. The charge's `timestamp` must match the usage invoice's
 // `ending_before` date for consolidation to occur. This field cannot be modified
@@ -337,16 +327,6 @@ type ContractV2BillingProviderConfigurationSchedule = shared.ContractV2BillingPr
 // This is an alias to an internal type.
 type ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration = shared.ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration
 
-// An individual rule that, when evaluated to true, indicates that any invoices for
-// this billing provider will not be sent to its associated destination for the
-// associated contract. Rules only apply to the specified `invoice_type` (or all
-// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
-// Rule precedence is evaluated from more specific to less specific. This method
-// will fail with a 400 if multiple rules with the same specificity are included.
-//
-// This is an alias to an internal type.
-type ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationUnbillableInvoicesConfiguration = shared.ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationUnbillableInvoicesConfiguration
-
 // This is an alias to an internal type.
 type ContractV2Credit = shared.ContractV2Credit
 
@@ -388,16 +368,6 @@ type ContractV2CreditRolledOverFrom = shared.ContractV2CreditRolledOverFrom
 
 // This is an alias to an internal type.
 type ContractV2CustomerBillingProviderConfiguration = shared.ContractV2CustomerBillingProviderConfiguration
-
-// An individual rule that, when evaluated to true, indicates that any invoices for
-// this billing provider will not be sent to its associated destination for the
-// associated contract. Rules only apply to the specified `invoice_type` (or all
-// invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted).
-// Rule precedence is evaluated from more specific to less specific. This method
-// will fail with a 400 if multiple rules with the same specificity are included.
-//
-// This is an alias to an internal type.
-type ContractV2CustomerBillingProviderConfigurationUnbillableInvoicesConfiguration = shared.ContractV2CustomerBillingProviderConfigurationUnbillableInvoicesConfiguration
 
 // Indicates whether there are more items than the limit for this endpoint. Use the
 // respective list endpoints to get the full lists.

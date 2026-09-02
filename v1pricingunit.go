@@ -10,11 +10,13 @@ import (
 
 	"github.com/Metronome-Industries/metronome-go/v3/internal/apijson"
 	"github.com/Metronome-Industries/metronome-go/v3/internal/apiquery"
+	shimjson "github.com/Metronome-Industries/metronome-go/v3/internal/encoding/json"
 	"github.com/Metronome-Industries/metronome-go/v3/internal/requestconfig"
 	"github.com/Metronome-Industries/metronome-go/v3/option"
 	"github.com/Metronome-Industries/metronome-go/v3/packages/pagination"
 	"github.com/Metronome-Industries/metronome-go/v3/packages/param"
 	"github.com/Metronome-Industries/metronome-go/v3/packages/respjson"
+	"github.com/Metronome-Industries/metronome-go/v3/shared"
 )
 
 // Use these endpoints to configure a billing API key, a webhook secret, or invoice
@@ -37,6 +39,15 @@ func NewV1PricingUnitService(opts ...option.RequestOption) (r V1PricingUnitServi
 	r = V1PricingUnitService{}
 	r.Options = opts
 	return
+}
+
+// Create a custom pricing unit. Custom pricing units can be used to charge for
+// usage in a non-fiat pricing unit, for example AI credits.
+func (r *V1PricingUnitService) New(ctx context.Context, body V1PricingUnitNewParams, opts ...option.RequestOption) (res *V1PricingUnitNewResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/credit-types/create"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // List all pricing units. All fiat currency types (for example, USD or GBP) will
@@ -72,6 +83,31 @@ func (r *V1PricingUnitService) ListAutoPaging(ctx context.Context, query V1Prici
 	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
 }
 
+// Archive a custom pricing unit. Once archived, it will no longer appear in
+// pricing unit selectors by default.
+func (r *V1PricingUnitService) Archive(ctx context.Context, body V1PricingUnitArchiveParams, opts ...option.RequestOption) (res *V1PricingUnitArchiveResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v1/credit-types/archive"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+type V1PricingUnitNewResponse struct {
+	Data shared.ID `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1PricingUnitNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1PricingUnitNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1PricingUnitListResponse struct {
 	ID         string `json:"id" format:"uuid"`
 	IsCurrency bool   `json:"is_currency"`
@@ -92,6 +128,36 @@ func (r *V1PricingUnitListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type V1PricingUnitArchiveResponse struct {
+	Data shared.ID `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1PricingUnitArchiveResponse) RawJSON() string { return r.JSON.raw }
+func (r *V1PricingUnitArchiveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type V1PricingUnitNewParams struct {
+	// The name of the custom pricing unit. This will appear on invoices.
+	Name string `json:"name" api:"required"`
+	paramObj
+}
+
+func (r V1PricingUnitNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow V1PricingUnitNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1PricingUnitNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1PricingUnitListParams struct {
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
@@ -107,4 +173,16 @@ func (r V1PricingUnitListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type V1PricingUnitArchiveParams struct {
+	ID shared.IDParam
+	paramObj
+}
+
+func (r V1PricingUnitArchiveParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.ID)
+}
+func (r *V1PricingUnitArchiveParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
