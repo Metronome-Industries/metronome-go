@@ -361,8 +361,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}},
 		AddRecurringCommits: []metronome.V2ContractEditParamsAddRecurringCommit{{
 			AccessAmount: metronome.V2ContractEditParamsAddRecurringCommitAccessAmount{
-				CreditTypeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				UnitPrice:    0,
+				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
 			CommitDuration: metronome.V2ContractEditParamsAddRecurringCommitCommitDuration{
@@ -425,8 +425,8 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}},
 		AddRecurringCredits: []metronome.V2ContractEditParamsAddRecurringCredit{{
 			AccessAmount: metronome.V2ContractEditParamsAddRecurringCreditAccessAmount{
-				CreditTypeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				UnitPrice:    0,
+				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
 			CommitDuration: metronome.V2ContractEditParamsAddRecurringCreditCommitDuration{

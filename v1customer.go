@@ -940,11 +940,9 @@ type V1CustomerNewParamsBillingConfig struct {
 	// "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1",
 	// "us-west-2".
 	AwsRegion string `json:"aws_region,omitzero"`
-	// The collection method for the customer's invoices. NOTE:
-	// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
+	// The collection method for the customer's invoices.
 	//
-	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
-	// "manually_charge_payment_intent".
+	// Any of "charge_automatically", "send_invoice".
 	StripeCollectionMethod string `json:"stripe_collection_method,omitzero"`
 	paramObj
 }
@@ -965,7 +963,7 @@ func init() {
 		"aws_region", "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2", "ca-central-1", "cn-north-1", "cn-northwest-1", "eu-central-1", "eu-north-1", "eu-south-1", "eu-west-1", "eu-west-2", "eu-west-3", "me-south-1", "sa-east-1", "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1", "us-west-2",
 	)
 	apijson.RegisterFieldValidator[V1CustomerNewParamsBillingConfig](
-		"stripe_collection_method", "charge_automatically", "send_invoice", "auto_charge_payment_intent", "manually_charge_payment_intent",
+		"stripe_collection_method", "charge_automatically", "send_invoice",
 	)
 }
 
@@ -991,8 +989,7 @@ type V1CustomerNewParamsCustomerBillingProviderConfiguration struct {
 	DeliveryMethod string `json:"delivery_method,omitzero"`
 	// Specifies which tax provider Metronome should use for tax calculation when
 	// billing through Stripe. This is only supported for Stripe billing provider
-	// configurations with auto_charge_payment_intent or manual_charge_payment_intent
-	// collection methods.
+	// configurations.
 	//
 	// Any of "anrok", "avalara", "stripe".
 	TaxProvider string `json:"tax_provider,omitzero"`
@@ -1271,8 +1268,7 @@ type V1CustomerSetBillingConfigurationsParamsData struct {
 	DeliveryMethod string `json:"delivery_method,omitzero"`
 	// Specifies which tax provider Metronome should use for tax calculation when
 	// billing through Stripe. This is only supported for Stripe billing provider
-	// configurations with auto_charge_payment_intent or manual_charge_payment_intent
-	// collection methods.
+	// configurations.
 	//
 	// Any of "anrok", "avalara", "stripe".
 	TaxProvider string `json:"tax_provider,omitzero"`

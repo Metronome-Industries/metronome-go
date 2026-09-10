@@ -6809,10 +6809,11 @@ func init() {
 
 // The amount of commit to grant.
 //
-// The properties CreditTypeID, UnitPrice are required.
+// The property UnitPrice is required.
 type V2ContractEditParamsAddRecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
+	UnitPrice float64 `json:"unit_price" api:"required"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
@@ -7069,10 +7070,11 @@ func init() {
 
 // The amount of commit to grant.
 //
-// The properties CreditTypeID, UnitPrice are required.
+// The property UnitPrice is required.
 type V2ContractEditParamsAddRecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
+	UnitPrice float64 `json:"unit_price" api:"required"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`

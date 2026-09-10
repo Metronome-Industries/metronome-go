@@ -1810,6 +1810,9 @@ type V1ContractListSeatBalancesResponseDataCommit struct {
 	Balance float64 `json:"balance" api:"required"`
 	// The datetime when the commit becomes active
 	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+	// The credit type for this commit. Quantity-based commits return the null credit
+	// type UUID.
+	CreditTypeID string `json:"credit_type_id" format:"uuid"`
 	// The datetime when the commit expires
 	EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
 	// Transaction history for this commit for this seat (only included if
@@ -1820,6 +1823,7 @@ type V1ContractListSeatBalancesResponseDataCommit struct {
 		ID            respjson.Field
 		Balance       respjson.Field
 		StartDate     respjson.Field
+		CreditTypeID  respjson.Field
 		EndDate       respjson.Field
 		LedgerEntries respjson.Field
 		ExtraFields   map[string]respjson.Field
@@ -1869,6 +1873,9 @@ type V1ContractListSeatBalancesResponseDataCredit struct {
 	Balance float64 `json:"balance" api:"required"`
 	// The datetime when the credit becomes active
 	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+	// The credit type for this credit. Quantity-based credits return the null credit
+	// type UUID.
+	CreditTypeID string `json:"credit_type_id" format:"uuid"`
 	// The datetime when the credit expires
 	EndDate time.Time `json:"end_date" api:"nullable" format:"date-time"`
 	// Transaction history for this credit for this seat (only included if
@@ -1879,6 +1886,7 @@ type V1ContractListSeatBalancesResponseDataCredit struct {
 		ID            respjson.Field
 		Balance       respjson.Field
 		StartDate     respjson.Field
+		CreditTypeID  respjson.Field
 		EndDate       respjson.Field
 		LedgerEntries respjson.Field
 		ExtraFields   map[string]respjson.Field
@@ -3047,10 +3055,11 @@ func init() {
 
 // The amount of commit to grant.
 //
-// The properties CreditTypeID, UnitPrice are required.
+// The property UnitPrice is required.
 type V1ContractNewParamsRecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
+	UnitPrice float64 `json:"unit_price" api:"required"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
@@ -3307,10 +3316,11 @@ func init() {
 
 // The amount of commit to grant.
 //
-// The properties CreditTypeID, UnitPrice are required.
+// The property UnitPrice is required.
 type V1ContractNewParamsRecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
+	UnitPrice float64 `json:"unit_price" api:"required"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`

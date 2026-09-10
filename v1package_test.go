@@ -244,8 +244,8 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 		RateCardID:    metronome.String("d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc"),
 		RecurringCommits: []metronome.V1PackageNewParamsRecurringCommit{{
 			AccessAmount: metronome.V1PackageNewParamsRecurringCommitAccessAmount{
-				CreditTypeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				UnitPrice:    0,
+				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
 			CommitDuration: metronome.V1PackageNewParamsRecurringCommitCommitDuration{
@@ -306,8 +306,8 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 		}},
 		RecurringCredits: []metronome.V1PackageNewParamsRecurringCredit{{
 			AccessAmount: metronome.V1PackageNewParamsRecurringCreditAccessAmount{
-				CreditTypeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				UnitPrice:    0,
+				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
 			CommitDuration: metronome.V1PackageNewParamsRecurringCreditCommitDuration{
