@@ -497,15 +497,15 @@ type InvoiceLineItem struct {
 	//     converted to fiat currency using a cpu_conversion line item.
 	Type string `json:"type" api:"required"`
 	// Details about the credit or commit that was applied to this line item. Only
-	// present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
-	// types.
+	// present on line items with product of `USAGE`, `SUBSCRIPTION`, `COMPOSITE`, or
+	// `CPU_CONVERSION` types.
 	AppliedCommitOrCredit InvoiceLineItemAppliedCommitOrCredit `json:"applied_commit_or_credit"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CommitCustomFields map[string]string `json:"commit_custom_fields"`
-	// For line items with product of `USAGE`, `SUBSCRIPTION`, or `COMPOSITE` types,
-	// the ID of the credit or commit that was applied to this line item. For line
-	// items with product type of `FIXED`, the ID of the prepaid or postpaid commit
-	// that is being paid for.
+	// For line items with product of `USAGE`, `SUBSCRIPTION`, `COMPOSITE`, or
+	// `CPU_CONVERSION` types, the ID of the credit or commit that was applied to this
+	// line item. For line items with product type of `FIXED`, the ID of the prepaid or
+	// postpaid commit that is being paid for.
 	CommitID                   string `json:"commit_id" format:"uuid"`
 	CommitNetsuiteItemID       string `json:"commit_netsuite_item_id"`
 	CommitNetsuiteSalesOrderID string `json:"commit_netsuite_sales_order_id"`
@@ -643,8 +643,8 @@ func (r *InvoiceLineItem) UnmarshalJSON(data []byte) error {
 }
 
 // Details about the credit or commit that was applied to this line item. Only
-// present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE`
-// types.
+// present on line items with product of `USAGE`, `SUBSCRIPTION`, `COMPOSITE`, or
+// `CPU_CONVERSION` types.
 type InvoiceLineItemAppliedCommitOrCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "PREPAID", "POSTPAID", "CREDIT".

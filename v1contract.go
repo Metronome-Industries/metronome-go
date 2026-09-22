@@ -188,18 +188,49 @@ func (r *V1ContractService) Get(ctx context.Context, body V1ContractGetParams, o
 	return res, err
 }
 
-// Retrieves all contracts for a specific customer, including pricing, terms,
+// Retrieves a page of contracts for a specific customer, including pricing, terms,
 // credits, and commitments. Use this to view a customer's contract history and
 // current agreements for billing management. Returns contract details with
 // optional ledgers and balance information.
 //
+// ### Usage guidelines:
+//
+//   - Pagination: Results are limited to 20 contracts per page; use 'cursor' for
+//     more
+//
 // ⚠️ Note: This is the legacy v1 endpoint - new integrations should use the v2
 // endpoint for enhanced features.
-func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams, opts ...option.RequestOption) (res *V1ContractListResponse, err error) {
+func (r *V1ContractService) List(ctx context.Context, body V1ContractListParams, opts ...option.RequestOption) (res *pagination.BodyCursorPageCursorField[shared.Contract], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v1/contracts/list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, body, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieves a page of contracts for a specific customer, including pricing, terms,
+// credits, and commitments. Use this to view a customer's contract history and
+// current agreements for billing management. Returns contract details with
+// optional ledgers and balance information.
+//
+// ### Usage guidelines:
+//
+//   - Pagination: Results are limited to 20 contracts per page; use 'cursor' for
+//     more
+//
+// ⚠️ Note: This is the legacy v1 endpoint - new integrations should use the v2
+// endpoint for enhanced features.
+func (r *V1ContractService) ListAutoPaging(ctx context.Context, body V1ContractListParams, opts ...option.RequestOption) *pagination.BodyCursorPageCursorFieldAutoPager[shared.Contract] {
+	return pagination.NewBodyCursorPageCursorFieldAutoPager(r.List(ctx, body, opts...))
 }
 
 // Manually adjust the available balance on a commit or credit. This entry is
@@ -1336,22 +1367,6 @@ type V1ContractGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r V1ContractGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *V1ContractGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type V1ContractListResponse struct {
-	Data []shared.Contract `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r V1ContractListResponse) RawJSON() string { return r.JSON.raw }
-func (r *V1ContractListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4031,6 +4046,8 @@ type V1ContractListParams struct {
 	// contracts effective on the provided date. This cannot be provided if the
 	// starting_at filter is provided.
 	CoveringDate param.Opt[time.Time] `json:"covering_date,omitzero" format:"date-time"`
+	// Cursor from a previous response to fetch the next page of contracts.
+	Cursor param.Opt[string] `json:"cursor,omitzero"`
 	// Include archived contracts in the response
 	IncludeArchived param.Opt[bool] `json:"include_archived,omitzero"`
 	// Include the balance of credits and commits in the response. Setting this flag
@@ -4039,8 +4056,10 @@ type V1ContractListParams struct {
 	// Include commit ledgers in the response. Setting this flag may cause the query to
 	// be slower.
 	IncludeLedgers param.Opt[bool] `json:"include_ledgers,omitzero"`
+	// Max number of contracts to return per page. Range: 1-20. Default: 20.
+	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Optional RFC 3339 timestamp. If provided, the response will include only
-	// contracts where effective_at is on or after the provided date. This cannot be
+	// contracts where starting_at is on or after the provided date. This cannot be
 	// provided if the covering_date filter is provided.
 	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
 	paramObj

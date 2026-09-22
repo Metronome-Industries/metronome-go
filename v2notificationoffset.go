@@ -89,7 +89,7 @@ func (r *V2NotificationOffsetService) Archive(ctx context.Context, body V2Notifi
 	return res, err
 }
 
-// Edit an existing offset lifecycle event notification configuration.
+// Edit an existing offset notification, or enable/disable a system notification
 func (r *V2NotificationOffsetService) Edit(ctx context.Context, body V2NotificationOffsetEditParams, opts ...option.RequestOption) (res *V2NotificationOffsetEditResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notifications/edit"

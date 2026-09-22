@@ -58,9 +58,11 @@ func TestV2ContractListWithOptionalParams(t *testing.T) {
 	_, err := client.V2.Contracts.List(context.TODO(), metronome.V2ContractListParams{
 		CustomerID:      "13117714-3f05-48e5-a6e9-a66093f13b4d",
 		CoveringDate:    metronome.Time(time.Now()),
+		Cursor:          metronome.String("cursor"),
 		IncludeArchived: metronome.Bool(true),
 		IncludeBalance:  metronome.Bool(true),
 		IncludeLedgers:  metronome.Bool(true),
+		Limit:           metronome.Float(1),
 		StartingAt:      metronome.Time(time.Now()),
 	})
 	if err != nil {
