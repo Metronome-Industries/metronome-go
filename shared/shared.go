@@ -5022,6 +5022,12 @@ type Credit struct {
 	// included in the balance, including future-dated manual ledger entries.
 	Balance  float64        `json:"balance"`
 	Contract CreditContract `json:"contract"`
+	// Timestamp of when the credit was created.
+	//
+	//   - Recurring credit: latter of credit service period date and parent credit start
+	//     date
+	//   - Rollover credit: when the new contract started
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// The actor who created this credit. Omitted for system-generated credits such as
 	// recurring credits.
 	CreatedBy string `json:"created_by"`
@@ -5070,6 +5076,7 @@ type Credit struct {
 		ApplicableProductTags   respjson.Field
 		Balance                 respjson.Field
 		Contract                respjson.Field
+		CreatedAt               respjson.Field
 		CreatedBy               respjson.Field
 		CustomFields            respjson.Field
 		Description             respjson.Field
