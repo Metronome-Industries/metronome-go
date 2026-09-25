@@ -282,9 +282,11 @@ func (r *V1UsageService) Ingest(ctx context.Context, body V1UsageIngestParams, o
 //   - Time windows: Set `window_size` to hour, day, or none for different
 //     granularities
 //   - Group filtering: Use `group_key` and `group_filters` to specify groups and
-//     group filters
-//   - Limits: When using compound group keys (2+ keys in `group_key`), the default
-//     and max limit is 100
+//     group filters. Across all arrays in `group_filters`, include at most 200
+//     filter values total. Requests with more than 200 filter values are rejected
+//     when this limit is enforced
+//   - Response limit: When using compound group keys (2+ keys in `group_key`), the
+//     default and maximum page size is 100
 //   - Pagination: Use limit and `next_page` for large result sets
 //   - Null handling: Group values may be null for events missing the group key
 //     property
@@ -361,9 +363,11 @@ func (r *V1UsageService) ListWithGroups(ctx context.Context, params V1UsageListW
 //   - Time windows: Set `window_size` to hour, day, or none for different
 //     granularities
 //   - Group filtering: Use `group_key` and `group_filters` to specify groups and
-//     group filters
-//   - Limits: When using compound group keys (2+ keys in `group_key`), the default
-//     and max limit is 100
+//     group filters. Across all arrays in `group_filters`, include at most 200
+//     filter values total. Requests with more than 200 filter values are rejected
+//     when this limit is enforced
+//   - Response limit: When using compound group keys (2+ keys in `group_key`), the
+//     default and maximum page size is 100
 //   - Pagination: Use limit and `next_page` for large result sets
 //   - Null handling: Group values may be null for events missing the group key
 //     property
@@ -597,8 +601,10 @@ func (r *V1UsageSearchResponseMatchedCustomer) UnmarshalJSON(data []byte) error 
 }
 
 type V1UsageListParams struct {
+	// Must be aligned to UTC midnight and at least one day after `starting_on`.
 	EndingBefore time.Time `json:"ending_before" api:"required" format:"date-time"`
-	StartingOn   time.Time `json:"starting_on" api:"required" format:"date-time"`
+	// Must be aligned to UTC midnight, e.g. `2024-01-01T00:00:00Z`.
+	StartingOn time.Time `json:"starting_on" api:"required" format:"date-time"`
 	// A window_size of "day" or "hour" will return the usage for the specified period
 	// segmented into daily or hourly aggregates. A window_size of "none" will return a
 	// single usage aggregate for the entirety of the specified period.
@@ -721,17 +727,20 @@ type V1UsageListWithGroupsParams struct {
 	// Cursor that indicates where the next page of results should start.
 	NextPage param.Opt[string] `query:"next_page,omitzero" json:"-"`
 	// If true, will return the usage for the current billing period. Will return an
-	// error if the customer is currently uncontracted or starting_on and ending_before
-	// are specified when this is true.
-	CurrentPeriod param.Opt[bool]      `json:"current_period,omitzero"`
-	EndingBefore  param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
-	StartingOn    param.Opt[time.Time] `json:"starting_on,omitzero" format:"date-time"`
+	// error if the customer does not have an active plan, or if starting_on and
+	// ending_before are specified when this is true.
+	CurrentPeriod param.Opt[bool] `json:"current_period,omitzero"`
+	// Must be aligned to UTC midnight and at least one day after `starting_on`.
+	EndingBefore param.Opt[time.Time] `json:"ending_before,omitzero" format:"date-time"`
+	// Must be aligned to UTC midnight, e.g. `2024-01-01T00:00:00Z`.
+	StartingOn param.Opt[time.Time] `json:"starting_on,omitzero" format:"date-time"`
 	// Use group_key and group_filters instead. Use a single group key to group by.
 	// Compound group keys are not supported.
 	GroupBy V1UsageListWithGroupsParamsGroupBy `json:"group_by,omitzero"`
 	// Object mapping group keys to arrays of values to filter on. Only usage matching
 	// these filter values will be returned. Keys must be present in group_key. Omit a
-	// key or use an empty array to include all values for that dimension.
+	// key or use an empty array to include all values for that dimension. The combined
+	// number of entries across all value arrays may not exceed 200.
 	GroupFilters map[string][]string `json:"group_filters,omitzero"`
 	// Group key to group usage by. Supports both simple (single key) and compound
 	// (multiple keys) group keys.
@@ -785,8 +794,8 @@ const (
 type V1UsageListWithGroupsParamsGroupBy struct {
 	// The name of the group_by key to use
 	Key string `json:"key" api:"required"`
-	// Values of the group_by key to return in the query. Omit this if you'd like all
-	// values for the key returned.
+	// Values of the group_by key to return in the query. Accepts at most 200 values.
+	// Omit this if you'd like all values for the key returned.
 	Values []string `json:"values,omitzero"`
 	paramObj
 }
