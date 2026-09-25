@@ -34,6 +34,7 @@ func TestV1CustomerCreditNewWithOptionalParams(t *testing.T) {
 				EndingBefore: time.Now(),
 				StartingAt:   time.Now(),
 			}},
+			AccessType:   "SPEND",
 			CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 		},
 		CustomerID:            "13117714-3f05-48e5-a6e9-a66093f13b4d",

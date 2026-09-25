@@ -48,6 +48,7 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 						Value: 0,
 					},
 				}},
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			},
 			ProductID:             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -100,6 +101,7 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 						Value: 0,
 					},
 				}},
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			},
 			ProductID:             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -245,6 +247,7 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 		RecurringCommits: []metronome.V1PackageNewParamsRecurringCommit{{
 			AccessAmount: metronome.V1PackageNewParamsRecurringCommitAccessAmount{
 				UnitPrice:    0,
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
@@ -307,6 +310,7 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 		RecurringCredits: []metronome.V1PackageNewParamsRecurringCredit{{
 			AccessAmount: metronome.V1PackageNewParamsRecurringCreditAccessAmount{
 				UnitPrice:    0,
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},

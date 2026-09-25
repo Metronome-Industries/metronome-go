@@ -44,6 +44,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 					EndingBefore: time.Now(),
 					StartingAt:   time.Now(),
 				}},
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			},
 			Amount:                metronome.Float(0),
@@ -106,6 +107,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 					EndingBefore: time.Now(),
 					StartingAt:   time.Now(),
 				}},
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			},
 			ProductID:             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -308,6 +310,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		RecurringCommits: []metronome.V1ContractNewParamsRecurringCommit{{
 			AccessAmount: metronome.V1ContractNewParamsRecurringCommitAccessAmount{
 				UnitPrice:    0,
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
@@ -372,6 +375,7 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 		RecurringCredits: []metronome.V1ContractNewParamsRecurringCredit{{
 			AccessAmount: metronome.V1ContractNewParamsRecurringCreditAccessAmount{
 				UnitPrice:    0,
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
@@ -699,6 +703,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 					EndingBefore: time.Now(),
 					StartingAt:   time.Now(),
 				}},
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			},
 			Amount:                metronome.Float(0),
@@ -761,6 +766,7 @@ func TestV1ContractAmendWithOptionalParams(t *testing.T) {
 					EndingBefore: time.Now(),
 					StartingAt:   time.Now(),
 				}},
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			},
 			ProductID:             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -1031,6 +1037,7 @@ func TestV1ContractGetNetBalanceWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.V1.Contracts.GetNetBalance(context.TODO(), metronome.V1ContractGetNetBalanceParams{
 		CustomerID:   "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		AccessType:   metronome.V1ContractGetNetBalanceParamsAccessTypeSpend,
 		CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 		Filters: []shared.BalanceFilterParam{{
 			BalanceTypes: []string{"CREDIT"},
@@ -1102,6 +1109,7 @@ func TestV1ContractListBalancesWithOptionalParams(t *testing.T) {
 	_, err := client.V1.Contracts.ListBalances(context.TODO(), metronome.V1ContractListBalancesParams{
 		CustomerID:              "13117714-3f05-48e5-a6e9-a66093f13b4d",
 		ID:                      metronome.String("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
+		AccessType:              metronome.V1ContractListBalancesParamsAccessTypeSpend,
 		CoveringDate:            metronome.Time(time.Now()),
 		EffectiveBefore:         metronome.Time(time.Now()),
 		ExcludeZeroBalances:     metronome.Bool(true),

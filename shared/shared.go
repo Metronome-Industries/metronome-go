@@ -3383,13 +3383,21 @@ func (r *ContractV2RecurringCommit) UnmarshalJSON(data []byte) error {
 
 // The amount of commit to grant.
 type ContractV2RecurringCommitAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -3635,13 +3643,21 @@ func (r *ContractV2RecurringCredit) UnmarshalJSON(data []byte) error {
 
 // The amount of commit to grant.
 type ContractV2RecurringCreditAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -4462,13 +4478,21 @@ func (r *ContractWithoutAmendmentsRecurringCommit) UnmarshalJSON(data []byte) er
 
 // The amount of commit to grant.
 type ContractWithoutAmendmentsRecurringCommitAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -4722,13 +4746,21 @@ func (r *ContractWithoutAmendmentsRecurringCredit) UnmarshalJSON(data []byte) er
 
 // The amount of commit to grant.
 type ContractWithoutAmendmentsRecurringCreditAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -7489,10 +7521,16 @@ func (r *ScheduledChargeProduct) UnmarshalJSON(data []byte) error {
 
 type ScheduleDuration struct {
 	ScheduleItems []ScheduleDurationScheduleItem `json:"schedule_items" api:"required"`
-	CreditType    CreditTypeData                 `json:"credit_type"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType ScheduleDurationAccessType `json:"access_type"`
+	CreditType CreditTypeData             `json:"credit_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ScheduleItems respjson.Field
+		AccessType    respjson.Field
 		CreditType    respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
@@ -7526,6 +7564,15 @@ func (r ScheduleDurationScheduleItem) RawJSON() string { return r.JSON.raw }
 func (r *ScheduleDurationScheduleItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+// usage. `QUANTITY` deducts the number of units used.
+type ScheduleDurationAccessType string
+
+const (
+	ScheduleDurationAccessTypeSpend    ScheduleDurationAccessType = "SPEND"
+	ScheduleDurationAccessTypeQuantity ScheduleDurationAccessType = "QUANTITY"
+)
 
 type SchedulePointInTime struct {
 	CreditType CreditTypeData `json:"credit_type"`

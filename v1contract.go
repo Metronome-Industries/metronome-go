@@ -967,13 +967,21 @@ func (r *V1ContractNewResponseDataContractRecurringCommit) UnmarshalJSON(data []
 
 // The amount of commit to grant.
 type V1ContractNewResponseDataContractRecurringCommitAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -1233,13 +1241,21 @@ func (r *V1ContractNewResponseDataContractRecurringCredit) UnmarshalJSON(data []
 
 // The amount of commit to grant.
 type V1ContractNewResponseDataContractRecurringCreditAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -1438,8 +1454,9 @@ type V1ContractGetNetBalanceResponseData struct {
 	// The combined net balance that the customer has access to use at this moment
 	// across all pertinent commits and credits.
 	Balance float64 `json:"balance" api:"required"`
-	// The ID of the credit type (can be fiat or a custom pricing unit) that the
-	// balance is for.
+	// This ID identifies the credit type for the balance. The credit type can be fiat
+	// or a custom pricing unit. Quantity-based balances return the null credit type
+	// UUID.
 	CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1796,16 +1813,24 @@ func (r *V1ContractListSeatBalancesResponseData) UnmarshalJSON(data []byte) erro
 type V1ContractListSeatBalancesResponseDataBalance struct {
 	// The total balance across all commits and credits for this seat, of this credit
 	// type.
-	Balance      float64 `json:"balance" api:"required"`
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
+	Balance float64 `json:"balance" api:"required"`
+	// This ID identifies the credit type for the balance. Quantity-based balances
+	// return the null credit type UUID.
+	CreditTypeID string `json:"credit_type_id" api:"required" format:"uuid"`
 	// The total initial balances of all commits and credits for this seat, of this
 	// credit type.
 	StartingBalance float64 `json:"starting_balance" api:"required"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Balance         respjson.Field
 		CreditTypeID    respjson.Field
 		StartingBalance respjson.Field
+		AccessType      respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -1824,6 +1849,11 @@ type V1ContractListSeatBalancesResponseDataCommit struct {
 	Balance float64 `json:"balance" api:"required"`
 	// The datetime when the commit becomes active
 	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
 	// The credit type for this commit. Quantity-based commits return the null credit
 	// type UUID.
 	CreditTypeID string `json:"credit_type_id" format:"uuid"`
@@ -1837,6 +1867,7 @@ type V1ContractListSeatBalancesResponseDataCommit struct {
 		ID            respjson.Field
 		Balance       respjson.Field
 		StartDate     respjson.Field
+		AccessType    respjson.Field
 		CreditTypeID  respjson.Field
 		EndDate       respjson.Field
 		LedgerEntries respjson.Field
@@ -1887,6 +1918,11 @@ type V1ContractListSeatBalancesResponseDataCredit struct {
 	Balance float64 `json:"balance" api:"required"`
 	// The datetime when the credit becomes active
 	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
 	// The credit type for this credit. Quantity-based credits return the null credit
 	// type UUID.
 	CreditTypeID string `json:"credit_type_id" format:"uuid"`
@@ -1900,6 +1936,7 @@ type V1ContractListSeatBalancesResponseDataCredit struct {
 		ID            respjson.Field
 		Balance       respjson.Field
 		StartDate     respjson.Field
+		AccessType    respjson.Field
 		CreditTypeID  respjson.Field
 		EndDate       respjson.Field
 		LedgerEntries respjson.Field
@@ -2340,6 +2377,12 @@ type V1ContractNewParamsCommitAccessSchedule struct {
 	ScheduleItems []V1ContractNewParamsCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -2349,6 +2392,12 @@ func (r V1ContractNewParamsCommitAccessSchedule) MarshalJSON() (data []byte, err
 }
 func (r *V1ContractNewParamsCommitAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsCommitAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
@@ -2545,6 +2594,12 @@ type V1ContractNewParamsCreditAccessSchedule struct {
 	ScheduleItems []V1ContractNewParamsCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -2554,6 +2609,12 @@ func (r V1ContractNewParamsCreditAccessSchedule) MarshalJSON() (data []byte, err
 }
 func (r *V1ContractNewParamsCreditAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsCreditAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
@@ -3077,6 +3138,11 @@ type V1ContractNewParamsRecurringCommitAccessAmount struct {
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -3086,6 +3152,12 @@ func (r V1ContractNewParamsRecurringCommitAccessAmount) MarshalJSON() (data []by
 }
 func (r *V1ContractNewParamsRecurringCommitAccessAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCommitAccessAmount](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // Defines the length of the access schedule for each created commit/credit. The
@@ -3338,6 +3410,11 @@ type V1ContractNewParamsRecurringCreditAccessAmount struct {
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -3347,6 +3424,12 @@ func (r V1ContractNewParamsRecurringCreditAccessAmount) MarshalJSON() (data []by
 }
 func (r *V1ContractNewParamsRecurringCreditAccessAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractNewParamsRecurringCreditAccessAmount](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // Defines the length of the access schedule for each created commit/credit. The
@@ -4222,6 +4305,12 @@ type V1ContractAmendParamsCommitAccessSchedule struct {
 	ScheduleItems []V1ContractAmendParamsCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -4231,6 +4320,12 @@ func (r V1ContractAmendParamsCommitAccessSchedule) MarshalJSON() (data []byte, e
 }
 func (r *V1ContractAmendParamsCommitAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractAmendParamsCommitAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
@@ -4427,6 +4522,12 @@ type V1ContractAmendParamsCreditAccessSchedule struct {
 	ScheduleItems []V1ContractAmendParamsCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -4436,6 +4537,12 @@ func (r V1ContractAmendParamsCreditAccessSchedule) MarshalJSON() (data []byte, e
 }
 func (r *V1ContractAmendParamsCreditAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1ContractAmendParamsCreditAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
@@ -5061,6 +5168,11 @@ type V1ContractGetNetBalanceParams struct {
 	// The ID of the credit type (can be fiat or a custom pricing unit) to get the
 	// balance for. Defaults to USD (cents) if not specified.
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Filters balances by how they are drawn down. Defaults to `SPEND`. If set to
+	// `QUANTITY`, `credit_type_id` must not be provided.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType V1ContractGetNetBalanceParamsAccessType `json:"access_type,omitzero"`
 	// Balance filters are OR'd together, so if a given commit or credit matches any of
 	// the filters, it will be included in the net balance.
 	Filters []shared.BalanceFilterParam `json:"filters,omitzero"`
@@ -5080,6 +5192,15 @@ func (r V1ContractGetNetBalanceParams) MarshalJSON() (data []byte, err error) {
 func (r *V1ContractGetNetBalanceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Filters balances by how they are drawn down. Defaults to `SPEND`. If set to
+// `QUANTITY`, `credit_type_id` must not be provided.
+type V1ContractGetNetBalanceParamsAccessType string
+
+const (
+	V1ContractGetNetBalanceParamsAccessTypeSpend    V1ContractGetNetBalanceParamsAccessType = "SPEND"
+	V1ContractGetNetBalanceParamsAccessTypeQuantity V1ContractGetNetBalanceParamsAccessType = "QUANTITY"
+)
 
 // Controls which invoices are considered when calculating the remaining balance.
 // `FINALIZED` considers only deductions from finalized invoices.
@@ -5148,6 +5269,11 @@ type V1ContractListBalancesParams struct {
 	NextPage param.Opt[string] `json:"next_page,omitzero"`
 	// Include only balances that have any access on or after the provided date
 	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	// Filters balances by how they are drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType V1ContractListBalancesParamsAccessType `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -5158,6 +5284,15 @@ func (r V1ContractListBalancesParams) MarshalJSON() (data []byte, err error) {
 func (r *V1ContractListBalancesParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Filters balances by how they are drawn down. `SPEND` deducts the dollar cost of
+// usage. `QUANTITY` deducts the number of units used.
+type V1ContractListBalancesParamsAccessType string
+
+const (
+	V1ContractListBalancesParamsAccessTypeSpend    V1ContractListBalancesParamsAccessType = "SPEND"
+	V1ContractListBalancesParamsAccessTypeQuantity V1ContractListBalancesParamsAccessType = "QUANTITY"
+)
 
 type V1ContractListSeatBalancesParams struct {
 	// The contract ID to retrieve seat balances for

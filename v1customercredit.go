@@ -314,6 +314,12 @@ type V1CustomerCreditNewParamsAccessSchedule struct {
 	ScheduleItems []V1CustomerCreditNewParamsAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -323,6 +329,12 @@ func (r V1CustomerCreditNewParamsAccessSchedule) MarshalJSON() (data []byte, err
 }
 func (r *V1CustomerCreditNewParamsAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerCreditNewParamsAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.

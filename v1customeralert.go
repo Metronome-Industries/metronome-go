@@ -276,13 +276,27 @@ type CustomerAlertAlert struct {
 	// "low_remaining_contract_credit_balance_reached",
 	// "low_remaining_contract_credit_percentage_reached",
 	// "low_remaining_contract_credit_and_commit_balance_reached",
+	// "low_remaining_contract_credit_and_commit_percentage_reached",
 	// "low_remaining_seat_balance_reached", "invoice_total_reached".
 	Type string `json:"type" api:"required"`
 	// Timestamp for when the threshold notification's customer status was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Present for `low_remaining_contract_credit_and_commit_balance_reached`
-	// notifications. The filters that define the balances that are considered when
-	// evaluating the alert.
+	// Indicates the commit access type this notification is scoped to. Defaults to
+	// `SPEND` if not otherwise specified. Only present for
+	// `low_remaining_commit_balance_reached`,
+	// `low_remaining_commit_percentage_reached`,
+	// `low_remaining_contract_credit_and_commit_balance_reached`,
+	// `low_remaining_contract_credit_and_commit_percentage_reached`,
+	// `low_remaining_contract_credit_balance_reached`,
+	// `low_remaining_contract_credit_percentage_reached`, and
+	// `low_remaining_seat_balance_reached` notifications.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
+	// Present for `low_remaining_contract_credit_and_commit_balance_reached` and
+	// `low_remaining_contract_credit_and_commit_percentage_reached` notifications. The
+	// filters that define the commits and credits used to calculate the remaining
+	// balance or percentage.
 	AlertSpecifiers []CustomerAlertAlertAlertSpecifier `json:"alert_specifiers"`
 	// An array of strings, representing a way to filter the credit grant this
 	// threshold notification applies to, by looking at the credit_grant_type field on
@@ -317,6 +331,7 @@ type CustomerAlertAlert struct {
 		Threshold              respjson.Field
 		Type                   respjson.Field
 		UpdatedAt              respjson.Field
+		AccessType             respjson.Field
 		AlertSpecifiers        respjson.Field
 		CreditGrantTypeFilters respjson.Field
 		CreditType             respjson.Field
@@ -531,8 +546,9 @@ type V1CustomerAlertGetParams struct {
 	AlertID string `json:"alert_id" api:"required" format:"uuid"`
 	// The Metronome ID of the customer
 	CustomerID string `json:"customer_id" api:"required" format:"uuid"`
-	// Can be used with only `low_remaining_contract_credit_and_commit_balance_reached`
-	// notifications. Used to filter the alert by the custom field key-value pair.
+	// Can be used only with `low_remaining_contract_credit_and_commit_balance_reached`
+	// and `low_remaining_contract_credit_and_commit_percentage_reached` notifications.
+	// Used to filter the alert by the custom field key-value pair.
 	AlertSpecifiers []V1CustomerAlertGetParamsAlertSpecifier `json:"alert_specifiers,omitzero"`
 	// Only present for `spend_threshold_reached` notifications. Retrieve the
 	// notification for a specific group key-value pair.

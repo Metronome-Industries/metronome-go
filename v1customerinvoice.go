@@ -649,10 +649,16 @@ type InvoiceLineItemAppliedCommitOrCredit struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "PREPAID", "POSTPAID", "CREDIT".
 	Type string `json:"type" api:"required"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Type        respjson.Field
+		AccessType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1200,6 +1206,9 @@ type V1CustomerInvoiceListParams struct {
 	// RFC 3339 timestamp (exclusive). Invoices will only be returned for billing
 	// periods that end before this time.
 	EndingBefore param.Opt[time.Time] `query:"ending_before,omitzero" format:"date-time" json:"-"`
+	// When true, includes retired commit invoices alongside active invoices. Defaults
+	// to false.
+	IncludeRetiredCommitInvoices param.Opt[bool] `query:"include_retired_commit_invoices,omitzero" json:"-"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.

@@ -1139,6 +1139,18 @@ type ScheduleDuration = shared.ScheduleDuration
 // This is an alias to an internal type.
 type ScheduleDurationScheduleItem = shared.ScheduleDurationScheduleItem
 
+// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+// usage. `QUANTITY` deducts the number of units used.
+//
+// This is an alias to an internal type.
+type ScheduleDurationAccessType = shared.ScheduleDurationAccessType
+
+// Equals "SPEND"
+const ScheduleDurationAccessTypeSpend = shared.ScheduleDurationAccessTypeSpend
+
+// Equals "QUANTITY"
+const ScheduleDurationAccessTypeQuantity = shared.ScheduleDurationAccessTypeQuantity
+
 // This is an alias to an internal type.
 type SchedulePointInTime = shared.SchedulePointInTime
 

@@ -790,13 +790,21 @@ func (r *V2ContractEditResponseDataEditAddRecurringCommit) UnmarshalJSON(data []
 
 // The amount of commit to grant.
 type V2ContractEditResponseDataEditAddRecurringCommitAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -1054,13 +1062,21 @@ func (r *V2ContractEditResponseDataEditAddRecurringCredit) UnmarshalJSON(data []
 
 // The amount of commit to grant.
 type V2ContractEditResponseDataEditAddRecurringCreditAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -3574,13 +3590,21 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCommit) UnmarshalJSON(d
 
 // The amount of commit to grant.
 type V2ContractGetEditHistoryResponseDataAddRecurringCommitAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -3842,13 +3866,21 @@ func (r *V2ContractGetEditHistoryResponseDataAddRecurringCredit) UnmarshalJSON(d
 
 // The amount of commit to grant.
 type V2ContractGetEditHistoryResponseDataAddRecurringCreditAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -6104,6 +6136,12 @@ func init() {
 type V2ContractEditParamsAddCommitAccessSchedule struct {
 	ScheduleItems []V2ContractEditParamsAddCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	CreditTypeID  param.Opt[string]                                         `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -6113,6 +6151,12 @@ func (r V2ContractEditParamsAddCommitAccessSchedule) MarshalJSON() (data []byte,
 }
 func (r *V2ContractEditParamsAddCommitAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddCommitAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
@@ -6409,6 +6453,12 @@ func init() {
 type V2ContractEditParamsAddCreditAccessSchedule struct {
 	ScheduleItems []V2ContractEditParamsAddCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	CreditTypeID  param.Opt[string]                                         `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -6418,6 +6468,12 @@ func (r V2ContractEditParamsAddCreditAccessSchedule) MarshalJSON() (data []byte,
 }
 func (r *V2ContractEditParamsAddCreditAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddCreditAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
@@ -6843,6 +6899,11 @@ type V2ContractEditParamsAddRecurringCommitAccessAmount struct {
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -6852,6 +6913,12 @@ func (r V2ContractEditParamsAddRecurringCommitAccessAmount) MarshalJSON() (data 
 }
 func (r *V2ContractEditParamsAddRecurringCommitAccessAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddRecurringCommitAccessAmount](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // Defines the length of the access schedule for each created commit/credit. The
@@ -7104,6 +7171,11 @@ type V2ContractEditParamsAddRecurringCreditAccessAmount struct {
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -7113,6 +7185,12 @@ func (r V2ContractEditParamsAddRecurringCreditAccessAmount) MarshalJSON() (data 
 }
 func (r *V2ContractEditParamsAddRecurringCreditAccessAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V2ContractEditParamsAddRecurringCreditAccessAmount](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // Defines the length of the access schedule for each created commit/credit. The
