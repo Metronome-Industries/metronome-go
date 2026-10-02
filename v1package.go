@@ -782,7 +782,7 @@ func (r *V1PackageGetResponseDataScheduledChargeScheduleScheduleItemDateOffset) 
 type V1PackageGetResponseDataUsageStatementSchedule struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
-	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
 	Day string `json:"day"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2402,7 +2402,7 @@ func (r *V1PackageListResponseScheduledChargeScheduleScheduleItemDateOffset) Unm
 type V1PackageListResponseUsageStatementSchedule struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
-	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
 	Day string `json:"day"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5244,7 +5244,7 @@ type V1PackageNewParamsUsageStatementSchedule struct {
 	Frequency string `json:"frequency,omitzero" api:"required"`
 	// If not provided, defaults to the first day of the month.
 	//
-	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
 	Day string `json:"day,omitzero"`
 	// The offset at which Metronome should start generating usage invoices, relative
 	// to the contract start date. If unspecified, contract start date will be used.
@@ -5268,7 +5268,7 @@ func init() {
 		"frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
 	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsUsageStatementSchedule](
-		"day", "FIRST_OF_MONTH", "CONTRACT_START",
+		"day", "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE",
 	)
 }
 
