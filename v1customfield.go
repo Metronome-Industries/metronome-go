@@ -134,6 +134,9 @@ func (r *V1CustomFieldService) RemoveKey(ctx context.Context, body V1CustomField
 // existing values for matching keys while preserving other fields. All updates are
 // transactional—either all values are set or none are. Custom field values are
 // limited to 200 characters each.
+//
+// Adding or updating custom fields on credits, commits, or contracts does not emit
+// `credit.edit`, `commit.edit`, or `contract.edit` events.
 func (r *V1CustomFieldService) SetValues(ctx context.Context, body V1CustomFieldSetValuesParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

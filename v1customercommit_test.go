@@ -34,6 +34,7 @@ func TestV1CustomerCommitNewWithOptionalParams(t *testing.T) {
 				EndingBefore: time.Now(),
 				StartingAt:   time.Now(),
 			}},
+			AccessType:   "SPEND",
 			CreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
 		},
 		CustomerID:            "13117714-3f05-48e5-a6e9-a66093f13b4d",
@@ -106,6 +107,7 @@ func TestV1CustomerCommitListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.V1.Customers.Commits.List(context.TODO(), metronome.V1CustomerCommitListParams{
 		CustomerID:             "13117714-3f05-48e5-a6e9-a66093f13b4d",
+		AccessType:             metronome.V1CustomerCommitListParamsAccessTypeSpend,
 		CommitID:               metronome.String("6162d87b-e5db-4a33-b7f2-76ce6ead4e85"),
 		CoveringDate:           metronome.Time(time.Now()),
 		EffectiveBefore:        metronome.Time(time.Now()),

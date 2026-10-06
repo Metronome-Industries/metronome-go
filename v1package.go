@@ -388,10 +388,16 @@ func (r *V1PackageGetResponseDataCommitProduct) UnmarshalJSON(data []byte) error
 type V1PackageGetResponseDataCommitAccessSchedule struct {
 	CreditType    shared.CreditTypeData                                      `json:"credit_type" api:"required"`
 	ScheduleItems []V1PackageGetResponseDataCommitAccessScheduleScheduleItem `json:"schedule_items" api:"required"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditType    respjson.Field
 		ScheduleItems respjson.Field
+		AccessType    respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -776,7 +782,7 @@ func (r *V1PackageGetResponseDataScheduledChargeScheduleScheduleItemDateOffset) 
 type V1PackageGetResponseDataUsageStatementSchedule struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
-	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
 	Day string `json:"day"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -875,10 +881,16 @@ func (r *V1PackageGetResponseDataCreditProduct) UnmarshalJSON(data []byte) error
 type V1PackageGetResponseDataCreditAccessSchedule struct {
 	CreditType    shared.CreditTypeData                                      `json:"credit_type" api:"required"`
 	ScheduleItems []V1PackageGetResponseDataCreditAccessScheduleScheduleItem `json:"schedule_items" api:"required"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditType    respjson.Field
 		ScheduleItems respjson.Field
+		AccessType    respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -1059,13 +1071,21 @@ func (r *V1PackageGetResponseDataRecurringCommit) UnmarshalJSON(data []byte) err
 
 // The amount of commit to grant.
 type V1PackageGetResponseDataRecurringCommitAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -1374,13 +1394,21 @@ func (r *V1PackageGetResponseDataRecurringCredit) UnmarshalJSON(data []byte) err
 
 // The amount of commit to grant.
 type V1PackageGetResponseDataRecurringCreditAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -1614,6 +1642,9 @@ type V1PackageGetResponseDataSubscription struct {
 	SubscriptionRate   V1PackageGetResponseDataSubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
 	ID                 string                                                 `json:"id" format:"uuid"`
 	BillingCycleConfig V1PackageGetResponseDataSubscriptionBillingCycleConfig `json:"billing_cycle_config"`
+	// If provided, the subscription's price will be in terms of this custom pricing
+	// unit instead of the fiat currency.
+	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string                            `json:"custom_fields"`
 	Description      string                                       `json:"description"`
@@ -1642,6 +1673,7 @@ type V1PackageGetResponseDataSubscription struct {
 		SubscriptionRate       respjson.Field
 		ID                     respjson.Field
 		BillingCycleConfig     respjson.Field
+		CustomCreditTypeID     respjson.Field
 		CustomFields           respjson.Field
 		Description            respjson.Field
 		Duration               respjson.Field
@@ -1984,10 +2016,16 @@ func (r *V1PackageListResponseCommitProduct) UnmarshalJSON(data []byte) error {
 type V1PackageListResponseCommitAccessSchedule struct {
 	CreditType    shared.CreditTypeData                                   `json:"credit_type" api:"required"`
 	ScheduleItems []V1PackageListResponseCommitAccessScheduleScheduleItem `json:"schedule_items" api:"required"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditType    respjson.Field
 		ScheduleItems respjson.Field
+		AccessType    respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -2368,7 +2406,7 @@ func (r *V1PackageListResponseScheduledChargeScheduleScheduleItemDateOffset) Unm
 type V1PackageListResponseUsageStatementSchedule struct {
 	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
-	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
 	Day string `json:"day"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2481,10 +2519,16 @@ func (r *V1PackageListResponseCreditProduct) UnmarshalJSON(data []byte) error {
 type V1PackageListResponseCreditAccessSchedule struct {
 	CreditType    shared.CreditTypeData                                   `json:"credit_type" api:"required"`
 	ScheduleItems []V1PackageListResponseCreditAccessScheduleScheduleItem `json:"schedule_items" api:"required"`
+	// Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditType    respjson.Field
 		ScheduleItems respjson.Field
+		AccessType    respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -2685,13 +2729,21 @@ func (r *V1PackageListResponseRecurringCommit) UnmarshalJSON(data []byte) error 
 
 // The amount of commit to grant.
 type V1PackageListResponseRecurringCommitAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -2998,13 +3050,21 @@ func (r *V1PackageListResponseRecurringCredit) UnmarshalJSON(data []byte) error 
 
 // The amount of commit to grant.
 type V1PackageListResponseRecurringCreditAccessAmount struct {
+	// This ID identifies the credit type for the access amount. Quantity-based
+	// recurring commits and credits return the null credit type UUID.
 	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
 	UnitPrice    float64 `json:"unit_price" api:"required"`
-	Quantity     float64 `json:"quantity"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string  `json:"access_type"`
+	Quantity   float64 `json:"quantity"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreditTypeID respjson.Field
 		UnitPrice    respjson.Field
+		AccessType   respjson.Field
 		Quantity     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -3247,6 +3307,9 @@ type V1PackageListResponseSubscription struct {
 	SubscriptionRate   V1PackageListResponseSubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
 	ID                 string                                              `json:"id" format:"uuid"`
 	BillingCycleConfig V1PackageListResponseSubscriptionBillingCycleConfig `json:"billing_cycle_config"`
+	// If provided, the subscription's price will be in terms of this custom pricing
+	// unit instead of the fiat currency.
+	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string                         `json:"custom_fields"`
 	Description      string                                    `json:"description"`
@@ -3275,6 +3338,7 @@ type V1PackageListResponseSubscription struct {
 		SubscriptionRate       respjson.Field
 		ID                     respjson.Field
 		BillingCycleConfig     respjson.Field
+		CustomCreditTypeID     respjson.Field
 		CustomFields           respjson.Field
 		Description            respjson.Field
 		Duration               respjson.Field
@@ -3650,6 +3714,12 @@ type V1PackageNewParamsCommitAccessSchedule struct {
 	ScheduleItems []V1PackageNewParamsCommitAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -3659,6 +3729,12 @@ func (r V1PackageNewParamsCommitAccessSchedule) MarshalJSON() (data []byte, err 
 }
 func (r *V1PackageNewParamsCommitAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsCommitAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, Duration, StartingAtOffset are required.
@@ -3849,6 +3925,12 @@ type V1PackageNewParamsCreditAccessSchedule struct {
 	ScheduleItems []V1PackageNewParamsCreditAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -3858,6 +3940,12 @@ func (r V1PackageNewParamsCreditAccessSchedule) MarshalJSON() (data []byte, err 
 }
 func (r *V1PackageNewParamsCreditAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsCreditAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, Duration, StartingAtOffset are required.
@@ -4265,13 +4353,19 @@ func init() {
 
 // The amount of commit to grant.
 //
-// The properties CreditTypeID, UnitPrice are required.
+// The property UnitPrice is required.
 type V1PackageNewParamsRecurringCommitAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
+	UnitPrice float64 `json:"unit_price" api:"required"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -4281,6 +4375,12 @@ func (r V1PackageNewParamsRecurringCommitAccessAmount) MarshalJSON() (data []byt
 }
 func (r *V1PackageNewParamsRecurringCommitAccessAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCommitAccessAmount](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // Defines the length of the access schedule for each created commit/credit. The
@@ -4573,13 +4673,19 @@ func init() {
 
 // The amount of commit to grant.
 //
-// The properties CreditTypeID, UnitPrice are required.
+// The property UnitPrice is required.
 type V1PackageNewParamsRecurringCreditAccessAmount struct {
-	CreditTypeID string  `json:"credit_type_id" api:"required" format:"uuid"`
-	UnitPrice    float64 `json:"unit_price" api:"required"`
+	UnitPrice float64 `json:"unit_price" api:"required"`
+	// Defaults to USD (cents) if not passed
+	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
 	// This field is required unless a subscription is attached via
 	// `subscription_config`.
 	Quantity param.Opt[float64] `json:"quantity,omitzero"`
+	// Indicates how the balance of child commits is drawn down. `SPEND` deducts the
+	// dollar cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -4589,6 +4695,12 @@ func (r V1PackageNewParamsRecurringCreditAccessAmount) MarshalJSON() (data []byt
 }
 func (r *V1PackageNewParamsRecurringCreditAccessAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCreditAccessAmount](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // Defines the length of the access schedule for each created commit/credit. The
@@ -5140,7 +5252,7 @@ type V1PackageNewParamsUsageStatementSchedule struct {
 	Frequency string `json:"frequency,omitzero" api:"required"`
 	// If not provided, defaults to the first day of the month.
 	//
-	// Any of "FIRST_OF_MONTH", "CONTRACT_START".
+	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
 	Day string `json:"day,omitzero"`
 	// The offset at which Metronome should start generating usage invoices, relative
 	// to the contract start date. If unspecified, contract start date will be used.
@@ -5164,7 +5276,7 @@ func init() {
 		"frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
 	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsUsageStatementSchedule](
-		"day", "FIRST_OF_MONTH", "CONTRACT_START",
+		"day", "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE",
 	)
 }
 
