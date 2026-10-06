@@ -2080,16 +2080,20 @@ func (r *V1ContractGetSubscriptionQuantityHistoryResponse) UnmarshalJSON(data []
 }
 
 type V1ContractGetSubscriptionQuantityHistoryResponseData struct {
-	FiatCreditTypeID string                                                        `json:"fiat_credit_type_id" format:"uuid"`
-	History          []V1ContractGetSubscriptionQuantityHistoryResponseDataHistory `json:"history"`
-	SubscriptionID   string                                                        `json:"subscription_id" format:"uuid"`
+	// The pricing unit for history prices when present. Otherwise prices use
+	// fiat_credit_type_id.
+	CustomCreditTypeID string                                                        `json:"custom_credit_type_id" format:"uuid"`
+	FiatCreditTypeID   string                                                        `json:"fiat_credit_type_id" format:"uuid"`
+	History            []V1ContractGetSubscriptionQuantityHistoryResponseDataHistory `json:"history"`
+	SubscriptionID     string                                                        `json:"subscription_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FiatCreditTypeID respjson.Field
-		History          respjson.Field
-		SubscriptionID   respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		CustomCreditTypeID respjson.Field
+		FiatCreditTypeID   respjson.Field
+		History            respjson.Field
+		SubscriptionID     respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 

@@ -1642,6 +1642,9 @@ type V1PackageGetResponseDataSubscription struct {
 	SubscriptionRate   V1PackageGetResponseDataSubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
 	ID                 string                                                 `json:"id" format:"uuid"`
 	BillingCycleConfig V1PackageGetResponseDataSubscriptionBillingCycleConfig `json:"billing_cycle_config"`
+	// If provided, the subscription's price will be in terms of this custom pricing
+	// unit instead of the fiat currency.
+	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string                            `json:"custom_fields"`
 	Description      string                                       `json:"description"`
@@ -1670,6 +1673,7 @@ type V1PackageGetResponseDataSubscription struct {
 		SubscriptionRate       respjson.Field
 		ID                     respjson.Field
 		BillingCycleConfig     respjson.Field
+		CustomCreditTypeID     respjson.Field
 		CustomFields           respjson.Field
 		Description            respjson.Field
 		Duration               respjson.Field
@@ -3303,6 +3307,9 @@ type V1PackageListResponseSubscription struct {
 	SubscriptionRate   V1PackageListResponseSubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
 	ID                 string                                              `json:"id" format:"uuid"`
 	BillingCycleConfig V1PackageListResponseSubscriptionBillingCycleConfig `json:"billing_cycle_config"`
+	// If provided, the subscription's price will be in terms of this custom pricing
+	// unit instead of the fiat currency.
+	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string                         `json:"custom_fields"`
 	Description      string                                    `json:"description"`
@@ -3331,6 +3338,7 @@ type V1PackageListResponseSubscription struct {
 		SubscriptionRate       respjson.Field
 		ID                     respjson.Field
 		BillingCycleConfig     respjson.Field
+		CustomCreditTypeID     respjson.Field
 		CustomFields           respjson.Field
 		Description            respjson.Field
 		Duration               respjson.Field

@@ -3995,6 +3995,9 @@ type ContractV2Subscription struct {
 	SubscriptionRate   ContractV2SubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
 	ID                 string                                   `json:"id" format:"uuid"`
 	BillingCycleConfig ContractV2SubscriptionBillingCycleConfig `json:"billing_cycle_config"`
+	// If provided, the subscription's price will be in terms of this custom pricing
+	// unit instead of the fiat currency.
+	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string `json:"custom_fields"`
 	Description      string            `json:"description"`
@@ -4017,6 +4020,7 @@ type ContractV2Subscription struct {
 		SubscriptionRate       respjson.Field
 		ID                     respjson.Field
 		BillingCycleConfig     respjson.Field
+		CustomCreditTypeID     respjson.Field
 		CustomFields           respjson.Field
 		Description            respjson.Field
 		EndingBefore           respjson.Field
@@ -7943,6 +7947,9 @@ type Subscription struct {
 	SubscriptionRate   SubscriptionSubscriptionRate   `json:"subscription_rate" api:"required"`
 	ID                 string                         `json:"id" format:"uuid"`
 	BillingCycleConfig SubscriptionBillingCycleConfig `json:"billing_cycle_config"`
+	// If provided, the subscription's price will be in terms of this custom pricing
+	// unit instead of the fiat currency.
+	CustomCreditTypeID string `json:"custom_credit_type_id" format:"uuid"`
 	// Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
 	CustomFields     map[string]string `json:"custom_fields"`
 	Description      string            `json:"description"`
@@ -7965,6 +7972,7 @@ type Subscription struct {
 		SubscriptionRate       respjson.Field
 		ID                     respjson.Field
 		BillingCycleConfig     respjson.Field
+		CustomCreditTypeID     respjson.Field
 		CustomFields           respjson.Field
 		Description            respjson.Field
 		EndingBefore           respjson.Field
