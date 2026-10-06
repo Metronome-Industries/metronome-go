@@ -140,7 +140,7 @@ func (r *V2ContractService) ListAutoPaging(ctx context.Context, body V2ContractL
 //     that edit. Finalized invoices remain unchanged - you must void and regenerate
 //     them in the UI or API to reflect the edit.
 //   - Contract editing must be enabled to use this endpoint. Contact us via the
-//     [Metronome support portal](https://support.metronome.com/) to learn more.
+//     [Metronome support portal](https://app.metronome.com/support) to learn more.
 func (r *V2ContractService) Edit(ctx context.Context, body V2ContractEditParams, opts ...option.RequestOption) (res *V2ContractEditResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/contracts/edit"
