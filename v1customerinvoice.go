@@ -1206,9 +1206,9 @@ type V1CustomerInvoiceListParams struct {
 	// RFC 3339 timestamp (exclusive). Invoices will only be returned for billing
 	// periods that end before this time.
 	EndingBefore param.Opt[time.Time] `query:"ending_before,omitzero" format:"date-time" json:"-"`
-	// When true, includes retired commit invoices alongside active invoices. Defaults
-	// to false.
-	IncludeRetiredCommitInvoices param.Opt[bool] `query:"include_retired_commit_invoices,omitzero" json:"-"`
+	// When true, includes historical commit invoices alongside active invoices.
+	// Defaults to false.
+	IncludeHistoricalCommitInvoices param.Opt[bool] `query:"include_historical_commit_invoices,omitzero" json:"-"`
 	// Max number of results that should be returned
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Cursor that indicates where the next page of results should start.

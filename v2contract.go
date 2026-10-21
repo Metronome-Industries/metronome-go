@@ -1280,6 +1280,7 @@ type V2ContractEditResponseDataEditAddSubscription struct {
 	BillingPeriods V2ContractEditResponseDataEditAddSubscriptionBillingPeriods `json:"billing_periods" api:"required"`
 	// Any of "ADVANCE", "ARREARS".
 	CollectionSchedule string                                                 `json:"collection_schedule" api:"required"`
+	CreatedAt          time.Time                                              `json:"created_at" api:"required" format:"date-time"`
 	Proration          V2ContractEditResponseDataEditAddSubscriptionProration `json:"proration" api:"required"`
 	// Determines how the subscription's quantity is controlled. Defaults to
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
@@ -1318,6 +1319,7 @@ type V2ContractEditResponseDataEditAddSubscription struct {
 	JSON struct {
 		BillingPeriods         respjson.Field
 		CollectionSchedule     respjson.Field
+		CreatedAt              respjson.Field
 		Proration              respjson.Field
 		QuantityManagementMode respjson.Field
 		QuantitySchedule       respjson.Field
@@ -4094,6 +4096,7 @@ type V2ContractGetEditHistoryResponseDataAddSubscription struct {
 	BillingPeriods V2ContractGetEditHistoryResponseDataAddSubscriptionBillingPeriods `json:"billing_periods" api:"required"`
 	// Any of "ADVANCE", "ARREARS".
 	CollectionSchedule string                                                       `json:"collection_schedule" api:"required"`
+	CreatedAt          time.Time                                                    `json:"created_at" api:"required" format:"date-time"`
 	Proration          V2ContractGetEditHistoryResponseDataAddSubscriptionProration `json:"proration" api:"required"`
 	// Determines how the subscription's quantity is controlled. Defaults to
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
@@ -4132,6 +4135,7 @@ type V2ContractGetEditHistoryResponseDataAddSubscription struct {
 	JSON struct {
 		BillingPeriods         respjson.Field
 		CollectionSchedule     respjson.Field
+		CreatedAt              respjson.Field
 		Proration              respjson.Field
 		QuantityManagementMode respjson.Field
 		QuantitySchedule       respjson.Field

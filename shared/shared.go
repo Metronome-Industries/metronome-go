@@ -3975,6 +3975,7 @@ type ContractV2Subscription struct {
 	BillingPeriods ContractV2SubscriptionBillingPeriods `json:"billing_periods" api:"required"`
 	// Any of "ADVANCE", "ARREARS".
 	CollectionSchedule string                          `json:"collection_schedule" api:"required"`
+	CreatedAt          time.Time                       `json:"created_at" api:"required" format:"date-time"`
 	Proration          ContractV2SubscriptionProration `json:"proration" api:"required"`
 	// Determines how the subscription's quantity is controlled. Defaults to
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
@@ -4013,6 +4014,7 @@ type ContractV2Subscription struct {
 	JSON struct {
 		BillingPeriods         respjson.Field
 		CollectionSchedule     respjson.Field
+		CreatedAt              respjson.Field
 		Proration              respjson.Field
 		QuantityManagementMode respjson.Field
 		QuantitySchedule       respjson.Field
@@ -7927,6 +7929,7 @@ type Subscription struct {
 	BillingPeriods SubscriptionBillingPeriods `json:"billing_periods" api:"required"`
 	// Any of "ADVANCE", "ARREARS".
 	CollectionSchedule SubscriptionCollectionSchedule `json:"collection_schedule" api:"required"`
+	CreatedAt          time.Time                      `json:"created_at" api:"required" format:"date-time"`
 	Proration          SubscriptionProration          `json:"proration" api:"required"`
 	// Determines how the subscription's quantity is controlled. Defaults to
 	// QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified
@@ -7965,6 +7968,7 @@ type Subscription struct {
 	JSON struct {
 		BillingPeriods         respjson.Field
 		CollectionSchedule     respjson.Field
+		CreatedAt              respjson.Field
 		Proration              respjson.Field
 		QuantityManagementMode respjson.Field
 		QuantitySchedule       respjson.Field
