@@ -120,6 +120,8 @@ func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ..
 //     customers
 //   - Historical preservation: Archive operation maintains threshold notification
 //     history and configuration for compliance and auditing
+//   - Idempotent: Archiving an already-archived threshold notification returns the
+//     same successful response
 func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams, opts ...option.RequestOption) (res *V1AlertArchiveResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/alerts/archive"
