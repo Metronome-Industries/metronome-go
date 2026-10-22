@@ -32,8 +32,8 @@ func NewV2NotificationSystemService(opts ...option.RequestOption) (r V2Notificat
 	return
 }
 
-// List available system lifecycle event types for notifications. These are
-// read-only event types that can be used when creating offset notifications.
+// List available system notification types. You can enable these notifications
+// directly or use supported types to create offset notifications.
 func (r *V2NotificationSystemService) List(ctx context.Context, opts ...option.RequestOption) (res *V2NotificationSystemListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notifications/system/list"

@@ -120,6 +120,8 @@ func (r *V1AlertService) New(ctx context.Context, body V1AlertNewParams, opts ..
 //     customers
 //   - Historical preservation: Archive operation maintains threshold notification
 //     history and configuration for compliance and auditing
+//   - Idempotent: Archiving an already-archived threshold notification returns the
+//     same successful response
 func (r *V1AlertService) Archive(ctx context.Context, body V1AlertArchiveParams, opts ...option.RequestOption) (res *V1AlertArchiveResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/alerts/archive"
@@ -172,6 +174,7 @@ type V1AlertNewParams struct {
 	// "low_remaining_contract_credit_balance_reached",
 	// "low_remaining_contract_credit_percentage_reached",
 	// "low_remaining_contract_credit_and_commit_balance_reached",
+	// "low_remaining_contract_credit_and_commit_percentage_reached",
 	// "invoice_total_reached", "low_remaining_seat_balance_reached".
 	AlertType V1AlertNewParamsAlertType `json:"alert_type,omitzero" api:"required"`
 	// Name of the threshold notification
@@ -201,9 +204,22 @@ type V1AlertNewParams struct {
 	// with a previously used uniqueness key, a new record will not be created and the
 	// request will fail with a 409 error.
 	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
-	// Can be used with only `low_remaining_contract_credit_and_commit_balance_reached`
-	// notifications. Defines the balances that are considered when evaluating the
-	// alert.
+	// Filters the notification to commits/credits with this access type. Only
+	// supported for `low_remaining_commit_balance_reached`,
+	// `low_remaining_commit_percentage_reached`,
+	// `low_remaining_contract_credit_and_commit_balance_reached`,
+	// `low_remaining_contract_credit_and_commit_percentage_reached`,
+	// `low_remaining_contract_credit_balance_reached`,
+	// `low_remaining_contract_credit_percentage_reached`, and
+	// `low_remaining_seat_balance_reached` notifications. Credit type cannot be
+	// specified if using QUANTITY access type.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType V1AlertNewParamsAccessType `json:"access_type,omitzero"`
+	// Can be used only with `low_remaining_contract_credit_and_commit_balance_reached`
+	// and `low_remaining_contract_credit_and_commit_percentage_reached` notifications.
+	// Defines the commits and credits used to calculate the remaining balance or
+	// percentage.
 	AlertSpecifiers []V1AlertNewParamsAlertSpecifier `json:"alert_specifiers,omitzero"`
 	// An array of strings, representing a way to filter the credit grant this
 	// threshold notification applies to, by looking at the credit_grant_type field on
@@ -237,21 +253,38 @@ func (r *V1AlertNewParams) UnmarshalJSON(data []byte) error {
 type V1AlertNewParamsAlertType string
 
 const (
-	V1AlertNewParamsAlertTypeLowCreditBalanceReached                           V1AlertNewParamsAlertType = "low_credit_balance_reached"
-	V1AlertNewParamsAlertTypeSpendThresholdReached                             V1AlertNewParamsAlertType = "spend_threshold_reached"
-	V1AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached          V1AlertNewParamsAlertType = "monthly_invoice_total_spend_threshold_reached"
-	V1AlertNewParamsAlertTypeLowRemainingDaysInPlanReached                     V1AlertNewParamsAlertType = "low_remaining_days_in_plan_reached"
-	V1AlertNewParamsAlertTypeLowRemainingCreditPercentageReached               V1AlertNewParamsAlertType = "low_remaining_credit_percentage_reached"
-	V1AlertNewParamsAlertTypeUsageThresholdReached                             V1AlertNewParamsAlertType = "usage_threshold_reached"
-	V1AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached           V1AlertNewParamsAlertType = "low_remaining_days_for_commit_segment_reached"
-	V1AlertNewParamsAlertTypeLowRemainingCommitBalanceReached                  V1AlertNewParamsAlertType = "low_remaining_commit_balance_reached"
-	V1AlertNewParamsAlertTypeLowRemainingCommitPercentageReached               V1AlertNewParamsAlertType = "low_remaining_commit_percentage_reached"
-	V1AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached   V1AlertNewParamsAlertType = "low_remaining_days_for_contract_credit_segment_reached"
-	V1AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached          V1AlertNewParamsAlertType = "low_remaining_contract_credit_balance_reached"
-	V1AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached       V1AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
-	V1AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached V1AlertNewParamsAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
-	V1AlertNewParamsAlertTypeInvoiceTotalReached                               V1AlertNewParamsAlertType = "invoice_total_reached"
-	V1AlertNewParamsAlertTypeLowRemainingSeatBalanceReached                    V1AlertNewParamsAlertType = "low_remaining_seat_balance_reached"
+	V1AlertNewParamsAlertTypeLowCreditBalanceReached                              V1AlertNewParamsAlertType = "low_credit_balance_reached"
+	V1AlertNewParamsAlertTypeSpendThresholdReached                                V1AlertNewParamsAlertType = "spend_threshold_reached"
+	V1AlertNewParamsAlertTypeMonthlyInvoiceTotalSpendThresholdReached             V1AlertNewParamsAlertType = "monthly_invoice_total_spend_threshold_reached"
+	V1AlertNewParamsAlertTypeLowRemainingDaysInPlanReached                        V1AlertNewParamsAlertType = "low_remaining_days_in_plan_reached"
+	V1AlertNewParamsAlertTypeLowRemainingCreditPercentageReached                  V1AlertNewParamsAlertType = "low_remaining_credit_percentage_reached"
+	V1AlertNewParamsAlertTypeUsageThresholdReached                                V1AlertNewParamsAlertType = "usage_threshold_reached"
+	V1AlertNewParamsAlertTypeLowRemainingDaysForCommitSegmentReached              V1AlertNewParamsAlertType = "low_remaining_days_for_commit_segment_reached"
+	V1AlertNewParamsAlertTypeLowRemainingCommitBalanceReached                     V1AlertNewParamsAlertType = "low_remaining_commit_balance_reached"
+	V1AlertNewParamsAlertTypeLowRemainingCommitPercentageReached                  V1AlertNewParamsAlertType = "low_remaining_commit_percentage_reached"
+	V1AlertNewParamsAlertTypeLowRemainingDaysForContractCreditSegmentReached      V1AlertNewParamsAlertType = "low_remaining_days_for_contract_credit_segment_reached"
+	V1AlertNewParamsAlertTypeLowRemainingContractCreditBalanceReached             V1AlertNewParamsAlertType = "low_remaining_contract_credit_balance_reached"
+	V1AlertNewParamsAlertTypeLowRemainingContractCreditPercentageReached          V1AlertNewParamsAlertType = "low_remaining_contract_credit_percentage_reached"
+	V1AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitBalanceReached    V1AlertNewParamsAlertType = "low_remaining_contract_credit_and_commit_balance_reached"
+	V1AlertNewParamsAlertTypeLowRemainingContractCreditAndCommitPercentageReached V1AlertNewParamsAlertType = "low_remaining_contract_credit_and_commit_percentage_reached"
+	V1AlertNewParamsAlertTypeInvoiceTotalReached                                  V1AlertNewParamsAlertType = "invoice_total_reached"
+	V1AlertNewParamsAlertTypeLowRemainingSeatBalanceReached                       V1AlertNewParamsAlertType = "low_remaining_seat_balance_reached"
+)
+
+// Filters the notification to commits/credits with this access type. Only
+// supported for `low_remaining_commit_balance_reached`,
+// `low_remaining_commit_percentage_reached`,
+// `low_remaining_contract_credit_and_commit_balance_reached`,
+// `low_remaining_contract_credit_and_commit_percentage_reached`,
+// `low_remaining_contract_credit_balance_reached`,
+// `low_remaining_contract_credit_percentage_reached`, and
+// `low_remaining_seat_balance_reached` notifications. Credit type cannot be
+// specified if using QUANTITY access type.
+type V1AlertNewParamsAccessType string
+
+const (
+	V1AlertNewParamsAccessTypeSpend    V1AlertNewParamsAccessType = "SPEND"
+	V1AlertNewParamsAccessTypeQuantity V1AlertNewParamsAccessType = "QUANTITY"
 )
 
 type V1AlertNewParamsAlertSpecifier struct {

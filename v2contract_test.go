@@ -58,9 +58,11 @@ func TestV2ContractListWithOptionalParams(t *testing.T) {
 	_, err := client.V2.Contracts.List(context.TODO(), metronome.V2ContractListParams{
 		CustomerID:      "13117714-3f05-48e5-a6e9-a66093f13b4d",
 		CoveringDate:    metronome.Time(time.Now()),
+		Cursor:          metronome.String("cursor"),
 		IncludeArchived: metronome.Bool(true),
 		IncludeBalance:  metronome.Bool(true),
 		IncludeLedgers:  metronome.Bool(true),
+		Limit:           metronome.Float(1),
 		StartingAt:      metronome.Time(time.Now()),
 	})
 	if err != nil {
@@ -106,6 +108,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					EndingBefore: time.Now(),
 					StartingAt:   time.Now(),
 				}},
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			},
 			Amount:                metronome.Float(0),
@@ -183,6 +186,7 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 					EndingBefore: time.Now(),
 					StartingAt:   time.Now(),
 				}},
+				AccessType:   "SPEND",
 				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			},
 			ProductID:             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -361,8 +365,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}},
 		AddRecurringCommits: []metronome.V2ContractEditParamsAddRecurringCommit{{
 			AccessAmount: metronome.V2ContractEditParamsAddRecurringCommitAccessAmount{
-				CreditTypeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				UnitPrice:    0,
+				AccessType:   "SPEND",
+				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
 			CommitDuration: metronome.V2ContractEditParamsAddRecurringCommitCommitDuration{
@@ -425,8 +430,9 @@ func TestV2ContractEditWithOptionalParams(t *testing.T) {
 		}},
 		AddRecurringCredits: []metronome.V2ContractEditParamsAddRecurringCredit{{
 			AccessAmount: metronome.V2ContractEditParamsAddRecurringCreditAccessAmount{
-				CreditTypeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				UnitPrice:    0,
+				AccessType:   "SPEND",
+				CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Quantity:     metronome.Float(0),
 			},
 			CommitDuration: metronome.V2ContractEditParamsAddRecurringCreditCommitDuration{

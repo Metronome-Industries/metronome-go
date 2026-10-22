@@ -128,11 +128,9 @@ type V1CustomerBillingConfigGetResponseData struct {
 	// Any of "Subscribed", "Unsubscribed", "Suspended", "PendingFulfillmentStart".
 	AzureSubscriptionStatus   string `json:"azure_subscription_status"`
 	BillingProviderCustomerID string `json:"billing_provider_customer_id"`
-	// The collection method for the customer's invoices. NOTE:
-	// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
+	// The collection method for the customer's invoices.
 	//
-	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
-	// "manually_charge_payment_intent".
+	// Any of "charge_automatically", "send_invoice".
 	StripeCollectionMethod string `json:"stripe_collection_method"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -177,11 +175,9 @@ type V1CustomerBillingConfigNewParams struct {
 	// "us-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1",
 	// "us-west-2".
 	AwsRegion V1CustomerBillingConfigNewParamsAwsRegion `json:"aws_region,omitzero"`
-	// The collection method for the customer's invoices. NOTE:
-	// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
+	// The collection method for the customer's invoices.
 	//
-	// Any of "charge_automatically", "send_invoice", "auto_charge_payment_intent",
-	// "manually_charge_payment_intent".
+	// Any of "charge_automatically", "send_invoice".
 	StripeCollectionMethod V1CustomerBillingConfigNewParamsStripeCollectionMethod `json:"stripe_collection_method,omitzero"`
 	paramObj
 }
@@ -238,15 +234,12 @@ const (
 	V1CustomerBillingConfigNewParamsAwsRegionUsWest2      V1CustomerBillingConfigNewParamsAwsRegion = "us-west-2"
 )
 
-// The collection method for the customer's invoices. NOTE:
-// `auto_charge_payment_intent` and `manually_charge_payment_intent` are in beta.
+// The collection method for the customer's invoices.
 type V1CustomerBillingConfigNewParamsStripeCollectionMethod string
 
 const (
-	V1CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically         V1CustomerBillingConfigNewParamsStripeCollectionMethod = "charge_automatically"
-	V1CustomerBillingConfigNewParamsStripeCollectionMethodSendInvoice                 V1CustomerBillingConfigNewParamsStripeCollectionMethod = "send_invoice"
-	V1CustomerBillingConfigNewParamsStripeCollectionMethodAutoChargePaymentIntent     V1CustomerBillingConfigNewParamsStripeCollectionMethod = "auto_charge_payment_intent"
-	V1CustomerBillingConfigNewParamsStripeCollectionMethodManuallyChargePaymentIntent V1CustomerBillingConfigNewParamsStripeCollectionMethod = "manually_charge_payment_intent"
+	V1CustomerBillingConfigNewParamsStripeCollectionMethodChargeAutomatically V1CustomerBillingConfigNewParamsStripeCollectionMethod = "charge_automatically"
+	V1CustomerBillingConfigNewParamsStripeCollectionMethodSendInvoice         V1CustomerBillingConfigNewParamsStripeCollectionMethod = "send_invoice"
 )
 
 type V1CustomerBillingConfigGetParams struct {

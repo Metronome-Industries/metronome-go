@@ -346,6 +346,12 @@ type V1CustomerCommitNewParamsAccessSchedule struct {
 	ScheduleItems []V1CustomerCommitNewParamsAccessScheduleScheduleItem `json:"schedule_items,omitzero" api:"required"`
 	// Defaults to USD (cents) if not passed
 	CreditTypeID param.Opt[string] `json:"credit_type_id,omitzero" format:"uuid"`
+	// Determines how the balance is drawn down. `SPEND` deducts the dollar cost of
+	// usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if
+	// omitted.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType string `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -355,6 +361,12 @@ func (r V1CustomerCommitNewParamsAccessSchedule) MarshalJSON() (data []byte, err
 }
 func (r *V1CustomerCommitNewParamsAccessSchedule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[V1CustomerCommitNewParamsAccessSchedule](
+		"access_type", "SPEND", "QUANTITY",
+	)
 }
 
 // The properties Amount, EndingBefore, StartingAt are required.
@@ -513,6 +525,11 @@ type V1CustomerCommitListParams struct {
 	NextPage param.Opt[string] `json:"next_page,omitzero"`
 	// Include only commits that have any access on or after the provided date
 	StartingAt param.Opt[time.Time] `json:"starting_at,omitzero" format:"date-time"`
+	// Filters commits by how their balances are drawn down. `SPEND` deducts the dollar
+	// cost of usage. `QUANTITY` deducts the number of units used.
+	//
+	// Any of "SPEND", "QUANTITY".
+	AccessType V1CustomerCommitListParamsAccessType `json:"access_type,omitzero"`
 	paramObj
 }
 
@@ -523,6 +540,15 @@ func (r V1CustomerCommitListParams) MarshalJSON() (data []byte, err error) {
 func (r *V1CustomerCommitListParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Filters commits by how their balances are drawn down. `SPEND` deducts the dollar
+// cost of usage. `QUANTITY` deducts the number of units used.
+type V1CustomerCommitListParamsAccessType string
+
+const (
+	V1CustomerCommitListParamsAccessTypeSpend    V1CustomerCommitListParamsAccessType = "SPEND"
+	V1CustomerCommitListParamsAccessTypeQuantity V1CustomerCommitListParamsAccessType = "QUANTITY"
+)
 
 type V1CustomerCommitUpdateEndDateParams struct {
 	// ID of the commit to update. Only supports "PREPAID" commits.
