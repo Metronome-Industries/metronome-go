@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.13.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.12.1...v3.13.0) (2026-10-27)
+
+Adds quantity-based balances, pricing unit management, and cursor pagination for customer contracts.
+
+### Features
+
+* Support `SPEND` and `QUANTITY` access types for commit and credit schedules, balance queries, and threshold notifications, including combined remaining credit-and-commit percentage notifications. ([ee05e33](https://github.com/Metronome-Industries/metronome-go/commit/ee05e3300a39cc3656f3027ee0440ecee84fd44e))
+* Create and archive custom pricing units with `V1.PricingUnits.New` and `V1.PricingUnits.Archive`. ([f3195c5](https://github.com/Metronome-Industries/metronome-go/commit/f3195c5b5453f07c4df5e14e91be7f82b397e09e))
+* Accept `CUSTOM_DATE` for package usage statement schedule anchors. ([3df5e5f](https://github.com/Metronome-Industries/metronome-go/commit/3df5e5f42f71f4db67b131780f543f294a1ec830))
+* Include historical commit invoices when listing invoices with `IncludeHistoricalCommitInvoices`. ([ee05e33](https://github.com/Metronome-Industries/metronome-go/commit/ee05e3300a39cc3656f3027ee0440ecee84fd44e))
+* Expose credit and subscription creation timestamps in response models. ([95741e2](https://github.com/Metronome-Industries/metronome-go/commit/95741e2d4c6e5a950bbc8f342773528575a452e5), [5507118](https://github.com/Metronome-Industries/metronome-go/commit/5507118a596854698bd96f567047696ba8f541e9))
+
+### Documentation
+
+* Clarify that the notification edit API supports both offset and system notifications. ([52989c6](https://github.com/Metronome-Industries/metronome-go/commit/52989c69d2c9dbad2ee192611a3ade2d2b8e0c82))
+* Document that archiving an already-archived threshold notification succeeds. ([bc2a7e6](https://github.com/Metronome-Industries/metronome-go/commit/bc2a7e64f468ef74c705d9ed375022b257476cd5))
+* Clarify usage query UTC-midnight boundaries and the 200-value limit across group filters. ([06ea4d2](https://github.com/Metronome-Industries/metronome-go/commit/06ea4d26d76c48257bf4500c3ca67961ee6b5984), [5507118](https://github.com/Metronome-Industries/metronome-go/commit/5507118a596854698bd96f567047696ba8f541e9))
+* Update the support portal link and explain that custom-field updates do not emit credit, commit, or contract edit events. ([8c61ec2](https://github.com/Metronome-Industries/metronome-go/commit/8c61ec206e4ecfeabe64c46ed302bfc5f6f9eefc))
+
+### Breaking changes
+
+* `V1.Contracts.List` and `V2.Contracts.List` now return cursor page types; `V1ContractListResponse` and `V2ContractListResponse` have been removed. A page contains at most 20 contracts. Replace explicit references to the removed response types with `pagination.BodyCursorPageCursorField[shared.Contract]` or `pagination.BodyCursorPageCursorField[shared.ContractV2]`. Use `ListAutoPaging` to process all contracts, or follow `GetNextPage` when fetching pages manually. ([52989c6](https://github.com/Metronome-Industries/metronome-go/commit/52989c69d2c9dbad2ee192611a3ade2d2b8e0c82))
+* Recurring commit and credit access amounts now use `param.Opt[string]` for `CreditTypeID` in contract creation, contract editing, and package creation parameters. Wrap existing string values with `metronome.String(...)`; omit the field to use the API default. ([06ea4d2](https://github.com/Metronome-Industries/metronome-go/commit/06ea4d26d76c48257bf4500c3ca67961ee6b5984))
+
 ## [3.12.1](https://github.com/Metronome-Industries/metronome-go/compare/v3.12.0...v3.12.1) (2026-08-27)
 
 
