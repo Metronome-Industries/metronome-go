@@ -1,5 +1,37 @@
 # Changelog
 
+## [3.13.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.12.1...v3.13.0) (2026-10-27)
+
+
+### Features
+
+* add access_type to commit and credit endpoints ([ee05e33](https://github.com/Metronome-Industries/metronome-go/commit/ee05e3300a39cc3656f3027ee0440ecee84fd44e))
+* Add custom_credit_type_id to subscriptions ([925a0e1](https://github.com/Metronome-Industries/metronome-go/commit/925a0e11cf89f65fa1628952b8a1396c45da4c4d))
+* Create package with CUSTOM_DATE option. Provision package contract with custom billing_anchor_date. ([3df5e5f](https://github.com/Metronome-Industries/metronome-go/commit/3df5e5f42f71f4db67b131780f543f294a1ec830))
+* internal only ([06ea4d2](https://github.com/Metronome-Industries/metronome-go/commit/06ea4d26d76c48257bf4500c3ca67961ee6b5984))
+* internal only ([f3e84fa](https://github.com/Metronome-Industries/metronome-go/commit/f3e84fa546a38477a7284106dad44ad8494092bb))
+* internal only ([f3195c5](https://github.com/Metronome-Industries/metronome-go/commit/f3195c5b5453f07c4df5e14e91be7f82b397e09e))
+
+
+### Bug Fixes
+
+* prevent SDK generation from restoring release-doctor ([5507118](https://github.com/Metronome-Industries/metronome-go/commit/5507118a596854698bd96f567047696ba8f541e9))
+* **stlc:** reject collapsed custom-code tracking ([649b407](https://github.com/Metronome-Industries/metronome-go/commit/649b407d2a8bafc0644f946d892e93eb38d74096))
+
+
+### Chores
+
+* **api:** add feature-gated webhook delivery observability endpoint ([75b3b7e](https://github.com/Metronome-Industries/metronome-go/commit/75b3b7ec5ec6a50de15ee311c41dad245309a18b))
+* promote SDK changes from staging ([8a359bb](https://github.com/Metronome-Industries/metronome-go/commit/8a359bba6ca8fa6f1e919f3c2a1d6f2d16c32c9e))
+* wire package customizations field. ([95741e2](https://github.com/Metronome-Industries/metronome-go/commit/95741e2d4c6e5a950bbc8f342773528575a452e5))
+
+
+### Documentation
+
+* clarifying the edit notification API manages both system and offset notifications ([52989c6](https://github.com/Metronome-Industries/metronome-go/commit/52989c69d2c9dbad2ee192611a3ade2d2b8e0c82))
+* make /alerts/archive idempotent ([bc2a7e6](https://github.com/Metronome-Industries/metronome-go/commit/bc2a7e64f468ef74c705d9ed375022b257476cd5))
+* point existing support portal link to new portal link ([8c61ec2](https://github.com/Metronome-Industries/metronome-go/commit/8c61ec206e4ecfeabe64c46ed302bfc5f6f9eefc))
+
 ## [3.12.1](https://github.com/Metronome-Industries/metronome-go/compare/v3.12.0...v3.12.1) (2026-08-27)
 
 
