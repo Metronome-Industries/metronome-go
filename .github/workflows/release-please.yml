@@ -1,4 +1,5 @@
-# Runs release-please on push to main to create/update release PRs and GitHub Releases.
+# Creates or updates release PRs automatically on pushes to main.
+# Merged release PRs require approval before creating version tags and GitHub Releases.
 # Editing an existing release PR title applies an exact version override in place.
 # Built according to https://app.stainless.com/metronome/transition/docs/release
 #
@@ -17,7 +18,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [edited]
+    types: [edited, closed]
     branches: [main]
 
 permissions:
@@ -25,7 +26,7 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: release-please-${{ github.event.pull_request.number || github.ref }}
+  group: release-please-${{ github.event.pull_request.number || github.ref }}-${{ github.event.action || 'push' }}
   cancel-in-progress: true
 
 jobs:
@@ -33,6 +34,34 @@ jobs:
     if: >-
       github.repository == 'Metronome-Industries/metronome-go' &&
       github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: stlc-automation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mint STLC App token for release PRs
+        id: release-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.STLC_BOT_APP_ID }}
+          private-key: ${{ secrets.STLC_BOT_APP_PRIVATE_KEY }}
+          owner: Metronome-Industries
+          repositories: metronome-go
+          permission-contents: write
+          permission-pull-requests: write
+
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ steps.release-token.outputs.token }}
+          skip-github-release: true
+
+  publish-release:
+    if: >-
+      github.repository == 'Metronome-Industries/metronome-go' &&
+      github.event_name == 'pull_request' && github.event.action == 'closed' &&
+      github.event.pull_request.merged &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'release-please--branches--main') &&
+      contains(github.event.pull_request.labels.*.name, 'autorelease: pending')
     environment: package-release
     runs-on: ubuntu-latest
     steps:
@@ -48,9 +77,10 @@ jobs:
           permission-pull-requests: write
 
       - uses: googleapis/release-please-action@v4
-        id: release
         with:
           token: ${{ steps.release-token.outputs.token }}
+          target-branch: main
+          skip-github-pull-request: true
 
   in-place-version-override:
     if: >-
