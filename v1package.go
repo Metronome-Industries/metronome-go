@@ -586,7 +586,7 @@ func (r *V1PackageGetResponseDataOverride) UnmarshalJSON(data []byte) error {
 
 type V1PackageGetResponseDataOverrideOverrideSpecifier struct {
 	AnyCommitOrCreditTemplateIDs []string `json:"any_commit_or_credit_template_ids"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency           string            `json:"billing_frequency"`
 	CommitTemplateIDs          []string          `json:"commit_template_ids"`
 	PresentationGroupValues    map[string]string `json:"presentation_group_values"`
@@ -780,7 +780,7 @@ func (r *V1PackageGetResponseDataScheduledChargeScheduleScheduleItemDateOffset) 
 }
 
 type V1PackageGetResponseDataUsageStatementSchedule struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
 	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
 	Day string `json:"day"`
@@ -1025,7 +1025,7 @@ type V1PackageGetResponseDataRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -1349,7 +1349,7 @@ type V1PackageGetResponseDataRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -1666,6 +1666,10 @@ type V1PackageGetResponseDataSubscription struct {
 	QuantityManagementMode string                                               `json:"quantity_management_mode"`
 	SeatConfig             V1PackageGetResponseDataSubscriptionSeatConfig       `json:"seat_config"`
 	StartingAtOffset       V1PackageGetResponseDataSubscriptionStartingAtOffset `json:"starting_at_offset"`
+	// Human-readable, per-package-unique alias for this subscription template, if one
+	// was set at package creation. Can be used to reference the subscription in
+	// contract customizations.
+	SubscriptionAlias string `json:"subscription_alias"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CollectionSchedule     respjson.Field
@@ -1683,6 +1687,7 @@ type V1PackageGetResponseDataSubscription struct {
 		QuantityManagementMode respjson.Field
 		SeatConfig             respjson.Field
 		StartingAtOffset       respjson.Field
+		SubscriptionAlias      respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -1739,7 +1744,7 @@ func (r *V1PackageGetResponseDataSubscriptionProrationRounding) UnmarshalJSON(da
 }
 
 type V1PackageGetResponseDataSubscriptionSubscriptionRate struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string                                                      `json:"billing_frequency" api:"required"`
 	Product          V1PackageGetResponseDataSubscriptionSubscriptionRateProduct `json:"product" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1778,13 +1783,21 @@ func (r *V1PackageGetResponseDataSubscriptionSubscriptionRateProduct) UnmarshalJ
 }
 
 type V1PackageGetResponseDataSubscriptionBillingCycleConfig struct {
+	// Which date each subscription materialized from this template anchors its billing
+	// cycle to. USAGE_STATEMENT_ANCHOR (the default) tracks the contract's usage
+	// statement anchor.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "CUSTOM_DATE",
+	// "USAGE_STATEMENT_ANCHOR".
+	BillingCycleAnchor string `json:"billing_cycle_anchor"`
 	// Any of "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE".
 	InvoicePlacement string `json:"invoice_placement"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InvoicePlacement respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		BillingCycleAnchor respjson.Field
+		InvoicePlacement   respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -2212,7 +2225,7 @@ func (r *V1PackageListResponseOverride) UnmarshalJSON(data []byte) error {
 
 type V1PackageListResponseOverrideOverrideSpecifier struct {
 	AnyCommitOrCreditTemplateIDs []string `json:"any_commit_or_credit_template_ids"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency           string            `json:"billing_frequency"`
 	CommitTemplateIDs          []string          `json:"commit_template_ids"`
 	PresentationGroupValues    map[string]string `json:"presentation_group_values"`
@@ -2404,7 +2417,7 @@ func (r *V1PackageListResponseScheduledChargeScheduleScheduleItemDateOffset) Unm
 }
 
 type V1PackageListResponseUsageStatementSchedule struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency" api:"required"`
 	// Any of "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE".
 	Day string `json:"day"`
@@ -2683,7 +2696,7 @@ type V1PackageListResponseRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -3005,7 +3018,7 @@ type V1PackageListResponseRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -3331,6 +3344,10 @@ type V1PackageListResponseSubscription struct {
 	QuantityManagementMode string                                            `json:"quantity_management_mode"`
 	SeatConfig             V1PackageListResponseSubscriptionSeatConfig       `json:"seat_config"`
 	StartingAtOffset       V1PackageListResponseSubscriptionStartingAtOffset `json:"starting_at_offset"`
+	// Human-readable, per-package-unique alias for this subscription template, if one
+	// was set at package creation. Can be used to reference the subscription in
+	// contract customizations.
+	SubscriptionAlias string `json:"subscription_alias"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CollectionSchedule     respjson.Field
@@ -3348,6 +3365,7 @@ type V1PackageListResponseSubscription struct {
 		QuantityManagementMode respjson.Field
 		SeatConfig             respjson.Field
 		StartingAtOffset       respjson.Field
+		SubscriptionAlias      respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -3404,7 +3422,7 @@ func (r *V1PackageListResponseSubscriptionProrationRounding) UnmarshalJSON(data 
 }
 
 type V1PackageListResponseSubscriptionSubscriptionRate struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string                                                   `json:"billing_frequency" api:"required"`
 	Product          V1PackageListResponseSubscriptionSubscriptionRateProduct `json:"product" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3441,13 +3459,21 @@ func (r *V1PackageListResponseSubscriptionSubscriptionRateProduct) UnmarshalJSON
 }
 
 type V1PackageListResponseSubscriptionBillingCycleConfig struct {
+	// Which date each subscription materialized from this template anchors its billing
+	// cycle to. USAGE_STATEMENT_ANCHOR (the default) tracks the contract's usage
+	// statement anchor.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "CUSTOM_DATE",
+	// "USAGE_STATEMENT_ANCHOR".
+	BillingCycleAnchor string `json:"billing_cycle_anchor"`
 	// Any of "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE".
 	InvoicePlacement string `json:"invoice_placement"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InvoicePlacement respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		BillingCycleAnchor respjson.Field
+		InvoicePlacement   respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -4125,7 +4151,7 @@ type V1PackageNewParamsOverrideOverrideSpecifier struct {
 	// `recurring_commit_ids` If provided, the override will apply to any specified
 	// commit, credit, recurring commit or recurring credit IDs.
 	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// Can only be used for commit specific overrides. Must be used in conjunction with
 	// one of `product_id`, `product_tags`, `pricing_group_values`, or
@@ -4159,7 +4185,7 @@ func (r *V1PackageNewParamsOverrideOverrideSpecifier) UnmarshalJSON(data []byte)
 
 func init() {
 	apijson.RegisterFieldValidator[V1PackageNewParamsOverrideOverrideSpecifier](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }
 
@@ -4319,7 +4345,7 @@ type V1PackageNewParamsRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -4347,7 +4373,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCommit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -4639,7 +4665,7 @@ type V1PackageNewParamsRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -4667,7 +4693,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCredit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -5025,6 +5051,10 @@ type V1PackageNewParamsSubscription struct {
 	// Required if quantity_management_mode is QUANTITY_ONLY.
 	InitialQuantity param.Opt[float64] `json:"initial_quantity,omitzero"`
 	Name            param.Opt[string]  `json:"name,omitzero"`
+	// Optional human-readable, per-package-unique alias for this subscription
+	// template. Lets a contract customization reference the subscription by alias
+	// instead of its template id.
+	SubscriptionAlias param.Opt[string] `json:"subscription_alias,omitzero"`
 	// A temporary ID used to reference the subscription in recurring commit/credit
 	// subscription configs created within the same payload.
 	TemporaryID        param.Opt[string]                                `json:"temporary_id,omitzero"`
@@ -5130,7 +5160,7 @@ type V1PackageNewParamsSubscriptionSubscriptionRate struct {
 	// Frequency to bill subscription with. Together with product_id, must match
 	// existing rate on the rate card.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero" api:"required"`
 	// Must be subscription type product
 	ProductID string `json:"product_id" api:"required" format:"uuid"`
@@ -5147,11 +5177,19 @@ func (r *V1PackageNewParamsSubscriptionSubscriptionRate) UnmarshalJSON(data []by
 
 func init() {
 	apijson.RegisterFieldValidator[V1PackageNewParamsSubscriptionSubscriptionRate](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }
 
 type V1PackageNewParamsSubscriptionBillingCycleConfig struct {
+	// Controls which date each subscription materialized from this template anchors
+	// its billing cycle to. CUSTOM_DATE requires a subscription_anchor_date supplied
+	// per contract via package customizations. Defaults to USAGE_STATEMENT_ANCHOR (the
+	// contract's usage statement anchor) if omitted.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "CUSTOM_DATE",
+	// "USAGE_STATEMENT_ANCHOR".
+	BillingCycleAnchor string `json:"billing_cycle_anchor,omitzero"`
 	// Controls whether subscriptions consolidate onto usage invoices. Defaults to
 	// ON_USAGE_INVOICE if omitted.
 	//
@@ -5169,6 +5207,9 @@ func (r *V1PackageNewParamsSubscriptionBillingCycleConfig) UnmarshalJSON(data []
 }
 
 func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsSubscriptionBillingCycleConfig](
+		"billing_cycle_anchor", "SUBSCRIPTION_START", "FIRST_OF_MONTH", "CUSTOM_DATE", "USAGE_STATEMENT_ANCHOR",
+	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsSubscriptionBillingCycleConfig](
 		"invoice_placement", "ON_SCHEDULED_INVOICE", "ON_USAGE_INVOICE",
 	)
@@ -5248,7 +5289,7 @@ func init() {
 
 // The property Frequency is required.
 type V1PackageNewParamsUsageStatementSchedule struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	Frequency string `json:"frequency,omitzero" api:"required"`
 	// If not provided, defaults to the first day of the month.
 	//
@@ -5273,7 +5314,7 @@ func (r *V1PackageNewParamsUsageStatementSchedule) UnmarshalJSON(data []byte) er
 
 func init() {
 	apijson.RegisterFieldValidator[V1PackageNewParamsUsageStatementSchedule](
-		"frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsUsageStatementSchedule](
 		"day", "FIRST_OF_MONTH", "CONTRACT_START", "CUSTOM_DATE",

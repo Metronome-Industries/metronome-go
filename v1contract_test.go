@@ -231,7 +231,461 @@ func TestV1ContractNewWithOptionalParams(t *testing.T) {
 			Type: "OVERWRITE",
 		}},
 		PackageAlias: metronome.String("package_alias"),
-		PackageID:    metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		PackageCustomizations: metronome.V1ContractNewParamsPackageCustomizations{
+			AddCommits: []metronome.V1ContractNewParamsPackageCustomizationsAddCommit{{
+				ProductID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				Type:      "PREPAID",
+				AccessSchedule: metronome.V1ContractNewParamsPackageCustomizationsAddCommitAccessSchedule{
+					ScheduleItems: []metronome.V1ContractNewParamsPackageCustomizationsAddCommitAccessScheduleScheduleItem{{
+						Amount:       0,
+						EndingBefore: time.Now(),
+						StartingAt:   time.Now(),
+					}},
+					AccessType:   "SPEND",
+					CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				},
+				Amount:                metronome.Float(0),
+				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+				ApplicableProductTags: []string{"string"},
+				CustomFields: map[string]string{
+					"foo": "string",
+				},
+				Description: metronome.String("description"),
+				HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
+					ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
+						OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+							Type: "ALL",
+						},
+					},
+				},
+				InvoiceSchedule: metronome.V1ContractNewParamsPackageCustomizationsAddCommitInvoiceSchedule{
+					CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					DoNotInvoice: metronome.Bool(true),
+					RecurringSchedule: metronome.V1ContractNewParamsPackageCustomizationsAddCommitInvoiceScheduleRecurringSchedule{
+						AmountDistribution: "DIVIDED",
+						EndingBefore:       time.Now(),
+						Frequency:          "MONTHLY",
+						StartingAt:         time.Now(),
+						Amount:             metronome.Float(0),
+						Quantity:           metronome.Float(0),
+						UnitPrice:          metronome.Float(0),
+					},
+					ScheduleItems: []metronome.V1ContractNewParamsPackageCustomizationsAddCommitInvoiceScheduleScheduleItem{{
+						Timestamp: time.Now(),
+						Amount:    metronome.Float(0),
+						Quantity:  metronome.Float(0),
+						UnitPrice: metronome.Float(0),
+					}},
+				},
+				Name:                 metronome.String("x"),
+				NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
+				Priority:             metronome.Float(0),
+				RateType:             "COMMIT_RATE",
+				RolloverFraction:     metronome.Float(0),
+				Specifiers: []shared.CommitSpecifierInputParam{{
+					PresentationGroupValues: map[string]string{
+						"foo": "string",
+					},
+					PricingGroupValues: map[string]string{
+						"foo": "string",
+					},
+					ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					ProductTags: []string{"string"},
+				}},
+				SpendTrackerAttributes: metronome.V1ContractNewParamsPackageCustomizationsAddCommitSpendTrackerAttributes{
+					CountsAsDiscounted: true,
+				},
+				TemporaryID: metronome.String("temporary_id"),
+			}},
+			AddCredits: []metronome.V1ContractNewParamsPackageCustomizationsAddCredit{{
+				AccessSchedule: metronome.V1ContractNewParamsPackageCustomizationsAddCreditAccessSchedule{
+					ScheduleItems: []metronome.V1ContractNewParamsPackageCustomizationsAddCreditAccessScheduleScheduleItem{{
+						Amount:       0,
+						EndingBefore: time.Now(),
+						StartingAt:   time.Now(),
+					}},
+					AccessType:   "SPEND",
+					CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				},
+				ProductID:             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+				ApplicableProductTags: []string{"string"},
+				CustomFields: map[string]string{
+					"foo": "string",
+				},
+				Description: metronome.String("description"),
+				HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
+					ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
+						OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+							Type: "ALL",
+						},
+					},
+				},
+				Name:                 metronome.String("x"),
+				NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
+				Priority:             metronome.Float(0),
+				RateType:             "COMMIT_RATE",
+				RolloverFraction:     metronome.Float(0),
+				Specifiers: []shared.CommitSpecifierInputParam{{
+					PresentationGroupValues: map[string]string{
+						"foo": "string",
+					},
+					PricingGroupValues: map[string]string{
+						"foo": "string",
+					},
+					ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					ProductTags: []string{"string"},
+				}},
+			}},
+			AddOverrides: []metronome.V1ContractNewParamsPackageCustomizationsAddOverride{{
+				StartingAt:            time.Now(),
+				ApplicableProductTags: []string{"string"},
+				EndingBefore:          metronome.Time(time.Now()),
+				Entitled:              metronome.Bool(true),
+				IsCommitSpecific:      metronome.Bool(true),
+				Multiplier:            metronome.Float(0),
+				OverrideSpecifiers: []metronome.V1ContractNewParamsPackageCustomizationsAddOverrideOverrideSpecifier{{
+					AnyCommitOrCreditIDs: []string{"string"},
+					BillingFrequency:     "MONTHLY",
+					CommitIDs:            []string{"string"},
+					PresentationGroupValues: map[string]string{
+						"foo": "string",
+					},
+					PricingGroupValues: map[string]string{
+						"foo": "string",
+					},
+					ProductID:                    metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					ProductTags:                  []string{"string"},
+					RecurringCommitIDs:           []string{"string"},
+					TemplateAnyCommitOrCreditIDs: []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+					TemplateCommitIDs:            []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+					TemplateRecurringCommitIDs:   []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+				}},
+				OverwriteRate: metronome.V1ContractNewParamsPackageCustomizationsAddOverrideOverwriteRate{
+					RateType:     "FLAT",
+					CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					CustomRate: map[string]any{
+						"foo": "bar",
+					},
+					IsProrated: metronome.Bool(true),
+					Price:      metronome.Float(0),
+					Quantity:   metronome.Float(0),
+					Tiers: []shared.TierParam{{
+						Price: 0,
+						Size:  metronome.Float(0),
+					}},
+				},
+				Priority:  metronome.Float(0),
+				ProductID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				Target:    "COMMIT_RATE",
+				Tiers: []metronome.V1ContractNewParamsPackageCustomizationsAddOverrideTier{{
+					Multiplier: 0,
+					Size:       metronome.Float(0),
+				}},
+				Type: "OVERWRITE",
+			}},
+			AddRecurringCommits: []metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommit{{
+				AccessAmount: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommitAccessAmount{
+					UnitPrice:    0,
+					AccessType:   "SPEND",
+					CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					Quantity:     metronome.Float(0),
+				},
+				CommitDuration: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommitCommitDuration{
+					Value: 0,
+					Unit:  "PERIODS",
+				},
+				Priority:              0,
+				ProductID:             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				StartingAt:            time.Now(),
+				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+				ApplicableProductTags: []string{"string"},
+				Description:           metronome.String("description"),
+				EndingBefore:          metronome.Time(time.Now()),
+				HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
+					ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
+						OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+							Type: "ALL",
+						},
+					},
+				},
+				InvoiceAmount: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommitInvoiceAmount{
+					CreditTypeID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+					Quantity:     0,
+					UnitPrice:    0,
+				},
+				Name:                 metronome.String("x"),
+				NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
+				Proration:            "NONE",
+				ProrationRounding: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommitProrationRounding{
+					Access: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommitProrationRoundingAccess{
+						DecimalPlaces:  -5,
+						RoundingMethod: "HALF_UP",
+					},
+					Invoice: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommitProrationRoundingInvoice{
+						DecimalPlaces:  -5,
+						RoundingMethod: "HALF_UP",
+					},
+				},
+				RateType:            "COMMIT_RATE",
+				RecurrenceFrequency: "MONTHLY",
+				RolloverFraction:    metronome.Float(0),
+				Specifiers: []shared.CommitSpecifierInputParam{{
+					PresentationGroupValues: map[string]string{
+						"foo": "string",
+					},
+					PricingGroupValues: map[string]string{
+						"foo": "string",
+					},
+					ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					ProductTags: []string{"string"},
+				}},
+				SubscriptionConfig: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommitSubscriptionConfig{
+					ApplySeatIncreaseConfig: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCommitSubscriptionConfigApplySeatIncreaseConfig{
+						IsProrated: true,
+					},
+					Allocation:                "INDIVIDUAL",
+					SubscriptionID:            metronome.String("subscription_id"),
+					TemplateSubscriptionAlias: metronome.String("template_subscription_alias"),
+					TemplateSubscriptionID:    metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				},
+				TemporaryID: metronome.String("temporary_id"),
+			}},
+			AddRecurringCredits: []metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCredit{{
+				AccessAmount: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCreditAccessAmount{
+					UnitPrice:    0,
+					AccessType:   "SPEND",
+					CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					Quantity:     metronome.Float(0),
+				},
+				CommitDuration: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCreditCommitDuration{
+					Value: 0,
+					Unit:  "PERIODS",
+				},
+				Priority:              0,
+				ProductID:             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				StartingAt:            time.Now(),
+				ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+				ApplicableProductTags: []string{"string"},
+				Description:           metronome.String("description"),
+				EndingBefore:          metronome.Time(time.Now()),
+				HierarchyConfiguration: shared.CommitHierarchyConfigurationParam{
+					ChildAccess: shared.CommitHierarchyConfigurationChildAccessUnionParam{
+						OfCommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAll: &shared.CommitHierarchyConfigurationChildAccessCommitHierarchyChildAccessAllParam{
+							Type: "ALL",
+						},
+					},
+				},
+				Name:                 metronome.String("x"),
+				NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
+				Proration:            "NONE",
+				ProrationRounding: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCreditProrationRounding{
+					Access: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCreditProrationRoundingAccess{
+						DecimalPlaces:  -5,
+						RoundingMethod: "HALF_UP",
+					},
+				},
+				RateType:            "COMMIT_RATE",
+				RecurrenceFrequency: "MONTHLY",
+				RolloverFraction:    metronome.Float(0),
+				Specifiers: []shared.CommitSpecifierInputParam{{
+					PresentationGroupValues: map[string]string{
+						"foo": "string",
+					},
+					PricingGroupValues: map[string]string{
+						"foo": "string",
+					},
+					ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					ProductTags: []string{"string"},
+				}},
+				SubscriptionConfig: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCreditSubscriptionConfig{
+					ApplySeatIncreaseConfig: metronome.V1ContractNewParamsPackageCustomizationsAddRecurringCreditSubscriptionConfigApplySeatIncreaseConfig{
+						IsProrated: true,
+					},
+					Allocation:                "INDIVIDUAL",
+					SubscriptionID:            metronome.String("subscription_id"),
+					TemplateSubscriptionAlias: metronome.String("template_subscription_alias"),
+					TemplateSubscriptionID:    metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				},
+				TemporaryID: metronome.String("temporary_id"),
+			}},
+			AddScheduledCharges: []metronome.V1ContractNewParamsPackageCustomizationsAddScheduledCharge{{
+				ProductID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				Schedule: metronome.V1ContractNewParamsPackageCustomizationsAddScheduledChargeSchedule{
+					CreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					DoNotInvoice: metronome.Bool(true),
+					RecurringSchedule: metronome.V1ContractNewParamsPackageCustomizationsAddScheduledChargeScheduleRecurringSchedule{
+						AmountDistribution: "DIVIDED",
+						EndingBefore:       time.Now(),
+						Frequency:          "MONTHLY",
+						StartingAt:         time.Now(),
+						Amount:             metronome.Float(0),
+						Quantity:           metronome.Float(0),
+						UnitPrice:          metronome.Float(0),
+					},
+					ScheduleItems: []metronome.V1ContractNewParamsPackageCustomizationsAddScheduledChargeScheduleScheduleItem{{
+						Timestamp: time.Now(),
+						Amount:    metronome.Float(0),
+						Quantity:  metronome.Float(0),
+						UnitPrice: metronome.Float(0),
+					}},
+				},
+				CustomFields: map[string]string{
+					"foo": "string",
+				},
+				Name:                 metronome.String("x"),
+				NetsuiteSalesOrderID: metronome.String("netsuite_sales_order_id"),
+			}},
+			AddSpendTrackers: []metronome.V1ContractNewParamsPackageCustomizationsAddSpendTracker{{
+				Alias: "alias",
+				ApplicableSpendSpecifiers: []metronome.V1ContractNewParamsPackageCustomizationsAddSpendTrackerApplicableSpendSpecifier{{
+					Sources:    []string{"THRESHOLD_RECHARGE"},
+					SpendType:  "COMMIT_PURCHASE",
+					Discounted: "ANY",
+				}},
+				CreditTypeID:   "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				ResetFrequency: "BILLING_PERIOD",
+			}},
+			AddSubscriptions: []metronome.V1ContractNewParamsPackageCustomizationsAddSubscription{{
+				CollectionSchedule: "ADVANCE",
+				Proration: metronome.V1ContractNewParamsPackageCustomizationsAddSubscriptionProration{
+					InvoiceBehavior: "BILL_IMMEDIATELY",
+					IsProrated:      metronome.Bool(true),
+					Rounding: metronome.V1ContractNewParamsPackageCustomizationsAddSubscriptionProrationRounding{
+						DecimalPlaces:  -5,
+						RoundingMethod: "HALF_UP",
+					},
+				},
+				SubscriptionRate: metronome.V1ContractNewParamsPackageCustomizationsAddSubscriptionSubscriptionRate{
+					BillingFrequency: "MONTHLY",
+					ProductID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				},
+				BillingCycleConfig: metronome.V1ContractNewParamsPackageCustomizationsAddSubscriptionBillingCycleConfig{
+					AnchorDate:       metronome.Time(time.Now()),
+					InvoicePlacement: "ON_SCHEDULED_INVOICE",
+				},
+				CustomFields: map[string]string{
+					"foo": "string",
+				},
+				Description:            metronome.String("description"),
+				EndingBefore:           metronome.Time(time.Now()),
+				InitialQuantity:        metronome.Float(0),
+				Name:                   metronome.String("name"),
+				QuantityManagementMode: "SEAT_BASED",
+				SeatConfig: metronome.V1ContractNewParamsPackageCustomizationsAddSubscriptionSeatConfig{
+					InitialSeatIDs:         []string{"string"},
+					SeatGroupKey:           "seat_group_key",
+					InitialUnassignedSeats: metronome.Float(0),
+				},
+				StartingAt:  metronome.Time(time.Now()),
+				TemporaryID: metronome.String("temporary_id"),
+			}},
+			ModifySubscriptions: []metronome.V1ContractNewParamsPackageCustomizationsModifySubscription{{
+				InitialQuantity:           metronome.Float(0),
+				InitialSeatIDs:            []string{"string"},
+				InitialUnassignedSeats:    metronome.Float(0),
+				SubscriptionAnchorDate:    metronome.Time(time.Now()),
+				TemplateSubscriptionAlias: metronome.String("template_subscription_alias"),
+				TemplateSubscriptionID:    metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			}},
+			ModifyUsageStatementSchedule: metronome.V1ContractNewParamsPackageCustomizationsModifyUsageStatementSchedule{
+				BillingAnchorDate: metronome.Time(time.Now()),
+			},
+			SetPrepaidBalanceThresholdConfiguration: shared.PrepaidBalanceThresholdConfigurationParam{
+				Commit: shared.PrepaidBalanceThresholdConfigurationCommitParam{
+					BaseThresholdCommitParam: shared.BaseThresholdCommitParam{
+						ProductID:   "product_id",
+						Description: metronome.String("description"),
+						Name:        metronome.String("name"),
+						Priority:    metronome.Float(0),
+					},
+					ApplicableProductIDs:  []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+					ApplicableProductTags: []string{"string"},
+					Duration: shared.PrepaidBalanceThresholdConfigurationCommitDurationParam{
+						Unit:  "DAYS",
+						Value: 0,
+					},
+					RateType:         "COMMIT_RATE",
+					RolloverFraction: metronome.Float(0),
+					Specifiers: []shared.CommitSpecifierInputParam{{
+						PresentationGroupValues: map[string]string{
+							"foo": "string",
+						},
+						PricingGroupValues: map[string]string{
+							"foo": "string",
+						},
+						ProductID:   metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+						ProductTags: []string{"string"},
+					}},
+				},
+				IsEnabled: true,
+				PaymentGateConfig: shared.PaymentGateConfigParam{
+					PaymentGateType: shared.PaymentGateConfigPaymentGateTypeNone,
+					PrecalculatedTaxConfig: shared.PaymentGateConfigPrecalculatedTaxConfigParam{
+						TaxAmount: 0,
+						TaxName:   metronome.String("tax_name"),
+					},
+					StripeConfig: shared.PaymentGateConfigStripeConfigParam{
+						PaymentType: "INVOICE",
+						InvoiceMetadata: map[string]string{
+							"foo": "string",
+						},
+					},
+					TaxType: shared.PaymentGateConfigTaxTypeNone,
+				},
+				RechargeToAmount:   0,
+				ThresholdAmount:    0,
+				CustomCreditTypeID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				DiscountConfiguration: shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationParam{
+					PaymentFraction: 0,
+					Cap: shared.PrepaidBalanceThresholdConfigurationDiscountConfigurationCapParam{
+						Amount:            0,
+						SpendTrackerAlias: "spend_tracker_alias",
+					},
+				},
+				ThresholdBalanceSpecifiers: []shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierParam{{
+					Exclude: []shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeParam{{
+						CustomFieldFilters: []shared.PrepaidBalanceThresholdConfigurationThresholdBalanceSpecifierExcludeCustomFieldFilterParam{{
+							Entity: "Commit",
+							Key:    "key",
+							Value:  "value",
+						}},
+					}},
+				}},
+			},
+			SetSpendThresholdConfiguration: shared.SpendThresholdConfigurationParam{
+				Commit: shared.BaseThresholdCommitParam{
+					ProductID:   "product_id",
+					Description: metronome.String("description"),
+					Name:        metronome.String("name"),
+					Priority:    metronome.Float(0),
+				},
+				IsEnabled: true,
+				PaymentGateConfig: shared.PaymentGateConfigParam{
+					PaymentGateType: shared.PaymentGateConfigPaymentGateTypeNone,
+					PrecalculatedTaxConfig: shared.PaymentGateConfigPrecalculatedTaxConfigParam{
+						TaxAmount: 0,
+						TaxName:   metronome.String("tax_name"),
+					},
+					StripeConfig: shared.PaymentGateConfigStripeConfigParam{
+						PaymentType: "INVOICE",
+						InvoiceMetadata: map[string]string{
+							"foo": "string",
+						},
+					},
+					TaxType: shared.PaymentGateConfigTaxTypeNone,
+				},
+				ThresholdAmount: 0,
+				DiscountConfiguration: shared.SpendThresholdConfigurationDiscountConfigurationParam{
+					PaymentFraction: 0,
+					Cap: shared.SpendThresholdConfigurationDiscountConfigurationCapParam{
+						Amount:            0,
+						SpendTrackerAlias: "spend_tracker_alias",
+					},
+				},
+			},
+		},
+		PackageID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		PrepaidBalanceThresholdConfiguration: shared.PrepaidBalanceThresholdConfigurationParam{
 			Commit: shared.PrepaidBalanceThresholdConfigurationCommitParam{
 				BaseThresholdCommitParam: shared.BaseThresholdCommitParam{
