@@ -605,7 +605,7 @@ func (r *V2ContractEditResponseDataEditAddOverride) UnmarshalJSON(data []byte) e
 
 type V2ContractEditResponseDataEditAddOverrideOverrideSpecifier struct {
 	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
@@ -740,7 +740,7 @@ type V2ContractEditResponseDataEditAddRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -1013,7 +1013,7 @@ type V2ContractEditResponseDataEditAddRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -1497,7 +1497,7 @@ func (r *V2ContractEditResponseDataEditAddSubscriptionQuantitySchedule) Unmarsha
 }
 
 type V2ContractEditResponseDataEditAddSubscriptionSubscriptionRate struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string                                                               `json:"billing_frequency" api:"required"`
 	Product          V2ContractEditResponseDataEditAddSubscriptionSubscriptionRateProduct `json:"product" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3409,7 +3409,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddOverride) UnmarshalJSON(data []b
 
 type V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier struct {
 	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
@@ -3546,7 +3546,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -3823,7 +3823,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -4315,7 +4315,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionQuantitySchedule) Un
 }
 
 type V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRate struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string                                                                     `json:"billing_frequency" api:"required"`
 	Product          V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRateProduct `json:"product" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -6694,7 +6694,7 @@ type V2ContractEditParamsAddOverrideOverrideSpecifier struct {
 	// `recurring_commit_ids` If provided, the override will apply to any specified
 	// commit, credit, recurring commit or recurring credit IDs.
 	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// If provided, the override will only apply to the specified commits. Can only be
 	// used for commit specific overrides. If not provided, the override will apply to
@@ -6728,7 +6728,7 @@ func (r *V2ContractEditParamsAddOverrideOverrideSpecifier) UnmarshalJSON(data []
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddOverrideOverrideSpecifier](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }
 
@@ -6867,7 +6867,7 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -6897,7 +6897,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddRecurringCommit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -7139,7 +7139,7 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -7169,7 +7169,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddRecurringCredit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -7737,7 +7737,7 @@ type V2ContractEditParamsAddSubscriptionSubscriptionRate struct {
 	// Frequency to bill subscription with. Together with product_id, must match
 	// existing rate on the rate card.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero" api:"required"`
 	// Must be subscription type product
 	ProductID string `json:"product_id" api:"required" format:"uuid"`
@@ -7754,7 +7754,7 @@ func (r *V2ContractEditParamsAddSubscriptionSubscriptionRate) UnmarshalJSON(data
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddSubscriptionSubscriptionRate](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }
 

@@ -436,7 +436,8 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 				ProductID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			},
 			BillingCycleConfig: metronome.V1PackageNewParamsSubscriptionBillingCycleConfig{
-				InvoicePlacement: "ON_SCHEDULED_INVOICE",
+				BillingCycleAnchor: "SUBSCRIPTION_START",
+				InvoicePlacement:   "ON_SCHEDULED_INVOICE",
 			},
 			CustomFields: map[string]string{
 				"foo": "string",
@@ -457,7 +458,8 @@ func TestV1PackageNewWithOptionalParams(t *testing.T) {
 				Unit:  "DAYS",
 				Value: 0,
 			},
-			TemporaryID: metronome.String("temporary_id"),
+			SubscriptionAlias: metronome.String("subscription_alias"),
+			TemporaryID:       metronome.String("temporary_id"),
 		}},
 		UniquenessKey: metronome.String("x"),
 		UsageStatementSchedule: metronome.V1PackageNewParamsUsageStatementSchedule{
