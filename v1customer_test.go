@@ -51,6 +51,19 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+			UnbillableInvoicesConfiguration: []metronome.V1CustomerNewParamsCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration{{
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "SCHEDULED",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}},
 		}},
 		CustomerRevenueSystemConfigurations: []metronome.V1CustomerNewParamsCustomerRevenueSystemConfiguration{{
 			Provider: "netsuite",
