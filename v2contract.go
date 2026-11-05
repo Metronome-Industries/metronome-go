@@ -6130,9 +6130,7 @@ type V2ContractEditParams struct {
 	AllowContractEndingBeforeFinalizedInvoice param.Opt[bool] `json:"allow_contract_ending_before_finalized_invoice,omitzero"`
 	// Optional uniqueness key to prevent duplicate contract edits.
 	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
-	// Update the billing provider configuration on the contract. Currently only
-	// supports adding a billing provider configuration to a contract that does not
-	// already have one.
+	// Update the billing provider configuration on the contract.
 	AddBillingProviderConfigurationUpdate   V2ContractEditParamsAddBillingProviderConfigurationUpdate `json:"add_billing_provider_configuration_update,omitzero"`
 	AddCommits                              []V2ContractEditParamsAddCommit                           `json:"add_commits,omitzero"`
 	AddCredits                              []V2ContractEditParamsAddCredit                           `json:"add_credits,omitzero"`
@@ -6193,9 +6191,7 @@ func (r *V2ContractEditParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Update the billing provider configuration on the contract. Currently only
-// supports adding a billing provider configuration to a contract that does not
-// already have one.
+// Update the billing provider configuration on the contract.
 //
 // The properties BillingProviderConfiguration, Schedule are required.
 type V2ContractEditParamsAddBillingProviderConfigurationUpdate struct {
@@ -6248,7 +6244,7 @@ func init() {
 type V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule struct {
 	// When the billing provider update will take effect.
 	//
-	// Any of "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD".
+	// Any of "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD", "TODAY".
 	EffectiveAt string `json:"effective_at,omitzero" api:"required"`
 	paramObj
 }
@@ -6263,7 +6259,7 @@ func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule) Unma
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule](
-		"effective_at", "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD",
+		"effective_at", "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD", "TODAY",
 	)
 }
 

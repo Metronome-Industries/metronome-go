@@ -128,6 +128,7 @@ func TestV1CustomerListWithOptionalParams(t *testing.T) {
 		NextPage:             metronome.String("next_page"),
 		OnlyArchived:         metronome.Bool(true),
 		SalesforceAccountIDs: []string{"string"},
+		StripeCustomerID:     metronome.String("stripe_customer_id"),
 	})
 	if err != nil {
 		var apierr *metronome.Error

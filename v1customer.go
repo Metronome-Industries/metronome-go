@@ -1157,6 +1157,12 @@ type V1CustomerListParams struct {
 	// Filter the customer list to only return archived customers. By default, only
 	// active customers are returned.
 	OnlyArchived param.Opt[bool] `query:"only_archived,omitzero" json:"-"`
+	// Filter the customer list by the stripe_customer_id of active Stripe billing
+	// provider configurations. A Stripe customer ID can be linked to multiple
+	// customers, so it may match more than one customer. Archiving a customer also
+	// archives its billing provider configurations, so archived customers generally
+	// won't match.
+	StripeCustomerID param.Opt[string] `query:"stripe_customer_id,omitzero" json:"-"`
 	// Filter the customer list by customer_id. Up to 100 ids can be provided.
 	CustomerIDs []string `query:"customer_ids,omitzero" json:"-"`
 	// Filter the customer list by salesforce_account_id. Up to 100 ids can be
