@@ -78,7 +78,11 @@ func (r *V1PlanService) GetDetails(ctx context.Context, query V1PlanGetDetailsPa
 		err = errors.New("missing required plan_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/planDetails/%s", query.PlanID)
+	planID, err := requestconfig.PathSegment(query.PlanID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/planDetails/%s", planID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -93,7 +97,11 @@ func (r *V1PlanService) ListCharges(ctx context.Context, params V1PlanListCharge
 		err = errors.New("missing required plan_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/planDetails/%s/charges", params.PlanID)
+	planID, err := requestconfig.PathSegment(params.PlanID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/planDetails/%s/charges", planID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -123,7 +131,11 @@ func (r *V1PlanService) ListCustomers(ctx context.Context, params V1PlanListCust
 		err = errors.New("missing required plan_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/planDetails/%s/customers", params.PlanID)
+	planID, err := requestconfig.PathSegment(params.PlanID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/planDetails/%s/customers", planID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err

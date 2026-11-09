@@ -50,7 +50,15 @@ func (r *V1CustomerBillingConfigService) New(ctx context.Context, params V1Custo
 		err = errors.New("missing required customer_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", params.CustomerID, params.BillingProviderType)
+	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	if err != nil {
+		return err
+	}
+	billingProviderType, err := requestconfig.PathSegment(string(params.BillingProviderType))
+	if err != nil {
+		return err
+	}
+	path := fmt.Sprintf("v1/customers/%s/billing-config/%s", customerID, billingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return err
 }
@@ -63,7 +71,15 @@ func (r *V1CustomerBillingConfigService) Get(ctx context.Context, query V1Custom
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", query.CustomerID, query.BillingProviderType)
+	customerID, err := requestconfig.PathSegment(query.CustomerID)
+	if err != nil {
+		return nil, err
+	}
+	billingProviderType, err := requestconfig.PathSegment(string(query.BillingProviderType))
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/customers/%s/billing-config/%s", customerID, billingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -78,7 +94,15 @@ func (r *V1CustomerBillingConfigService) Delete(ctx context.Context, body V1Cust
 		err = errors.New("missing required customer_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("v1/customers/%s/billing-config/%v", body.CustomerID, body.BillingProviderType)
+	customerID, err := requestconfig.PathSegment(body.CustomerID)
+	if err != nil {
+		return err
+	}
+	billingProviderType, err := requestconfig.PathSegment(string(body.BillingProviderType))
+	if err != nil {
+		return err
+	}
+	path := fmt.Sprintf("v1/customers/%s/billing-config/%s", customerID, billingProviderType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

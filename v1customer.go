@@ -130,7 +130,11 @@ func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, 
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s", query.CustomerID)
+	customerID, err := requestconfig.PathSegment(query.CustomerID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/customers/%s", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -236,7 +240,11 @@ func (r *V1CustomerService) ListBillableMetrics(ctx context.Context, params V1Cu
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/billable-metrics", params.CustomerID)
+	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/customers/%s/billable-metrics", customerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -269,7 +277,11 @@ func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerList
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/costs", params.CustomerID)
+	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/customers/%s/costs", customerID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -301,7 +313,11 @@ func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1Customer
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/previewEvents", params.CustomerID)
+	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/customers/%s/previewEvents", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -384,7 +400,11 @@ func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1Custo
 		err = errors.New("missing required customer_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("v1/customers/%s/setIngestAliases", params.CustomerID)
+	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	if err != nil {
+		return err
+	}
+	path := fmt.Sprintf("v1/customers/%s/setIngestAliases", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return err
 }
@@ -400,7 +420,11 @@ func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNam
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/setName", params.CustomerID)
+	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/customers/%s/setName", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -416,7 +440,11 @@ func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerU
 		err = errors.New("missing required customer_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("v1/customers/%s/updateConfig", params.CustomerID)
+	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	if err != nil {
+		return err
+	}
+	path := fmt.Sprintf("v1/customers/%s/updateConfig", customerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return err
 }
