@@ -188,10 +188,14 @@ type V1CustomerBillingConfigNewParams struct {
 	BillingProviderType V1CustomerBillingConfigNewParamsBillingProviderType `path:"billing_provider_type,omitzero" api:"required" json:"-"`
 	// The customer ID in the billing provider's system. For Azure, this is the
 	// subscription ID.
-	BillingProviderCustomerID string            `json:"billing_provider_customer_id" api:"required"`
-	AwsCustomerAccountID      param.Opt[string] `json:"aws_customer_account_id,omitzero"`
-	AwsCustomerID             param.Opt[string] `json:"aws_customer_id,omitzero"`
-	AwsProductCode            param.Opt[string] `json:"aws_product_code,omitzero"`
+	BillingProviderCustomerID string `json:"billing_provider_customer_id" api:"required"`
+	// Deprecated and ignored by the server. The customer ID comes from
+	// `billing_provider_customer_id`.
+	AwsCustomerAccountID param.Opt[string] `json:"aws_customer_account_id,omitzero"`
+	// Deprecated and ignored by the server. The customer ID comes from
+	// `billing_provider_customer_id`.
+	AwsCustomerID  param.Opt[string] `json:"aws_customer_id,omitzero"`
+	AwsProductCode param.Opt[string] `json:"aws_product_code,omitzero"`
 	// Any of "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2",
 	// "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2",
 	// "ca-central-1", "cn-north-1", "cn-northwest-1", "eu-central-1", "eu-north-1",

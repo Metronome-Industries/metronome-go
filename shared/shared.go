@@ -1432,8 +1432,8 @@ type ContractCustomerBillingProviderConfiguration struct {
 	BillingProvider string `json:"billing_provider" api:"required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
-	Configuration map[string]any `json:"configuration" api:"required"`
-	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	Configuration ContractCustomerBillingProviderConfigurationConfiguration `json:"configuration" api:"required"`
+	CustomerID    string                                                    `json:"customer_id" api:"required" format:"uuid"`
 	// The method to use for delivering invoices to this customer.
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
@@ -1467,6 +1467,33 @@ type ContractCustomerBillingProviderConfiguration struct {
 // Returns the unmodified JSON received from the API
 func (r ContractCustomerBillingProviderConfiguration) RawJSON() string { return r.JSON.raw }
 func (r *ContractCustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+type ContractCustomerBillingProviderConfigurationConfiguration struct {
+	// AWS Marketplace only. The buyer's 12 digit AWS account ID. Must be sent together
+	// with `aws_license_arn`.
+	AwsCustomerAccountID string `json:"aws_customer_account_id"`
+	// AWS Marketplace only. The ARN of the buyer's AWS License Manager license for
+	// this purchase. Must be sent together with `aws_customer_account_id`.
+	AwsLicenseArn string         `json:"aws_license_arn"`
+	ExtraFields   map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsCustomerAccountID respjson.Field
+		AwsLicenseArn        respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractCustomerBillingProviderConfigurationConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractCustomerBillingProviderConfigurationConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2612,8 +2639,8 @@ type ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration 
 	BillingProvider string `json:"billing_provider" api:"required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
-	Configuration map[string]any `json:"configuration" api:"required"`
-	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	Configuration ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationConfiguration `json:"configuration" api:"required"`
+	CustomerID    string                                                                                  `json:"customer_id" api:"required" format:"uuid"`
 	// The method to use for delivering invoices to this customer.
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
@@ -2649,6 +2676,33 @@ func (r ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurati
 	return r.JSON.raw
 }
 func (r *ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+type ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationConfiguration struct {
+	// AWS Marketplace only. The buyer's 12 digit AWS account ID. Must be sent together
+	// with `aws_license_arn`.
+	AwsCustomerAccountID string `json:"aws_customer_account_id"`
+	// AWS Marketplace only. The ARN of the buyer's AWS License Manager license for
+	// this purchase. Must be sent together with `aws_customer_account_id`.
+	AwsLicenseArn string         `json:"aws_license_arn"`
+	ExtraFields   map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsCustomerAccountID respjson.Field
+		AwsLicenseArn        respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3129,8 +3183,8 @@ type ContractV2CustomerBillingProviderConfiguration struct {
 	BillingProvider string `json:"billing_provider" api:"required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
-	Configuration map[string]any `json:"configuration" api:"required"`
-	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	Configuration ContractV2CustomerBillingProviderConfigurationConfiguration `json:"configuration" api:"required"`
+	CustomerID    string                                                      `json:"customer_id" api:"required" format:"uuid"`
 	// The method to use for delivering invoices to this customer.
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
@@ -3164,6 +3218,33 @@ type ContractV2CustomerBillingProviderConfiguration struct {
 // Returns the unmodified JSON received from the API
 func (r ContractV2CustomerBillingProviderConfiguration) RawJSON() string { return r.JSON.raw }
 func (r *ContractV2CustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+type ContractV2CustomerBillingProviderConfigurationConfiguration struct {
+	// AWS Marketplace only. The buyer's 12 digit AWS account ID. Must be sent together
+	// with `aws_license_arn`.
+	AwsCustomerAccountID string `json:"aws_customer_account_id"`
+	// AWS Marketplace only. The ARN of the buyer's AWS License Manager license for
+	// this purchase. Must be sent together with `aws_customer_account_id`.
+	AwsLicenseArn string         `json:"aws_license_arn"`
+	ExtraFields   map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsCustomerAccountID respjson.Field
+		AwsLicenseArn        respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContractV2CustomerBillingProviderConfigurationConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ContractV2CustomerBillingProviderConfigurationConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
