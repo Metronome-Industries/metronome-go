@@ -209,6 +209,12 @@ type ContractAmendmentResellerRoyalty = shared.ContractAmendmentResellerRoyalty
 // This is an alias to an internal type.
 type ContractCustomerBillingProviderConfiguration = shared.ContractCustomerBillingProviderConfiguration
 
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+//
+// This is an alias to an internal type.
+type ContractCustomerBillingProviderConfigurationConfiguration = shared.ContractCustomerBillingProviderConfigurationConfiguration
+
 // An individual rule that, when evaluated to true, indicates that any invoices for
 // this billing provider will not be sent to its associated destination for the
 // associated contract. Rules only apply to the specified `invoice_type` (or all
@@ -337,6 +343,12 @@ type ContractV2BillingProviderConfigurationSchedule = shared.ContractV2BillingPr
 // This is an alias to an internal type.
 type ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration = shared.ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration
 
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+//
+// This is an alias to an internal type.
+type ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationConfiguration = shared.ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationConfiguration
+
 // An individual rule that, when evaluated to true, indicates that any invoices for
 // this billing provider will not be sent to its associated destination for the
 // associated contract. Rules only apply to the specified `invoice_type` (or all
@@ -388,6 +400,12 @@ type ContractV2CreditRolledOverFrom = shared.ContractV2CreditRolledOverFrom
 
 // This is an alias to an internal type.
 type ContractV2CustomerBillingProviderConfiguration = shared.ContractV2CustomerBillingProviderConfiguration
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+//
+// This is an alias to an internal type.
+type ContractV2CustomerBillingProviderConfigurationConfiguration = shared.ContractV2CustomerBillingProviderConfigurationConfiguration
 
 // An individual rule that, when evaluated to true, indicates that any invoices for
 // this billing provider will not be sent to its associated destination for the

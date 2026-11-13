@@ -824,8 +824,8 @@ type V1CustomerGetBillingConfigurationsResponseData struct {
 	BillingProvider string `json:"billing_provider" api:"required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
-	Configuration map[string]any `json:"configuration" api:"required"`
-	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	Configuration V1CustomerGetBillingConfigurationsResponseDataConfiguration `json:"configuration" api:"required"`
+	CustomerID    string                                                      `json:"customer_id" api:"required" format:"uuid"`
 	// The method to use for delivering invoices to this customer.
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
@@ -859,6 +859,33 @@ type V1CustomerGetBillingConfigurationsResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r V1CustomerGetBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
 func (r *V1CustomerGetBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+type V1CustomerGetBillingConfigurationsResponseDataConfiguration struct {
+	// AWS Marketplace only. The buyer's 12 digit AWS account ID. Must be sent together
+	// with `aws_license_arn`.
+	AwsCustomerAccountID string `json:"aws_customer_account_id"`
+	// AWS Marketplace only. The ARN of the buyer's AWS License Manager license for
+	// this purchase. Must be sent together with `aws_customer_account_id`.
+	AwsLicenseArn string         `json:"aws_license_arn"`
+	ExtraFields   map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsCustomerAccountID respjson.Field
+		AwsLicenseArn        respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerGetBillingConfigurationsResponseDataConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1CustomerGetBillingConfigurationsResponseDataConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -926,7 +953,7 @@ type V1CustomerSetBillingConfigurationsResponseData struct {
 	BillingProvider string `json:"billing_provider"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider and delivery method combination.
-	Configuration map[string]any `json:"configuration"`
+	Configuration V1CustomerSetBillingConfigurationsResponseDataConfiguration `json:"configuration"`
 	// ID of the customer this configuration is associated with.
 	CustomerID string `json:"customer_id" format:"uuid"`
 	// ID of the delivery method used for this customer configuration.
@@ -951,6 +978,33 @@ type V1CustomerSetBillingConfigurationsResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r V1CustomerSetBillingConfigurationsResponseData) RawJSON() string { return r.JSON.raw }
 func (r *V1CustomerSetBillingConfigurationsResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider and delivery method combination.
+type V1CustomerSetBillingConfigurationsResponseDataConfiguration struct {
+	// AWS Marketplace only. The buyer's 12 digit AWS account ID. Must be sent together
+	// with `aws_license_arn`.
+	AwsCustomerAccountID string `json:"aws_customer_account_id"`
+	// AWS Marketplace only. The ARN of the buyer's AWS License Manager license for
+	// this purchase. Must be sent together with `aws_customer_account_id`.
+	AwsLicenseArn string         `json:"aws_license_arn"`
+	ExtraFields   map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsCustomerAccountID respjson.Field
+		AwsLicenseArn        respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1CustomerSetBillingConfigurationsResponseDataConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1CustomerSetBillingConfigurationsResponseDataConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -999,9 +1053,17 @@ type V1CustomerNewParamsBillingConfig struct {
 	BillingProviderCustomerID string `json:"billing_provider_customer_id" api:"required"`
 	// Any of "aws_marketplace", "stripe", "netsuite", "custom", "azure_marketplace",
 	// "quickbooks_online", "workday", "gcp_marketplace", "metronome".
-	BillingProviderType  string            `json:"billing_provider_type,omitzero" api:"required"`
+	BillingProviderType string `json:"billing_provider_type,omitzero" api:"required"`
+	// Deprecated and ignored by the server. The customer ID comes from
+	// `billing_provider_customer_id`.
+	//
+	// Deprecated: deprecated
 	AwsCustomerAccountID param.Opt[string] `json:"aws_customer_account_id,omitzero"`
-	AwsCustomerID        param.Opt[string] `json:"aws_customer_id,omitzero"`
+	// Deprecated and ignored by the server. The customer ID comes from
+	// `billing_provider_customer_id`.
+	//
+	// Deprecated: deprecated
+	AwsCustomerID param.Opt[string] `json:"aws_customer_id,omitzero"`
 	// True if the aws_product_code is a SAAS subscription product, false otherwise.
 	AwsIsSubscriptionProduct param.Opt[bool]   `json:"aws_is_subscription_product,omitzero"`
 	AwsProductCode           param.Opt[string] `json:"aws_product_code,omitzero"`
@@ -1053,7 +1115,7 @@ type V1CustomerNewParamsCustomerBillingProviderConfiguration struct {
 	// to the billing provider and delivery provider combination. Defaults to an empty
 	// object, however, for most billing provider + delivery method combinations, it
 	// will not be a valid configuration.
-	Configuration map[string]any `json:"configuration,omitzero"`
+	Configuration V1CustomerNewParamsCustomerBillingProviderConfigurationConfiguration `json:"configuration,omitzero"`
 	// The method to use for delivering invoices to this customer. If not provided, the
 	// `delivery_method_id` must be provided.
 	//
@@ -1091,6 +1153,29 @@ func init() {
 	apijson.RegisterFieldValidator[V1CustomerNewParamsCustomerBillingProviderConfiguration](
 		"tax_provider", "anrok", "avalara", "stripe",
 	)
+}
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider and delivery provider combination. Defaults to an empty
+// object, however, for most billing provider + delivery method combinations, it
+// will not be a valid configuration.
+type V1CustomerNewParamsCustomerBillingProviderConfigurationConfiguration struct {
+	// AWS Marketplace only. The buyer's 12 digit AWS account ID. Must be sent together
+	// with `aws_license_arn`.
+	AwsCustomerAccountID param.Opt[string] `json:"aws_customer_account_id,omitzero"`
+	// AWS Marketplace only. The ARN of the buyer's AWS License Manager license for
+	// this purchase. Must be sent together with `aws_customer_account_id`.
+	AwsLicenseArn param.Opt[string] `json:"aws_license_arn,omitzero"`
+	ExtraFields   map[string]any    `json:"-"`
+	paramObj
+}
+
+func (r V1CustomerNewParamsCustomerBillingProviderConfigurationConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerNewParamsCustomerBillingProviderConfigurationConfiguration
+	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
+}
+func (r *V1CustomerNewParamsCustomerBillingProviderConfigurationConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // An individual rule that, when evaluated to true, indicates that any invoices for
@@ -1382,7 +1467,7 @@ type V1CustomerSetBillingConfigurationsParamsData struct {
 	// aws_is_subscription_product flag can be used to indicate a product with
 	// usage-based pricing. More information can be found
 	// [here](https://docs.metronome.com/invoice-customers/solutions/marketplaces/invoice-aws/#provision-aws-marketplace-customers-in-metronome).
-	Configuration map[string]any `json:"configuration,omitzero"`
+	Configuration V1CustomerSetBillingConfigurationsParamsDataConfiguration `json:"configuration,omitzero"`
 	// The method to use for delivering invoices to this customer. If not provided, the
 	// `delivery_method_id` must be provided.
 	//
@@ -1420,6 +1505,32 @@ func init() {
 	apijson.RegisterFieldValidator[V1CustomerSetBillingConfigurationsParamsData](
 		"tax_provider", "anrok", "avalara", "stripe",
 	)
+}
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider and delivery method combination. Defaults to an empty
+// object, however, for most billing provider + delivery method combinations, it
+// will not be a valid configuration. For AWS marketplace configurations, the
+// aws_is_subscription_product flag can be used to indicate a product with
+// usage-based pricing. More information can be found
+// [here](https://docs.metronome.com/invoice-customers/solutions/marketplaces/invoice-aws/#provision-aws-marketplace-customers-in-metronome).
+type V1CustomerSetBillingConfigurationsParamsDataConfiguration struct {
+	// AWS Marketplace only. The buyer's 12 digit AWS account ID. Must be sent together
+	// with `aws_license_arn`.
+	AwsCustomerAccountID param.Opt[string] `json:"aws_customer_account_id,omitzero"`
+	// AWS Marketplace only. The ARN of the buyer's AWS License Manager license for
+	// this purchase. Must be sent together with `aws_customer_account_id`.
+	AwsLicenseArn param.Opt[string] `json:"aws_license_arn,omitzero"`
+	ExtraFields   map[string]any    `json:"-"`
+	paramObj
+}
+
+func (r V1CustomerSetBillingConfigurationsParamsDataConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow V1CustomerSetBillingConfigurationsParamsDataConfiguration
+	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
+}
+func (r *V1CustomerSetBillingConfigurationsParamsDataConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // An individual rule that, when evaluated to true, indicates that any invoices for

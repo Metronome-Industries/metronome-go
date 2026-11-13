@@ -44,9 +44,9 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 		},
 		CustomerBillingProviderConfigurations: []metronome.V1CustomerNewParamsCustomerBillingProviderConfiguration{{
 			BillingProvider: "stripe",
-			Configuration: map[string]any{
-				"stripe_customer_id":       "bar",
-				"stripe_collection_method": "bar",
+			Configuration: metronome.V1CustomerNewParamsCustomerBillingProviderConfigurationConfiguration{
+				AwsCustomerAccountID: metronome.String("aws_customer_account_id"),
+				AwsLicenseArn:        metronome.String("aws_license_arn"),
 			},
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -322,10 +322,9 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		Data: []metronome.V1CustomerSetBillingConfigurationsParamsData{{
 			BillingProvider: "stripe",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
-			Configuration: map[string]any{
-				"stripe_customer_id":             "bar",
-				"stripe_collection_method":       "bar",
-				"leave_stripe_invoices_in_draft": "bar",
+			Configuration: metronome.V1CustomerSetBillingConfigurationsParamsDataConfiguration{
+				AwsCustomerAccountID: metronome.String("aws_customer_account_id"),
+				AwsLicenseArn:        metronome.String("aws_license_arn"),
 			},
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -346,10 +345,9 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		}, {
 			BillingProvider: "aws_marketplace",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
-			Configuration: map[string]any{
-				"aws_customer_id":  "bar",
-				"aws_product_code": "bar",
-				"aws_region":       "bar",
+			Configuration: metronome.V1CustomerSetBillingConfigurationsParamsDataConfiguration{
+				AwsCustomerAccountID: metronome.String("aws_customer_account_id"),
+				AwsLicenseArn:        metronome.String("aws_license_arn"),
 			},
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -370,8 +368,9 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		}, {
 			BillingProvider: "azure_marketplace",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
-			Configuration: map[string]any{
-				"azure_subscription_id": "bar",
+			Configuration: metronome.V1CustomerSetBillingConfigurationsParamsDataConfiguration{
+				AwsCustomerAccountID: metronome.String("aws_customer_account_id"),
+				AwsLicenseArn:        metronome.String("aws_license_arn"),
 			},
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("5b9e3072-415b-4842-94f0-0b6700c8b6be"),
@@ -392,11 +391,9 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		}, {
 			BillingProvider: "aws_marketplace",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
-			Configuration: map[string]any{
-				"aws_customer_id":             "bar",
-				"aws_product_code":            "bar",
-				"aws_region":                  "bar",
-				"aws_is_subscription_product": "bar",
+			Configuration: metronome.V1CustomerSetBillingConfigurationsParamsDataConfiguration{
+				AwsCustomerAccountID: metronome.String("aws_customer_account_id"),
+				AwsLicenseArn:        metronome.String("aws_license_arn"),
 			},
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -417,9 +414,9 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		}, {
 			BillingProvider: "gcp_marketplace",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
-			Configuration: map[string]any{
-				"gcp_entitlement_id": "bar",
-				"gcp_service_name":   "bar",
+			Configuration: metronome.V1CustomerSetBillingConfigurationsParamsDataConfiguration{
+				AwsCustomerAccountID: metronome.String("aws_customer_account_id"),
+				AwsLicenseArn:        metronome.String("aws_license_arn"),
 			},
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -440,8 +437,9 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 		}, {
 			BillingProvider: "netsuite",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
-			Configuration: map[string]any{
-				"netsuite_customer_id": "bar",
+			Configuration: metronome.V1CustomerSetBillingConfigurationsParamsDataConfiguration{
+				AwsCustomerAccountID: metronome.String("aws_customer_account_id"),
+				AwsLicenseArn:        metronome.String("aws_license_arn"),
 			},
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),

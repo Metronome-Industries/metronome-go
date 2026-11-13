@@ -809,8 +809,8 @@ type V1ContractNewResponseDataContractCustomerBillingProviderConfiguration struc
 	BillingProvider string `json:"billing_provider" api:"required"`
 	// Configuration for the billing provider. The structure of this object is specific
 	// to the billing provider.
-	Configuration map[string]any `json:"configuration" api:"required"`
-	CustomerID    string         `json:"customer_id" api:"required" format:"uuid"`
+	Configuration V1ContractNewResponseDataContractCustomerBillingProviderConfigurationConfiguration `json:"configuration" api:"required"`
+	CustomerID    string                                                                             `json:"customer_id" api:"required" format:"uuid"`
 	// The method to use for delivering invoices to this customer.
 	//
 	// Any of "direct_to_billing_provider", "aws_sqs", "tackle", "aws_sns".
@@ -846,6 +846,33 @@ func (r V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) R
 	return r.JSON.raw
 }
 func (r *V1ContractNewResponseDataContractCustomerBillingProviderConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for the billing provider. The structure of this object is specific
+// to the billing provider.
+type V1ContractNewResponseDataContractCustomerBillingProviderConfigurationConfiguration struct {
+	// AWS Marketplace only. The buyer's 12 digit AWS account ID. Must be sent together
+	// with `aws_license_arn`.
+	AwsCustomerAccountID string `json:"aws_customer_account_id"`
+	// AWS Marketplace only. The ARN of the buyer's AWS License Manager license for
+	// this purchase. Must be sent together with `aws_customer_account_id`.
+	AwsLicenseArn string         `json:"aws_license_arn"`
+	ExtraFields   map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsCustomerAccountID respjson.Field
+		AwsLicenseArn        respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V1ContractNewResponseDataContractCustomerBillingProviderConfigurationConfiguration) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V1ContractNewResponseDataContractCustomerBillingProviderConfigurationConfiguration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
