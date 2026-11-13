@@ -1000,6 +1000,12 @@ type V1PackageGetResponseDataRecurringCommit struct {
 	// Offset relative to the contract start date that determines the start time for
 	// the first commit
 	StartingAtOffset V1PackageGetResponseDataRecurringCommitStartingAtOffset `json:"starting_at_offset" api:"required"`
+	// Recurring cycle anchor for recurring commits or credits created from this
+	// template. `USAGE_STATEMENT_ANCHOR` tracks the contract's usage statement anchor.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "USAGE_STATEMENT_ANCHOR",
+	// "CUSTOM_DATE".
+	AnchorDate string `json:"anchor_date"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -1046,6 +1052,7 @@ type V1PackageGetResponseDataRecurringCommit struct {
 		Product               respjson.Field
 		RateType              respjson.Field
 		StartingAtOffset      respjson.Field
+		AnchorDate            respjson.Field
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
 		Description           respjson.Field
@@ -1326,6 +1333,12 @@ type V1PackageGetResponseDataRecurringCredit struct {
 	// Offset relative to the contract start date that determines the start time for
 	// the first commit
 	StartingAtOffset V1PackageGetResponseDataRecurringCreditStartingAtOffset `json:"starting_at_offset" api:"required"`
+	// Recurring cycle anchor for recurring commits or credits created from this
+	// template. `USAGE_STATEMENT_ANCHOR` tracks the contract's usage statement anchor.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "USAGE_STATEMENT_ANCHOR",
+	// "CUSTOM_DATE".
+	AnchorDate string `json:"anchor_date"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -1370,6 +1383,7 @@ type V1PackageGetResponseDataRecurringCredit struct {
 		Product               respjson.Field
 		RateType              respjson.Field
 		StartingAtOffset      respjson.Field
+		AnchorDate            respjson.Field
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
 		Description           respjson.Field
@@ -2671,6 +2685,12 @@ type V1PackageListResponseRecurringCommit struct {
 	// Offset relative to the contract start date that determines the start time for
 	// the first commit
 	StartingAtOffset V1PackageListResponseRecurringCommitStartingAtOffset `json:"starting_at_offset" api:"required"`
+	// Recurring cycle anchor for recurring commits or credits created from this
+	// template. `USAGE_STATEMENT_ANCHOR` tracks the contract's usage statement anchor.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "USAGE_STATEMENT_ANCHOR",
+	// "CUSTOM_DATE".
+	AnchorDate string `json:"anchor_date"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -2717,6 +2737,7 @@ type V1PackageListResponseRecurringCommit struct {
 		Product               respjson.Field
 		RateType              respjson.Field
 		StartingAtOffset      respjson.Field
+		AnchorDate            respjson.Field
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
 		Description           respjson.Field
@@ -2995,6 +3016,12 @@ type V1PackageListResponseRecurringCredit struct {
 	// Offset relative to the contract start date that determines the start time for
 	// the first commit
 	StartingAtOffset V1PackageListResponseRecurringCreditStartingAtOffset `json:"starting_at_offset" api:"required"`
+	// Recurring cycle anchor for recurring commits or credits created from this
+	// template. `USAGE_STATEMENT_ANCHOR` tracks the contract's usage statement anchor.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "USAGE_STATEMENT_ANCHOR",
+	// "CUSTOM_DATE".
+	AnchorDate string `json:"anchor_date"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -3039,6 +3066,7 @@ type V1PackageListResponseRecurringCredit struct {
 		Product               respjson.Field
 		RateType              respjson.Field
 		StartingAtOffset      respjson.Field
+		AnchorDate            respjson.Field
 		ApplicableProductIDs  respjson.Field
 		ApplicableProductTags respjson.Field
 		Description           respjson.Field
@@ -4318,6 +4346,15 @@ type V1PackageNewParamsRecurringCommit struct {
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+	// Which date each recurring commit or credit created from this template anchors
+	// its periods to. `USAGE_STATEMENT_ANCHOR` tracks the contract's usage statement
+	// anchor. `SUBSCRIPTION_START` requires a `subscription_config`. `CUSTOM_DATE`
+	// requires an `anchor_date` supplied per contract through
+	// `package_customizations.modify_recurring_commits` or `modify_recurring_credits`.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "USAGE_STATEMENT_ANCHOR",
+	// "CUSTOM_DATE".
+	AnchorDate string `json:"anchor_date,omitzero"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -4366,6 +4403,9 @@ func (r *V1PackageNewParamsRecurringCommit) UnmarshalJSON(data []byte) error {
 }
 
 func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCommit](
+		"anchor_date", "SUBSCRIPTION_START", "FIRST_OF_MONTH", "USAGE_STATEMENT_ANCHOR", "CUSTOM_DATE",
+	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCommit](
 		"proration", "NONE", "FIRST", "LAST", "FIRST_AND_LAST",
 	)
@@ -4640,6 +4680,15 @@ type V1PackageNewParamsRecurringCredit struct {
 	// A temporary ID that can be used to reference the recurring commit for commit
 	// specific overrides.
 	TemporaryID param.Opt[string] `json:"temporary_id,omitzero"`
+	// Which date each recurring commit or credit created from this template anchors
+	// its periods to. `USAGE_STATEMENT_ANCHOR` tracks the contract's usage statement
+	// anchor. `SUBSCRIPTION_START` requires a `subscription_config`. `CUSTOM_DATE`
+	// requires an `anchor_date` supplied per contract through
+	// `package_customizations.modify_recurring_commits` or `modify_recurring_credits`.
+	//
+	// Any of "SUBSCRIPTION_START", "FIRST_OF_MONTH", "USAGE_STATEMENT_ANCHOR",
+	// "CUSTOM_DATE".
+	AnchorDate string `json:"anchor_date,omitzero"`
 	// Will be passed down to the individual commits
 	ApplicableProductIDs []string `json:"applicable_product_ids,omitzero" format:"uuid"`
 	// Will be passed down to the individual commits
@@ -4686,6 +4735,9 @@ func (r *V1PackageNewParamsRecurringCredit) UnmarshalJSON(data []byte) error {
 }
 
 func init() {
+	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCredit](
+		"anchor_date", "SUBSCRIPTION_START", "FIRST_OF_MONTH", "USAGE_STATEMENT_ANCHOR", "CUSTOM_DATE",
+	)
 	apijson.RegisterFieldValidator[V1PackageNewParamsRecurringCredit](
 		"proration", "NONE", "FIRST", "LAST", "FIRST_AND_LAST",
 	)

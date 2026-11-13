@@ -821,9 +821,9 @@ type V1ContractNewResponseDataContractCustomerBillingProviderConfiguration struc
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// Rules that stop matching invoices from being sent to the billing provider.
-	// Supported for Stripe and NetSuite billing provider configurations. When omitted,
-	// every invoice is sent to the billing provider. Stripe invoices can be force-sent
-	// after a rule suppresses them.
+	// Supported for Stripe, NetSuite, AWS Marketplace, Azure, and GCP billing provider
+	// configurations. When omitted, every invoice is sent to the billing provider.
+	// Stripe invoices can be force-sent after a rule suppresses them.
 	UnbillableInvoicesConfiguration []V1ContractNewResponseDataContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3099,6 +3099,12 @@ type V1ContractNewParamsPackageCustomizations struct {
 	// configuration. Distinct from modify_subscriptions, which adjusts subscriptions
 	// defined on the package template. Same shape as create_contract's subscriptions.
 	AddSubscriptions []V1ContractNewParamsPackageCustomizationsAddSubscription `json:"add_subscriptions,omitzero"`
+	// Per-contract values for recurring commits defined on the package. Every template
+	// recurring commit whose `anchor_date` is `CUSTOM_DATE` needs exactly one entry.
+	ModifyRecurringCommits []V1ContractNewParamsPackageCustomizationsModifyRecurringCommit `json:"modify_recurring_commits,omitzero"`
+	// Per-contract values for recurring credits defined on the package. Every template
+	// recurring credit whose `anchor_date` is `CUSTOM_DATE` needs exactly one entry.
+	ModifyRecurringCredits []V1ContractNewParamsPackageCustomizationsModifyRecurringCredit `json:"modify_recurring_credits,omitzero"`
 	// Per-subscription overrides for the subscriptions defined on the package
 	// template. Each entry targets one template subscription and sets its starting
 	// quantity or seats.
@@ -3658,6 +3664,11 @@ type V1ContractNewParamsPackageCustomizationsAddRecurringCommit struct {
 	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
 	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// The date this recurring commit's or credit's periods are anchored to. Must be on
+	// or before `starting_at`. If omitted, periods are anchored to `starting_at` when
+	// `recurrence_frequency` is set, and to the contract's usage statement billing
+	// anchor otherwise.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
@@ -3943,6 +3954,11 @@ type V1ContractNewParamsPackageCustomizationsAddRecurringCredit struct {
 	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
 	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// The date this recurring commit's or credit's periods are anchored to. Must be on
+	// or before `starting_at`. If omitted, periods are anchored to `starting_at` when
+	// `recurrence_frequency` is set, and to the contract's usage statement billing
+	// anchor otherwise.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
@@ -4530,6 +4546,44 @@ func (r *V1ContractNewParamsPackageCustomizationsAddSubscriptionSeatConfig) Unma
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties AnchorDate, TemplateRecurringCommitID are required.
+type V1ContractNewParamsPackageCustomizationsModifyRecurringCommit struct {
+	// Recurring cycle anchor date for this recurring commit or credit, required when
+	// the template's `anchor_date` is `CUSTOM_DATE` and disallowed otherwise. Must be
+	// on or before the recurring commit's or credit's `starting_at`.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
+	// ID of the template recurring commit on the package to customize.
+	TemplateRecurringCommitID string `json:"template_recurring_commit_id" api:"required" format:"uuid"`
+	paramObj
+}
+
+func (r V1ContractNewParamsPackageCustomizationsModifyRecurringCommit) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsPackageCustomizationsModifyRecurringCommit
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsPackageCustomizationsModifyRecurringCommit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties AnchorDate, TemplateRecurringCreditID are required.
+type V1ContractNewParamsPackageCustomizationsModifyRecurringCredit struct {
+	// Recurring cycle anchor date for this recurring commit or credit, required when
+	// the template's `anchor_date` is `CUSTOM_DATE` and disallowed otherwise. Must be
+	// on or before the recurring commit's or credit's `starting_at`.
+	AnchorDate time.Time `json:"anchor_date" api:"required" format:"date-time"`
+	// ID of the template recurring credit on the package to customize.
+	TemplateRecurringCreditID string `json:"template_recurring_credit_id" api:"required" format:"uuid"`
+	paramObj
+}
+
+func (r V1ContractNewParamsPackageCustomizationsModifyRecurringCredit) MarshalJSON() (data []byte, err error) {
+	type shadow V1ContractNewParamsPackageCustomizationsModifyRecurringCredit
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *V1ContractNewParamsPackageCustomizationsModifyRecurringCredit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type V1ContractNewParamsPackageCustomizationsModifySubscription struct {
 	// The initial quantity for the subscription. Must be a non-negative value. Provide
 	// for a QUANTITY_ONLY subscription.
@@ -4618,6 +4672,11 @@ type V1ContractNewParamsRecurringCommit struct {
 	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
 	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// The date this recurring commit's or credit's periods are anchored to. Must be on
+	// or before `starting_at`. If omitted, periods are anchored to `starting_at` when
+	// `recurrence_frequency` is set, and to the contract's usage statement billing
+	// anchor otherwise.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
@@ -4892,6 +4951,11 @@ type V1ContractNewParamsRecurringCredit struct {
 	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
 	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// The date this recurring commit's or credit's periods are anchored to. Must be on
+	// or before `starting_at`. If omitted, periods are anchored to `starting_at` when
+	// `recurrence_frequency` is set, and to the contract's usage statement billing
+	// anchor otherwise.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional

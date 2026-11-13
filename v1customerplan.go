@@ -55,11 +55,11 @@ func (r *V1CustomerPlanService) List(ctx context.Context, params V1CustomerPlanL
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/plans", customerID)
+	path := fmt.Sprintf("v1/customers/%s/plans", pathParam0)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -88,11 +88,11 @@ func (r *V1CustomerPlanService) Add(ctx context.Context, params V1CustomerPlanAd
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/plans/add", customerID)
+	path := fmt.Sprintf("v1/customers/%s/plans/add", pathParam0)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -109,15 +109,15 @@ func (r *V1CustomerPlanService) End(ctx context.Context, params V1CustomerPlanEn
 		err = errors.New("missing required customer_plan_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	customerPlanID, err := requestconfig.PathSegment(params.CustomerPlanID)
+	pathParam1, err := requestconfig.PathSegment(params.CustomerPlanID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/plans/%s/end", customerID, customerPlanID)
+	path := fmt.Sprintf("v1/customers/%s/plans/%s/end", pathParam0, pathParam1)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -138,15 +138,15 @@ func (r *V1CustomerPlanService) ListPriceAdjustments(ctx context.Context, params
 		err = errors.New("missing required customer_plan_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	customerPlanID, err := requestconfig.PathSegment(params.CustomerPlanID)
+	pathParam1, err := requestconfig.PathSegment(params.CustomerPlanID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/plans/%s/priceAdjustments", customerID, customerPlanID)
+	path := fmt.Sprintf("v1/customers/%s/plans/%s/priceAdjustments", pathParam0, pathParam1)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err

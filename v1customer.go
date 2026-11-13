@@ -130,11 +130,11 @@ func (r *V1CustomerService) Get(ctx context.Context, query V1CustomerGetParams, 
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(query.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(query.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s", customerID)
+	path := fmt.Sprintf("v1/customers/%s", pathParam0)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -240,11 +240,11 @@ func (r *V1CustomerService) ListBillableMetrics(ctx context.Context, params V1Cu
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/billable-metrics", customerID)
+	path := fmt.Sprintf("v1/customers/%s/billable-metrics", pathParam0)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -277,11 +277,11 @@ func (r *V1CustomerService) ListCosts(ctx context.Context, params V1CustomerList
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/costs", customerID)
+	path := fmt.Sprintf("v1/customers/%s/costs", pathParam0)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -313,11 +313,11 @@ func (r *V1CustomerService) PreviewEvents(ctx context.Context, params V1Customer
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/previewEvents", customerID)
+	path := fmt.Sprintf("v1/customers/%s/previewEvents", pathParam0)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -400,11 +400,11 @@ func (r *V1CustomerService) SetIngestAliases(ctx context.Context, params V1Custo
 		err = errors.New("missing required customer_id parameter")
 		return err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return err
 	}
-	path := fmt.Sprintf("v1/customers/%s/setIngestAliases", customerID)
+	path := fmt.Sprintf("v1/customers/%s/setIngestAliases", pathParam0)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return err
 }
@@ -420,11 +420,11 @@ func (r *V1CustomerService) SetName(ctx context.Context, params V1CustomerSetNam
 		err = errors.New("missing required customer_id parameter")
 		return nil, err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/customers/%s/setName", customerID)
+	path := fmt.Sprintf("v1/customers/%s/setName", pathParam0)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -440,11 +440,11 @@ func (r *V1CustomerService) UpdateConfig(ctx context.Context, params V1CustomerU
 		err = errors.New("missing required customer_id parameter")
 		return err
 	}
-	customerID, err := requestconfig.PathSegment(params.CustomerID)
+	pathParam0, err := requestconfig.PathSegment(params.CustomerID)
 	if err != nil {
 		return err
 	}
-	path := fmt.Sprintf("v1/customers/%s/updateConfig", customerID)
+	path := fmt.Sprintf("v1/customers/%s/updateConfig", pathParam0)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return err
 }
@@ -836,9 +836,9 @@ type V1CustomerGetBillingConfigurationsResponseData struct {
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// Rules that stop matching invoices from being sent to the billing provider.
-	// Supported for Stripe and NetSuite billing provider configurations. When omitted,
-	// every invoice is sent to the billing provider. Stripe invoices can be force-sent
-	// after a rule suppresses them.
+	// Supported for Stripe, NetSuite, AWS Marketplace, Azure, and GCP billing provider
+	// configurations. When omitted, every invoice is sent to the billing provider.
+	// Stripe invoices can be force-sent after a rule suppresses them.
 	UnbillableInvoicesConfiguration []V1CustomerGetBillingConfigurationsResponseDataUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1395,9 +1395,9 @@ type V1CustomerSetBillingConfigurationsParamsData struct {
 	// Any of "anrok", "avalara", "stripe".
 	TaxProvider string `json:"tax_provider,omitzero"`
 	// Rules that stop matching invoices from being sent to the billing provider.
-	// Supported for Stripe and NetSuite billing provider configurations. When omitted,
-	// every invoice is sent to the billing provider. Stripe invoices can be force-sent
-	// after a rule suppresses them.
+	// Supported for Stripe, NetSuite, AWS Marketplace, Azure, and GCP billing provider
+	// configurations. When omitted, every invoice is sent to the billing provider.
+	// Stripe invoices can be force-sent after a rule suppresses them.
 	UnbillableInvoicesConfiguration []V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration,omitzero"`
 	paramObj
 }

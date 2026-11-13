@@ -98,11 +98,11 @@ func (r *V1BillableMetricService) Get(ctx context.Context, query V1BillableMetri
 		err = errors.New("missing required billable_metric_id parameter")
 		return nil, err
 	}
-	billableMetricID, err := requestconfig.PathSegment(query.BillableMetricID)
+	pathParam0, err := requestconfig.PathSegment(query.BillableMetricID)
 	if err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/billable-metrics/%s", billableMetricID)
+	path := fmt.Sprintf("v1/billable-metrics/%s", pathParam0)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -131,7 +131,11 @@ func (r *V1BillableMetricService) Update(ctx context.Context, params V1BillableM
 		err = errors.New("missing required billable_metric_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v1/billable-metrics/%s", params.BillableMetricID)
+	pathParam0, err := requestconfig.PathSegment(params.BillableMetricID)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("v1/billable-metrics/%s", pathParam0)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return res, err
 }

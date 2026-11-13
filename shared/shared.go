@@ -1444,9 +1444,9 @@ type ContractCustomerBillingProviderConfiguration struct {
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// Rules that stop matching invoices from being sent to the billing provider.
-	// Supported for Stripe and NetSuite billing provider configurations. When omitted,
-	// every invoice is sent to the billing provider. Stripe invoices can be force-sent
-	// after a rule suppresses them.
+	// Supported for Stripe, NetSuite, AWS Marketplace, Azure, and GCP billing provider
+	// configurations. When omitted, every invoice is sent to the billing provider.
+	// Stripe invoices can be force-sent after a rule suppresses them.
 	UnbillableInvoicesConfiguration []ContractCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2624,9 +2624,9 @@ type ContractV2BillingProviderConfigurationScheduleBillingProviderConfiguration 
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// Rules that stop matching invoices from being sent to the billing provider.
-	// Supported for Stripe and NetSuite billing provider configurations. When omitted,
-	// every invoice is sent to the billing provider. Stripe invoices can be force-sent
-	// after a rule suppresses them.
+	// Supported for Stripe, NetSuite, AWS Marketplace, Azure, and GCP billing provider
+	// configurations. When omitted, every invoice is sent to the billing provider.
+	// Stripe invoices can be force-sent after a rule suppresses them.
 	UnbillableInvoicesConfiguration []ContractV2BillingProviderConfigurationScheduleBillingProviderConfigurationUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3141,9 +3141,9 @@ type ContractV2CustomerBillingProviderConfiguration struct {
 	// ID of the delivery method to use for this customer.
 	DeliveryMethodID string `json:"delivery_method_id" api:"required" format:"uuid"`
 	// Rules that stop matching invoices from being sent to the billing provider.
-	// Supported for Stripe and NetSuite billing provider configurations. When omitted,
-	// every invoice is sent to the billing provider. Stripe invoices can be force-sent
-	// after a rule suppresses them.
+	// Supported for Stripe, NetSuite, AWS Marketplace, Azure, and GCP billing provider
+	// configurations. When omitted, every invoice is sent to the billing provider.
+	// Stripe invoices can be force-sent after a rule suppresses them.
 	UnbillableInvoicesConfiguration []ContractV2CustomerBillingProviderConfigurationUnbillableInvoicesConfiguration `json:"unbillable_invoices_configuration"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

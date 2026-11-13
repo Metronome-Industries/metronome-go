@@ -7024,6 +7024,11 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
 	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// The date this recurring commit's or credit's periods are anchored to. Must be on
+	// or before `starting_at`. If omitted, periods are anchored to `starting_at` when
+	// `recurrence_frequency` is set, and to the contract's usage statement billing
+	// anchor otherwise.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
@@ -7298,6 +7303,11 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
 	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// The date this recurring commit's or credit's periods are anchored to. Must be on
+	// or before `starting_at`. If omitted, periods are anchored to `starting_at` when
+	// `recurrence_frequency` is set, and to the contract's usage statement billing
+	// anchor otherwise.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
