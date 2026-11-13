@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -641,4 +642,13 @@ func WithDefaultBaseURL(baseURL string) RequestOption {
 		r.DefaultBaseURL = u
 		return nil
 	})
+}
+
+// PathSegment encodes a path parameter and rejects empty or dot segments.
+func PathSegment(value string) (string, error) {
+	switch strings.ToLower(value) {
+	case "", ".", "..", "%2e", "%2e%2e", ".%2e", "%2e.":
+		return "", errors.New("path parameter must not be empty, '.' or '..'")
+	}
+	return url.PathEscape(value), nil
 }

@@ -51,6 +51,19 @@ func TestV1CustomerNewWithOptionalParams(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+			UnbillableInvoicesConfiguration: []metronome.V1CustomerNewParamsCustomerBillingProviderConfigurationUnbillableInvoicesConfiguration{{
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "SCHEDULED",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}},
 		}},
 		CustomerRevenueSystemConfigurations: []metronome.V1CustomerNewParamsCustomerRevenueSystemConfiguration{{
 			Provider: "netsuite",
@@ -115,6 +128,7 @@ func TestV1CustomerListWithOptionalParams(t *testing.T) {
 		NextPage:             metronome.String("next_page"),
 		OnlyArchived:         metronome.Bool(true),
 		SalesforceAccountIDs: []string{"string"},
+		StripeCustomerID:     metronome.String("stripe_customer_id"),
 	})
 	if err != nil {
 		var apierr *metronome.Error
@@ -316,6 +330,19 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+			UnbillableInvoicesConfiguration: []metronome.V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration{{
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "SCHEDULED",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}},
 		}, {
 			BillingProvider: "aws_marketplace",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
@@ -327,6 +354,19 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+			UnbillableInvoicesConfiguration: []metronome.V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration{{
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "SCHEDULED",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}},
 		}, {
 			BillingProvider: "azure_marketplace",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
@@ -336,6 +376,19 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("5b9e3072-415b-4842-94f0-0b6700c8b6be"),
 			TaxProvider:      "anrok",
+			UnbillableInvoicesConfiguration: []metronome.V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration{{
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "SCHEDULED",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}},
 		}, {
 			BillingProvider: "aws_marketplace",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
@@ -348,6 +401,19 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+			UnbillableInvoicesConfiguration: []metronome.V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration{{
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "SCHEDULED",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}},
 		}, {
 			BillingProvider: "gcp_marketplace",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
@@ -358,6 +424,19 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+			UnbillableInvoicesConfiguration: []metronome.V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration{{
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "SCHEDULED",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}},
 		}, {
 			BillingProvider: "netsuite",
 			CustomerID:      "4db51251-61de-4bfe-b9ce-495e244f3491",
@@ -367,6 +446,19 @@ func TestV1CustomerSetBillingConfigurations(t *testing.T) {
 			DeliveryMethod:   "direct_to_billing_provider",
 			DeliveryMethodID: metronome.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			TaxProvider:      "anrok",
+			UnbillableInvoicesConfiguration: []metronome.V1CustomerSetBillingConfigurationsParamsDataUnbillableInvoicesConfiguration{{
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "USAGE",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}, {
+				InvoiceType:      "SCHEDULED",
+				FiatCreditTypeID: metronome.String("2714e483-4ff1-48e4-9e25-ac732e8f24f2"),
+				MaxAmount:        metronome.Float(1000),
+			}},
 		}},
 	})
 	if err != nil {

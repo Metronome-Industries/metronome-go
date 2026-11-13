@@ -108,7 +108,7 @@ type V1ContractRateCardRateListResponse struct {
 	ProductTags         []string          `json:"product_tags" api:"required"`
 	Rate                shared.Rate       `json:"rate" api:"required"`
 	StartingAt          time.Time         `json:"starting_at" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency V1ContractRateCardRateListResponseBillingFrequency `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
@@ -142,10 +142,11 @@ func (r *V1ContractRateCardRateListResponse) UnmarshalJSON(data []byte) error {
 type V1ContractRateCardRateListResponseBillingFrequency string
 
 const (
-	V1ContractRateCardRateListResponseBillingFrequencyMonthly   V1ContractRateCardRateListResponseBillingFrequency = "MONTHLY"
-	V1ContractRateCardRateListResponseBillingFrequencyQuarterly V1ContractRateCardRateListResponseBillingFrequency = "QUARTERLY"
-	V1ContractRateCardRateListResponseBillingFrequencyAnnual    V1ContractRateCardRateListResponseBillingFrequency = "ANNUAL"
-	V1ContractRateCardRateListResponseBillingFrequencyWeekly    V1ContractRateCardRateListResponseBillingFrequency = "WEEKLY"
+	V1ContractRateCardRateListResponseBillingFrequencyMonthly    V1ContractRateCardRateListResponseBillingFrequency = "MONTHLY"
+	V1ContractRateCardRateListResponseBillingFrequencyQuarterly  V1ContractRateCardRateListResponseBillingFrequency = "QUARTERLY"
+	V1ContractRateCardRateListResponseBillingFrequencySemiAnnual V1ContractRateCardRateListResponseBillingFrequency = "SEMI_ANNUAL"
+	V1ContractRateCardRateListResponseBillingFrequencyAnnual     V1ContractRateCardRateListResponseBillingFrequency = "ANNUAL"
+	V1ContractRateCardRateListResponseBillingFrequencyWeekly     V1ContractRateCardRateListResponseBillingFrequency = "WEEKLY"
 )
 
 type V1ContractRateCardRateAddResponse struct {
@@ -265,7 +266,7 @@ type V1ContractRateCardRateListParamsSelector struct {
 	// Subscription rates matching the billing frequency will be included in the
 	// response.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// List of pricing group key value pairs, rates containing the matching key / value
 	// pairs will be included in the response.
@@ -289,7 +290,7 @@ func (r *V1ContractRateCardRateListParamsSelector) UnmarshalJSON(data []byte) er
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractRateCardRateListParamsSelector](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }
 
@@ -322,7 +323,7 @@ type V1ContractRateCardRateAddParams struct {
 	// Optional. Frequency to bill subscriptions with. Required for subscription type
 	// products with Flat rate.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency V1ContractRateCardRateAddParamsBillingFrequency `json:"billing_frequency,omitzero"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
@@ -362,10 +363,11 @@ const (
 type V1ContractRateCardRateAddParamsBillingFrequency string
 
 const (
-	V1ContractRateCardRateAddParamsBillingFrequencyMonthly   V1ContractRateCardRateAddParamsBillingFrequency = "MONTHLY"
-	V1ContractRateCardRateAddParamsBillingFrequencyQuarterly V1ContractRateCardRateAddParamsBillingFrequency = "QUARTERLY"
-	V1ContractRateCardRateAddParamsBillingFrequencyAnnual    V1ContractRateCardRateAddParamsBillingFrequency = "ANNUAL"
-	V1ContractRateCardRateAddParamsBillingFrequencyWeekly    V1ContractRateCardRateAddParamsBillingFrequency = "WEEKLY"
+	V1ContractRateCardRateAddParamsBillingFrequencyMonthly    V1ContractRateCardRateAddParamsBillingFrequency = "MONTHLY"
+	V1ContractRateCardRateAddParamsBillingFrequencyQuarterly  V1ContractRateCardRateAddParamsBillingFrequency = "QUARTERLY"
+	V1ContractRateCardRateAddParamsBillingFrequencySemiAnnual V1ContractRateCardRateAddParamsBillingFrequency = "SEMI_ANNUAL"
+	V1ContractRateCardRateAddParamsBillingFrequencyAnnual     V1ContractRateCardRateAddParamsBillingFrequency = "ANNUAL"
+	V1ContractRateCardRateAddParamsBillingFrequencyWeekly     V1ContractRateCardRateAddParamsBillingFrequency = "WEEKLY"
 )
 
 type V1ContractRateCardRateAddManyParams struct {
@@ -410,7 +412,7 @@ type V1ContractRateCardRateAddManyParamsRate struct {
 	// Optional. Frequency to bill subscriptions with. Required for subscription type
 	// products with Flat rate.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
@@ -439,6 +441,6 @@ func init() {
 		"rate_type", "FLAT", "PERCENTAGE", "SUBSCRIPTION", "TIERED", "TIERED_PERCENTAGE", "CUSTOM",
 	)
 	apijson.RegisterFieldValidator[V1ContractRateCardRateAddManyParamsRate](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }

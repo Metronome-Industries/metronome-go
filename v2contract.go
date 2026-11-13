@@ -369,6 +369,8 @@ type V2ContractEditResponseDataEditAddCommit struct {
 	Name            string                                                 `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// Present only on payment-gated commits.
+	PaymentGateConfig V2ContractEditResponseDataEditAddCommitPaymentGateConfig `json:"payment_gate_config"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority float64 `json:"priority"`
@@ -397,6 +399,7 @@ type V2ContractEditResponseDataEditAddCommit struct {
 		InvoiceSchedule         respjson.Field
 		Name                    respjson.Field
 		NetsuiteSalesOrderID    respjson.Field
+		PaymentGateConfig       respjson.Field
 		Priority                respjson.Field
 		RateType                respjson.Field
 		RolloverFraction        respjson.Field
@@ -478,6 +481,103 @@ func (r V2ContractEditResponseDataEditAddCommitInvoiceScheduleScheduleItem) RawJ
 	return r.JSON.raw
 }
 func (r *V2ContractEditResponseDataEditAddCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Present only on payment-gated commits.
+type V2ContractEditResponseDataEditAddCommitPaymentGateConfig struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	//
+	// Any of "NONE", "STRIPE", "EXTERNAL".
+	PaymentGateType string `json:"payment_gate_type" api:"required"`
+	// Only applicable if using PRECALCULATED as your tax type.
+	PrecalculatedTaxConfig V2ContractEditResponseDataEditAddCommitPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
+	// Only applicable if using STRIPE as your payment gateway type.
+	StripeConfig V2ContractEditResponseDataEditAddCommitPaymentGateConfigStripeConfig `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	//
+	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
+	TaxType string `json:"tax_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentGateType        respjson.Field
+		PrecalculatedTaxConfig respjson.Field
+		StripeConfig           respjson.Field
+		TaxType                respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCommitPaymentGateConfig) RawJSON() string { return r.JSON.raw }
+func (r *V2ContractEditResponseDataEditAddCommitPaymentGateConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only applicable if using PRECALCULATED as your tax type.
+type V2ContractEditResponseDataEditAddCommitPaymentGateConfigPrecalculatedTaxConfig struct {
+	// Amount of tax to be applied. This should be in the same currency and
+	// denomination as the commit's invoice schedule
+	TaxAmount float64 `json:"tax_amount" api:"required"`
+	// Name of the tax to be applied. This may be used in an invoice line item
+	// description.
+	TaxName string `json:"tax_name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TaxAmount   respjson.Field
+		TaxName     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCommitPaymentGateConfigPrecalculatedTaxConfig) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddCommitPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only applicable if using STRIPE as your payment gateway type.
+type V2ContractEditResponseDataEditAddCommitPaymentGateConfigStripeConfig struct {
+	// If left blank, will default to INVOICE
+	//
+	// Any of "INVOICE", "PAYMENT_INTENT".
+	PaymentType string `json:"payment_type" api:"required"`
+	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
+	// your payment type.
+	InvoiceMetadata map[string]string `json:"invoice_metadata"`
+	// If true, the payment will be made assuming the customer is present (i.e. on
+	// session).
+	//
+	// If false, the payment will be made assuming the customer is not present (i.e.
+	// off session). For cardholders from a country with an e-mandate requirement (e.g.
+	// India), the payment may be declined.
+	//
+	// If left blank, will default to false.
+	OnSessionPayment bool `json:"on_session_payment"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentType      respjson.Field
+		InvoiceMetadata  respjson.Field
+		OnSessionPayment respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractEditResponseDataEditAddCommitPaymentGateConfigStripeConfig) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractEditResponseDataEditAddCommitPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -605,7 +705,7 @@ func (r *V2ContractEditResponseDataEditAddOverride) UnmarshalJSON(data []byte) e
 
 type V2ContractEditResponseDataEditAddOverrideOverrideSpecifier struct {
 	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
@@ -740,7 +840,7 @@ type V2ContractEditResponseDataEditAddRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -1013,7 +1113,7 @@ type V2ContractEditResponseDataEditAddRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -1497,7 +1597,7 @@ func (r *V2ContractEditResponseDataEditAddSubscriptionQuantitySchedule) Unmarsha
 }
 
 type V2ContractEditResponseDataEditAddSubscriptionSubscriptionRate struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string                                                               `json:"billing_frequency" api:"required"`
 	Product          V2ContractEditResponseDataEditAddSubscriptionSubscriptionRateProduct `json:"product" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3171,6 +3271,8 @@ type V2ContractGetEditHistoryResponseDataAddCommit struct {
 	Name            string                                                       `json:"name"`
 	// This field's availability is dependent on your client's configuration.
 	NetsuiteSalesOrderID string `json:"netsuite_sales_order_id"`
+	// Present only on payment-gated commits.
+	PaymentGateConfig V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfig `json:"payment_gate_config"`
 	// If multiple credits or commits are applicable, the one with the lower priority
 	// will apply first.
 	Priority float64 `json:"priority"`
@@ -3199,6 +3301,7 @@ type V2ContractGetEditHistoryResponseDataAddCommit struct {
 		InvoiceSchedule         respjson.Field
 		Name                    respjson.Field
 		NetsuiteSalesOrderID    respjson.Field
+		PaymentGateConfig       respjson.Field
 		Priority                respjson.Field
 		RateType                respjson.Field
 		RolloverFraction        respjson.Field
@@ -3282,6 +3385,105 @@ func (r V2ContractGetEditHistoryResponseDataAddCommitInvoiceScheduleScheduleItem
 	return r.JSON.raw
 }
 func (r *V2ContractGetEditHistoryResponseDataAddCommitInvoiceScheduleScheduleItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Present only on payment-gated commits.
+type V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfig struct {
+	// Gate access to the commit balance based on successful collection of payment.
+	// Select STRIPE for Metronome to facilitate payment via Stripe. Select EXTERNAL to
+	// facilitate payment using your own payment integration. Select NONE if you do not
+	// wish to payment gate the commit balance.
+	//
+	// Any of "NONE", "STRIPE", "EXTERNAL".
+	PaymentGateType string `json:"payment_gate_type" api:"required"`
+	// Only applicable if using PRECALCULATED as your tax type.
+	PrecalculatedTaxConfig V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfigPrecalculatedTaxConfig `json:"precalculated_tax_config"`
+	// Only applicable if using STRIPE as your payment gateway type.
+	StripeConfig V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfigStripeConfig `json:"stripe_config"`
+	// Stripe tax is only supported for Stripe payment gateway. Select NONE if you do
+	// not wish Metronome to calculate tax on your behalf. Leaving this field blank
+	// will default to NONE.
+	//
+	// Any of "NONE", "STRIPE", "ANROK", "PRECALCULATED".
+	TaxType string `json:"tax_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentGateType        respjson.Field
+		PrecalculatedTaxConfig respjson.Field
+		StripeConfig           respjson.Field
+		TaxType                respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfig) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only applicable if using PRECALCULATED as your tax type.
+type V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfigPrecalculatedTaxConfig struct {
+	// Amount of tax to be applied. This should be in the same currency and
+	// denomination as the commit's invoice schedule
+	TaxAmount float64 `json:"tax_amount" api:"required"`
+	// Name of the tax to be applied. This may be used in an invoice line item
+	// description.
+	TaxName string `json:"tax_name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TaxAmount   respjson.Field
+		TaxName     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfigPrecalculatedTaxConfig) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfigPrecalculatedTaxConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only applicable if using STRIPE as your payment gateway type.
+type V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfigStripeConfig struct {
+	// If left blank, will default to INVOICE
+	//
+	// Any of "INVOICE", "PAYMENT_INTENT".
+	PaymentType string `json:"payment_type" api:"required"`
+	// Metadata to be added to the Stripe invoice. Only applicable if using INVOICE as
+	// your payment type.
+	InvoiceMetadata map[string]string `json:"invoice_metadata"`
+	// If true, the payment will be made assuming the customer is present (i.e. on
+	// session).
+	//
+	// If false, the payment will be made assuming the customer is not present (i.e.
+	// off session). For cardholders from a country with an e-mandate requirement (e.g.
+	// India), the payment may be declined.
+	//
+	// If left blank, will default to false.
+	OnSessionPayment bool `json:"on_session_payment"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentType      respjson.Field
+		InvoiceMetadata  respjson.Field
+		OnSessionPayment respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfigStripeConfig) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *V2ContractGetEditHistoryResponseDataAddCommitPaymentGateConfigStripeConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3409,7 +3611,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddOverride) UnmarshalJSON(data []b
 
 type V2ContractGetEditHistoryResponseDataAddOverrideOverrideSpecifier struct {
 	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency        string            `json:"billing_frequency"`
 	CommitIDs               []string          `json:"commit_ids"`
 	PresentationGroupValues map[string]string `json:"presentation_group_values"`
@@ -3546,7 +3748,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -3823,7 +4025,7 @@ type V2ContractGetEditHistoryResponseDataAddRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency"`
 	// Will be passed down to the individual commits. This controls how much of an
 	// individual unexpired commit will roll over upon contract transition. Must be
@@ -4315,7 +4517,7 @@ func (r *V2ContractGetEditHistoryResponseDataAddSubscriptionQuantitySchedule) Un
 }
 
 type V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRate struct {
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string                                                                     `json:"billing_frequency" api:"required"`
 	Product          V2ContractGetEditHistoryResponseDataAddSubscriptionSubscriptionRateProduct `json:"product" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -5928,9 +6130,7 @@ type V2ContractEditParams struct {
 	AllowContractEndingBeforeFinalizedInvoice param.Opt[bool] `json:"allow_contract_ending_before_finalized_invoice,omitzero"`
 	// Optional uniqueness key to prevent duplicate contract edits.
 	UniquenessKey param.Opt[string] `json:"uniqueness_key,omitzero"`
-	// Update the billing provider configuration on the contract. Currently only
-	// supports adding a billing provider configuration to a contract that does not
-	// already have one.
+	// Update the billing provider configuration on the contract.
 	AddBillingProviderConfigurationUpdate   V2ContractEditParamsAddBillingProviderConfigurationUpdate `json:"add_billing_provider_configuration_update,omitzero"`
 	AddCommits                              []V2ContractEditParamsAddCommit                           `json:"add_commits,omitzero"`
 	AddCredits                              []V2ContractEditParamsAddCredit                           `json:"add_credits,omitzero"`
@@ -5991,9 +6191,7 @@ func (r *V2ContractEditParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Update the billing provider configuration on the contract. Currently only
-// supports adding a billing provider configuration to a contract that does not
-// already have one.
+// Update the billing provider configuration on the contract.
 //
 // The properties BillingProviderConfiguration, Schedule are required.
 type V2ContractEditParamsAddBillingProviderConfigurationUpdate struct {
@@ -6046,7 +6244,7 @@ func init() {
 type V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule struct {
 	// When the billing provider update will take effect.
 	//
-	// Any of "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD".
+	// Any of "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD", "TODAY".
 	EffectiveAt string `json:"effective_at,omitzero" api:"required"`
 	paramObj
 }
@@ -6061,7 +6259,7 @@ func (r *V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule) Unma
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddBillingProviderConfigurationUpdateSchedule](
-		"effective_at", "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD",
+		"effective_at", "START_OF_CURRENT_PERIOD", "START_OF_NEXT_PERIOD", "TODAY",
 	)
 }
 
@@ -6694,7 +6892,7 @@ type V2ContractEditParamsAddOverrideOverrideSpecifier struct {
 	// `recurring_commit_ids` If provided, the override will apply to any specified
 	// commit, credit, recurring commit or recurring credit IDs.
 	AnyCommitOrCreditIDs []string `json:"any_commit_or_credit_ids,omitzero"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// If provided, the override will only apply to the specified commits. Can only be
 	// used for commit specific overrides. If not provided, the override will apply to
@@ -6728,7 +6926,7 @@ func (r *V2ContractEditParamsAddOverrideOverrideSpecifier) UnmarshalJSON(data []
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddOverrideOverrideSpecifier](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }
 
@@ -6826,6 +7024,11 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
 	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// The date this recurring commit's or credit's periods are anchored to. Must be on
+	// or before `starting_at`. If omitted, periods are anchored to `starting_at` when
+	// `recurrence_frequency` is set, and to the contract's usage statement billing
+	// anchor otherwise.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
@@ -6867,7 +7070,7 @@ type V2ContractEditParamsAddRecurringCommit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -6897,7 +7100,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddRecurringCommit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -7100,6 +7303,11 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	ProductID string  `json:"product_id" api:"required" format:"uuid"`
 	// determines the start time for the first commit
 	StartingAt time.Time `json:"starting_at" api:"required" format:"date-time"`
+	// The date this recurring commit's or credit's periods are anchored to. Must be on
+	// or before `starting_at`. If omitted, periods are anchored to `starting_at` when
+	// `recurrence_frequency` is set, and to the contract's usage statement billing
+	// anchor otherwise.
+	AnchorDate param.Opt[time.Time] `json:"anchor_date,omitzero" format:"date-time"`
 	// Will be passed down to the individual commits
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Determines when the contract will stop creating recurring commits. optional
@@ -7139,7 +7347,7 @@ type V2ContractEditParamsAddRecurringCredit struct {
 	// invoice dates. - Daily recurring commits have a limit of one per contract, and
 	// are unable to be created with seat-based subscriptions
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY".
 	RecurrenceFrequency string `json:"recurrence_frequency,omitzero"`
 	// List of filters that determine what kind of customer usage draws down a commit
 	// or credit. A customer's usage needs to meet the condition of at least one of the
@@ -7169,7 +7377,7 @@ func init() {
 		"rate_type", "COMMIT_RATE", "LIST_RATE",
 	)
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddRecurringCredit](
-		"recurrence_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "DAILY",
+		"recurrence_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY", "DAILY",
 	)
 }
 
@@ -7737,7 +7945,7 @@ type V2ContractEditParamsAddSubscriptionSubscriptionRate struct {
 	// Frequency to bill subscription with. Together with product_id, must match
 	// existing rate on the rate card.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero" api:"required"`
 	// Must be subscription type product
 	ProductID string `json:"product_id" api:"required" format:"uuid"`
@@ -7754,7 +7962,7 @@ func (r *V2ContractEditParamsAddSubscriptionSubscriptionRate) UnmarshalJSON(data
 
 func init() {
 	apijson.RegisterFieldValidator[V2ContractEditParamsAddSubscriptionSubscriptionRate](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }
 

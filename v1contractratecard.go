@@ -446,7 +446,7 @@ type V1ContractRateCardGetRateScheduleResponseData struct {
 	ProductTags         []string          `json:"product_tags" api:"required"`
 	Rate                shared.Rate       `json:"rate" api:"required"`
 	StartingAt          time.Time         `json:"starting_at" api:"required" format:"date-time"`
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency"`
 	// A distinct rate on the rate card. You can choose to use this rate rather than
 	// list rate when consuming a credit or commit.
@@ -679,7 +679,7 @@ type V1ContractRateCardGetRateScheduleParamsSelector struct {
 	// Subscription rates matching the billing frequency will be included in the
 	// response.
 	//
-	// Any of "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY".
+	// Any of "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY".
 	BillingFrequency string `json:"billing_frequency,omitzero"`
 	// List of pricing group key value pairs, rates containing the matching key / value
 	// pairs will be included in the response.
@@ -700,6 +700,6 @@ func (r *V1ContractRateCardGetRateScheduleParamsSelector) UnmarshalJSON(data []b
 
 func init() {
 	apijson.RegisterFieldValidator[V1ContractRateCardGetRateScheduleParamsSelector](
-		"billing_frequency", "MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY",
+		"billing_frequency", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL", "WEEKLY",
 	)
 }
