@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.14.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.13.0...v3.14.0) (2026-11-13)
+
+
+### Features
+
+* **api:** add stripe_customer_id filter to list customers ([56044dc](https://github.com/Metronome-Industries/metronome-go/commit/56044dcbfc8b96fc4d81ab2ba70a91920dec7f28))
+* **api:** add unbillable_invoices_configuration to create customer billing provider configurations ([1509f0e](https://github.com/Metronome-Industries/metronome-go/commit/1509f0e5d7eb14e439ac93f2fc05e3184e3bae53))
+* **api:** add unbillable_invoices_configuration to customer billing provider configurations ([837ac6d](https://github.com/Metronome-Industries/metronome-go/commit/837ac6d8743c3ebe85ec5f6a4506c65180d2bb82))
+* **sdk:** add billing controls and escape path parameters ([d98e7a2](https://github.com/Metronome-Industries/metronome-go/commit/d98e7a23601858d7413ba9076ae327282c332c7d))
+
+
+### Bug Fixes
+
+* **client:** percent-encode path parameters ([#10](https://github.com/Metronome-Industries/metronome-go/issues/10)) ([f282e1a](https://github.com/Metronome-Industries/metronome-go/commit/f282e1a75b9c1cbdb9d658577051490f3cd11dfa))
+* **client:** preserve generated path parameter escaping ([#11](https://github.com/Metronome-Industries/metronome-go/issues/11)) ([d2c8a73](https://github.com/Metronome-Industries/metronome-go/commit/d2c8a73314f64df269d22cf87f99baf357826598))
+
 ## [3.13.0](https://github.com/Metronome-Industries/metronome-go/compare/v3.12.1...v3.13.0) (2026-10-27)
 
 Adds quantity-based balances, pricing unit management, and cursor pagination for customer contracts.
